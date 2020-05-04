@@ -34,20 +34,20 @@ namespace AnalysisAppLib.XmlDoc
 
         // ReSharper disable once NotAccessedField.Local
         private StatementSyntax _statement ;
+        public CSharpCompilation Compilation { get; }
 
         private SyntaxNode _node ;
 
 
-        public CodeAnalyseContext (
-            SemanticModel   currentModel
-          , StatementSyntax statement
-          , SyntaxNode      node
-          , SyntaxTree      syntaxTree
-          , string          assemblyName
-        ) : this ( assemblyName )
+        public CodeAnalyseContext(SemanticModel currentModel
+            , StatementSyntax statement
+            , SyntaxNode node
+            , SyntaxTree syntaxTree
+            , string assemblyName, CSharpCompilation compilation) : this ( assemblyName )
         {
             _currentModel = currentModel ;
             _statement    = statement ;
+            Compilation = compilation;
             Node          = node ;
 
             SyntaxTree = syntaxTree ;
@@ -95,7 +95,7 @@ namespace AnalysisAppLib.XmlDoc
           , CSharpCompilationOptions opts = null
         )
         {
-            var comp = AnalysisService.CreateCompilation ( assemblyName , tree ) ;
+            var comp = AnalysisService.CreateCompilation ( assemblyName , tree, true) ;
             return AnalysisService.CreateFromCompilation ( tree , comp ) ;
             // return new CodeAnalyseContext(comp.GetSemanticModel(tree), tree.GetCompilationUnitRoot(), null, tree.GetRoot(), new CodeSource("memory"), tree);
         }

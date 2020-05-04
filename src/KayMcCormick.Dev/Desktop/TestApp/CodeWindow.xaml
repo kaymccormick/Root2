@@ -1,0 +1,23 @@
+﻿<Window x:Class="TestApp.CodeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestApp"
+        xmlns:anal="http://kaymccormick.com/xaml/analysis"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="CodeWindow" Height="450" Width="800" anal:CodeProps.SourceText="{anal:SourceText FileSource=\\temp\\Program.cs}">
+  <Window.Resources>
+    <anal:SyntaxTreeCollection x:Key="trees">
+      <anal:SyntaxTree></anal:SyntaxTree>
+    </anal:SyntaxTreeCollection>
+    
+  </Window.Resources>
+  <Grid>
+    <anal:FormattedTextControl  
+      Tree="{anal:SyntaxTree SyntaxTrees={StaticResource trees},Index=0}" 
+      Compilation="{anal:Compilation OutputKind=DynamicallyLinkedLibrary,SyntaxTrees={StaticResource trees}}">
+</anal:FormattedTextControl>
+  </Grid>
+</Window>

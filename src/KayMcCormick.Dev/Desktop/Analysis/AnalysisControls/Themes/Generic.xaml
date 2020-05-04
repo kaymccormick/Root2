@@ -5,7 +5,8 @@
   xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
   xmlns:system="clr-namespace:System;assembly=mscorlib"
   xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-  xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib">
+  xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
+  xmlns:converters="clr-namespace:AnalysisControls.Converters">
   <Style TargetType="{x:Type local:CustomControl1}">
     <Setter Property="Template">
       <Setter.Value>
@@ -100,6 +101,7 @@
             <kmWpf:TypeInfoConverter x:Key="TypeInfoConverter" />
             <local:AConverter x:Key="AConverter" />
             <kmWpf:MethodInfoConverter x:Key="MethodInfoConverter" />
+            
             <kmWpf:ParameterInfoConverter x:Key="ParameterInfoConverter" />
 
             <!--Control colors.-->
@@ -480,22 +482,39 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:FormattedTextControl}">
           <Border Background="{TemplateBinding Background}"
+                  DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}"
                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="Grid">
+              <Grid.Resources>
+                <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter"/>
+                <converters:SyntaxTokenConverter x:Key="SyntaxTokenConverter"/>
+                <converters:SyntaxTriviaConverter x:Key="SyntaxTriviaConverter"/>
+                <converters:SymbolInfoConverter x:Key="SymbolInfoConverter"/>
+                <Style TargetType="{x:Type TextBlock}">
+                  <Setter Property="Margin" Value="10"></Setter>
+                </Style>
+              </Grid.Resources>
               <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
               </Grid.RowDefinitions>
               <Grid.ColumnDefinitions><ColumnDefinition Width="*"/>
               <ColumnDefinition Width="Auto"></ColumnDefinition></Grid.ColumnDefinitions>
-            <Border Grid.Row="0" Grid.Column="0" BorderBrush="BlueViolet" BorderThickness="3" x:Name="Border" VerticalAlignment="Stretch">
-              <ScrollViewer VerticalAlignment="Stretch" x:Name="ScrollViewer">
-                  <Rectangle x:Name="Rectangle" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+              <StackPanel Orientation="Horizontal">
+                <ComboBox ItemsSource="{Binding CommonFontSizes}"  SelectedValue="{Binding ElementName=Rectangle,Path=(TextElement.FontSize),Mode=TwoWay,FallbackValue=12}" FontSize="20">
+                </ComboBox>
+              </StackPanel>
+            <Border Grid.Row="1" Grid.Column="0" BorderBrush="BlueViolet" BorderThickness="3" x:Name="Border" VerticalAlignment="Stretch">
+              <ScrollViewer VerticalAlignment="Stretch" x:Name="ScrollViewer" HorizontalContentAlignment="Left" VerticalContentAlignment="Top">
+                  <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left" Stroke="Aqua" TextElement.FontSize="12">
                     <Rectangle.Fill>
-                      <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top">
-                        <DrawingBrush.Drawing>
+                      <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top" TileMode="None" Stretch="Uniform">
+                        <DrawingBrush.Drawing >
                           <DrawingGroup x:Name="TextDest"></DrawingGroup>
                         </DrawingBrush.Drawing>
                       </DrawingBrush>
@@ -504,10 +523,57 @@
               </ScrollViewer>
             </Border>
             <ScrollBar  Grid.Column="1" Grid.Row="0" Orientation="Vertical" x:Name="scrollbar"/>
-            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" TextElement.FontSize="18">
-              <TextBlock Text="{TemplateBinding HoverColumn}"></TextBlock>
+            <StackPanel Margin="10" Grid.Row="2" Grid.Column="0" Orientation="Horizontal" TextElement.FontSize="16">
+              <TextBlock Margin="15,0,0,0" Text="{Binding HoverOffset}"/>
+                <TextBlock  Text=" ( "></TextBlock>
+                <TextBlock Text="{Binding HoverColumn}"></TextBlock>
               <TextBlock Text=", "></TextBlock>
-                <TextBlock Text="{TemplateBinding HoverRow}"></TextBlock>
+                <TextBlock Text="{Binding HoverRow}"></TextBlock>
+              <TextBlock Text=" ) "></TextBlock>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Margin="15,0,0,0" Text="{Binding HoverSyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"/>
+                  <TextBlock Margin="15,0,0,0" Text="{Binding HoverToken,Converter={StaticResource SyntaxTokenConverter},ConverterParameter=kind}"/>
+                  <TextBlock Margin="15,0,0,0" Text="{Binding HoverToken,Converter={StaticResource SyntaxTokenConverter},ConverterParameter=text}"/>
+                </StackPanel>
+                <StackPanel Background="Beige" Orientation="Horizontal" Margin="10,0,10,0">
+                <TextBlock Text="{Binding HoverSymbol,Converter={StaticResource SymbolInfoConverter},ConverterParameter=kind}"/>
+              <TextBlock Text="{Binding HoverSymbol.MetadataName}"/>
+                </StackPanel>
+              </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" TextElement.FontSize="14">
+              <TextBlock Margin="10" Text="{Binding HoverRegionInfo.Trivia,Converter={StaticResource SyntaxTriviaConverter}}"/>
+              <TextBlock Margin="10" Text="{Binding HoverRegionInfo.TriviaValue.HasStructure}"/>
+              </StackPanel>
+<StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" TextElement.FontSize="14">
+                <StackPanel.Resources>
+                  <DataTemplate DataType="{x:Type local:SyntaxTokenTextCharacters}">
+                    <StackPanel Orientation="Horizontal" Background="Khaki">
+                      <TextBlock Margin="10" Text="Text:"></TextBlock>
+                      <TextBlock Margin="10" Text="{Binding Text}"></TextBlock>
+                      <TextBlock Margin="10" Text="Index:"></TextBlock>
+                      <TextBlock Margin="10" Text="{Binding Index}"></TextBlock>
+                      <TextBlock Margin="10" Text="Length:"></TextBlock>
+                      <TextBlock Margin="10" Text="{Binding Length}"></TextBlock>
+                      <TextBlock Margin="10" Text="Span:"></TextBlock>
+                      <TextBlock Margin="10" Text="{Binding Span}"></TextBlock>
+                    </StackPanel>
+                  </DataTemplate>
+                  <DataTemplate DataType="{x:Type local:SyntaxTriviaTextCharacters}">
+                    <StackPanel Orientation="Horizontal" Background="Aquamarine">
+                      <TextBlock Margin="10" Text="{Binding Text}"></TextBlock>
+                      <TextBlock Margin="10" Text="{Binding Index}"></TextBlock>
+                      <TextBlock Margin="10" Text="{Binding Length}"></TextBlock>
+                    </StackPanel>
+                  </DataTemplate>
+                  <DataTemplate DataType="{x:Type TextRun}">
+                    <TextBlock Text="{Binding Length}" Background="Gold"/>
+                  </DataTemplate>
+                </StackPanel.Resources>
+                <TextBlock Margin="10" Text="Bounding Rect:"></TextBlock>
+                <TextBlock Text="{Binding HoverRegionInfo.BoundingRect}"/>
+                <TextBlock Margin="10" Text="Offset:"></TextBlock>
+                <TextBlock Text="{Binding HoverRegionInfo.Offset}"/>
+                <ContentControl Content="{Binding HoverRegionInfo.TextRun}"/>
               </StackPanel>
             </Grid>
           </Border>

@@ -7,10 +7,65 @@ using Microsoft.CodeAnalysis;
 
 namespace AnalysisControls
 {
+    public class MyTextRunProperties : TextRunProperties
+    {
+        private TextRunProperties _baseProps;
+        private Brush _backgroundBrush = null;
+
+        public MyTextRunProperties(TextRunProperties baseProps)
+        {
+            _baseProps = baseProps;
+        }
+
+        public override Typeface Typeface
+        {
+            get { return _baseProps.Typeface; }
+        }
+
+        public override double FontRenderingEmSize
+        {
+            get { return _baseProps.FontRenderingEmSize; }
+        }
+
+        public override double FontHintingEmSize
+        {
+            get { return _baseProps.FontHintingEmSize; }
+        }
+
+        public override TextDecorationCollection TextDecorations
+        {
+            get { return _baseProps.TextDecorations; }
+        }
+
+        public override Brush ForegroundBrush
+        {
+            get { return _baseProps.ForegroundBrush; }
+        }
+
+        public override Brush BackgroundBrush
+        {
+            get { return _backgroundBrush ?? _baseProps.BackgroundBrush; }
+        }
+
+        public void SetBackgroundBrush(Brush backgroundBrush)
+        {
+            _backgroundBrush = backgroundBrush;
+        }
+
+        public override CultureInfo CultureInfo
+        {
+            get { return _baseProps.CultureInfo; }
+        }
+
+        public override TextEffectCollection TextEffects
+        {
+            get { return _baseProps.TextEffects; }
+        }
+    }
     /// <summary>
     /// Class used to implement TextRunProperties
     /// </summary>
-    class GenericTextRunProperties : TextRunProperties
+    public class GenericTextRunProperties : TextRunProperties
     {
         #region Constructors
 
@@ -91,6 +146,10 @@ namespace AnalysisControls
             get { return _emSize; }
         }
 
+        public void SetFondRenderingEmSize(double emSize)
+        {
+            _emSize = emSize;
+        }
         public override double FontHintingEmSize
         {
             get { return _emHintingSize; }
@@ -136,11 +195,11 @@ namespace AnalysisControls
             get { return null; }
         }
 
-        public SymbolDisplayPart SymbolDisplaYPart { get; set; }
-        public ITypeSymbol TypeSymbol { get; set; }
-        public SyntaxToken SyntaxToken { get; set; }
-        public SyntaxTrivia SyntaxTrivia { get; set; }
-        public string Text { get; set; }
+        // public SymbolDisplayPart SymbolDisplaYPart { get; set; }
+        // public ITypeSymbol TypeSymbol { get; set; }
+        // public SyntaxToken SyntaxToken { get; set; }
+        // public SyntaxTrivia SyntaxTrivia { get; set; }
+        // public string Text { get; set; }
 
         #endregion
 

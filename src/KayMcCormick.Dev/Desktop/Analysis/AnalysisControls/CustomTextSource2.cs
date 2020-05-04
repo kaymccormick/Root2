@@ -307,8 +307,8 @@ namespace AnalysisControls
             var xx = new GenericTextRunProperties(
                 fontRendering,
                 PixelsPerDip);
-            xx.SymbolDisplaYPart = symbolDisplayPart;
-            xx.TypeSymbol = tt;
+            // xx.SymbolDisplaYPart = symbolDisplayPart;
+            // xx.TypeSymbol = tt;
             return xx;
         }
 
@@ -328,10 +328,6 @@ namespace AnalysisControls
     {
         private ISymbol _symbol;
 
-        public SymbolTextCharacters([NotNull] char[] characterArray, int offsetToFirstChar, int length, [NotNull] TextRunProperties textRunProperties, TextSpan span, ISymbol symbol) : base(characterArray, offsetToFirstChar, length, textRunProperties, span)
-        {
-            _symbol = symbol;
-        }
 
         public SymbolTextCharacters([NotNull] string characterString, [NotNull] TextRunProperties textRunProperties, TextSpan span, ISymbol symbol) : base(characterString, textRunProperties, span)
         {
@@ -343,10 +339,6 @@ namespace AnalysisControls
             _symbol = symbol;
         }
 
-        public unsafe SymbolTextCharacters([NotNull] char* unsafeCharacterString, int length, [NotNull] TextRunProperties textRunProperties, TextSpan span, ISymbol symbol) : base(unsafeCharacterString, length, textRunProperties, span)
-        {
-            _symbol = symbol;
-        }
     }
 
     internal class MyTextModifier : TextModifier

@@ -314,7 +314,7 @@ namespace AnalysisControls
                             GlyphRun x =    new GlyphRun((float) _pixelsPerDip);
 
 
-                            DebugUtils.WriteLine(p1.SymbolDisplaYPart.Kind.ToString());
+                            // DebugUtils.WriteLine(p1.SymbolDisplaYPart.Kind.ToString());
                         }
 
                         if (props != null) DebugUtils.WriteLine(props.ToString());
@@ -366,18 +366,19 @@ namespace AnalysisControls
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            foreach (var indexedGlyphRun in TheLine.GetIndexedGlyphRuns())
-            {
-                var b = indexedGlyphRun.GlyphRun.BuildGeometry().GetRenderBounds(new Pen(Brushes.Black, 1));
+            if (TheLine != null)
+                foreach (var indexedGlyphRun in TheLine.GetIndexedGlyphRuns())
+                {
+                    var b = indexedGlyphRun.GlyphRun.BuildGeometry().GetRenderBounds(new Pen(Brushes.Black, 1));
 
-                if (b.IsEmpty)
-                    continue;
+                    if (b.IsEmpty)
+                        continue;
 
 
-                b.Offset(indexedGlyphRun.GlyphRun.BaselineOrigin.X, indexedGlyphRun.GlyphRun.BaselineOrigin.Y);
-                DebugUtils.WriteLine(b.ToString());
-                drawingContext.DrawRectangle(null, new Pen(Brushes.Green, 1), b);
-            }
+                    b.Offset(indexedGlyphRun.GlyphRun.BaselineOrigin.X, indexedGlyphRun.GlyphRun.BaselineOrigin.Y);
+                    DebugUtils.WriteLine(b.ToString());
+                    drawingContext.DrawRectangle(null, new Pen(Brushes.Green, 1), b);
+                }
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

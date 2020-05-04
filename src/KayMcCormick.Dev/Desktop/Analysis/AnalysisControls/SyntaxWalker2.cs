@@ -154,7 +154,8 @@ namespace AnalysisControls
                 foreach ( var symbolDisplayPart in symbol.ToDisplayParts ( ) )
                 {
                     // ReSharper disable once UnusedVariable
-                    var k = ( int ) symbolDisplayPart.Kind ;
+                    var symbolDisplayPartKind = symbolDisplayPart.Kind;
+                    var k = (int) symbolDisplayPartKind;
                     var s = symbolDisplayPart.Symbol ;
                     var interfaces = "" ;
                     if ( s != null )

@@ -11,6 +11,7 @@
 // ---
 #endregion
 using System ;
+using System.Collections.Generic;
 using AnalysisAppLib.Properties ;
 using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
@@ -30,13 +31,12 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="assemblyName"></param>
         /// <param name="syntaxTree"></param>
+        /// <param name="extraRefs"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         [ NotNull ]
-        public static CSharpCompilation CreateCompilation (
-            [ NotNull ] string     assemblyName
-          , [ NotNull ] SyntaxTree syntaxTree
-        )
+        public static CSharpCompilation CreateCompilation([NotNull] string assemblyName
+            , [NotNull] SyntaxTree syntaxTree, bool extraRefs = true)
         {
             if ( assemblyName == null )
             {
@@ -48,21 +48,26 @@ namespace AnalysisAppLib
                 throw new ArgumentNullException ( nameof ( syntaxTree ) ) ;
             }
 
+            var refs = new List<MetadataReference>();
+            var sysPe = MetadataReference.CreateFromFile(
+                typeof
+                    (string
+                    ).Assembly
+                    .Location
+            );
+
+            refs.Add(sysPe);
+            if (extraRefs)
+            {
+                refs.Add(MetadataReference.CreateFromFile(
+                    typeof
+                        (Logger
+                        ).Assembly
+                        .Location
+                ));
+            }
             var compilation = CSharpCompilation.Create ( assemblyName )
-                                               .AddReferences (
-                                                               MetadataReference.CreateFromFile (
-                                                                                                 typeof
-                                                                                                     ( string
-                                                                                                     ).Assembly
-                                                                                                      .Location
-                                                                                                )
-                                                             , MetadataReference.CreateFromFile (
-                                                                                                 typeof
-                                                                                                     ( Logger
-                                                                                                     ).Assembly
-                                                                                                      .Location
-                                                                                                )
-                                                              )
+                                               .AddReferences (refs)
                                                .AddSyntaxTrees ( syntaxTree ) ;
 
             return compilation ;
@@ -99,6 +104,7 @@ namespace AnalysisAppLib
                                          , syntaxTree.GetRoot ( )
                                          , syntaxTree
                                          , ""
+                                           , compilation
                                           ) ;
         }
 
@@ -107,14 +113,13 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="code"></param>
         /// <param name="assemblyName"></param>
+        /// <param name="b"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         [ NotNull ]
-        public static ICodeAnalyseContext Parse (
-            [ NotNull ] string code
-          , [ NotNull ] string assemblyName
-        )
+        public static ICodeAnalyseContext Parse([NotNull] string code
+            , [NotNull] string assemblyName, bool extraRefs = true)
         {
             if ( code == null )
             {
@@ -132,7 +137,7 @@ namespace AnalysisAppLib
             }
 
             var syntaxTree = CSharpSyntaxTree.ParseText ( code ) ;
-            var compilation = CreateCompilation ( assemblyName , syntaxTree ) ;
+            var compilation = CreateCompilation ( assemblyName , syntaxTree, extraRefs) ;
             return CreateFromCompilation ( syntaxTree , compilation ) ;
         }
     }

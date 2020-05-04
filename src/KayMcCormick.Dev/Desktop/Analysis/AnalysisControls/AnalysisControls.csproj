@@ -121,18 +121,23 @@
     <Compile Include="AppRibbonTab.cs" />
     <Compile Include="AppRibbonTabSet.cs" />
     <Compile Include="CategoryInfo.cs" />
+    <Compile Include="CodeProps.cs" />
     <Compile Include="CommandProgress.cs" />
     <Compile Include="Commands\DatabasePopulateCommand.cs" />
     <Compile Include="Commands\OpenFileCommand.cs" />
     <Compile Include="ControlsProvider.cs" />
     <Compile Include="Converters\HierarchyConverter.cs" />
     <Compile Include="Converters\LocationConverter.cs" />
+    <Compile Include="Converters\SymbolInfoConverter.cs" />
     <Compile Include="Converters\SyntaxNodeInfo.cs" />
+    <Compile Include="Converters\SyntaxTokenConverter.cs" />
+    <Compile Include="Converters\SyntaxTriviaConverter.cs" />
     <Compile Include="Converters\TokenConverter.cs" />
     <Compile Include="Converters\SyntaxNodeConverter.cs" />
     <Compile Include="Converters\TransformConverter.cs" />
     <Compile Include="CustomControl2.cs" />
     <Compile Include="CustomTextCharacters.cs" />
+    <Compile Include="CustomTextEndOfLine.cs" />
     <Compile Include="CustomTextSource.cs" />
     <Compile Include="CustomTextSource2.cs" />
     <Compile Include="CustomTextSource3.cs" />
@@ -140,6 +145,7 @@
     <Compile Include="DevTypeControl.cs" />
     <Compile Include="DocContent.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
+    <Compile Include="ErrorsTextSource.cs" />
     <Compile Include="Filter.cs" />
     <Compile Include="FontRendering.cs" />
     <Compile Include="FormattedTextControl.cs" />
@@ -148,6 +154,7 @@
     <Compile Include="IAppRibbon.cs" />
     <Compile Include="IAppRibbonTab.cs" />
     <Compile Include="ICodeGenCommand.cs" />
+    <Compile Include="ICustomSpan.cs" />
     <Compile Include="InputBindingsManager.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
@@ -160,13 +167,19 @@
       <DependentUpon>PageFunction1.xaml</DependentUpon>
     </Compile>
     <Compile Include="CodeGenCommand.cs" />
+    <Compile Include="RegionInfo.cs" />
     <Compile Include="RibbonBuilder.cs" />
     <Compile Include="RWindow.xaml.cs">
       <DependentUpon>RWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SemanticModel.cs" />
+    <Compile Include="SourceText.cs" />
     <Compile Include="StringObservableCollection - Copy.cs" />
+    <Compile Include="SyntaxNodeCustomTextSource.cs" />
     <Compile Include="SyntaxRewriter1.cs" />
     <Compile Include="SyntaxTokenTextCharacters.cs" />
+    <Compile Include="SyntaxTreeCollection.cs" />
+    <Compile Include="SyntaxTriviaTextCharacters.cs" />
     <Compile Include="SyntaxWalker2.cs" />
     <Compile Include="SyntaxWalkerF.cs" />
     <Compile Include="Test.cs" />
@@ -177,7 +190,7 @@
     <Compile Include="WorkspaceControl.xaml.cs">
       <DependentUpon>WorkspaceControl.xaml</DependentUpon>
     </Compile>
-    <None Include="Program-Parse.cs" />
+    <EmbeddedResource Include="Program-Parse.cs" />
     <Compile Include="JsonSimpleFrameworkElementConverter.cs" />
     <Compile Include="ProvideCompilationUnitSyntax.cs" />
     <Compile Include="PythonControl.xaml.cs">

@@ -5,14 +5,16 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace AnalysisControls
 {
+    /// <inheritdoc />
     public class SyntaxTokenTextCharacters : CustomTextCharacters
     {
-        private readonly SyntaxToken _token;
-        private readonly SyntaxNode _node;
+        public SyntaxToken Token { get; }
+        public SyntaxNode Node { get; }
 
+        /// <inheritdoc />
         public override string ToString()
         {
-            return $"SyntaxToken.{_token.Kind()} [{_node.Kind()}] [{Length}]";
+            return $"SyntaxToken.{Token.Kind()} [{Node.Kind()}] [{Length}]";
         }
 
         
@@ -26,16 +28,16 @@ namespace AnalysisControls
         /// <param name="node"></param>
         /// <exception cref="InvalidOperationException"></exception>
         public SyntaxTokenTextCharacters(string characterString, int length,
-            TextRunProperties textRunProperties, in SyntaxToken token, SyntaxNode node) : base(characterString, 0, length, textRunProperties, token.Span)
+            TextRunProperties textRunProperties, SyntaxToken token, SyntaxNode node) : base(characterString, 0, length, textRunProperties, token.Span)
         {
-            _token = token;
-            if (_token.Kind() == SyntaxKind.None)
+            Token = token;
+            if (Token.Kind() == SyntaxKind.None)
             {
                 throw new InvalidOperationException(token.Span.ToString());
                 
             }
             
-            _node = node;
+            Node = node;
         }
     }
 }

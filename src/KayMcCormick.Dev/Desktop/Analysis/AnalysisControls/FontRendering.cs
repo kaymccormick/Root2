@@ -4,7 +4,7 @@ using System.Windows.Media;
 
 namespace AnalysisControls
 {
-    class FontRendering
+    public class FontRendering
     {
         #region Constructors
 

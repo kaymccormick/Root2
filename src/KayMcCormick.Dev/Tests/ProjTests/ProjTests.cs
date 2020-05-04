@@ -44,6 +44,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
+using System.Windows.Media.TextFormatting;
 using System.Windows.Threading;
 using System.Xaml ;
 using System.Xml ;
@@ -1653,6 +1654,46 @@ namespace ProjTests
             // w.Content = p1;
             // w.ShowDialog();
         }
+
+        [WpfFact]
+        public void TestStore3()
+        {
+            var x = new CustomTextSource3(1);
+            var comp = AnalysisService.Parse(Resources.Program_Parse, "test", false);
+            x.Compilation = comp.Compilation;
+            x.Tree = comp.SyntaxTree;
+            x.Node = comp.CompilationUnit;
+            foreach (var diagnostic in comp.Compilation.GetDiagnostics())
+            {
+                DebugUtils.WriteLine(diagnostic.Properties.Count.ToString());
+
+            }
+            x.Errors = comp.Compilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error)
+                .Select(d => (CompilationError)new DiagnosticError(d)).ToList();
+            Assert.Equal(7, x.Errors.Count);
+            var charPos = 0;
+            TextWriter writer = new StringWriter();
+            TextRun tr = null;
+            while (!((tr = x.GetTextRun(charPos)) is TextEndOfParagraph))
+            {
+                if (tr is CustomTextCharacters trc)
+                {
+  		    Logger.Info("writing text " + trc.Text);
+                    writer.Write(trc.Text);
+                } else if (tr is TextEndOfLine teol)
+                {
+                    writer.WriteLine("");
+                } else {
+throw new InvalidOperationException(tr.GetType().FullName);
+}
+                charPos += tr.Length;
+            }
+
+            DebugUtils.WriteLine(writer.ToString());
+            
+
+
+        }
         [WpfFact]
         public void TestControl21()
         {
@@ -1684,9 +1725,10 @@ namespace ProjTests
 d.Tree = stree;
 var compilation = AnalysisService.CreateCompilation("x", stree);
 d.Compilation = compilation;
+d.Model = compilation.GetSemanticModel(stree);
             d.Node = stree.GetRoot();
     		
-		
+		    
             //CustomControl2 c = new CustomControl2() { Type = type2 };
             Window w = new Window();
             //w.Padding = new Thickness(10);

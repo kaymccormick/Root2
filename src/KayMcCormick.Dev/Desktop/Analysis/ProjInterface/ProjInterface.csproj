@@ -133,7 +133,6 @@
     <Compile Include="Explorer\ShellExplorerItem.cs" />
     <Compile Include="Explorer\ShellExplorerItemProvider.cs" />
     <Compile Include="SemanticConverter.cs" />
-    <Compile Include="SemanticModel.cs" />
     <Compile Include="SynchronizationContextAwaiter.cs" />
     <Compile Include="TabInfo.cs" />
     <Compile Include="Test1.cs" />

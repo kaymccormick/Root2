@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media.TextFormatting;
-using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Text;
@@ -24,6 +24,9 @@ namespace AnalysisControls
         private Func<object, string, TextRunProperties> _propertiesFunc;
         private int _curPos;
         private Stack<SyntaxNode> nodes=new Stack<SyntaxNode>();
+        private List<NodeRuns> runs= new List<NodeRuns>();
+        private Stack<List<NodeRuns>> _nodeStack = new Stack<List<NodeRuns>>();
+        private List<TextRun> _textRuns = new List<TextRun>();
 
         public SyntaxWalkerF( IList<TextRun> lrun, 
             
@@ -36,6 +39,11 @@ namespace AnalysisControls
             _source3 = source3;
             _takeTextRun = takeTextRun;
             _propertiesFunc = propertiesFunc;
+        }
+
+        public override void VisitDocumentationCommentTrivia(DocumentationCommentTriviaSyntax node)
+        {
+            base.VisitDocumentationCommentTrivia(node);
         }
 
         public override void VisitToken(SyntaxToken token)
@@ -62,7 +70,7 @@ namespace AnalysisControls
                 {
                     
                 }
-                throw new InvalidOperationException($"{syntaxTrivia.Span.Start} != {_curPos}");
+                //throw new InvalidOperationException($"{syntaxTrivia.Span.Start} != {_curPos}");
             }
             if (syntaxTrivia.Kind() == SyntaxKind.EndOfLineTrivia)
             {
@@ -70,9 +78,13 @@ namespace AnalysisControls
                 return;
             }
 
+            if (syntaxTrivia.HasStructure)
+            {
+                //syntaxTrivia.GetStructure()
+            }
          //   RecordLocation(syntaxTrivia.GetLocation());
 
-            var text = syntaxTrivia.ToString();
+            var text = syntaxTrivia.ToFullString();
             if (string.IsNullOrEmpty(text))
             {
                 return;
@@ -95,6 +107,8 @@ namespace AnalysisControls
 
         private void Take(TextRun run)
         {
+            _textRuns.Add(run);
+            //_nodeStack.Peek().TakeTextRun(run);
             var l = run.Length;
             _curPos += l;
             _takeTextRun(run);
@@ -103,13 +117,19 @@ namespace AnalysisControls
         private void Insert(SyntaxTrivia syntaxTrivia, string text)
         {
             var textRunProperties = _propertiesFunc(syntaxTrivia, text);
-            Take(new SyntaxTriviaTextCharacters(text, 0, syntaxTrivia.Span.Length,
-                textRunProperties, syntaxTrivia.Span, syntaxTrivia));
+            var syn = new SyntaxTriviaTextCharacters(text, 0, syntaxTrivia.Span.Length,
+                textRunProperties, syntaxTrivia.Span, syntaxTrivia)
+            {
+                Index = syntaxTrivia.SpanStart
+            };
+            Take(syn);
         }
 
         public override void DefaultVisit(SyntaxNode node)
         {
             nodes.Push(node);
+            _nodeStack.Push(new List<NodeRuns>());
+            //runs.Add(new NodeRuns());
             // foreach (var syntaxTrivia in node.GetLeadingTrivia())
             // {
                 // DoTrivia(syntaxTrivia);
@@ -144,6 +164,10 @@ namespace AnalysisControls
                         
                         end = span.End;
                     }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
                     
                     DebugUtils.WriteLine($"{index} [{span}] " + textRun.Length.ToString() + $" {textRun}");
                 }   
@@ -152,6 +176,8 @@ namespace AnalysisControls
             }
             base.DefaultVisit(node);
             var n = nodes.Pop();
+            var lastnr = _nodeStack.Pop();
+
             seen.Push(n);
             if (object.ReferenceEquals(n, node) == false)
             {
@@ -187,7 +213,11 @@ namespace AnalysisControls
             {
                 text = ProcessText(text);
                 var textRunProperties = _propertiesFunc(token, text);
-                Take(new SyntaxTokenTextCharacters(text, token.Span.Length, textRunProperties, token, nodes.Peek()));
+                var syn = new SyntaxTokenTextCharacters(text, token.Span.Length, textRunProperties, token, nodes.Peek())
+                {
+                    Index = token.SpanStart
+                };
+                Take(syn);
             }
         }
 
@@ -226,63 +256,13 @@ namespace AnalysisControls
 
     }
 
-    internal class SyntaxTriviaTextCharacters : CustomTextCharacters
+    internal class NodeRuns
     {
+        private List<TextRun> _list = new List<TextRun>();
 
-        private readonly SyntaxTrivia _syntaxTrivia;
-
-        public SyntaxTriviaTextCharacters([NotNull] char[] characterArray, int offsetToFirstChar, int length, [NotNull] TextRunProperties textRunProperties, TextSpan span, SyntaxTrivia syntaxTrivia) : base(characterArray, offsetToFirstChar, length, textRunProperties, span)
+        public void TakeTextRun(TextRun run)
         {
-            _syntaxTrivia = syntaxTrivia;
-        }
-
-        public SyntaxTriviaTextCharacters([NotNull] string characterString, [NotNull] TextRunProperties textRunProperties, TextSpan span, SyntaxTrivia syntaxTrivia) : base(characterString, textRunProperties, span)
-        {
-            _syntaxTrivia = syntaxTrivia;
-        }
-
-        public SyntaxTriviaTextCharacters([NotNull] string characterString, int offsetToFirstChar, int length, [NotNull] TextRunProperties textRunProperties, TextSpan span, SyntaxTrivia syntaxTrivia) : base(characterString, offsetToFirstChar, length, textRunProperties, span)
-        {
-            _syntaxTrivia = syntaxTrivia;
-        }
-
-        public unsafe SyntaxTriviaTextCharacters([NotNull] char* unsafeCharacterString, int length, [NotNull] TextRunProperties textRunProperties, TextSpan span, SyntaxTrivia syntaxTrivia) : base(unsafeCharacterString, length, textRunProperties, span)
-        {
-            _syntaxTrivia = syntaxTrivia;
-        }
-
-        public override string ToString()
-        {
-            return $"SyntaxTrivia {_syntaxTrivia.Kind()} [{Length}]";
-        }
-
-    }
-
-    /// <inheritdoc />
-    public class CustomTextEndOfLine : TextEndOfLine, ICustomSpan
-    {
-        private TextSpan _span;
-
-        public TextSpan Span
-        {
-            get { return _span; }
-            set { _span = value; }
-        }
-
-        public CustomTextEndOfLine(int length, TextSpan span) : base(length)
-        {
-            _span = span;
-        }
-
-        public CustomTextEndOfLine(int length, TextRunProperties textRunProperties, TextSpan span) : base(length, textRunProperties)
-        {
-        }
-    }
-
-    public interface ICustomSpan
-    {
-        TextSpan Span {
-            get;
+            _list.Add(run);
         }
     }
 }
