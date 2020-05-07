@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
+using Microsoft.CodeAnalysis;
 
 namespace AnalysisControls
 {
@@ -41,6 +42,14 @@ namespace AnalysisControls
     /// </summary>
     public class CustomControl2 : Control, INotifyPropertyChanged
     {
+        public static readonly DependencyProperty TypeInfoProviderProperty = DependencyProperty.Register(
+            "TypeInfoProvider", typeof(ITypeInfoProvider), typeof(CustomControl2), new PropertyMetadata(default(ITypeInfoProvider)));
+
+        public ITypeInfoProvider TypeInfoProvider
+        {
+            get { return (ITypeInfoProvider) GetValue(TypeInfoProviderProperty); }
+            set { SetValue(TypeInfoProviderProperty, value); }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -80,14 +89,14 @@ namespace AnalysisControls
                     //yield return "Nested";
                 }
 
-                if (Type.IsGenericType)
+                if (TypeIsGenericType)
                 {
                     var genericType = "Generic Type";
                     //yield return genericType;
                     a(genericType);
                 }
 
-                if (Type.IsGenericParameter)
+                if (TypeIsGenericParameter)
 
                 {
                     var genericParameter = "Generic Parameter";
@@ -95,7 +104,7 @@ namespace AnalysisControls
                     //yield return genericParameter;
                 }
 
-                if (Type.IsClass)
+                if (TypeIsClass)
 
                 {
                     var cl = "Class";
@@ -103,55 +112,55 @@ namespace AnalysisControls
                     //yield return cl;
                 }
 
-                if (Type.IsPrimitive)
+                if (TypeIsPrimitive)
                 {
                     a("Primitive");
 
                 }
 
-                if (Type.IsAbstract)
+                if (TypeIsAbstract)
                 {
                     a("Abstract");
                 }
 
-                if (Type.IsArray)
+                if (TypeIsArray)
                 {
                     a("Array");
                 }
 
-                if (Type.IsEnum)
+                if (TypeIsEnum)
                 {
                     a("Enum");
 
                 }
 
-                if (Type.IsInterface)
+                if (TypeIsInterface)
                 {
                     a("Interface");
                 }
 
-                if (Type.IsPublic)
+                if (TypeIsPublic)
                 {
                     a("Public");
                 }
 
-                if (Type.IsSealed)
+                if (TypeIsSealed)
                 {
                     a("Sealed");
 
                 }
 
-                if (Type.IsGenericTypeDefinition)
+                if (TypeIsGenericTypeDefinition)
                 {
                     a("Generic Type Definition");
                 }
 
-                if (Type.IsConstructedGenericType)
+                if (TypeIsConstructedGenericType)
                 {
                     a("Constructed Generic Type");
                 }
 
-                if (Type.IsValueType)
+                if (TypeIsValueType)
                 {
                     a("Value Type");
 
@@ -160,6 +169,71 @@ namespace AnalysisControls
 
             }
             
+        }
+
+        private bool TypeIsValueType
+        {
+            get { return Type.IsValueType; }
+        }
+
+        private bool TypeIsConstructedGenericType
+        {
+            get { return Type.IsConstructedGenericType; }
+        }
+
+        private bool TypeIsGenericTypeDefinition
+        {
+            get { return Type.IsGenericTypeDefinition; }
+        }
+
+        private bool TypeIsSealed
+        {
+            get { return Type.IsSealed; }
+        }
+
+        private bool TypeIsPublic
+        {
+            get { return Type.IsPublic; }
+        }
+
+        private bool TypeIsInterface
+        {
+            get { return Type.IsInterface; }
+        }
+
+        private bool TypeIsEnum
+        {
+            get { return Type.IsEnum; }
+        }
+
+        private bool TypeIsArray
+        {
+            get { return Type.IsArray; }
+        }
+
+        private bool TypeIsAbstract
+        {
+            get { return Type.IsAbstract; }
+        }
+
+        private bool TypeIsPrimitive
+        {
+            get { return Type.IsPrimitive; }
+        }
+
+        private bool TypeIsClass
+        {
+            get { return Type.IsClass; }
+        }
+
+        private bool TypeIsGenericParameter
+        {
+            get { return Type.IsGenericParameter; }
+        }
+
+        private bool TypeIsGenericType
+        {
+            get { return Type.IsGenericType; }
         }
 
         // Using a DependencyProperty as the backing store for Type.  This enables animation, styling, binding, etc...
@@ -373,5 +447,29 @@ namespace AnalysisControls
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));  
         }
+    }
+
+    public class TypeInfoProvider : ITypeInfoProvider
+    {
+        public bool IsNested { get; }
+    }
+
+    public interface ITypeInfoProvider
+    {
+        bool IsNested { get; }
+        
+    }
+
+    public class TypeInfoProvider2 : ITypeInfoProvider
+    {
+        private ITypeSymbol typeSymbol;
+
+        public TypeInfoProvider2(ITypeSymbol typeSymbol)
+        {
+            this.typeSymbol = typeSymbol;
+            
+        }
+
+        public bool IsNested => typeSymbol.ContainingType != null;
     }
 }

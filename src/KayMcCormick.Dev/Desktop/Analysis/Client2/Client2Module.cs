@@ -281,6 +281,7 @@ if(RegiserExplorerTypes){
 
 
             builder.RegisterType<Client2Window1>().AsSelf().As<Window>();
+            builder.RegisterType<ClientViewModel>().AsSelf();
 
 
 #if PYTHON

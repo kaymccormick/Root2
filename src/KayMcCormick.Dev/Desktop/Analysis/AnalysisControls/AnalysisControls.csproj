@@ -102,11 +102,13 @@
     <Compile Include="AppRibbon.cs" />
     <Compile Include="AppRibbonTab.cs" />
     <Compile Include="AppRibbonTabSet.cs" />
+    <Compile Include="AppTextSource.cs" />
     <Compile Include="CategoryInfo.cs" />
     <Compile Include="CharacterCell.cs" />
     <Compile Include="CodeControl2.cs" />
     <Compile Include="CodeDiagnostics.cs" />
     <Compile Include="CodeProps.cs" />
+    <Compile Include="CodeToolTipContent.cs" />
     <Compile Include="CommandProgress.cs" />
     <Compile Include="Commands\DatabasePopulateCommand.cs" />
     <Compile Include="Commands\OpenFileCommand.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="Converters\TokenConverter.cs" />
     <Compile Include="Converters\SyntaxNodeConverter.cs" />
     <Compile Include="Converters\TransformConverter.cs" />
+    <Compile Include="CurrentOperation.cs" />
     <Compile Include="CustomControl2.cs" />
     <Compile Include="CustomTextCharacters.cs" />
     <Compile Include="CustomTextEndOfLine.cs" />
@@ -155,8 +158,11 @@
     <Compile Include="JsonSyntaxTokenConverter.cs" />
     <Compile Include="LineContext.cs" />
     <Compile Include="LineInfo.cs" />
+    <Compile Include="LogEventInstancesControl.cs" />
+    <Compile Include="LogEventsSource.cs" />
     <Compile Include="Main1.cs" />
     <Compile Include="Main1Model.cs" />
+    <Compile Include="MessagesModel.cs" />
     <Compile Include="MiscCommands.cs" />
     <Compile Include="MyXDescriptor.cs" />
     <Compile Include="PageFunction1.xaml.cs">
@@ -171,12 +177,16 @@
     <Compile Include="RWindow.xaml.cs">
       <DependentUpon>RWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SemanticControl1.cs" />
     <Compile Include="SemanticModel.cs" />
     <Compile Include="SolutionModel.cs" />
     <Compile Include="SourceText.cs" />
     <Compile Include="StringObservableCollection - Copy.cs" />
+    <Compile Include="SymbolTextControl.cs" />
+    <Compile Include="SymbolTextSource.cs" />
     <Compile Include="SyntaxNodeControl.cs" />
     <Compile Include="SyntaxNodeCustomTextSource.cs" />
+    <Compile Include="SyntaxNodeDepth.cs" />
     <Compile Include="SyntaxRewriter1.cs" />
     <Compile Include="SyntaxTokenTextCharacters.cs" />
     <Compile Include="SyntaxTreeCollection.cs" />
@@ -191,6 +201,8 @@
     <Compile Include="WorkspaceControl.xaml.cs">
       <DependentUpon>WorkspaceControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WorkspaceMessage.cs" />
+    <Compile Include="WorkspaceMessageSeverity.cs" />
     <Compile Include="WorkspaceView.cs" />
     <Compile Include="XmlDocElements.cs" />
     <EmbeddedResource Include="Program-Parse.cs" />

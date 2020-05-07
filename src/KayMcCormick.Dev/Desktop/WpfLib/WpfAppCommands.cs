@@ -127,6 +127,12 @@ namespace KayMcCormick.Lib.Wpf
                 , nameof(LoadSolution)
                 , typeof(WpfAppCommands)
             );
+        public static readonly RoutedUICommand BrowseSymbols =
+            new RoutedUICommand(
+                "Browse symbols"
+                , nameof(BrowseSymbols)
+                , typeof(WpfAppCommands)
+            );
 
 
     }

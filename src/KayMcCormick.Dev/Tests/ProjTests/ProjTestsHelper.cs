@@ -67,9 +67,13 @@ namespace ProjTests
             w.ShowDialog();
         }
 
-        public static SyntaxTree SetupSyntaxParams(out CSharpCompilation compilation)
+        public static SyntaxTree SetupSyntaxParams(out CSharpCompilation compilation, string code = null)
         {
-            var unitSyntax = SyntaxFactory.ParseCompilationUnit(Resources.Program_Parse)
+            if (code == null)
+            {
+                code = Resources.Program_Parse;
+            }
+            var unitSyntax = SyntaxFactory.ParseCompilationUnit(code)
                 .NormalizeWhitespace("    ");
             var tree = SyntaxFactory.SyntaxTree(unitSyntax);
 

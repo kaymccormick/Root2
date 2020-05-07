@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using Microsoft.Build.Locator;
@@ -23,6 +25,9 @@ namespace AnalysisControls
     /// </summary>
     public class Main1Model : INotifyPropertyChanged
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public object ActiveContent
 
         {
@@ -40,6 +45,8 @@ namespace AnalysisControls
         private Main1 _view;
         private WorkspaceView _workspaceView;
         private object _activeContent;
+        private ProjectLoadProgress _projectLoadProgress;
+        private CurrentOperation _currentOperation = new CurrentOperation();
 
         /// <summary>
         /// 
@@ -51,20 +58,17 @@ namespace AnalysisControls
                 return;
             throw new InvalidOperationException("Cant register");
         }
+
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public static bool TrySelectVsInstance ( )
+        public static bool TrySelectVsInstance()
         {
-            if ( ! MSBuildLocator.CanRegister )
-            {
-                return false;
-                
-            }
+            if (!MSBuildLocator.CanRegister) return false;
 
             var vsInstances = MSBuildLocator
-                .QueryVisualStudioInstances (
+                .QueryVisualStudioInstances(
                     new VisualStudioInstanceQueryOptions
                     {
                         DiscoveryTypes =
@@ -72,19 +76,17 @@ namespace AnalysisControls
                     }
                 );
 
-            foreach (var vsi in vsInstances)
-            {
-                DebugUtils.WriteLine($"{vsi.Name} {vsi.Version}");
-            }
-                
+            foreach (var vsi in vsInstances) DebugUtils.WriteLine($"{vsi.Name} {vsi.Version}");
+
             var versions = vsInstances.Select(x => x.Version.Major).Distinct().OrderByDescending(i => i);
-                DebugUtils.WriteLine(string.Join(", ", versions));
-                    var inst = versions.FirstOrDefault();
+            DebugUtils.WriteLine(string.Join(", ", versions));
+            var inst = versions.FirstOrDefault();
 
 
-var visualStudioInstance = vsInstances.Where(instance => instance.Version.Major == inst).OrderByDescending(instance => instance.Version).FirstOrDefault();
-DebugUtils.WriteLine($"Registering {visualStudioInstance}");
-            MSBuildLocator.RegisterInstance ( visualStudioInstance);
+            var visualStudioInstance = vsInstances.Where(instance => instance.Version.Major == inst)
+                .OrderByDescending(instance => instance.Version).FirstOrDefault();
+            DebugUtils.WriteLine($"Registering {visualStudioInstance}");
+            MSBuildLocator.RegisterInstance(visualStudioInstance);
             return true;
         }
 
@@ -92,10 +94,12 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
         /// 
         /// </summary>
         public ObservableCollection<object> Documents { get; } = new ObservableCollection<object>();
+
         /// <summary>
         /// 
         /// </summary>
         public ObservableCollection<object> Anchorables { get; } = new ObservableCollection<object>();
+
         /// <summary>
         /// 
         /// </summary>
@@ -105,9 +109,11 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
             _replay = replay;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Main1Model()
         {
-            
         }
 
         /// <summary>
@@ -116,7 +122,7 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
         public void CreateWorkspace()
         {
             Workspace = new AdhocWorkspace();
-            _replay?.OnNext(Workspace); 
+            _replay?.OnNext(Workspace);
         }
 
         /// <summary>
@@ -137,7 +143,17 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
                 _workspace.WorkspaceFailed += (sender, e) =>
                 {
                     model.Diagnostics.Add(e.Diagnostic);
-                    var dispatcherOperation = View.Dispatcher.InvokeAsync(() => Messages.Messages.Add(new WorkspaceMessage { Source = e.Diagnostic, Message = e.Diagnostic.Message, Severity = e.Diagnostic.Kind == WorkspaceDiagnosticKind.Failure ? WorkspaceMessageSeverity.Error : WorkspaceMessageSeverity.Warning})); 
+                    if (View != null)
+                    {
+                        var dispatcherOperation = View.Dispatcher.InvokeAsync(() =>
+                            Messages.Messages.Add(new WorkspaceMessage
+                            {
+                                Source = e.Diagnostic, Message = e.Diagnostic.Message,
+                                Severity = e.Diagnostic.Kind == WorkspaceDiagnosticKind.Failure
+                                    ? WorkspaceMessageSeverity.Error
+                                    : WorkspaceMessageSeverity.Warning
+                            }));
+                    }
                 };
                 OnPropertyChanged();
             }
@@ -157,7 +173,7 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
                     break;
                 case WorkspaceChangeKind.SolutionChanged:
                     var ch = e.NewSolution.GetChanges(e.OldSolution);
-                    
+
                     break;
                 case WorkspaceChangeKind.SolutionAdded:
                     var solutionModel = SolutionModelFromSolution(e.NewSolution);
@@ -193,6 +209,7 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
                         d.Name = doc.Name;
                         d.FilePath = doc.FilePath;
                     }
+
                     var p0 = GetProjectModel(e.ProjectId);
                     p0.Documents.Add(d);
                     break;
@@ -233,17 +250,14 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
         private DocumentModel GetDocumentModel(DocumentId id)
         {
             return GetProjectModel(id.ProjectId).Documents.FirstOrDefault(z => z.Id == id.Id);
-
         }
+
         private static SolutionModel SolutionModelFromSolution(Solution s)
         {
             var m = new SolutionModel();
             m.Id = s.Id;
             m.FilePath = s.FilePath;
-            foreach (var sProject in s.Projects)
-            {
-                m.Projects.Add(ProjectFromModel(m, sProject));
-            }
+            foreach (var sProject in s.Projects) m.Projects.Add(ProjectFromModel(m, sProject));
             return m;
         }
 
@@ -287,7 +301,10 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
             }
         }
 
-        public ProjectModel SelectedProject => _workspaceView?.SelectedProject;
+        public ProjectModel SelectedProject
+        {
+            get { return _workspaceView?.SelectedProject; }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -302,13 +319,11 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
         /// </summary>
         public void CreateSolution()
         {
-            string debugName = "debug1";
+            var debugName = "debug1";
             string filePath = null;
             if (Workspace is AdhocWorkspace ww)
-            {
                 ww.AddSolution(SolutionInfo.Create(SolutionId.CreateNewId(debugName), VersionStamp.Create(),
                     filePath));
-            }
         }
 
         /// <summary>
@@ -319,15 +334,19 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
             // var s = _workspaceView.SelectedSolution;
             // if (Workspace.CurrentSolution.Id != s.Id)
             // {
-                
+
             // }
-            if(Workspace is AdhocWorkspace ww)
+            if (Workspace is AdhocWorkspace ww)
                 ww.AddProject(ProjectInfo.Create(ProjectId.CreateNewId(), VersionStamp.Create(), "unnamed project",
                     "unnamed assembly", LanguageNames.CSharp
                 ));
-
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="viewModelSelectedProject"></param>
+        /// <param name="file"></param>
         public void AddDocument(ProjectModel viewModelSelectedProject, string file)
         {
             var proj = Workspace.CurrentSolution.GetProject(viewModelSelectedProject.Id);
@@ -337,17 +356,24 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
                 var news = Workspace.CurrentSolution.AddDocument(DocumentInfo.Create(DocumentId.CreateNewId(proj.Id),
                     Path.GetFileNameWithoutExtension(file), null, SourceCodeKind.Regular,
                     TextLoader.From(TextAndVersion.Create(SourceText.From(code), VersionStamp.Create())), file));
-                if (!Workspace.TryApplyChanges(news))
-                {
-                    DebugUtils.WriteLine("Failed");
-                }
+                if (!Workspace.TryApplyChanges(news)) DebugUtils.WriteLine("Failed");
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public CurrentOperation CurrentOperation { get; set; } = new CurrentOperation();
+        public CurrentOperation CurrentOperation
+        {
+            get { return _currentOperation; }
+            set
+            {
+                if (Equals(value, _currentOperation)) return;
+                _currentOperation = value;
+                OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -360,26 +386,38 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
             props["Platform"] = "x86";
             var msBuildWorkspace = MSBuildWorkspace.Create(props);
             Workspace = msBuildWorkspace;
-            CurrentOperation = new CurrentOperation() { Description = "load solution" };
-            var r = await msBuildWorkspace.OpenSolutionAsync(file, new ProgressWithCompletion<ProjectLoadProgress>(Handler));
+            CurrentOperation = new CurrentOperation() {Description = "load solution"};
+            var r = await msBuildWorkspace.OpenSolutionAsync(file,
+                new ProgressWithCompletion<ProjectLoadProgress>(Handler));
             CurrentOperation = null;
             DebugUtils.WriteLine(r);
         }
 
-        public MessagesModel Messages { get; }= new MessagesModel();
+        public MessagesModel Messages { get; } = new MessagesModel();
+
         private void Handler(ProjectLoadProgress obj)
         {
             ProjectLoadProgress = obj;
 
             var line = $"{obj.Operation} {obj.FilePath}";
-            Messages.Messages.Add(new WorkspaceMessage{Source = obj,Message =line,Severity = WorkspaceMessageSeverity.LoadProgress});
+            Messages.Messages.Add(new WorkspaceMessage
+                {Source = obj, Message = line, Severity = WorkspaceMessageSeverity.LoadProgress});
             DebugUtils.WriteLine(line);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public ProjectLoadProgress ProjectLoadProgress { get; set; }
+        public ProjectLoadProgress ProjectLoadProgress
+        {
+            get { return _projectLoadProgress; }
+            set
+            {
+                if (value.Equals(_projectLoadProgress)) return;
+                _projectLoadProgress = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 
@@ -387,7 +425,13 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
         public WorkspaceView WorkspaceView
         {
             get { return _workspaceView; }
-            set { _workspaceView = value; }
+            set
+            {
+                if (Equals(value, _workspaceView)) return;
+                _workspaceView = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectedProject));
+            }
         }
 
         /// <summary>
@@ -413,62 +457,46 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
                     model = await doc.Document.GetSemanticModelAsync();
                 }
 
-                FormattedTextControl c = new FormattedTextControl()
+                var c = new FormattedTextControl()
                 {
                     SyntaxTree = tree, Compilation = (CSharpCompilation) compilation,
                     Model = model
                 };
-                DocModel doc2 = new DocModel {Title = doc.Name, Content = c};
+                var doc2 = new DocModel {Title = doc.Name, Content = c};
                 Documents.Add(doc2);
                 ActiveContent = doc2;
                 CurrentOperation = null;
-            } else if (SelectedProject != null)
+            }
+            else if (SelectedProject != null)
             {
                 var semanticControl1 = new SemanticControl1();
-                SelectedProject.Project.GetCompilationAsync().ContinueWith(task =>
-                {
-                    semanticControl1.Compilation = (CSharpCompilation) task.Result;
-                }, taskScheduler);
-                
-                var anchorableModel = new AnchorableModel{Content=semanticControl1};
+                SelectedProject.Project.GetCompilationAsync().ContinueWith(
+                    task => { semanticControl1.Compilation = (CSharpCompilation) task.Result; }, taskScheduler);
+
+                var anchorableModel = new AnchorableModel {Content = semanticControl1};
                 Anchorables.Add(anchorableModel);
             }
-            
         }
-    }
 
-    public class MessagesModel
-    {
-        public ObservableCollection<WorkspaceMessage> Messages { get;  }= new ObservableCollection<WorkspaceMessage>();
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class WorkspaceMessage
-    {
-        public WorkspaceMessageSeverity Severity { get; set; }
-        public WorkspaceMessage()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        public async Task BrowseSymbols(object parameter)
         {
+            if (parameter is ProjectModel pm)
+            {
+                var listBox = new ListBox();
+                listBox.ItemTemplate = (DataTemplate) View.TryFindResource(new DataTemplateKey(typeof(ISymbol)));
+                var comp = await pm.Project.GetCompilationAsync();
+                listBox.ItemsSource = comp.GetSymbolsWithName(x => true);
+                Documents.Add(new DocModel()
+                {
+                    Title = "Symbols for " + pm.Name,
+                    Content = listBox
+                });
+            }
         }
-        public string ProjectName { get; set; }
-        public string Message { get; set; }
-        public object Source { get; set; }
-    }
-
-    public enum WorkspaceMessageSeverity
-    {
-        Informational = 0,
-        LoadProgress = 1,
-        Warning = 2,
-        Error = 3
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class CurrentOperation
-    {
-        public string Description { get; set; }
     }
 }

@@ -545,6 +545,95 @@
     </Setter>
   </Style>
 
+  <Style TargetType="{x:Type local:SymbolTextControl}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:SymbolTextControl}">
+          <Border Background="{TemplateBinding Background}"
+                  DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="Grid">
+              <Grid.Resources>
+                <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
+              </Grid.Resources>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <ScrollViewer VerticalAlignment="Stretch" x:Name="ScrollViewer" HorizontalContentAlignment="Left"
+                            VerticalContentAlignment="Top" VerticalScrollBarVisibility="Hidden">
+                <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left"
+                           TextElement.FontSize="12">
+                  <Rectangle.Fill>
+                    <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top" TileMode="None"
+                                  Stretch="Uniform">
+                      <DrawingBrush.Drawing>
+                        <DrawingGroup x:Name="TextDest" />
+                      </DrawingBrush.Drawing>
+                    </DrawingBrush>
+                  </Rectangle.Fill>
+                </Rectangle>
+              </ScrollViewer>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="{x:Type local:LogEventInstancesControl}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:LogEventInstancesControl}">
+          <Border Background="{TemplateBinding Background}"
+                  DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="Grid">
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <ScrollViewer VerticalAlignment="Stretch" x:Name="ScrollViewer" HorizontalContentAlignment="Left"
+                            VerticalContentAlignment="Top" VerticalScrollBarVisibility="Hidden">
+                <Grid x:Name="InnerGrid">
+                <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left"
+                           TextElement.FontSize="12">
+                  <Rectangle.Fill>
+                    <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top" TileMode="None"
+                                  Stretch="Uniform">
+                      <DrawingBrush.Drawing>
+                        <DrawingGroup x:Name="TextDest" />
+                      </DrawingBrush.Drawing>
+                    </DrawingBrush>
+                  </Rectangle.Fill>
+                </Rectangle>
+                  <Rectangle x:Name="Rect2" Panel.ZIndex="100" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <Rectangle.Fill>
+                      <DrawingBrush x:Name="DrawingBrush2" AlignmentX="Left" AlignmentY="Top" TileMode="None"
+                                    Stretch="Uniform">
+                        <DrawingBrush.Drawing>
+                          <DrawingGroup x:Name="DG2" />
+                        </DrawingBrush.Drawing>
+                      </DrawingBrush>
+                    </Rectangle.Fill>
+                  </Rectangle>
+                </Grid>
+              </ScrollViewer>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
   <Style TargetType="{x:Type local:CodeControl2}">
     <Setter Property="Template">
       <Setter.Value>
@@ -755,7 +844,7 @@
                 <StackPanel Background="Beige" Orientation="Horizontal" Margin="10,0,10,0">
                   <TextBlock
                     Text="{Binding HoverSymbol,Converter={StaticResource SymbolInfoConverter},ConverterParameter=kind}" />
-                  <TextBlock Text="{Binding HoverSymbol.MetadataName}" />
+                  <local:SymbolTextControl DisplaySymbol="{Binding HoverSymbol}" />
                 </StackPanel>
               </StackPanel>
               <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" TextElement.FontSize="14">
@@ -886,7 +975,13 @@
                 <TextBlock Text="{Binding Id.Id}" />
               </HierarchicalDataTemplate>
               <HierarchicalDataTemplate DataType="{x:Type local:ProjectModel}" ItemsSource="{Binding RootPathInfo.Entries.Values,Converter={StaticResource TestConverter}}">
-                <TextBlock Text="{Binding Name}" />
+                <TextBlock Text="{Binding Name}" >
+                  <TextBlock.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="Symbols" Command="kmWpf:WpfAppCommands.BrowseSymbols" CommandParameter="{Binding}"/>
+                    </ContextMenu>
+                  </TextBlock.ContextMenu>
+                </TextBlock>
               </HierarchicalDataTemplate>
 
               <HierarchicalDataTemplate DataType="{x:Type local:PathModel}" ItemsSource="{Binding Entries.Values}">
@@ -924,7 +1019,7 @@
             <TreeView x:Name="TreeView">
               <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type codeAnalysis:INamespaceOrTypeSymbol}" ItemsSource="{Binding Converter={StaticResource SymbolInfoConverter},ConverterParameter=Members}">
-                  <TextBlock Text="{Binding Converter={StaticResource SymbolInfoConverter}}"/>
+                  <local:SymbolTextControl DisplaySymbol="{Binding}"/>
                 </HierarchicalDataTemplate>
               </TreeView.ItemTemplate>
             </TreeView>

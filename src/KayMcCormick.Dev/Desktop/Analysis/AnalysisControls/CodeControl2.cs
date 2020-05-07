@@ -26,9 +26,10 @@ namespace AnalysisControls
             var currentRendering = CurrentRendering;
             var maxX = MaxX;
             if (Typeface == null) Typeface = new Typeface("Courier New");
+            double pixelsPerDip = PixelsPerDip;
             FormattingHelper.UpdateFormattedText(OutputWidth, ref currentRendering, EmSize, Typeface, _textDest,
                 Store,
-                PixelsPerDip, LineInfos, Infos, ref maxX, out var maxY, null);
+                pixelsPerDip, LineInfos, Infos, ref maxX, out var maxY, null, new GenericTextParagraphProperties(currentRendering, pixelsPerDip));
             MaxX = maxX;
             MaxY = maxY;
             _rectangle.Width = maxX;

@@ -35,10 +35,11 @@ namespace AnalysisControls
         /// <param name="maxX"></param>
         /// <param name="maxY"></param>
         /// <param name="textLineAction"></param>
-        public static void UpdateFormattedText(double width, ref FontRendering currentRendering, double emSize,
-            [NotNull] Typeface typeface, DrawingGroup textDest, CustomTextSource3 textStore, double pixelsPerDip,
+        /// <param name="paragraphProperties"></param>
+        public static LineContext UpdateFormattedText(double width, ref FontRendering currentRendering, double emSize,
+            [NotNull] Typeface typeface, DrawingGroup textDest, AppTextSource textStore, double pixelsPerDip,
             IList<LineInfo> lineInfos, List<RegionInfo> infos, ref double maxX, out double maxY,
-            Action<TextLine> textLineAction)
+            Action<TextLine, LineContext> textLineAction, TextParagraphProperties paragraphProperties)
         {
             if (typeface == null) throw new ArgumentNullException(nameof(typeface));
             if (currentRendering == null)
@@ -65,16 +66,72 @@ namespace AnalysisControls
                     textStore,
                     lineContext.TextStorePosition,
                     width,
-                    new GenericTextParagraphProperties(currentRendering, pixelsPerDip),
+                    paragraphProperties,
                     prev))
                 {
-                    HandleTextLine(infos, lineContext, dc0, out var lineInfo);
+                    textLineAction?.Invoke(myTextLine, lineContext);
+                    lineContext.LineParts.Clear();
+                    lineContext.MyTextLine = myTextLine;
+                    HandleTextLine(infos, ref lineContext, dc0, out var lineInfo);
                     lineInfos.Add(lineInfo);
                 }
             }
 
             dc0.Close();
+            maxX = lineContext.MaxX;
             maxY = lineContext.LineOriginPoint.Y;
+            return lineContext;
+        }
+
+        public static LineContext PartialUpdateFormattedText(double width, ref FontRendering currentRendering,
+            double emSize,
+            [NotNull] Typeface typeface, DrawingGroup textDest, AppTextSource textStore, double pixelsPerDip,
+            IList<LineInfo> lineInfos, List<RegionInfo> infos, ref double maxX, out double maxY,
+            Action<TextLine, LineContext> textLineAction, DrawingBrush brush, Rect existingRect, TextFormatter formatter,
+            LineContext lineContext, TextParagraphProperties paragraphProperties)
+        {
+            if (typeface == null) throw new ArgumentNullException(nameof(typeface));
+            if (currentRendering == null)
+                currentRendering = new FontRendering(
+                    emSize,
+                    TextAlignment.Left,
+                    null,
+                    Brushes.Black,
+                    typeface);
+
+            // var dg = new DrawingGroup();
+            // var dc1 = dg.Open();
+            // dc1.DrawRectangle(brush, null, existingRect);
+            // dc1.Close();
+
+            var dc0 = textDest.Open();
+            // dc0.DrawRectangle(new DrawingBrush(dg), null, existingRect);
+
+            // Format each line of text from the text store and draw it.
+            TextLineBreak prev = null;
+
+            while (lineContext.TextStorePosition < textStore.Length)
+            {
+                lineContext.CurCellRow++;
+                using (var myTextLine = formatter.FormatLine(
+                    textStore,
+                    lineContext.TextStorePosition,
+                    width,
+                    paragraphProperties,
+                    prev))
+                {
+                    textLineAction?.Invoke(myTextLine, lineContext);
+                    lineContext.LineParts.Clear();
+                    lineContext.MyTextLine = myTextLine;
+                    HandleTextLine(infos, ref lineContext, dc0, out var lineInfo);
+                    lineInfos.Add(lineInfo);
+                }
+            }
+
+            dc0.Close();
+            maxX = lineContext.MaxX;
+            maxY = lineContext.LineOriginPoint.Y;
+            return lineContext;
         }
 
         /// <summary>
@@ -107,12 +164,12 @@ namespace AnalysisControls
         /// <param name="context"></param>
         /// <param name="lineInfos"></param>
         /// <returns></returns>
-        public static void HandleTextLine(List<RegionInfo> infos, LineContext lineContext, DrawingContext dc,
+        public static void HandleTextLine(List<RegionInfo> infos, ref LineContext lineContext, DrawingContext dc,
             out LineInfo lineInfo)
         {
             lineContext.LineParts.Clear();
             lineContext.TextLineAction?.Invoke(lineContext.MyTextLine);
-            var dd = SaveDrawingGroup(lineContext);
+            //var dd = SaveDrawingGroup(lineContext);
 
             lineInfo = new LineInfo
             {
@@ -131,7 +188,8 @@ namespace AnalysisControls
             var cellColumn = 0;
             var characterOffset = lineContext.TextStorePosition;
             var regionOffset = lineContext.TextStorePosition;
-            var lineBuilder = new StringBuilder();
+            
+            
             var eol = lineContext.MyTextLine.GetTextRunSpans().Select(xx => xx.Value).OfType<TextEndOfLine>();
             if (eol.Any())
                 dc.DrawRectangle(Brushes.Aqua, null,
@@ -153,7 +211,6 @@ namespace AnalysisControls
 
             var lineRegions = new List<RegionInfo>();
 
-            var lineString = "";
             var group = 0;
             var regionNumber = 0;
             var indexedGlyphRuns = lineContext.MyTextLine.GetIndexedGlyphRuns();
@@ -174,7 +231,7 @@ namespace AnalysisControls
                         size.Width += advanceWidth;
                         var gi = rectGlyphRun.GlyphIndices[i];
                         var c = rectGlyphRun.Characters[i];
-                        lineString += c;
+                        
                         var advWidth = rectGlyphRun.GlyphTypeface.AdvanceWidths[gi];
                         var advHeight = rectGlyphRun.GlyphTypeface.AdvanceHeights[gi];
 
@@ -226,14 +283,14 @@ namespace AnalysisControls
                             Trivia = trivia
                         };
                         lineRegions.Add(tuple);
-                        infos.Add(tuple);
+                        infos?.Add(tuple);
                     }
 
                     @group++;
                     regionOffset = characterOffset;
                 }
 
-            lineInfo.Text = String.Join("", lineContext.LineParts);
+            lineInfo.Text = string.Join("", lineContext.LineParts);
             lineInfo.Regions = lineRegions;
 
             // Draw the formatted text into the drawing context.
@@ -248,7 +305,8 @@ namespace AnalysisControls
             // Update the index position in the text store.
             lineContext.TextStorePosition += lineContext.MyTextLine.Length;
             // Update the line position coordinate for the displayed line.
-            lineContext.LineOriginPoint.Offset(0, lineContext.MyTextLine.Height);
+            lineContext.LineOriginPoint = new Point(lineContext.LineOriginPoint.X,
+                lineContext.LineOriginPoint.Y + lineContext.MyTextLine.Height);
             if (lineContext.MyTextLine.Width >= lineContext.MaxX) lineContext.MaxX = lineContext.MyTextLine.Width;
             lineContext.ReturnValue = lineInfo;
         }

@@ -54,7 +54,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public Point LineOriginPoint { get; private set; } = new Point(0, 0);
+        public Point LineOriginPoint { get; set; } = new Point(0, 0);
         /// <summary>
         /// 
         /// </summary>

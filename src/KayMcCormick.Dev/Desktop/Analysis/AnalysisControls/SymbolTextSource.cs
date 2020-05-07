@@ -17,13 +17,13 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class CustomTextSource3 : AppTextSource
+    public class SymbolTextSource : AppTextSource
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="pixelsPerDip"></param>
-        public CustomTextSource3(double pixelsPerDip)
+        public SymbolTextSource(double pixelsPerDip)
         {
             PixelsPerDip = pixelsPerDip;
             _typeface = new Typeface(Family, _fontStyle, _fontWeight,
@@ -39,7 +39,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public CSharpCompilation Compilation { get; set; }
-
+        public override GenericTextRunProperties BaseProps { get; }
         public override int Length { get; protected set; }
 
         // Used by the TextFormatter object to retrieve a run of text from the text source.
@@ -110,7 +110,6 @@ namespace AnalysisControls
             return (myType.Namespace != null ? myType.Namespace + "." : "") + myType.Name;
         }
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -119,41 +118,6 @@ namespace AnalysisControls
         {
             var xx = new MyTextRunProperties(BaseProps);
             return xx;
-        }
-
-        public override TextRunProperties PropsFor(SymbolDisplayPart symbolDisplayPart, ISymbol symbol)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static TypeSyntax M(Type arg)
-        {
-            var t = DevTypeControl.MyTypeName(arg);
-            var identifierNameSyntax = SyntaxFactory.ParseTypeName(t);
-            if (arg.IsGenericType)
-                return SyntaxFactory.GenericName(SyntaxFactory.Identifier(arg.Name),
-                    SyntaxFactory.TypeArgumentList(SyntaxFactory.SeparatedList<TypeSyntax>()
-                        .AddRange(arg.GenericTypeArguments.Select(M))));
-            return identifierNameSyntax;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="trivia"></param>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        public TextRunProperties PropsFor(in SyntaxTrivia trivia, string text)
-        {
-            var r = BasicProps();
-            DebugUtils.WriteLine($"{trivia.Kind()}");
-            if(trivia.Kind() == SyntaxKind.SingleLineCommentTrivia)
-            {
-                r.SetForegroundBrush(Brushes.YellowGreen);
-            }
-            // r.SyntaxTrivia = trivia;
-            // r.Text = text;
-            return r;
         }
 
         #region Properties
@@ -177,33 +141,132 @@ namespace AnalysisControls
 
         private void GenerateText()
         {
-            var f = new SyntaxWalkerF(col, this, TakeTextRun, MakeProperties);
+            var parts = Symbol.ToDisplayParts(SymbolDisplayFormat);
+            foreach (var symbolDisplayPart in parts)
+            {
+                SymbolTextCharacters c = new SymbolTextCharacters(symbolDisplayPart.ToString(), 0, symbolDisplayPart.ToString().Length, PropsFor(symbolDisplayPart, Symbol), new TextSpan(), Symbol , symbolDisplayPart);
+                col.Add(c);
+            }
             
-            f.DefaultVisit(Node);
             var i = 0;
             chars.Clear();
-            //var model =  Compilation?.GetSemanticModel(Tree);
             foreach (var textRun in col)
             {
                 Length += textRun.Length;
                 chars.AddRange(Enumerable.Repeat(i, textRun.Length));
                 i++;
-
-                if (textRun.Properties is GenericTextRunProperties gp)
-                {
-                    //DebugUtils.WriteLine(gp.SyntaxToken.ToString());
-                }
             }
         }
 
-        private TextRunProperties MakeProperties(object arg, string text)
+        public override TextRunProperties PropsFor(SymbolDisplayPart symbolDisplayPart, ISymbol symbol)
         {
-            if (arg is SyntaxTrivia st)
-                return PropsFor(st, text);
-            if (arg is SyntaxToken t) return PropsFor(t, text);
+            List<Brush> brushes = new List<Brush>();
 
-            return null;
-        }
+            brushes.Add(Brushes.Pink);
+            brushes.Add(Brushes.Aqua);
+            brushes.Add(Brushes.Blue);
+            brushes.Add(Brushes.BlueViolet);
+            brushes.Add(Brushes.Crimson);
+            brushes.Add(Brushes.Chartreuse);
+            brushes.Add(Brushes.DarkOrchid);
+            brushes.Add(Brushes.DarkOrange);
+            brushes.Add(Brushes.CornflowerBlue);
+            brushes.Add(Brushes.DarkMagenta);
+            brushes.Add(Brushes.DarkSalmon);
+            brushes.Add(Brushes.DodgerBlue);
+            brushes.Add(Brushes.Lime);
+            brushes.Add(Brushes.Goldenrod);
+            brushes.Add(Brushes.DeepSkyBlue);
+            brushes.Add(Brushes.MediumSeaGreen);
+            brushes.Add(Brushes.IndianRed);
+            brushes.Add(Brushes.OliveDrab);
+            brushes.Add(Brushes.Tomato);
+            brushes.Add(Brushes.Peru);
+            brushes.Add(Brushes.MediumPurple);
+
+            var max = (int) SymbolDisplayPartKind.ConstantName + 1;
+
+            var props = BasicProps();
+            int flags = 0;
+                var kind = (int) symbolDisplayPart.Kind;
+                if(kind < brushes.Count)
+                props.SetForegroundBrush(brushes[kind]);
+            
+
+            switch (symbolDisplayPart.Kind)
+                {
+                    case SymbolDisplayPartKind.AliasName:
+                        break;
+                    case SymbolDisplayPartKind.AssemblyName:
+                        break;
+                    case SymbolDisplayPartKind.ClassName:
+                        props.SetFontStyle(FontStyles.Italic);
+                        break;
+                    case SymbolDisplayPartKind.DelegateName:
+                        break;
+                    case SymbolDisplayPartKind.EnumName:
+                        break;
+                    case SymbolDisplayPartKind.ErrorTypeName:
+                        break;
+                    case SymbolDisplayPartKind.EventName:
+                        break;
+                    case SymbolDisplayPartKind.FieldName:
+                        break;
+                    case SymbolDisplayPartKind.InterfaceName:
+                        break;
+                    case SymbolDisplayPartKind.Keyword:
+                        break;
+                    case SymbolDisplayPartKind.LabelName:
+                        break;
+                    case SymbolDisplayPartKind.LineBreak:
+                        break;
+                    case SymbolDisplayPartKind.NumericLiteral:
+                        break;
+                    case SymbolDisplayPartKind.StringLiteral:
+                        break;
+                    case SymbolDisplayPartKind.LocalName:
+                        break;
+                    case SymbolDisplayPartKind.MethodName:
+                        break;
+                    case SymbolDisplayPartKind.ModuleName:
+                        break;
+                    case SymbolDisplayPartKind.NamespaceName:
+                        break;
+                    case SymbolDisplayPartKind.Operator:
+                        break;
+                    case SymbolDisplayPartKind.ParameterName:
+                        break;
+                    case SymbolDisplayPartKind.PropertyName:
+                        break;
+                    case SymbolDisplayPartKind.Punctuation:
+                        break;
+                    case SymbolDisplayPartKind.Space:
+                        break;
+                    case SymbolDisplayPartKind.StructName:
+                        break;
+                    case SymbolDisplayPartKind.AnonymousTypeIndicator:
+                        break;
+                    case SymbolDisplayPartKind.Text:
+                        break;
+                    case SymbolDisplayPartKind.TypeParameterName:
+                        break;
+                    case SymbolDisplayPartKind.RangeVariableName:
+                        break;
+                    case SymbolDisplayPartKind.EnumMemberName:
+                        break;
+                    case SymbolDisplayPartKind.ExtensionMethodName:
+                        break;
+                    case SymbolDisplayPartKind.ConstantName:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                return props;
+            }
+        
+
+        public SymbolDisplayFormat SymbolDisplayFormat { get; set; } = SymbolDisplayFormat.MinimallyQualifiedFormat;
 
         private void TakeTextRun(TextRun obj)
         {
@@ -293,26 +356,12 @@ namespace AnalysisControls
         private SyntaxNode _node;
         private readonly Typeface _typeface;
         private readonly FontRendering _fontRendering;
-        public override GenericTextRunProperties BaseProps { get; }
-
-        public List<CompilationError> Errors
-        {
-            get { return _errors1; }
-            set
-            {
-                _errors1 = value;
-                if (_errors1 != null && _errors1.Any())
-                    foreach (var compilationError in _errors1)
-                        ErrorRuns.Add(new CustomTextCharacters(compilationError.Message, BaseProps, new TextSpan()));
-            }
-        }
 
         private readonly StringBuilder _lineBuilder = new StringBuilder();
         private readonly int currentLineIndex = 0;
         private readonly List<string> _lines = new List<string>();
         public List<TextRun> ErrorRuns { get; } = new List<TextRun>();
-        private List<CompilationError> _errors1;
-        public int EolLength { get; } = 2;
+        public ISymbol Symbol { get; set; }
 
         #endregion
 

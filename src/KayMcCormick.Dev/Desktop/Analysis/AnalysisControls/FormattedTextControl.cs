@@ -18,22 +18,7 @@ using Microsoft.CodeAnalysis.CSharp;
 namespace AnalysisControls
 {
     /// <summary>
-    ///     Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
-    ///     Step 1a) Using this custom control in a XAML file that exists in the current project.
-    ///     Add this XmlNamespace attribute to the root element of the markup file where it is
-    ///     to be used:
-    ///     xmlns:MyNamespace="clr-namespace:KayMcCormick.Lib.Wpf"
-    ///     Step 1b) Using this custom control in a XAML file that exists in a different project.
-    ///     Add this XmlNamespace attribute to the root element of the markup file where it is
-    ///     to be used:
-    ///     xmlns:MyNamespace="clr-namespace:KayMcCormick.Lib.Wpf;assembly=KayMcCormick.Lib.Wpf"
-    ///     You will also need to add a project reference from the project where the XAML file lives
-    ///     to this project and Rebuild to avoid compilation errors:
-    ///     Right click on the target project in the Solution Explorer and
-    ///     "Add Reference"->"Projects"->[Browse to and select this project]
-    ///     Step 2)
-    ///     Go ahead and use your control in the XAML file.
-    ///     <MyNamespace:DevTypeControl />
+    /// 
     /// </summary>
     public class FormattedTextControl : SyntaxNodeControl
     {
@@ -156,16 +141,29 @@ namespace AnalysisControls
         /// 
         /// </summary>
         protected FontRendering CurrentRendering { get; private set; }
+
         /// <summary>
         /// 
         /// </summary>
         protected bool UiLoaded { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public CustomTextSource3 Store { get; private set; }
+
         private DrawingBrush _myDrawingBrush = new DrawingBrush();
         private DrawingGroup _textDest = new DrawingGroup();
         private Point _pos;
+
+        /// <summary>
+        /// 
+        /// </summary>
         protected double MaxX { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         protected double MaxY { get; set; }
 
 
@@ -257,15 +255,17 @@ namespace AnalysisControls
             Store.Init();
             _errorTextSource = Errors.Any() ? new ErrorsTextSource(PixelsPerDip, Errors) : null;
             _baseProps = Store.BaseProps;
-             UpdateFormattedText();
+            UpdateFormattedText();
         }
 
         /// <summary>
         /// 
         /// </summary>
         public double PixelsPerDip { get; }
+
         private GeometryDrawing _geometryDrawing;
         private Rect _rect;
+
         /// <summary>
         /// 
         /// </summary>
@@ -275,7 +275,7 @@ namespace AnalysisControls
         public override void OnApplyTemplate()
         {
             _scrollViewer = (ScrollViewer) GetTemplateChild("ScrollViewer");
-            OutputWidth = _scrollViewer.ActualWidth;
+            if (_scrollViewer != null) OutputWidth = _scrollViewer.ActualWidth;
             _rectangle = (Rectangle) GetTemplateChild("Rectangle");
             var dpd = DependencyPropertyDescriptor.FromProperty(TextElement.FontSizeProperty, typeof(Rectangle));
             var dpd2 = DependencyPropertyDescriptor.FromProperty(TextElement.FontFamilyProperty, typeof(Rectangle));
@@ -322,10 +322,10 @@ namespace AnalysisControls
             _baseProps.SetFondRenderingEmSize(EmSize);
             UpdateFormattedText();
         }
+
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="width"></param>
         protected virtual void UpdateFormattedText()
         {
             // Make sure all UI is loaded
@@ -393,8 +393,8 @@ namespace AnalysisControls
                     if (eol.Any())
                     {
                         // dc.DrawRectangle(Brushes.Aqua, null,
-                            // new Rect(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace + 2,
-                                // linePosition.Y + 2, 10, 10));
+                        // new Rect(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace + 2,
+                        // linePosition.Y + 2, 10, 10));
                     }
                     else
                     {
@@ -564,6 +564,9 @@ namespace AnalysisControls
             InvalidateVisual();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public double OutputWidth { get; set; }
 
         /// <summary>
@@ -601,10 +604,12 @@ namespace AnalysisControls
         private Rectangle _rectangle;
         private ScrollViewer _scrollViewer;
         private GenericTextRunProperties _baseProps;
+
         /// <summary>
         /// 
         /// </summary>
         public Typeface Typeface { get; protected set; }
+
         private FontFamily _fontFamily;
         private readonly FontStyle _fontStyle = FontStyles.Normal;
         private readonly FontWeight _fontWeight = FontWeights.Normal;
@@ -648,11 +653,7 @@ namespace AnalysisControls
 
                 if (tuple.SyntaxNode != HoverSyntaxNode)
                 {
-                   
-                    if (ToolTip is ToolTip tt)
-                    {
-                        tt.IsOpen = false;
-                    }
+                    if (ToolTip is ToolTip tt) tt.IsOpen = false;
                     HoverSyntaxNode = tuple.SyntaxNode;
                     if (tuple.SyntaxNode != null)
                     {
@@ -672,27 +673,27 @@ namespace AnalysisControls
 
                         var node = tuple.SyntaxNode;
                         var nodes = new Stack<SyntaxNodeDepth>();
-			int depth = 0;
+                        var depth = 0;
                         while (node != null)
                         {
                             node = node.Parent;
-			    depth++;
-			}
+                            depth++;
+                        }
 
                         depth--;
                         node = tuple.SyntaxNode;
                         while (node != null)
                         {
-                            nodes.Push(new SyntaxNodeDepth { SyntaxNode = node, Depth = depth });
+                            nodes.Push(new SyntaxNodeDepth {SyntaxNode = node, Depth = depth});
                             node = node.Parent;
-			    depth--;
+                            depth--;
                         }
 
 
-                        CodeToolTipContent content = new CodeToolTipContent()
+                        var content = new CodeToolTipContent()
                             {Symbol = sym, SyntaxNode = tuple.SyntaxNode, Nodes = nodes, Operation = operation};
                         var template = TryFindResource(new DataTemplateKey(typeof(CodeToolTipContent))) as DataTemplate;
-                        ToolTip toolTip = new ToolTip {Content = content, ContentTemplate = template};
+                        var toolTip = new ToolTip {Content = content, ContentTemplate = template};
                         ToolTip = toolTip;
                         toolTip.IsOpen = true;
                     }
@@ -847,30 +848,5 @@ namespace AnalysisControls
             // _startColumn = HoverColumn;
             // _selecting = true;
         }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class CodeToolTipContent
-    {
-        public CodeToolTipContent()
-        {
-        }
-
-        public SyntaxNode SyntaxNode { get; set; }
-        public ISymbol Symbol { get; set; }
-        public IEnumerable<SyntaxNodeDepth> Nodes { get; set; }
-        public IOperation Operation { get; set; }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class SyntaxNodeDepth
-    {
-        public Thickness Margin => new Thickness(Depth * 10, 0, 0, 0);
-        public int Depth { get; set; }
-        public SyntaxNode SyntaxNode { get; set; }
     }
 }

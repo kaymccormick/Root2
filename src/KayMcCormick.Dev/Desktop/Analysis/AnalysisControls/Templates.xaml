@@ -101,7 +101,7 @@
                  Text="{Binding Path=SourceLocation}" />
     </Grid>
   </DataTemplate>
-  <DataTemplate DataType="{x:Type codeAnalysis:ISymbol}">
+  <DataTemplate DataType="{x:Type codeAnalysis:ISymbol}" x:Key="Symbol1">
     <StackPanel Orientation="Vertical">
       <TextBlock>
         <Run>Containing Assembly</Run>
@@ -189,5 +189,8 @@
         </GridView>
       </ListView.View>
     </ListView>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type codeAnalysis:ISymbol}">
+    <analysisControls:SymbolTextControl DisplaySymbol="{Binding}"/>
   </DataTemplate>
 </ResourceDictionary>

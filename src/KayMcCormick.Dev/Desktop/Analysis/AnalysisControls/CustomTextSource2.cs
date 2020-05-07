@@ -327,6 +327,7 @@ namespace AnalysisControls
     internal class SymbolTextCharacters : CustomTextCharacters
     {
         private ISymbol _symbol;
+        private readonly SymbolDisplayPart _symbolDisplayPart;
 
 
         public SymbolTextCharacters([NotNull] string characterString, [NotNull] TextRunProperties textRunProperties, TextSpan span, ISymbol symbol) : base(characterString, textRunProperties, span)
@@ -334,11 +335,18 @@ namespace AnalysisControls
             _symbol = symbol;
         }
 
-        public SymbolTextCharacters([NotNull] string characterString, int offsetToFirstChar, int length, [NotNull] TextRunProperties textRunProperties, TextSpan span, ISymbol symbol) : base(characterString, offsetToFirstChar, length, textRunProperties, span)
+        public SymbolTextCharacters([NotNull] string characterString, int offsetToFirstChar, int length,
+            [NotNull] TextRunProperties textRunProperties, TextSpan span, ISymbol symbol,
+            SymbolDisplayPart symbolDisplayPart) : base(characterString, offsetToFirstChar, length, textRunProperties, span)
         {
             _symbol = symbol;
+            _symbolDisplayPart = symbolDisplayPart;
         }
 
+        public SymbolDisplayPart DisplayPart
+        {
+            get { return _symbolDisplayPart; }
+        }
     }
 
     internal class MyTextModifier : TextModifier

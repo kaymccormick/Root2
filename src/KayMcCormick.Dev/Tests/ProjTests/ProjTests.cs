@@ -161,7 +161,7 @@ namespace ProjTests
             // , ProjectFixture               projectFixture
         )
         {
-            AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException;
+            //AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException;
             _output = output;
             // _loggingFixture                              =  loggingFixture ;
             // _projectFixture                              =  projectFixture ;
@@ -1758,7 +1758,7 @@ namespace ProjTests
 
                     var infos = new List<RegionInfo>();
                     context.MyTextLine = myTextLine;
-                    FormattingHelper.HandleTextLine(infos, context, dc, out var lineInfo);
+                    FormattingHelper.HandleTextLine(infos, ref context, dc, out var lineInfo);
                     
                     allLineInfos.Add(lineInfo);
                 }
@@ -1804,6 +1804,56 @@ namespace ProjTests
         public void TestFormattedControl()
         {
             ProjTestsHelper.TestSyntaxControl(new FormattedTextControl());
+        }
+
+        [WpfFact]
+        public void TestSymbolControl()
+        {
+            Main1Model.SelectVsInstance();
+            Main1Model model  = new Main1Model();
+            model.LoadSolution(solutionPath).ContinueWith(async task =>
+            {
+                var resources = ProjTestsHelper.ControlsResources();
+                // var control = new SymbolTextControl();
+                // control.BorderThickness = new Thickness(3);
+                // control.BorderBrush = Brushes.Pink;
+                // control.VerticalAlignment = VerticalAlignment.Stretch;
+                // control.HorizontalAlignment = HorizontalAlignment.Stretch;
+                //                var tree = ProjTestsHelper.SetupSyntaxParams(out var compilation);
+
+                List<ISymbol> symbols= new List<ISymbol>();
+                foreach (var proj in model.Workspace.CurrentSolution.Projects)
+                {
+                    var comp = await proj.GetCompilationAsync();
+                    foreach (var symbol in comp.GetSymbolsWithName(x => true))
+                    {
+                        
+                        symbols.Add(symbol);
+                    }
+                }
+                // var q = sm.Select(z => Tuple.Create(z, z.ToDisplayParts(SymbolDisplayFormat.MinimallyQualifiedFormat)))
+                // .OrderByDescending(zz => zz.Item2.Length);
+                // control.DisplaySymbol = q.First().Item1;
+
+                ListBox listBox = new ListBox() {ItemsSource = symbols};
+
+                var w = new Window {Content = listBox, ShowActivated = true, Resources = resources};
+                w.ShowDialog();
+            }).Wait();
+        }
+
+        [WpfFact]
+        public void TestLogInstanceControl()
+        {
+            var c = new LogEventInstancesControl();
+
+            var l = new LogEventInstanceObservableCollection();
+            l.Add(new LogEventInstance() { Level = 1, LoggerName = "foo", FormattedMessage = "test 123"});
+            c.EventsSource = l;
+                var resources = ProjTestsHelper.ControlsResources();
+            
+                var w = new Window { Content = c, ShowActivated = true, Resources = resources };
+                w.ShowDialog();
         }
 
 
@@ -1964,6 +2014,37 @@ namespace ProjTests
             }
         }
 
+        [WpfFact]
+        public void TestTypeAdapter()
+        {
+            string code = "public class foo { class bar { } }";
+            var tree = ProjTestsHelper.SetupSyntaxParams(out var comp, code);
+            foreach (var typeSymbol in comp.GetSymbolsWithName(n => true).OfType<ITypeSymbol>())
+            {
+                switch (typeSymbol)
+                {
+                    case IArrayTypeSymbol arrayTypeSymbol:
+                        break;
+                    case IDynamicTypeSymbol dynamicTypeSymbol:
+                        break;
+                    case IErrorTypeSymbol errorTypeSymbol:
+                        break;
+                    case INamedTypeSymbol namedTypeSymbol:
+                        
+                        break;
+                    case IPointerTypeSymbol pointerTypeSymbol:
+                        break;
+                    case ITypeParameterSymbol typeParameterSymbol:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(typeSymbol));
+                }
+                
+                TypeInfoProvider2 prov = new TypeInfoProvider2(typeSymbol);
+                DebugUtils.WriteLine(typeSymbol.ToDisplayString());
+                DebugUtils.WriteLine(prov.IsNested.ToString());
+            }
+        }
 
     }
 }

@@ -23,6 +23,6 @@
       </ResourceDictionary>
     </RibbonWindow.Resources>
           <Grid>
-<anal:Main1 ViewModel="{kmWpf:Resolve anal:Main1Model}"/>        
+<anal:Main1 x:Name="Main1" ViewModel="{kmWpf:Resolve anal:Main1Model}"/>        
     </Grid>
 </RibbonWindow>

@@ -125,7 +125,7 @@ namespace AnalysisControls
             CommandBindings.Add(b3);
             CommandBindings.Add(new CommandBinding(WpfAppCommands.OpenSolutionItem, OnSolutionItemExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.LoadSolution, LoadSolutionExecuted));
-
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.BrowseSymbols, OnBrowseSymbolsExecuted));
             _layoutDocumentPaneGroup =
                 (LayoutDocumentPaneGroup) GetTemplateChild("LayoutDocumentPaneGroup");
 
@@ -144,6 +144,18 @@ namespace AnalysisControls
             else
             {
                 ViewModel.Documents.Add(anchorableModel);
+            }
+        }
+
+        private async void OnBrowseSymbolsExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            try
+            {
+                await ViewModel.BrowseSymbols(e.Parameter);
+            }
+            catch (Exception ex)
+            {
+                DebugUtils.WriteLine(ex.ToString());
             }
         }
 
@@ -251,33 +263,4 @@ namespace AnalysisControls
             set { _layoutDocumentPaneGroup = value; }
         }
     }
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class SemanticControl1 : SyntaxNodeControl
-    {
-        private TreeView _treeView;
-
-        static SemanticControl1()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(SemanticControl1),
-                new FrameworkPropertyMetadata(typeof(SemanticControl1)));
-        }
-
-        public SemanticControl1()
-        {
-            
-        }
-
-        public override void OnApplyTemplate()
-        {
-            _treeView = (TreeView)GetTemplateChild("TreeView");
-            if (_treeView != null)
-                if (Compilation != null)
-                    _treeView.ItemsSource = Compilation.GlobalNamespace.GetMembers();
-        }
-    }
-    
 }

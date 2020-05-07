@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Media.TextFormatting;
 
@@ -116,5 +117,31 @@ namespace AnalysisControls
         private double _lineHeight;
 
         #endregion
+    }
+
+    public class GenericTextParagraphPropertiesImpl : GenericTextParagraphProperties
+    {
+        private readonly IList<TextTabProperties> _tabs = new List<TextTabProperties>(10);
+
+        public GenericTextParagraphPropertiesImpl(FlowDirection flowDirection, TextAlignment textAlignment, bool firstLineInParagraph, bool alwaysCollapsible, TextRunProperties defaultTextRunProperties, TextWrapping textWrap, double lineHeight, double indent) : base(flowDirection, textAlignment, firstLineInParagraph, alwaysCollapsible, defaultTextRunProperties, textWrap, lineHeight, indent)
+        {
+        }
+
+        public GenericTextParagraphPropertiesImpl(FontRendering newRendering, double pixelsPerDip,
+            List<TextTabProperties> tabs) : base(newRendering, pixelsPerDip)
+        {
+            if (tabs != null)
+            {
+                foreach (var textTabPropertiese in tabs)
+                {
+                    _tabs.Add(textTabPropertiese);
+                }
+            }
+        }
+
+        public override IList<TextTabProperties> Tabs
+        {
+            get { return _tabs; }
+        }
     }
 }
