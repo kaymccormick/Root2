@@ -106,6 +106,9 @@
     <Compile Include="Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MainTestWindow.xaml.cs">
+      <DependentUpon>MainTestWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ObservableLoadedAssembliesCollection.cs" />
     <Compile Include="TestAppApp.cs" />
     <Page Include="CodeWindow.xaml">
@@ -113,6 +116,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Home.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainTestWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

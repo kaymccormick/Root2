@@ -10,8 +10,14 @@
   xmlns:core="clr-namespace:Autofac.Core;assembly=Autofac"
   xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
   xmlns:reflection="clr-namespace:Autofac.Core.Activators.Reflection;assembly=Autofac"
-  xmlns:system="clr-namespace:System;assembly=mscorlib">
-<DataTemplate DataType="{x:Type system:Type}">
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:codeAnalysis1="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis.Workspaces"
+  xmlns:converters="clr-namespace:AnalysisControls.Converters"
+  xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
+  xmlns:operations="clr-namespace:Microsoft.CodeAnalysis.Operations;assembly=Microsoft.CodeAnalysis">
+  <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter"/>
+  <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
+  <DataTemplate DataType="{x:Type system:Type}">
   <analysisControls:CustomControl2 Type="{Binding}"></analysisControls:CustomControl2>
 </DataTemplate>
   <DataTemplate DataType="{x:Type system:DateTime}">
@@ -118,5 +124,70 @@
   <DataTemplate DataType="{x:Type analysisControls:AnchorableModel}">
     <ContentControl Content="{Binding Content}"></ContentControl>
   </DataTemplate>
+  <DataTemplate DataType="{x:Type analysisControls:CodeToolTipContent}">
+    <StackPanel Orientation="Vertical">
+      <ItemsControl ItemsSource="{Binding Nodes}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate DataType="{x:Type analysisControls:SyntaxNodeDepth}">
+            <TextBlock Margin="{Binding Margin}" Text="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"/>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate><StackPanel Orientation="Vertical"/></ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
+      <ContentControl Content="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"></ContentControl>
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Text="Symbol: "/>
+        <ContentControl Content="{Binding Symbol}"></ContentControl>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Text="Operation: "/>
+        <ContentControl Content="{Binding Operation}" ContentTemplateSelector="{StaticResource OperationTemplateSelector}">
+        </ContentControl>
+      </StackPanel>
 
+    </StackPanel>
+  </DataTemplate>
+  <DataTemplate x:Key="{x:Static codeAnalysis:OperationKind.MethodBody}" DataType="{x:Type operations:IMethodBodyOperation}">
+    <StackPanel Orientation="Vertical">
+      <TextBlock Text="{Binding BlockBody}"/>
+      <TextBlock Text="{Binding ExpressionBody}"/>
+    </StackPanel>
+  </DataTemplate>
+  <DataTemplate x:Key="{x:Static codeAnalysis:OperationKind.SimpleAssignment}" DataType="{x:Type operations:ISimpleAssignmentOperation}">
+    <StackPanel Orientation="Vertical">
+      <ContentControl ContentTemplateSelector="{StaticResource OperationTemplateSelector}"  Content="{Binding Target}"/>
+      <ContentControl ContentTemplateSelector="{StaticResource OperationTemplateSelector}"  Content="{Binding Value}"/>
+    </StackPanel>
+  </DataTemplate>
+
+  <DataTemplate DataType="{x:Type codeAnalysis1:WorkspaceDiagnostic}">
+    <TextBlock Text="{Binding Message}"/>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type codeAnalysis1:ProjectDiagnostic}">
+    <TextBlock Text="{Binding Message}"/>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type codeAnalysis1:DocumentDiagnostic}">
+    <TextBlock Text="{Binding Message}"/>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type analysisControls:MessagesModel}">
+    <ListView ItemsSource="{Binding Messages}">
+      <ListView.Resources>
+        <Style TargetType="{x:Type ListViewItem}">
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Severity}" Value="{x:Static analysisControls:WorkspaceMessageSeverity.Error}">
+            <Setter Property="Background" Value="PaleVioletRed"/>
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </ListView.Resources>
+      <ListView.View>
+        <GridView>
+          <GridViewColumn DisplayMemberBinding="{Binding Severity}"/>
+          <GridViewColumn DisplayMemberBinding="{Binding Message}"/>
+        </GridView>
+      </ListView.View>
+    </ListView>
+  </DataTemplate>
 </ResourceDictionary>

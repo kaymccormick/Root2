@@ -21,6 +21,9 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
     </RibbonWindow.Resources>
-    <anal:Main1 RibbonBuilder="{kmWpf:Resolve anal:RibbonBuilder}"
+  <RibbonWindow.CommandBindings>
+    <CommandBinding Command="kmWpf:WpfAppCommands.LoadSolution" Executed="CommandBinding_OnExecuted"></CommandBinding>
+  </RibbonWindow.CommandBindings>
+    <anal:Main1 x:FieldModifier="public" x:Name="Main1" RibbonBuilder="{kmWpf:Resolve anal:RibbonBuilder}"
                 ViewModel="{kmWpf:Resolve anal:Main1Model}"/>
 </RibbonWindow>

@@ -120,7 +120,6 @@ namespace KayMcCormick.Lib.Wpf
             var provider = Scope.Resolve<IControlsProvider>();
             foreach (var providerType in provider.Types)
             {
-                DebugUtils.WriteLine(providerType.FullName);
                 TypeDescriptor.AddProvider(provider.Provider, providerType);
                 
             }

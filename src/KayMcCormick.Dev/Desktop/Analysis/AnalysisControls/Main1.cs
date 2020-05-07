@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using AnalysisAppLib;
+using AvalonDock;
 using AvalonDock.Layout;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
@@ -43,14 +45,19 @@ namespace AnalysisControls
     public class Main1 : Control, IView<Main1Model>
     {
         public static readonly DependencyProperty AnchorablesProperty = DependencyProperty.Register(
-            "Anchorables", typeof(ObservableCollection<object>), typeof(Main1),
-            new PropertyMetadata(default(ObservableCollection<object>)));
+            "Anchorables", typeof(IEnumerable), typeof(Main1),
+            new PropertyMetadata(default(IEnumerable)));
 
-        public ObservableCollection<object> Anchorables
+        /// <summary>
+        /// 
+        /// </summary>
+        public IEnumerable Anchorables
         {
-            get { return (ObservableCollection<object>) GetValue(AnchorablesProperty); }
+            get { return (IEnumerable) GetValue(AnchorablesProperty); }
             set { SetValue(AnchorablesProperty, value); }
         }
+
+        private ObservableCollection<object> _anchorables = new ObservableCollection<object>();
 
         /// <summary>
         /// 
@@ -76,6 +83,7 @@ namespace AnalysisControls
         private Grid _grid;
         private Main1Model _viewModel;
         private LayoutDocumentPaneGroup _layoutDocumentPaneGroup;
+        private DockingManager _dockingManager;
 
         /// <summary>
         /// 
@@ -96,6 +104,7 @@ namespace AnalysisControls
         /// </summary>
         public Main1()
         {
+            Anchorables = _anchorables;
             SetBinding(DocumentsProperty, new Binding("ViewModel.Documents") {Source = this});
             SetBinding(AnchorablesProperty, new Binding("ViewModel.Anchorables") {Source = this});
             //Documents.Add(new DocInfo { Description = "test", Content = Properties.Resources.Program_Parse});
@@ -103,6 +112,8 @@ namespace AnalysisControls
 
         public override void OnApplyTemplate()
         {
+            _dockingManager = (DockingManager)GetTemplateChild("DockingManager");
+            _dockingManager.ActiveContentChanged += DockingManagerOnActiveContentChanged;
             _grid = (Grid) GetTemplateChild("Grid");
             AllowDrop = true;
             DragOver += OnDragOver;
@@ -113,14 +124,42 @@ namespace AnalysisControls
             var b3 = new CommandBinding(WpfAppCommands.CreateProject, OnCreateProjectExecuted);
             CommandBindings.Add(b3);
             CommandBindings.Add(new CommandBinding(WpfAppCommands.OpenSolutionItem, OnSolutionItemExecuted));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.LoadSolution, LoadSolutionExecuted));
 
             _layoutDocumentPaneGroup =
                 (LayoutDocumentPaneGroup) GetTemplateChild("LayoutDocumentPaneGroup");
+
+            var listBox = new ListView();
+            listBox.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("ViewModel.Messages") {Source = this});
+            var listBoxView = new GridView();
+            listBox.View = listBoxView;
+            listBoxView.Columns.Add(new GridViewColumn() { DisplayMemberBinding = new Binding("Project")});
+            
+            var anchorableModel = new DocModel() { Content = ViewModel.Messages, Title="Messages" };
+            if (ViewModel == null)
+            {
+                
+                //.Add(anchorableModel);
+            }
+            else
+            {
+                ViewModel.Documents.Add(anchorableModel);
+            }
+        }
+
+        private async void LoadSolutionExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            await ViewModel.LoadSolution((string) e.Parameter);
+        }
+
+        private void DockingManagerOnActiveContentChanged(object sender, EventArgs e)
+        {
+            if (_dockingManager.ActiveContent != null) DebugUtils.WriteLine(_dockingManager.ActiveContent.ToString());
         }
 
         private void OnSolutionItemExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            ViewModel.OpenSolutionItem();
+            ViewModel.OpenSolutionItem(e.Parameter);
         }
 
         private void OnCreateProjectExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -187,6 +226,7 @@ namespace AnalysisControls
             }
         }
 
+        /// <inheritdoc />
         public Main1Model ViewModel
         {
             get { return _viewModel; }
@@ -194,6 +234,10 @@ namespace AnalysisControls
             {
                 _viewModel = value;
                 DataContext = _viewModel;
+                foreach (var anchorable in _anchorables)
+                {
+                    _viewModel.Anchorables.Add(anchorable);
+                }
                 _viewModel.View = this;
             }
         }
@@ -208,5 +252,32 @@ namespace AnalysisControls
         }
     }
 
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class SemanticControl1 : SyntaxNodeControl
+    {
+        private TreeView _treeView;
+
+        static SemanticControl1()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(SemanticControl1),
+                new FrameworkPropertyMetadata(typeof(SemanticControl1)));
+        }
+
+        public SemanticControl1()
+        {
+            
+        }
+
+        public override void OnApplyTemplate()
+        {
+            _treeView = (TreeView)GetTemplateChild("TreeView");
+            if (_treeView != null)
+                if (Compilation != null)
+                    _treeView.ItemsSource = Compilation.GlobalNamespace.GetMembers();
+        }
+    }
     
 }

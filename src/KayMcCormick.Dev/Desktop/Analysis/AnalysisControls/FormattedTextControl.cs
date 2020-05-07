@@ -392,9 +392,9 @@ namespace AnalysisControls
                     var eol = myTextLine.GetTextRunSpans().Select(xx => xx.Value).OfType<TextEndOfLine>();
                     if (eol.Any())
                     {
-                        dc.DrawRectangle(Brushes.Aqua, null,
-                            new Rect(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace + 2,
-                                linePosition.Y + 2, 10, 10));
+                        // dc.DrawRectangle(Brushes.Aqua, null,
+                            // new Rect(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace + 2,
+                                // linePosition.Y + 2, 10, 10));
                     }
                     else
                     {
@@ -646,16 +646,60 @@ namespace AnalysisControls
                 HoverRegionInfo = tuple;
                 if (tuple.Trivia.HasValue) DebugUtils.WriteLine(tuple.ToString());
 
-                if (tuple.SyntaxNode != HoverSyntaxNode) HoverSyntaxNode = tuple.SyntaxNode;
+                if (tuple.SyntaxNode != HoverSyntaxNode)
+                {
+                   
+                    if (ToolTip is ToolTip tt)
+                    {
+                        tt.IsOpen = false;
+                    }
+                    HoverSyntaxNode = tuple.SyntaxNode;
+                    if (tuple.SyntaxNode != null)
+                    {
+                        ISymbol sym = null;
+                        IOperation operation = null;
+                        if (Model != null)
+                        {
+                            sym = Model?.GetDeclaredSymbol(tuple.SyntaxNode);
+                            operation = Model.GetOperation(tuple.SyntaxNode);
+                        }
+
+                        if (sym != null)
+                        {
+                            HoverSymbol = sym;
+                            DebugUtils.WriteLine(sym.Kind.ToString());
+                        }
+
+                        var node = tuple.SyntaxNode;
+                        var nodes = new Stack<SyntaxNodeDepth>();
+			int depth = 0;
+                        while (node != null)
+                        {
+                            node = node.Parent;
+			    depth++;
+			}
+
+                        depth--;
+                        node = tuple.SyntaxNode;
+                        while (node != null)
+                        {
+                            nodes.Push(new SyntaxNodeDepth { SyntaxNode = node, Depth = depth });
+                            node = node.Parent;
+			    depth--;
+                        }
+
+
+                        CodeToolTipContent content = new CodeToolTipContent()
+                            {Symbol = sym, SyntaxNode = tuple.SyntaxNode, Nodes = nodes, Operation = operation};
+                        var template = TryFindResource(new DataTemplateKey(typeof(CodeToolTipContent))) as DataTemplate;
+                        ToolTip toolTip = new ToolTip {Content = content, ContentTemplate = template};
+                        ToolTip = toolTip;
+                        toolTip.IsOpen = true;
+                    }
+                }
+
                 if (tuple.SyntaxNode != null)
                 {
-                    var sym
-                        = Model?.GetDeclaredSymbol(tuple.SyntaxNode);
-                    if (sym != null)
-                    {
-                        HoverSymbol = sym;
-                        DebugUtils.WriteLine(sym.Kind.ToString());
-                    }
                 }
 
                 HoverToken = tuple.SyntaxToken;
@@ -803,5 +847,30 @@ namespace AnalysisControls
             // _startColumn = HoverColumn;
             // _selecting = true;
         }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class CodeToolTipContent
+    {
+        public CodeToolTipContent()
+        {
+        }
+
+        public SyntaxNode SyntaxNode { get; set; }
+        public ISymbol Symbol { get; set; }
+        public IEnumerable<SyntaxNodeDepth> Nodes { get; set; }
+        public IOperation Operation { get; set; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class SyntaxNodeDepth
+    {
+        public Thickness Margin => new Thickness(Depth * 10, 0, 0, 0);
+        public int Depth { get; set; }
+        public SyntaxNode SyntaxNode { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
 
 namespace AnalysisControls
 {
@@ -7,9 +9,29 @@ namespace AnalysisControls
     /// </summary>
     public class DocumentModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string FilePath { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public ProjectModel Project { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public Document Document { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Guid Id { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<WorkspaceDiagnostic> Diagnostics { get; set; }  = new List<WorkspaceDiagnostic>();
     }
 }

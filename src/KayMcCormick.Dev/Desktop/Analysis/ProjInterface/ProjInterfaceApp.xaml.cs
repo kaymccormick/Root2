@@ -205,11 +205,6 @@ namespace ProjInterface
                 }
             }
 
-            if (selCmd != null)
-            {
-                DebugUtils.WriteLine(selCmd.ToString());
-
-            }
             string cmdStr = null;
             if (e.Args.Any())
             {
@@ -226,6 +221,13 @@ namespace ProjInterface
             }
 
             var win = winChose.First().Value.Value;
+
+
+            if (selCmd != null)
+            {
+                DebugUtils.WriteLine(selCmd.ToString());
+                win.Loaded += (sender, args) => selCmd.Execute(Options.Argument, win);
+            }
             win.Show();
 
             // if (lifetimeScope?.IsRegistered<Window1>() == false)
@@ -301,6 +303,9 @@ namespace ProjInterface
         public string window { get; set; }
         [Option('c', "command")]
         public string Command { get; set; }
+        [Option('a', "arg")]
+        public string Argument { get; set; }
+
     }
 
     internal class Test1

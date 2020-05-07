@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using Microsoft.CodeAnalysis;
@@ -22,6 +23,15 @@ namespace AnalysisControls.Converters
             {
 
                 return symbol.Kind.ToString();
+            }
+            if((string)parameter == "Members")
+            {
+                if (symbol is INamespaceOrTypeSymbol nort)
+                {
+                    return nort.GetMembers();
+                }
+
+                return Enumerable.Empty<object>();
             }
 
             switch (symbol)

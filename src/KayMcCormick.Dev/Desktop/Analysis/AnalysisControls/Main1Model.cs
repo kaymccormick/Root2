@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -22,10 +23,23 @@ namespace AnalysisControls
     /// </summary>
     public class Main1Model : INotifyPropertyChanged
     {
+        public object ActiveContent
+
+        {
+            get { return _activeContent; }
+            set
+            {
+                if (Equals(value, _activeContent)) return;
+                _activeContent = value;
+                OnPropertyChanged();
+            }
+        }
+
         private readonly ReplaySubject<Workspace> _replay;
         private Workspace _workspace;
         private Main1 _view;
         private WorkspaceView _workspaceView;
+        private object _activeContent;
 
         /// <summary>
         /// 
@@ -91,10 +105,18 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
             _replay = replay;
         }
 
+        public Main1Model()
+        {
+            
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public void CreateWorkspace()
         {
             Workspace = new AdhocWorkspace();
-            _replay.OnNext(Workspace); 
+            _replay?.OnNext(Workspace); 
         }
 
         /// <summary>
@@ -108,17 +130,25 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
                 if (Equals(value, _workspace)) return;
                 _workspace = value;
                 _workspaceView = new WorkspaceView() {Solutions = HierRoot};
-                Anchorables.Add(new AnchorableModel() {Content = _workspaceView});
+                Anchorables.Add(new AnchorableModel() {Content = _workspaceView, Title = "Workspace"});
                 _workspace.WorkspaceChanged += WorkspaceOnWorkspaceChanged;
+                var model = this;
+                Diagnostics.Clear();
                 _workspace.WorkspaceFailed += (sender, e) =>
                 {
-                    DebugUtils.WriteLine($"{e.Diagnostic.Message}");
+                    model.Diagnostics.Add(e.Diagnostic);
+                    var dispatcherOperation = View.Dispatcher.InvokeAsync(() => Messages.Messages.Add(new WorkspaceMessage { Source = e.Diagnostic, Message = e.Diagnostic.Message, Severity = e.Diagnostic.Kind == WorkspaceDiagnosticKind.Failure ? WorkspaceMessageSeverity.Error : WorkspaceMessageSeverity.Warning})); 
                 };
                 OnPropertyChanged();
             }
-        } 
+        }
 
-        private async void WorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs e)
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<WorkspaceDiagnostic> Diagnostics { get; set; } = new List<WorkspaceDiagnostic>();
+
+        public async void WorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs e)
         {
             switch (e.Kind)
             {
@@ -200,6 +230,11 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
             return HierRoot.SelectMany(s => s.Projects).Where(p => p.Id == id).First();
         }
 
+        private DocumentModel GetDocumentModel(DocumentId id)
+        {
+            return GetProjectModel(id.ProjectId).Documents.FirstOrDefault(z => z.Id == id.Id);
+
+        }
         private static SolutionModel SolutionModelFromSolution(Solution s)
         {
             var m = new SolutionModel();
@@ -252,7 +287,7 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
             }
         }
 
-        public ProjectModel SelectedProject => _workspaceView.SelectedProject;
+        public ProjectModel SelectedProject => _workspaceView?.SelectedProject;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -321,7 +356,9 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
         public async Task LoadSolution(string file)
         {
             TrySelectVsInstance();
-            var msBuildWorkspace = MSBuildWorkspace.Create();
+            IDictionary<string, string> props = new Dictionary<string, string>();
+            props["Platform"] = "x86";
+            var msBuildWorkspace = MSBuildWorkspace.Create(props);
             Workspace = msBuildWorkspace;
             CurrentOperation = new CurrentOperation() { Description = "load solution" };
             var r = await msBuildWorkspace.OpenSolutionAsync(file, new ProgressWithCompletion<ProjectLoadProgress>(Handler));
@@ -329,16 +366,19 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
             DebugUtils.WriteLine(r);
         }
 
-        public ObservableCollection<object> Messages { get; }= new ObservableCollection<object>();
+        public MessagesModel Messages { get; }= new MessagesModel();
         private void Handler(ProjectLoadProgress obj)
         {
             ProjectLoadProgress = obj;
 
-            var line = $"{obj.Operation} {obj.ElapsedTime} {obj.FilePath}";
-            Messages.Add(line);
+            var line = $"{obj.Operation} {obj.FilePath}";
+            Messages.Messages.Add(new WorkspaceMessage{Source = obj,Message =line,Severity = WorkspaceMessageSeverity.LoadProgress});
             DebugUtils.WriteLine(line);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ProjectLoadProgress ProjectLoadProgress { get; set; }
 
         /// <summary>
@@ -353,9 +393,12 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="eParameter"></param>
         /// <returns></returns>
-        public async Task OpenSolutionItem()
+        public async Task OpenSolutionItem(object eParameter)
         {
+            var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
             var doc = _workspaceView.SelectedDocument;
             if (doc != null)
             {
@@ -363,19 +406,62 @@ DebugUtils.WriteLine($"Registering {visualStudioInstance}");
 
                 var tree = await doc.Document.GetSyntaxTreeAsync();
                 Compilation compilation = null;
+                SemanticModel model = null;
                 if (doc.Project.Project.SupportsCompilation)
                 {
                     compilation = await doc.Project.Project.GetCompilationAsync();
+                    model = await doc.Document.GetSemanticModelAsync();
                 }
 
-                FormattedTextControl c = new FormattedTextControl() {SyntaxTree = tree, Compilation = (CSharpCompilation) compilation};
-                DocModel doc2 = new DocModel();
-                doc2.Title = doc.Name;
-                doc2.Content = c;
+                FormattedTextControl c = new FormattedTextControl()
+                {
+                    SyntaxTree = tree, Compilation = (CSharpCompilation) compilation,
+                    Model = model
+                };
+                DocModel doc2 = new DocModel {Title = doc.Name, Content = c};
                 Documents.Add(doc2);
+                ActiveContent = doc2;
                 CurrentOperation = null;
+            } else if (SelectedProject != null)
+            {
+                var semanticControl1 = new SemanticControl1();
+                SelectedProject.Project.GetCompilationAsync().ContinueWith(task =>
+                {
+                    semanticControl1.Compilation = (CSharpCompilation) task.Result;
+                }, taskScheduler);
+                
+                var anchorableModel = new AnchorableModel{Content=semanticControl1};
+                Anchorables.Add(anchorableModel);
             }
+            
         }
+    }
+
+    public class MessagesModel
+    {
+        public ObservableCollection<WorkspaceMessage> Messages { get;  }= new ObservableCollection<WorkspaceMessage>();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class WorkspaceMessage
+    {
+        public WorkspaceMessageSeverity Severity { get; set; }
+        public WorkspaceMessage()
+        {
+        }
+        public string ProjectName { get; set; }
+        public string Message { get; set; }
+        public object Source { get; set; }
+    }
+
+    public enum WorkspaceMessageSeverity
+    {
+        Informational = 0,
+        LoadProgress = 1,
+        Warning = 2,
+        Error = 3
     }
 
     /// <summary>

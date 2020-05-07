@@ -147,6 +147,15 @@ namespace AnalysisControls
                 SelectedDocument = d;
                 SelectedProject = d.Project;
                 SelectedSolution = SelectedProject.Solution;
+            } else if (e.NewValue is PathModel pp)
+            {
+                if(pp.Kind == PathModelKind.File)
+                {
+                    var dd = (DocumentModel) pp.Item;
+                    SelectedDocument = dd;
+                    SelectedProject = dd.Project;
+                    SelectedSolution = dd.Project.Solution;
+                }
             }
         }
 

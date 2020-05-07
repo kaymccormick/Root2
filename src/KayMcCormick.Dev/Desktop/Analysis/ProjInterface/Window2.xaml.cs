@@ -31,5 +31,10 @@ namespace ProjInterface
             SetValue(AttachedProperties.LifetimeScopeProperty, scope);
             InitializeComponent();
         }
+
+        private void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            Main1.RaiseEvent(e);
+        }
     }
 }

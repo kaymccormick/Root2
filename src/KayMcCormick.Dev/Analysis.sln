@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Blend for Visual Studio Version 16
+# Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KayMcCormick.Dev", "KayMcCormick.Dev\KayMcCormick.Dev.csproj", "{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}"
@@ -53,6 +53,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfLib", "Desktop\WpfLib\WpfLib.csproj", "{2012CAA5-09C0-4E58-81B4-5007C9D31DB9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Terminal.Gui", "..\..\..\gui.cs\Terminal.Gui\Terminal.Gui.csproj", "{A4F87345-3C09-4BF5-9B68-7E18E3154392}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client2", "Desktop\Analysis\Client2\Client2.csproj", "{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -224,6 +226,16 @@ Global
 		{A4F87345-3C09-4BF5-9B68-7E18E3154392}.Release|x64.Build.0 = Release|Any CPU
 		{A4F87345-3C09-4BF5-9B68-7E18E3154392}.Release|x86.ActiveCfg = Release|Any CPU
 		{A4F87345-3C09-4BF5-9B68-7E18E3154392}.Release|x86.Build.0 = Release|Any CPU
+		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}.Debug|x64.ActiveCfg = Debug|x64
+		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}.Debug|x64.Build.0 = Debug|x64
+		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}.Debug|x86.ActiveCfg = Debug|x86
+		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}.Debug|x86.Build.0 = Debug|x86
+		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}.Release|Any CPU.ActiveCfg = Release|x86
+		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}.Release|x64.ActiveCfg = Release|x64
+		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}.Release|x64.Build.0 = Release|x64
+		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}.Release|x86.ActiveCfg = Release|x86
+		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -245,6 +257,7 @@ Global
 		{FAD293B8-C008-4243-88FC-A3A8A01DB52D} = {99D68A6A-FD3D-4AAB-A02C-4307A6851F17}
 		{2012CAA5-09C0-4E58-81B4-5007C9D31DB9} = {AD12953D-9230-4ADC-A115-596FBFAADBE7}
 		{A4F87345-3C09-4BF5-9B68-7E18E3154392} = {18C721D5-8339-4A66-8A6F-2B974ACD9598}
+		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D} = {99D68A6A-FD3D-4AAB-A02C-4307A6851F17}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E0A2F67-7D8F-4910-BFB7-8AE9E0B25204}

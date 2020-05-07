@@ -7,7 +7,8 @@
   xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
   xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
   xmlns:converters="clr-namespace:AnalysisControls.Converters"
-  xmlns:avalondock="https://github.com/Dirkster99/AvalonDock">
+  xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
+  xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis">
   <Style TargetType="{x:Type local:CustomControl1}">
     <Setter Property="Template">
       <Setter.Value>
@@ -506,6 +507,13 @@
                 <converters:SyntaxTokenConverter x:Key="SyntaxTokenConverter" />
                 <converters:SyntaxTriviaConverter x:Key="SyntaxTriviaConverter" />
                 <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
+                <DataTemplate DataType="{x:Type local:CodeToolTipContent}">
+                  <StackPanel Orientation="Vertical">
+                    <ContentControl Content="{Binding SyntaxNode}"></ContentControl>
+                    <ContentControl Content="{Binding Symbol}"></ContentControl>
+                  </StackPanel>
+                </DataTemplate>
+
                 <Style TargetType="{x:Type TextBlock}">
                   <Setter Property="Margin" Value="10" />
                 </Style>
@@ -809,13 +817,11 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
               </Grid.RowDefinitions>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
-              <ContentControl DataContext="{TemplateBinding RibbonBuilder}" Content="{Binding Path=Ribbon}" />
+              <ContentControl Grid.Row="0" Grid.Column="0" DataContext="{TemplateBinding RibbonBuilder}" Content="{Binding Path=Ribbon}" />
               <ToolBarTray Grid.Row="1" Grid.Column="0">
                 <ToolBar Band="1" BandIndex="1">
                   <TextBlock Text="{Binding CurrentOperation.Desc}"></TextBlock>
@@ -824,8 +830,10 @@
                   <Button Content="Create project" Command="kmWpf:WpfAppCommands.CreateProject" />
                 </ToolBar>
               </ToolBarTray>
-              <avalondock:DockingManager Grid.Row="2" Grid.Column="0" DocumentsSource="{Binding Documents}"
-                                         x:Name="DockingManager" AnchorablesSource="{Binding Anchorables}">
+              <Border Grid.Row="2" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">
+              <avalondock:DockingManager DocumentsSource="{Binding Documents}"
+                                         x:Name="DockingManager" AnchorablesSource="{Binding Anchorables}"
+                                         ActiveContent="{Binding ActiveContent,Mode=TwoWay}">
                 <avalondock:DockingManager.DocumentHeaderTemplate>
                   <DataTemplate
                     DataType="{x:Type avalondock:LayoutDocument}">
@@ -833,18 +841,30 @@
                                 Orientation="Horizontal">
                       <Image Source="{Binding IconSource}"
                              Margin="6,4,4,0" />
-                      <TextBlock Text="{Binding Converter={StaticResource TestConverter}}"
+                      <TextBlock Text="{Binding Content.Title,Converter={StaticResource TestConverter}}"
                                  VerticalAlignment="Center" />
                     </StackPanel>
                   </DataTemplate>
                 </avalondock:DockingManager.DocumentHeaderTemplate>
+                <avalondock:DockingManager.AnchorableHeaderTemplate>
+                  <DataTemplate
+                    DataType="{x:Type avalondock:LayoutAnchorable}">
+                    <StackPanel Opacity="1.0"
+                                Orientation="Horizontal">
+                      <Image Source="{Binding IconSource}"
+                             Margin="6,4,4,0" />
+                      <TextBlock Text="{Binding Content.Title}"
+                                 VerticalAlignment="Center" />
+                    </StackPanel>
+                  </DataTemplate>
+                  </avalondock:DockingManager.AnchorableHeaderTemplate>
                 <avalondock:LayoutRoot>
                   <avalondock:LayoutPanel>
                     <avalondock:LayoutDocumentPaneGroup x:Name="LayoutDocumentPaneGroup" />
                   </avalondock:LayoutPanel>
                 </avalondock:LayoutRoot>
               </avalondock:DockingManager>
-              <StatusBar Grid.Row="2" Grid.Column="0"/>
+              </Border>
             </Grid>
           </Border>
         </ControlTemplate>
@@ -879,7 +899,7 @@
             </Border.Resources>
             <TreeView ItemsSource="{TemplateBinding Solutions}" x:Name="TreeView">
               <TreeView.InputBindings>
-                <KeyBinding Key="Enter" Command="{x:Static kmWpf:WpfAppCommands.OpenSolutionItem}"/>
+                <KeyBinding Key="Enter" Command="{x:Static kmWpf:WpfAppCommands.OpenSolutionItem}" CommandParameter="{Binding ElementName=TreeView,Path=SelectedItem}"/>
               </TreeView.InputBindings>
             </TreeView>
           </Border>
@@ -888,4 +908,30 @@
     </Setter>
   </Style>
 
+
+  <Style TargetType="{x:Type local:SemanticControl1}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:SemanticControl1}">
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <Border.Resources>
+              <converters:SymbolInfoConverter x:Key="SymbolInfoConverter"/>
+            </Border.Resources>
+
+            
+            <TreeView x:Name="TreeView">
+              <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type codeAnalysis:INamespaceOrTypeSymbol}" ItemsSource="{Binding Converter={StaticResource SymbolInfoConverter},ConverterParameter=Members}">
+                  <TextBlock Text="{Binding Converter={StaticResource SymbolInfoConverter}}"/>
+                </HierarchicalDataTemplate>
+              </TreeView.ItemTemplate>
+            </TreeView>
+
+          </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
 </ResourceDictionary>

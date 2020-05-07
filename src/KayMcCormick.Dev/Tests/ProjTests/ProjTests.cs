@@ -1364,7 +1364,7 @@ namespace ProjTests
             //     , assembly
             // );
             // ReSharper disable once ResourceItemNotResolved
-            var oo = ControlsResources();
+            var oo = ProjTestsHelper.ControlsResources();
 
             var w2 = new RWindow();
             //w2.ShowDialog();
@@ -1473,22 +1473,6 @@ namespace ProjTests
                 w.Content = dp;
                 w.ShowDialog();
             }
-        }
-
-        private static ResourceDictionary ControlsResources()
-        {
-            var assembly = typeof(AnalysisControlsModule).Assembly;
-            var x = new ResourceManager(
-                "AnalysisControls.g"
-                , assembly
-            );
-
-            var y = x.GetStream("templates.baml");
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var b = new Baml2006Reader(y, new XamlReaderSettings());
-
-            var oo = (ResourceDictionary) XamlReader.Load(b);
-            return oo;
         }
 
         private async void OnWorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args)
@@ -1822,11 +1806,18 @@ namespace ProjTests
             ProjTestsHelper.TestSyntaxControl(new FormattedTextControl());
         }
 
+
+        [WpfFact]
+        public void TestSemanticControl1()
+        {
+            ProjTestsHelper.TestSyntaxControl(new SemanticControl1());
+        }
+
         [WpfFact]
         public void TestMain1()
         {
             Main1Model.SelectVsInstance();
-            var r = ControlsResources();
+            var r = ProjTestsHelper.ControlsResources();
             Main1 mainw = new Main1();
             mainw.Resources = r;
             Window w = new Window()
@@ -1972,5 +1963,7 @@ namespace ProjTests
                 DebugUtils.WriteLine(kv.Value.ToString());
             }
         }
+
+
     }
 }

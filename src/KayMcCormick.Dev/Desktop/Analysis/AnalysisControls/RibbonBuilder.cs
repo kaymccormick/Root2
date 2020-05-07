@@ -32,14 +32,17 @@ namespace AnalysisControls
 
         public LayoutDocumentPane DocPane { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public Ribbon BuildRibbon()
         {
             Ribbon r = new Ribbon();
             _allCommands.DocPane = DocPane;
             foreach (var appRibbonTab in appRibbon.Tabs)
             {
-                var ribbonTab = new RibbonTab();
-                ribbonTab.Header = appRibbonTab.Category.Category.ToString();
+                var ribbonTab = new RibbonTab {Header = appRibbonTab.Category.Category.ToString()};
                 r.Items.Add(ribbonTab);
 
                 var newItem = _allCommands.GetComponent();

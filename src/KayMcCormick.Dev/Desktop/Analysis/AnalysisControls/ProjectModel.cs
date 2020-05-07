@@ -42,8 +42,14 @@ namespace AnalysisControls
         /// </summary>
         public Project Project { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ProjectModel()
         {
             Documents.CollectionChanged += DocumentsOnCollectionChanged;
@@ -113,7 +119,7 @@ namespace AnalysisControls
             var dirs = new Queue<string>(filePath.Split(System.IO.Path.DirectorySeparatorChar));
             var cur = RootPathInfo;
             var curPath = "";
-            while (dirs.Count() > 1)
+            while (dirs.Count > 1)
             {
                 var s = dirs.Dequeue();
                 curPath += s + System.IO.Path.DirectorySeparatorChar;
@@ -127,8 +133,19 @@ namespace AnalysisControls
             return cur;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public PathModel RootPathInfo { get; set; } = new PathModel(PathModelKind.Directory);
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<WorkspaceDiagnostic> Diagnostics { get; set; } = new List<WorkspaceDiagnostic>();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

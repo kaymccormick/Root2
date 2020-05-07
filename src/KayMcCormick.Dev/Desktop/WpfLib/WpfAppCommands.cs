@@ -121,6 +121,13 @@ namespace KayMcCormick.Lib.Wpf
             typeof(WpfAppCommands));
         public static readonly RoutedUICommand OpenSolutionItem = new RoutedUICommand("Open solution item", nameof(OpenSolutionItem),
             typeof(WpfAppCommands));
+        public static readonly RoutedUICommand LoadSolution =
+            new RoutedUICommand(
+                "Load solution"
+                , nameof(LoadSolution)
+                , typeof(WpfAppCommands)
+            );
+
 
     }
 }

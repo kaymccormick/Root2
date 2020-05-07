@@ -8,7 +8,29 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class SyntaxNodeControl : Control
+    public class CompilationControl : Control
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly DependencyProperty CompilationProperty = DependencyProperty.Register(
+            "Compilation", typeof(CSharpCompilation), typeof(SyntaxNodeControl), new PropertyMetadata(default(CSharpCompilation)));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public CSharpCompilation Compilation
+        {
+            get { return (CSharpCompilation)GetValue(CompilationProperty); }
+            set { SetValue(CompilationProperty, value); }
+        }
+
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class SyntaxNodeControl : CompilationControl
     {
         /// <summary>
         /// 
@@ -53,20 +75,6 @@ namespace AnalysisControls
             set { SetValue(NodeProperty, value); }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public static readonly DependencyProperty CompilationProperty = DependencyProperty.Register(
-            "Compilation", typeof(CSharpCompilation), typeof(SyntaxNodeControl), new PropertyMetadata(default(CSharpCompilation)));
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public CSharpCompilation Compilation
-        {
-            get { return (CSharpCompilation) GetValue(CompilationProperty); }
-            set { SetValue(CompilationProperty, value); }
-        }
 
         /// <summary>
         /// 

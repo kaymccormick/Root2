@@ -1,9 +1,14 @@
+using System.Resources;
 using System.Windows;
+using System.Windows.Baml2006;
 using System.Windows.Media;
+using System.Xaml;
 using AnalysisAppLib;
+using AnalysisAppLib.Properties;
 using AnalysisControls;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using XamlReader = System.Windows.Markup.XamlReader;
 
 namespace ProjTests
 {
@@ -48,6 +53,7 @@ namespace ProjTests
 
         public static void TestSyntaxControl(SyntaxNodeControl control)
         {
+            var resources = ProjTestsHelper.ControlsResources();
             control.BorderThickness = new Thickness(3);
             control.BorderBrush = Brushes.Pink;
             control.VerticalAlignment = VerticalAlignment.Stretch;
@@ -56,18 +62,35 @@ namespace ProjTests
 
             control.SyntaxTree = tree;
             control.Compilation = compilation;
-            var w = new Window {Content = control, ShowActivated = true};
+            control.Model = compilation.GetSemanticModel(tree);
+            var w = new Window {Content = control, ShowActivated = true, Resources = resources};
             w.ShowDialog();
         }
 
         public static SyntaxTree SetupSyntaxParams(out CSharpCompilation compilation)
         {
-            var unitSyntax = SyntaxFactory.ParseCompilationUnit(AnalysisAppLib.Properties.Resources.Program_Parse)
+            var unitSyntax = SyntaxFactory.ParseCompilationUnit(Resources.Program_Parse)
                 .NormalizeWhitespace("    ");
             var tree = SyntaxFactory.SyntaxTree(unitSyntax);
 
             compilation = AnalysisService.CreateCompilation("x", tree);
             return tree;
+        }
+
+        public static ResourceDictionary ControlsResources()
+        {
+            var assembly = typeof(AnalysisControlsModule).Assembly;
+            var x = new ResourceManager(
+                "AnalysisControls.g"
+                , assembly
+            );
+
+            var y = x.GetStream("templates.baml");
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var b = new Baml2006Reader(y, new XamlReaderSettings());
+
+            var oo = (ResourceDictionary) XamlReader.Load(b);
+            return oo;
         }
     }
 }
