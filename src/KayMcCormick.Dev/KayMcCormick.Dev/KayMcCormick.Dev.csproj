@@ -126,6 +126,7 @@
     <Compile Include="Configuration\LoggingSection.cs" />
     <Compile Include="Container\IocExt.cs" />
     <Compile Include="IBaseLibCommand.cs" />
+    <Compile Include="IDisplayable.cs" />
     <Compile Include="IHierarchicalNode.cs" />
     <Compile Include="IProvidesKey.cs" />
     <Compile Include="IViewModel.cs" />
@@ -212,6 +213,7 @@
     <Compile Include="Service\LoggerInfo.cs" />
     <Compile Include="Service\WireComponentInfo.cs" />
     <Compile Include="Service\WireInstanceInfo.cs" />
+    <Compile Include="ShortKeyMetadataAttribute.cs" />
     <Compile Include="StackTrace\StackTraceEntry.cs" />
     <Compile Include="StackTrace\StackTraceMethod.cs" />
     <Compile Include="StackTrace\StackTraceParameter.cs" />

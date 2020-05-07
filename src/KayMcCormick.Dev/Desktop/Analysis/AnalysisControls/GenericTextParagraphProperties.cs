@@ -7,7 +7,7 @@ namespace AnalysisControls
     /// <summary>
     /// Class to implement TextParagraphProperties, used by TextSource
     /// </summary>
-    class GenericTextParagraphProperties : TextParagraphProperties
+    public class GenericTextParagraphProperties : TextParagraphProperties
     {
         #region Constructors
 

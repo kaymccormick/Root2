@@ -38,7 +38,7 @@ namespace AnalysisControls
             [ NotNull ] JsonSerializerOptions jsonSerializerOptions
         )
         {
-            if ( jsonSerializerOptions == null )
+                if ( jsonSerializerOptions == null )
             {
                 throw new ArgumentNullException ( nameof ( jsonSerializerOptions ) ) ;
             }

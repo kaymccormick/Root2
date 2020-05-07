@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Media;
+using JetBrains.Annotations;
 
 namespace AnalysisControls
 {
@@ -12,14 +14,17 @@ namespace AnalysisControls
             double emSize,
             TextAlignment alignment,
             TextDecorationCollection decorations,
-            Brush textColor,
-            Typeface face)
+            [NotNull] Brush textColor,
+            [NotNull] Typeface face)
         {
+            if (!Enum.IsDefined(typeof(TextAlignment), alignment))
+                throw new InvalidEnumArgumentException(nameof(alignment), (int) alignment, typeof(TextAlignment));
+            if (emSize <= 0) throw new ArgumentOutOfRangeException(nameof(emSize));
             _fontSize = emSize;
             _alignment = alignment;
             _textDecorations = decorations;
-            _textColor = textColor;
-            _typeface = face;
+            _textColor = textColor ?? throw new ArgumentNullException(nameof(textColor));
+            _typeface = face ?? throw new ArgumentNullException(nameof(face));
         }
 
         public FontRendering()

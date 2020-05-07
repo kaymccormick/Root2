@@ -112,5 +112,11 @@
       </TextBlock>
     </StackPanel>
   </DataTemplate>
+  <DataTemplate DataType="{x:Type analysisControls:DocModel}">
+    <ContentControl Content="{Binding Content}"></ContentControl>
+  </DataTemplate>
+  <DataTemplate DataType="{x:Type analysisControls:AnchorableModel}">
+    <ContentControl Content="{Binding Content}"></ContentControl>
+  </DataTemplate>
 
 </ResourceDictionary>

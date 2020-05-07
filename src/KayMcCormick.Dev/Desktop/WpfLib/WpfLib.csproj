@@ -224,7 +224,6 @@
     </Page>
     <Compile Include="Command\AppCommand.cs" />
     <Compile Include="Command\IAppCommand.cs" />
-    <Compile Include="Command\IDisplayable.cs" />
     <Compile Include="Command\IDisplayableAppCommand.cs" />
     <Compile Include="Command\LambdaAppCommand.cs" />
     <Compile Include="Command\WrappedAppCommand.cs" />

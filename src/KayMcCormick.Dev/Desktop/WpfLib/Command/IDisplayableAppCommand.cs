@@ -9,6 +9,9 @@
 // 
 // ---
 #endregion
+
+using KayMcCormick.Dev;
+
 namespace KayMcCormick.Lib.Wpf.Command
 {
     /// <summary>

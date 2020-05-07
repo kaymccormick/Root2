@@ -23,20 +23,20 @@ namespace AnalysisAppLib
     public sealed class DocInterface : IDocInterface
     {
 
-        private readonly Dictionary<Type, TypeDocInfo>
+        private readonly Dictionary<Type, ICodeElementDocumentation>
             // ReSharper disable once CollectionNeverUpdated.Local
-            _docs = new Dictionary<Type, TypeDocInfo>();
+            _docs = new Dictionary<Type, ICodeElementDocumentation>();
 
         private DocumentCollection _documentCollection ;
         #region Implementation of IDocInterface
         /// <inheritdoc />
-        public TypeDocInfo GetTypeDocumentation ( [ NotNull ] Type type )
+        public ICodeElementDocumentation GetTypeDocumentation ( [ NotNull ] Type type )
         {
             return _docs[ type ] ;
         }
 
         /// <inheritdoc />
-        public void CollectDoc([CanBeNull] CodeElementDocumentation docNode)
+        public void CollectDoc([CanBeNull] ICodeElementDocumentation docNode)
         {
             if (docNode == null)
             {

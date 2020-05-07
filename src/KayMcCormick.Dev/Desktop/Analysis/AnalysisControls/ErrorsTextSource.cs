@@ -5,15 +5,29 @@ using System.Windows.Media.TextFormatting;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ErrorsTextSource : CustomTextSource3
     {
-        private IEnumerable<CompilationError> errors;
+        private IEnumerable<CompilationError> _errors;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pixelsPerDip"></param>
+        /// <param name="errors"></param>
         public ErrorsTextSource(double pixelsPerDip, IEnumerable<CompilationError> errors) : base(pixelsPerDip)
         {
-            this.errors = errors;
+            this._errors = errors;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="textSourceCharacterIndex"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public override TextRun GetTextRun(int textSourceCharacterIndex)
         {
             if (Errors.Any())

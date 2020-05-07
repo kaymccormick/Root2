@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 using System.Xml;
@@ -22,6 +23,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.VisualStudio.Threading;
 using AppContext = AnalysisAppLib.AppContext;
 
 namespace AnalysisControls
@@ -331,7 +333,8 @@ namespace AnalysisControls
                 throw new InvalidOperationException ( "No solution file" ) ;
             }
 
-            var solution = await workspace.OpenSolutionAsync ( optionsSolutionFile ) ;
+            var solution = await workspace.OpenSolutionAsync(optionsSolutionFile,
+                new ProgressWithCompletion<ProjectLoadProgress>(progress => { }), null, CancellationToken.None); ;
             var documentsOut = new List < CodeElementDocumentation > ( ) ;
             var solutionProjects = solution.Projects ;
 

@@ -60,35 +60,16 @@
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <Reference Include="IronPython, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+  <ItemGroup>
+    <Reference Include="IronPython">
       <HintPath>..\..\..\..\..\..\ironpython2\bin\Debug\net45\IronPython.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Scripting, Version=1.2.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\ironpython2\bin\Debug\net45\Microsoft.Scripting.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
-    <Reference Include="IronPython, Version=2.7.9.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\third-party\IronPython\bin\Release\IronPython.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Scripting, Version=1.2.2.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\third-party\IronPython\bin\Release\Microsoft.Scripting.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="IronPython.Modules">
       <HintPath>..\..\..\..\..\..\ironpython2\bin\Debug\net45\IronPython.Modules.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Build.Locator">
-      <HintPath>..\..\..\..\..\..\..\..\.nuget\packages\microsoft.build.locator\1.2.6\lib\net46\Microsoft.Build.Locator.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild">
-      <HintPath>..\..\..\..\..\..\..\..\.nuget\packages\microsoft.codeanalysis.workspaces.msbuild\3.6.0-3.final\lib\net472\Microsoft.CodeAnalysis.Workspaces.MSBuild.dll</HintPath>
+    <Reference Include="Microsoft.Scripting, Version=1.2.3.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\ironpython2\bin\Debug\net45\Microsoft.Scripting.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -116,15 +97,20 @@
     <Compile Include="AnalysisCustomTypeDescriptor.cs" />
     <Compile Include="AnalysisCommands.cs" />
     <Compile Include="AnalysisControlsModule.cs" />
+    <Compile Include="AnchorableModel.cs" />
     <Compile Include="AppDoc.cs" />
     <Compile Include="AppRibbon.cs" />
     <Compile Include="AppRibbonTab.cs" />
     <Compile Include="AppRibbonTabSet.cs" />
     <Compile Include="CategoryInfo.cs" />
+    <Compile Include="CharacterCell.cs" />
+    <Compile Include="CodeControl2.cs" />
+    <Compile Include="CodeDiagnostics.cs" />
     <Compile Include="CodeProps.cs" />
     <Compile Include="CommandProgress.cs" />
     <Compile Include="Commands\DatabasePopulateCommand.cs" />
     <Compile Include="Commands\OpenFileCommand.cs" />
+    <Compile Include="CompilationError.cs" />
     <Compile Include="ControlsProvider.cs" />
     <Compile Include="Converters\HierarchyConverter.cs" />
     <Compile Include="Converters\LocationConverter.cs" />
@@ -143,12 +129,18 @@
     <Compile Include="CustomTextSource3.cs" />
     <Compile Include="CustomTypes.cs" />
     <Compile Include="DevTypeControl.cs" />
+    <Compile Include="DiagnosticError.cs" />
     <Compile Include="DocContent.cs" />
+    <Compile Include="DocElements.cs" />
+    <Compile Include="DocInfo.cs" />
+    <Compile Include="DocumentModel.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
+    <Compile Include="EnhancedCodeControl.cs" />
     <Compile Include="ErrorsTextSource.cs" />
     <Compile Include="Filter.cs" />
     <Compile Include="FontRendering.cs" />
     <Compile Include="FormattedTextControl.cs" />
+    <Compile Include="FormattingHelper.cs" />
     <Compile Include="GenericTextParagraphProperties.cs" />
     <Compile Include="GenericTextRunProperties.cs" />
     <Compile Include="IAppRibbon.cs" />
@@ -161,20 +153,29 @@
     <Compile Include="IRibbonComponent.cs" />
     <Compile Include="JsonConverters.cs" />
     <Compile Include="JsonSyntaxTokenConverter.cs" />
+    <Compile Include="LineContext.cs" />
+    <Compile Include="LineInfo.cs" />
+    <Compile Include="Main1.cs" />
+    <Compile Include="Main1Model.cs" />
     <Compile Include="MiscCommands.cs" />
     <Compile Include="MyXDescriptor.cs" />
     <Compile Include="PageFunction1.xaml.cs">
       <DependentUpon>PageFunction1.xaml</DependentUpon>
     </Compile>
     <Compile Include="CodeGenCommand.cs" />
+    <Compile Include="PathModel.cs" />
+    <Compile Include="ProjectModel.cs" />
+    <Compile Include="RectConverter.cs" />
     <Compile Include="RegionInfo.cs" />
     <Compile Include="RibbonBuilder.cs" />
     <Compile Include="RWindow.xaml.cs">
       <DependentUpon>RWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SemanticModel.cs" />
+    <Compile Include="SolutionModel.cs" />
     <Compile Include="SourceText.cs" />
     <Compile Include="StringObservableCollection - Copy.cs" />
+    <Compile Include="SyntaxNodeControl.cs" />
     <Compile Include="SyntaxNodeCustomTextSource.cs" />
     <Compile Include="SyntaxRewriter1.cs" />
     <Compile Include="SyntaxTokenTextCharacters.cs" />
@@ -190,6 +191,8 @@
     <Compile Include="WorkspaceControl.xaml.cs">
       <DependentUpon>WorkspaceControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WorkspaceView.cs" />
+    <Compile Include="XmlDocElements.cs" />
     <EmbeddedResource Include="Program-Parse.cs" />
     <Compile Include="JsonSimpleFrameworkElementConverter.cs" />
     <Compile Include="ProvideCompilationUnitSyntax.cs" />
@@ -246,6 +249,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Page Include="Ribbon1Dict.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="RWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -352,11 +359,23 @@
     <PackageReference Include="Autofac.Extras.AttributeMetadata">
       <Version>5.0.0</Version>
     </PackageReference>
+    <PackageReference Include="CsvHelper.Excel">
+      <Version>1.0.6</Version>
+    </PackageReference>
     <PackageReference Include="Dirkster.AvalonDock">
       <Version>4.10.0</Version>
     </PackageReference>
+    <PackageReference Include="EPPlus">
+      <Version>5.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="ExcelFile.net">
+      <Version>1.2.0</Version>
+    </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit">
       <Version>3.8.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime">
+      <Version>16.5.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Locator">
       <Version>1.2.6</Version>

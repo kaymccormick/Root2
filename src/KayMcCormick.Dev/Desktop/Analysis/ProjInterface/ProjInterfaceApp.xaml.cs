@@ -6,12 +6,14 @@ using System.Linq ;
 using System.Reflection ;
 using System.Text.Json ;
 using System.Windows ;
+using System.Windows.Input;
 using AnalysisAppLib ;
 using AnalysisControls ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Lifetime ;
 using Autofac.Features.Metadata ;
+using CommandLine;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
@@ -184,6 +186,30 @@ namespace ProjInterface
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            var result = CommandLine.Parser.Default.ParseArguments<ProjInterfaceOptions>(e.Args)
+                .WithNotParsed(errors => MessageBox.Show(String.Join("", errors), "error"));
+
+            result.WithParsed(options =>
+            {
+                Options = options;
+            });
+
+            var t = typeof(WpfAppCommands);
+            RoutedUICommand selCmd = null;
+            foreach (var fieldInfo in t.GetFields(BindingFlags.Static | BindingFlags.Public))
+            {
+                var cmd = (RoutedUICommand) fieldInfo.GetValue(null);
+                if (Options.Command != null && Options.Command == cmd.Text)
+                {
+                    selCmd = cmd;
+                }
+            }
+
+            if (selCmd != null)
+            {
+                DebugUtils.WriteLine(selCmd.ToString());
+
+            }
             string cmdStr = null;
             if (e.Args.Any())
             {
@@ -191,51 +217,64 @@ namespace ProjInterface
             }
             Logger.Trace("{methodName}", nameof(OnStartup));
             var lifetimeScope = Scope;
-            if (lifetimeScope?.IsRegistered<Window1>() == false)
+            var wins = Scope.Resolve<IEnumerable<Meta<Lazy<Window>>>>();
+            var winChose = wins.Where(z => z.Metadata.ContainsKey("ShortKey") && (string)z.Metadata["ShortKey"] == Options.window);
+            if (!winChose.Any())
             {
-                ShowErrorDialog(
-                                 ProjInterface.Properties.Resources
-                                              .ProjInterfaceApp_OnStartup_Application_Error
-                               , ProjInterface
-                                .Properties.Resources
-                                .ProjInterfaceApp_OnStartup_Compile_time_configuration_error
-                                );
-                Current.Shutdown(255);
+                MessageBox.Show("Unknown window " + Options.window, "error");
+                Current.Shutdown(1);
             }
 
-            Window1 mainWindow = null;
-            try
-            {
-                if (lifetimeScope != null)
-                {
-                    var test1 = Scope.Resolve<TestModel>();
+            var win = winChose.First().Value.Value;
+            win.Show();
 
-                   mainWindow = lifetimeScope.Resolve<Window1>( ) ;
-                   mainWindow.CommandStr = cmdStr;
-                }
-}
-            catch (Exception ex )
-            {
-                DebugUtils.WriteLine(ex.ToString ( ) ) ;
-                MessageBox.Show(ex.ToString ( ) , "error" ) ;
-            }
+            // if (lifetimeScope?.IsRegistered<Window1>() == false)
+            // {
+                // ShowErrorDialog(
+                                 // ProjInterface.Properties.Resources
+                                              // .ProjInterfaceApp_OnStartup_Application_Error
+                               // , ProjInterface
+                                // .Properties.Resources
+                                // .ProjInterfaceApp_OnStartup_Compile_time_configuration_error
+                                // );
+                // Current.Shutdown(255);
+            // }
 
-            if (mainWindow == null )
-            {
-                MessageBox.Show( "Unable to resolve Main window" , "error" ) ;
-                return ;
-            }
+            // Window1 mainWindow = null;
+            // try
+            // {
+                // if (lifetimeScope != null)
+                // {
+                    // var test1 = Scope.Resolve<TestModel>();
 
-            try
-            {
-                mainWindow.Show( ) ;
-            }
-            catch (Exception ex )
-            {
-                MessageBox.Show(ex.ToString ( ) , "error" ) ;
-            }
+                   // mainWindow = lifetimeScope.Resolve<Window1>( ) ;
+                   // mainWindow.CommandStr = cmdStr;
+                // }
+// }
+            // catch (Exception ex )
+            // {
+                // DebugUtils.WriteLine(ex.ToString ( ) ) ;
+                // MessageBox.Show(ex.ToString ( ) , "error" ) ;
+            // }
+
+            // if (mainWindow == null )
+            // {
+                // MessageBox.Show( "Unable to resolve Main window" , "error" ) ;
+                // return ;
+            // }
+
+            // try
+            // {
+                // mainWindow.Show( ) ;
+            // }
+            // catch (Exception ex )
+            // {
+                // MessageBox.Show(ex.ToString ( ) , "error" ) ;
+            // }
         }
 
+        public ProjInterfaceOptions Options { get; set; }
+        public static string DefaultWindow = "window2";
 
 
         private void ShowErrorDialog ( string applicationError , string messageText )
@@ -256,6 +295,14 @@ namespace ProjInterface
         #endregion
     }
 
+    internal class ProjInterfaceOptions
+    {
+        [Option('w', "window", Default = "Window2")]
+        public string window { get; set; }
+        [Option('c', "command")]
+        public string Command { get; set; }
+    }
+
     internal class Test1
     {
     }
@@ -272,6 +319,8 @@ namespace ProjInterface
             loggingConfiguration.IsEnabledCacheTarget = true ;
             loggingConfiguration.MinLogLevel          = LogLevel.Trace ;
 
+            Main1Model.SelectVsInstance();
+            AppDomain.CurrentDomain.AssemblyLoad += CurrentDomainOnAssemblyLoad;
             AppLoggingConfigHelper.EnsureLoggingConfigured(message => DebugUtils.WriteLine(message),
                 loggingConfiguration);
 
@@ -286,6 +335,11 @@ namespace ProjInterface
             {
                 
             }
+        }
+
+        private static void CurrentDomainOnAssemblyLoad(object sender, AssemblyLoadEventArgs args)
+        {
+            DebugUtils.WriteLine(args.LoadedAssembly.FullName);
         }
     }
 }

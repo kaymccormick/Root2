@@ -1,17 +1,18 @@
-﻿using System ;
-using System.Collections ;
-using System.Collections.Generic ;
-using System.ComponentModel ;
-using System.Linq ;
-using System.Windows.Markup ;
-using JetBrains.Annotations ;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Windows.Markup;
+using AnalysisAppLib;
+using JetBrains.Annotations;
 
+namespace AnalysisControls
+{
 #if POCO
 using PocoSyntax ;
 #endif
 
-namespace AnalysisAppLib.XmlDoc
-{
     /// <summary>
     /// </summary>
     public sealed class MethodDocumentation : MemberBaseDocumentation
@@ -28,10 +29,10 @@ namespace AnalysisAppLib.XmlDoc
         // ReSharper disable once UnusedMember.Global
         public MethodDocumentation (
             string                        elementId
-          , [ NotNull ] Type              type
-          , [ NotNull ] string            member
-          , string                        parameters
-          , IEnumerable < XmlDocElement > xmlDoc = null
+            , [ NotNull ] Type              type
+            , [ NotNull ] string            member
+            , string                        parameters
+            , IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , type , member , xmlDoc )
         {
             _parameters = parameters ;
@@ -48,10 +49,7 @@ namespace AnalysisAppLib.XmlDoc
         /// </summary>
         public string Parameters { get { return _parameters ; } }
     }
-}
 
-namespace AnalysisAppLib.XmlDoc
-{
     /// <summary>
     /// 
     /// </summary>
@@ -89,9 +87,9 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="xmlDocElements"></param>
         protected MemberBaseDocumentation (
             string                        elementId
-          , [ CanBeNull ] Type            type
-          , [ NotNull ]   string          memberName
-          , IEnumerable < XmlDocElement > xmlDocElements = null
+            , [ CanBeNull ] Type            type
+            , [ NotNull ]   string          memberName
+            , IEnumerable < XmlDocElement > xmlDocElements = null
         ) : base ( elementId , xmlDocElements )
         {
             Type       = type ;
@@ -105,7 +103,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="xmlDoc"></param>
         protected MemberBaseDocumentation (
             string                                      elementId
-          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
+            , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , xmlDoc )
         {
         }
@@ -131,9 +129,9 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="xmlDocElements"></param>
         public FieldDocumentation (
             string                        elementId
-          , [ NotNull ] Type              type
-          , [ NotNull ] string            memberName
-          , IEnumerable < XmlDocElement > xmlDocElements
+            , [ NotNull ] Type              type
+            , [ NotNull ] string            memberName
+            , IEnumerable < XmlDocElement > xmlDocElements
         ) : base ( elementId , type , memberName , xmlDocElements )
         {
         }
@@ -151,9 +149,9 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="xmlDoc"></param>
         public PropertyDocumentation (
             string                        elementId
-          , [ NotNull ] Type              type
-          , [ NotNull ] string            memberName
-          , IEnumerable < XmlDocElement > xmlDoc = null
+            , [ NotNull ] Type              type
+            , [ NotNull ] string            memberName
+            , IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , type , memberName , xmlDoc )
         {
         }
@@ -176,8 +174,8 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="xmlDoc"></param>
         public TypeDocumentation (
             string                        elementId
-          , Type                          type
-          , IEnumerable < XmlDocElement > xmlDoc = null
+            , Type                          type
+            , IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , xmlDoc )
         {
             Type = type ;
@@ -193,7 +191,7 @@ namespace AnalysisAppLib.XmlDoc
     /// <summary>
     /// </summary>
     [ ContentProperty ( "XmlDoc" ) ]
-    public class CodeElementDocumentation
+    public class CodeElementDocumentation : ICodeElementDocumentation
     {
         private string _elementId ;
 
@@ -221,12 +219,12 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="xmlDoc"></param>
         protected CodeElementDocumentation (
             string                                      elementId
-          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
+            , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
         )
         {
             _xmlDoc = xmlDoc != null
-                          ? new XmlDocumentElementCollection ( xmlDoc.ToList ( ) )
-                          : new XmlDocumentElementCollection ( ) ;
+                ? new XmlDocumentElementCollection ( xmlDoc.ToList ( ) )
+                : new XmlDocumentElementCollection ( ) ;
 
             ElementId = elementId ;
         }
@@ -296,7 +294,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="xmlDoc"></param>
         public IndexerDocumentation (
             string                                      elementId
-          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
+            , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , xmlDoc )
         {
         }
@@ -319,7 +317,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="xmlDoc"></param>
         public EventDocumentation (
             string                                      elementId
-          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
+            , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , xmlDoc )
         {
         }
@@ -342,7 +340,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="xmlDoc"></param>
         public EnumMemberDocumentation (
             string                                      elementId
-          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
+            , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , xmlDoc )
         {
         }
@@ -365,7 +363,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="xmlDoc"></param>
         public DelegateDocumentation (
             string                                      elementId
-          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
+            , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , xmlDoc )
         {
         }
@@ -393,7 +391,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="xmlDoc"></param>
         public ConstructorDocumentation (
             string                                      elementId
-          , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
+            , [ CanBeNull ] IEnumerable < XmlDocElement > xmlDoc = null
         ) : base ( elementId , xmlDoc )
         {
         }
@@ -403,11 +401,11 @@ namespace AnalysisAppLib.XmlDoc
     /// 
     /// </summary>
     public sealed class XmlDocumentElementCollection : IList
-      , IEnumerable
-      , ICollection
-      , IList < XmlDocElement >
-      , ICollection < XmlDocElement >
-      , IEnumerable < XmlDocElement >
+        , IEnumerable
+        , ICollection
+        , IList < XmlDocElement >
+        , ICollection < XmlDocElement >
+        , IEnumerable < XmlDocElement >
     {
         /// <summary>
         /// 
@@ -712,7 +710,7 @@ namespace AnalysisAppLib.XmlDoc
         /// <param name="elements"></param>
         public Param (
             [ NotNull ] string                        name
-          , [ NotNull ] IEnumerable < XmlDocElement > elements
+            , [ NotNull ] IEnumerable < XmlDocElement > elements
         ) : base ( elements )
         {
             Name = name ?? throw new ArgumentNullException ( nameof ( name ) ) ;
@@ -989,11 +987,50 @@ namespace AnalysisAppLib.XmlDoc
         protected BlockDocElem ( ) { }
     }
 
+    public interface ITypeDocInfo
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        TypeDocumentation TypeDocumentation
+        {
+            get;
+            // ReSharper disable once UnusedMember.Global
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        List<ConstructorDocumentation> ConstructorDocumentation { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Dictionary<string, List<MethodDocumentation>> MethodDocumentation { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        Dictionary<string, PropertyDocumentation> PropertyDocumentation
+        {
+            get;
+            // ReSharper disable once UnusedMember.Global
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+// ReSharper disable once UnusedMember.Global
+        Dictionary<string, FieldDocumentation> FieldDocumentation { get; set; }
+    }
+
     /// <summary>
     /// 
     /// </summary>
-    // ReSharper disable once ClassNeverInstantiated.Global
-    public class TypeDocInfo
+// ReSharper disable once ClassNeverInstantiated.Global
+    public class TypeDocInfo : ITypeDocInfo
     {
         private List < ConstructorDocumentation > _constructorDocumentation =
             new List < ConstructorDocumentation > ( ) ;

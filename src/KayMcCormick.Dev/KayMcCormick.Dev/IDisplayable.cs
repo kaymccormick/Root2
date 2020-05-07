@@ -9,7 +9,7 @@
 // 
 // ---
 #endregion
-namespace KayMcCormick.Lib.Wpf.Command
+namespace KayMcCormick.Dev
 {
     /// <summary>
     /// </summary>

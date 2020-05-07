@@ -1,4 +1,5 @@
 ﻿#region header
+
 // Kay McCormick (mccor)
 //
 // KayMcCormick.Dev
@@ -8,90 +9,96 @@
 // 2020-02-21-12:38 AM
 //
 // ---
+
 #endregion
-using System ;
+
+using Microsoft.Build.Locator;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Generic ;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Data ;
-using System.Diagnostics ;
-using System.Globalization ;
-using System.IO ;
+using System.Data;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 using System.IO.Packaging;
-using System.Linq ;
+using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Reflection ;
-using System.Resources ;
-using System.Runtime.ExceptionServices ;
-using System.Runtime.Serialization.Formatters.Binary ;
-using System.Runtime.Serialization.Formatters.Soap ;
-using System.Text ;
-using System.Text.Json ;
-using System.Text.Json.Serialization ;
-using System.Threading ;
-using System.Threading.Tasks ;
-using System.Windows ;
-using System.Windows.Automation ;
-using System.Windows.Baml2006 ;
-using System.Windows.Controls ;
+using System.Reflection;
+using System.Resources;
+using System.Runtime.ExceptionServices;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Formatters.Soap;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Automation;
+using System.Windows.Baml2006;
+using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Media ;
-using System.Windows.Media.Imaging ;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Media.TextFormatting;
 using System.Windows.Threading;
-using System.Xaml ;
-using System.Xml ;
-using System.Xml.Linq ;
-using AnalysisAppLib ;
-using AnalysisAppLib.Serialization ;
-using AnalysisAppLib.Syntax ;
-using AnalysisAppLib.XmlDoc ;
-using AnalysisControls ;
-using AnalysisControls.Properties ;
-using AnalysisControls.ViewModel ;
-using Autofac ;
-using AvalonDock ;
+using System.Xaml;
+using System.Xml;
+using System.Xml.Linq;
+using AnalysisAppLib;
+using AnalysisAppLib.Serialization;
+using AnalysisAppLib.Syntax;
+using AnalysisAppLib.XmlDoc;
+using AnalysisControls;
+using AnalysisControls.Properties;
+using AnalysisControls.ViewModel;
+using Autofac;
+using AvalonDock;
 using AvalonDock.Controls;
-using AvalonDock.Layout ;
-using Castle.DynamicProxy ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Application ;
-using KayMcCormick.Dev.Command ;
+using AvalonDock.Layout;
+using Castle.DynamicProxy;
+using CsvHelper;
+using CsvHelper.Excel;
+using JetBrains.Annotations;
+using KayMcCormick.Dev;
+using KayMcCormick.Dev.Application;
+using KayMcCormick.Dev.Command;
 using KayMcCormick.Dev.Interfaces;
-using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Dev.TestLib ;
-using KayMcCormick.Dev.TestLib.Fixtures ;
-using KayMcCormick.Lib.Wpf ;
-using KayMcCormick.Lib.Wpf.Command ;
-using KayMcCormick.Lib.Wpf.JSON ;
-using KayMcCormick.Lib.Wpf.View ;
+using KayMcCormick.Dev.Logging;
+using KayMcCormick.Dev.TestLib;
+using KayMcCormick.Dev.TestLib.Fixtures;
+using KayMcCormick.Lib.Wpf;
+using KayMcCormick.Lib.Wpf.Command;
+using KayMcCormick.Lib.Wpf.JSON;
+using KayMcCormick.Lib.Wpf.View;
 using KayMcCormick.Lib.Wpf.ViewModel;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using Moq ;
-using NLog ;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Moq;
+using NLog;
 using NLog.Targets;
-using Xunit ;
-using Xunit.Abstractions ;
+using Xunit;
+using Xunit.Abstractions;
 using Application = KayMcCormick.Dev.Logging.Application;
-using ColorConverter = System.Windows.Media.ColorConverter ;
-using Condition = System.Windows.Automation.Condition ;
-using File = System.IO.File ;
+using Binding = System.Windows.Data.Binding;
+using ColorConverter = System.Windows.Media.ColorConverter;
+using Condition = System.Windows.Automation.Condition;
+using File = System.IO.File;
 using MethodInfo = System.Reflection.MethodInfo;
-using Module = Autofac.Module;
-using Process = System.Diagnostics.Process ;
+using Process = System.Diagnostics.Process;
+using RegionInfo = AnalysisControls.RegionInfo;
 using TextBlock = System.Windows.Controls.TextBlock;
-using XamlReader = System.Windows.Markup.XamlReader ;
-using XamlWriter = System.Windows.Markup.XamlWriter ;
+using XamlReader = System.Windows.Markup.XamlReader;
+using XamlWriter = System.Windows.Markup.XamlWriter;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedVariable
@@ -101,12 +108,12 @@ namespace ProjTests
 {
     //    [ CollectionDefinition ( "GeneralPurpose" ) ]
     // ReSharper disable once UnusedType.Global
-    public class GeneralPurpose : ICollectionFixture < GlobalLoggingFixture >
+    public class GeneralPurpose : ICollectionFixture<GlobalLoggingFixture>
 
     {
     }
 
-    [ Collection ( "GeneralPurpose" ) ]
+    [Collection("GeneralPurpose")]
     // [ ClearLoggingRules ]
 #if VSSETTINGS
     [ LoggingRule ( typeof ( VsCollector ) ,             nameof ( LogLevel.Info ) ) ]
@@ -121,43 +128,47 @@ namespace ProjTests
         : IDisposable
     {
         private const string TYPES_VIEW_MODEL_XAML_PATH =
-            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel_new.xaml" ;
+            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel_new.xaml";
 
         private const string INPUT_TYPES_VIEW_MODEL_XAML_PATH =
-            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml" ;
+            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\TypesViewModel.xaml";
 
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         // ReSharper disable once InconsistentNaming
-        private const bool _disableLogging = true ;
+        private const bool _disableLogging = true;
 
-        static ProjTests ( ) { LogHelper.DisableLogging = _disableLogging ; }
+        static ProjTests()
+        {
+            LogHelper.DisableLogging = _disableLogging;
+        }
 
-        private readonly ITestOutputHelper _output ;
+        private readonly ITestOutputHelper _output;
 #pragma warning disable 169
-        private readonly LoggingFixture _loggingFixture ;
+        private readonly LoggingFixture _loggingFixture;
 #pragma warning restore 169
 #pragma warning disable 169
-        private readonly ProjectFixture _projectFixture ;
+        private readonly ProjectFixture _projectFixture;
 #pragma warning restore 169
 
-        private JsonSerializerOptions _testJsonSerializerOptions ;
+        private JsonSerializerOptions _testJsonSerializerOptions;
+        private string solutionPath = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\ManagedProd.sln";
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
-        public ProjTests (
+        public ProjTests(
             ITestOutputHelper output
             // , [ CanBeNull ] LoggingFixture loggingFixture
             // , ProjectFixture               projectFixture
         )
         {
-            AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException ;
-            _output                                      =  output ;
+            AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException;
+            _output = output;
             // _loggingFixture                              =  loggingFixture ;
             // _projectFixture                              =  projectFixture ;
 
 
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if ( ! _disableLogging )
+            if (!_disableLogging)
 #pragma warning disable 162
                 // ReSharper disable once HeuristicUnreachableCode
             {
@@ -171,91 +182,91 @@ namespace ProjTests
 #pragma warning restore 162
         }
 
-        [ WpfFact ]
-        public void TestRead ( )
+        [WpfFact]
+        public void TestRead()
         {
-            var fileStream = new FileStream ( TYPES_VIEW_MODEL_XAML_PATH , FileMode.Open ) ;
+            var fileStream = new FileStream(TYPES_VIEW_MODEL_XAML_PATH, FileMode.Open);
             // ReSharper disable once UnusedVariable
-            var x = XamlReader.Load ( fileStream ) ;
+            var x = XamlReader.Load(fileStream);
         }
 
-        [ Fact ]
-        public void TestSubstituteType ( )
+        [Fact]
+        public void TestSubstituteType()
         {
-            using ( var instance = new ApplicationInstance (
-                                                            new ApplicationInstance.
-                                                                ApplicationInstanceConfiguration (
-                                                                                                  _output
-                                                                                                     .WriteLine
-                                                                                                , ApplicationGuid
-                                                                                                 )
-                                                           ) )
+            using (var instance = new ApplicationInstance(
+                new ApplicationInstance.
+                    ApplicationInstanceConfiguration(
+                        _output
+                            .WriteLine
+                        , ApplicationGuid
+                    )
+            ))
             {
-                instance.AddModule ( new AnalysisControlsModule ( ) ) ;
-                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
-                instance.Initialize ( ) ;
-                var lifetimeScope = instance.GetLifetimeScope ( ) ;
-                var model = lifetimeScope.Resolve < TypesViewModel > ( ) ;
-                var sts = lifetimeScope.Resolve < ISyntaxTypesService > ( ) ;
-                var cMap = sts.CollectionMap ( ) ;
-                var appTypeInfo = sts.GetAppTypeInfo ( typeof ( AssignmentExpressionSyntax ) ) ;
-                var field = ( SyntaxFieldInfo ) appTypeInfo.Fields[ 0 ] ;
-                var typeSyntax = SyntaxFactory.ParseTypeName (
-                                                              typeof ( ArgumentSyntax ).FullName
-                                                              ?? throw new
-                                                                  InvalidOperationException ( )
-                                                             ) ;
+                instance.AddModule(new AnalysisControlsModule());
+                instance.AddModule(new AnalysisAppLibModule());
+                instance.Initialize();
+                var lifetimeScope = instance.GetLifetimeScope();
+                var model = lifetimeScope.Resolve<TypesViewModel>();
+                var sts = lifetimeScope.Resolve<ISyntaxTypesService>();
+                var cMap = sts.CollectionMap();
+                var appTypeInfo = sts.GetAppTypeInfo(typeof(AssignmentExpressionSyntax));
+                var field = (SyntaxFieldInfo) appTypeInfo.Fields[0];
+                var typeSyntax = SyntaxFactory.ParseTypeName(
+                    typeof(ArgumentSyntax).FullName
+                    ?? throw new
+                        InvalidOperationException()
+                );
                 var substType =
-                    XmlDocElements.SubstituteType ( field , typeSyntax , cMap , model ) ;
+                    XmlDocElements.SubstituteType(field, typeSyntax, cMap, model);
             }
         }
 
-        [ WpfFact ]
-        public void TestSubstituteTyp11e ( )
+        [WpfFact]
+        public void TestSubstituteTyp11e()
         {
-            using ( var instance = new ApplicationInstance (
-                                                            new ApplicationInstance.
-                                                                ApplicationInstanceConfiguration (
-                                                                                                  _output
-                                                                                                     .WriteLine
-                                                                                                , ApplicationGuid
-                                                                                                 )
-                                                           ) )
+            using (var instance = new ApplicationInstance(
+                new ApplicationInstance.
+                    ApplicationInstanceConfiguration(
+                        _output
+                            .WriteLine
+                        , ApplicationGuid
+                    )
+            ))
             {
-                instance.AddModule ( new AnalysisControlsModule ( ) ) ;
-                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
-                instance.Initialize ( ) ;
-                var lifetimeScope = instance.GetLifetimeScope ( ) ;
-                var model = lifetimeScope.Resolve < Func < object , DataTable > > ( ) ;
-                if ( model != null )
+                instance.AddModule(new AnalysisControlsModule());
+                instance.AddModule(new AnalysisAppLibModule());
+                instance.Initialize();
+                var lifetimeScope = instance.GetLifetimeScope();
+                var model = lifetimeScope.Resolve<Func<object, DataTable>>();
+                if (model != null)
                 {
-                    var xo = model ( AppDomain.CurrentDomain ) ;
-                    DebugUtils.WriteLine ( $"{xo}" ) ;
+                    var xo = model(AppDomain.CurrentDomain);
+                    DebugUtils.WriteLine($"{xo}");
                 }
             }
         }
 
-        [ WpfFact ]
-        public void TestXaml2 ( )
+        [WpfFact]
+        public void TestXaml2()
         {
-            var model = new TypesViewModel ( new JsonSerializerOptions ( ) ) ;
-            var output = new StringWriter ( ) ;
-            Action < string > writeOut = output.WriteLine ;
-            var pu = new ProxyUtils ( writeOut , ProxyUtilsBase.CreateInterceptor ( writeOut ) ) ;
-            pu.TransformXaml ( model ) ;
-            File.WriteAllText ( @"C:\data\logs\xaml.txt" , output.ToString ( ) ) ;
+            var model = new TypesViewModel(new JsonSerializerOptions());
+            var output = new StringWriter();
+            Action<string> writeOut = output.WriteLine;
+            var pu = new ProxyUtils(writeOut, ProxyUtilsBase.CreateInterceptor(writeOut));
+            pu.TransformXaml(model);
+            File.WriteAllText(@"C:\data\logs\xaml.txt", output.ToString());
         }
 
-        [ WpfFact ]
-        public void TestXaml3 ( )
+        [WpfFact]
+        public void TestXaml3()
         {
             // ReSharper disable once UnusedVariable
-            var model = new TypesViewModel ( new JsonSerializerOptions ( ) ) ;
-            var output = new StringWriter ( ) ;
-            Action < string > writeOut = output.WriteLine ;
-            var pu = new ProxyUtils ( writeOut , ProxyUtilsBase.CreateInterceptor ( writeOut ) ) ;
-            var inst = pu.TransformXaml2 ( INPUT_TYPES_VIEW_MODEL_XAML_PATH ) ;
-            File.WriteAllText ( @"C:\data\logs\xaml2.txt" , output.ToString ( ) ) ;
+            var model = new TypesViewModel(new JsonSerializerOptions());
+            var output = new StringWriter();
+            Action<string> writeOut = output.WriteLine;
+            var pu = new ProxyUtils(writeOut, ProxyUtilsBase.CreateInterceptor(writeOut));
+            var inst = pu.TransformXaml2(INPUT_TYPES_VIEW_MODEL_XAML_PATH);
+            File.WriteAllText(@"C:\data\logs\xaml2.txt", output.ToString());
         }
 
         // private static ITypesViewModel GetComponentTypesViewModel()
@@ -287,26 +298,24 @@ namespace ProjTests
 
         // }
 
-        [ WpfFact ]
-        public void TestTypesView ( )
+        [WpfFact]
+        public void TestTypesView()
         {
-            var viewModel = new TypesViewModel ( new JsonSerializerOptions ( ) ) ;
-            viewModel.BeginInit ( ) ;
-            viewModel.EndInit ( ) ;
-            var stringWriter = new StringWriter ( ) ;
-            using ( var x = XmlWriter.Create (
-                                              stringWriter
-                                            , new XmlWriterSettings { Indent = true }
-                                             ) )
+            var viewModel = new TypesViewModel(new JsonSerializerOptions());
+            viewModel.BeginInit();
+            viewModel.EndInit();
+            var stringWriter = new StringWriter();
+            using (var x = XmlWriter.Create(
+                stringWriter
+                , new XmlWriterSettings {Indent = true}
+            ))
             {
-                XamlWriter.Save ( viewModel , x ) ;
-                x.Flush ( ) ;
+                XamlWriter.Save(viewModel, x);
+                x.Flush();
             }
 
 
-            XamlWriter.Save ( viewModel , File.CreateText ( TYPES_VIEW_MODEL_XAML_PATH ) ) ;
-
-
+            XamlWriter.Save(viewModel, File.CreateText(TYPES_VIEW_MODEL_XAML_PATH));
 
 
             // var typesView = new TypesView ( viewModel ) ;
@@ -314,167 +323,159 @@ namespace ProjTests
             // w.ShowDialog ( ) ;
         }
 
-        [ Fact ]
-        public void TestDoc ( )
+        [Fact]
+        public void TestDoc()
         {
             // var xml = "<Summary xmlns=\"clr-namespace:AnalysisControls.ViewModel;"
             // + "assembly=AnalysisControls\">Hello</Summary>" ;
             // var s1 = XamlReader.Parse ( xml ) ;
             // _output.WriteLine(XamlWriter.Save(s1));
-            var s = new Summary ( ) ;
-            var p = new Para ( new XmlDocText ( "hello" ) ) ;
-            s.DocumentElementCollection.Add ( p ) ;
-            var x = XamlWriter.Save ( s ) ;
-            _output.WriteLine ( x ) ;
+            var s = new Summary();
+            var p = new Para(new XmlDocText("hello"));
+            s.DocumentElementCollection.Add(p);
+            var x = XamlWriter.Save(s);
+            _output.WriteLine(x);
         }
 
-        [ WpfFact ]
-        public void TestTypesView2 ( )
+        [WpfFact]
+        public void TestTypesView2()
         {
-            var viewModel = new TypesViewModel ( new JsonSerializerOptions ( ) ) ;
-            viewModel.BeginInit ( ) ;
-            viewModel.EndInit ( ) ;
-            var stringWriter = new StringWriter ( ) ;
-            using ( var x = XmlWriter.Create (
-                                              stringWriter
-                                            , new XmlWriterSettings { Indent = true }
-                                             ) )
+            var viewModel = new TypesViewModel(new JsonSerializerOptions());
+            viewModel.BeginInit();
+            viewModel.EndInit();
+            var stringWriter = new StringWriter();
+            using (var x = XmlWriter.Create(
+                stringWriter
+                , new XmlWriterSettings {Indent = true}
+            ))
             {
-                XamlWriter.Save ( viewModel , x ) ;
-                x.Flush ( ) ;
+                XamlWriter.Save(viewModel, x);
+                x.Flush();
             }
 
 
-            XamlWriter.Save (
-                             viewModel.Root
-                           , File.CreateText (
-                                              @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\Types.xaml"
-                                             )
-                            ) ;
+            XamlWriter.Save(
+                viewModel.Root
+                , File.CreateText(
+                    @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\src\KayMcCormick.Dev\Desktop\Analysis\AnalysisControls\Types.xaml"
+                )
+            );
         }
 
-        [WpfFact ]
+        [WpfFact]
         // ReSharper disable once UnusedMember.Global
         // ReSharper disable once FunctionComplexityOverflow
-        public void TestJsonSerialization ( )
+        public void TestJsonSerialization()
         {
-            var w = new Window ( ) ;
-            var options = new JsonSerializerOptions { WriteIndented = true } ;
-            var xaml = XamlWriter.Save ( w ) ;
-            var doc = new XmlDocument ( ) ;
-            doc.LoadXml ( xaml ) ;
-            var writer = new Utf8JsonWriter ( new MemoryStream ( ) ) ;
-            var xxMyXmlWriter = new MyXmlWriter ( writer ) ;
-            XamlWriter.Save ( w , xxMyXmlWriter ) ;
-            var xDoc = new XDocument ( ) ;
+            var w = new Window();
+            var options = new JsonSerializerOptions {WriteIndented = true};
+            var xaml = XamlWriter.Save(w);
+            var doc = new XmlDocument();
+            doc.LoadXml(xaml);
+            var writer = new Utf8JsonWriter(new MemoryStream());
+            var xxMyXmlWriter = new MyXmlWriter(writer);
+            XamlWriter.Save(w, xxMyXmlWriter);
+            var xDoc = new XDocument();
             // ReSharper disable once ReturnValueOfPureMethodIsNotUsed
-            XDocument.Parse ( xaml ) ;
+            XDocument.Parse(xaml);
 
 
-
-            foreach ( var xNode in xDoc.Nodes ( ) )
-            {
-                switch ( xNode )
+            foreach (var xNode in xDoc.Nodes())
+                switch (xNode)
                 {
-                    case XComment xComment : break ;
-                    case XCData xcData :     break ;
-                    case XDocument xDocument :
-                        writer.WriteStartObject ( ) ;
-                        writer.WriteString ( "Kind" , nameof ( XDocument ) ) ;
-                        break ;
+                    case XComment xComment: break;
+                    case XCData xcData: break;
+                    case XDocument xDocument:
+                        writer.WriteStartObject();
+                        writer.WriteString("Kind", nameof(XDocument));
+                        break;
 
-                    case XElement xElement :
+                    case XElement xElement:
 
-                    case XContainer xContainer :
-                        break ;
-                    case XDocumentType xDocumentType :                   break ;
-                    case XProcessingInstruction xProcessingInstruction : break ;
-                    case XText xText :                                   break ;
-                    default :
-                        throw new ArgumentOutOfRangeException ( nameof ( xNode ) ) ;
+                    case XContainer xContainer:
+                        break;
+                    case XDocumentType xDocumentType: break;
+                    case XProcessingInstruction xProcessingInstruction: break;
+                    case XText xText: break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(xNode));
                 }
-            }
 
             //options.Converters.Add ( new JsonFrameworkElementConverter ( _output ) ) ;
-            options.WriteIndented = true ;
-            var json = JsonSerializer.Serialize ( w , options ) ;
-            File.WriteAllText ( @"C:\data\out.json" , json ) ;
-            _output.WriteLine ( json ) ;
+            options.WriteIndented = true;
+            var json = JsonSerializer.Serialize(w, options);
+            File.WriteAllText(@"C:\data\out.json", json);
+            _output.WriteLine(json);
             var parsed =
-                JsonSerializer.Deserialize < Dictionary < string , JsonElement > > ( json ) ;
+                JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
         }
 
-        [ WpfFact ]
-        public void TestProxyUtils ( )
+        [WpfFact]
+        public void TestProxyUtils()
         {
-            void Action ( string message ) { DebugUtils.WriteLine ( message ) ; }
+            void Action(string message)
+            {
+                DebugUtils.WriteLine(message);
+            }
 
-            var proxy = ProxyUtilsBase.CreateProxy (
-                                                    Action
-                                                  , new BaseInterceptorImpl (
-                                                                             Action
-                                                                           , new ProxyGenerator ( )
-                                                                            )
-                                                   ) ;
-            Assert.NotNull ( proxy ) ;
+            var proxy = ProxyUtilsBase.CreateProxy(
+                Action
+                , new BaseInterceptorImpl(
+                    Action
+                    , new ProxyGenerator()
+                )
+            );
+            Assert.NotNull(proxy);
             // ReSharper disable once UnusedVariable
-            var r = proxy.TransformXaml ( new Button { Content = "Hello" } ) ;
+            var r = proxy.TransformXaml(new Button {Content = "Hello"});
         }
 
 
         // ReSharper disable once UnusedMember.Global
-        public void TestFE ( )
+        public void TestFE()
         {
-            var f = new FrameworkElementFactory { Type = typeof ( Button ) } ;
-            f.AppendChild ( new FrameworkElementFactory ( typeof ( TextBlock ) , "Hello" ) ) ;
+            var f = new FrameworkElementFactory {Type = typeof(Button)};
+            f.AppendChild(new FrameworkElementFactory(typeof(TextBlock), "Hello"));
 
-            MethodInfo m1 = null ;
-            MethodInfo m2 = null ;
-            foreach ( var methodInfo in f.GetType ( )
-                                         .GetMethods (
-                                                      BindingFlags.Instance | BindingFlags.NonPublic
-                                                     ) )
-            {
-                switch ( methodInfo.Name )
+            MethodInfo m1 = null;
+            MethodInfo m2 = null;
+            foreach (var methodInfo in f.GetType()
+                .GetMethods(
+                    BindingFlags.Instance | BindingFlags.NonPublic
+                ))
+                switch (methodInfo.Name)
                 {
-                    case "InstantiateUnoptimizedTree" :
-                        m1 = methodInfo ;
-                        break ;
-                    case "Seal" when methodInfo.GetParameters ( ).Length == 1 :
-                        m2 = methodInfo ;
-                        break ;
+                    case "InstantiateUnoptimizedTree":
+                        m1 = methodInfo;
+                        break;
+                    case "Seal" when methodInfo.GetParameters().Length == 1:
+                        m2 = methodInfo;
+                        break;
                 }
-            }
 
-            if ( m2 != null )
+            if (m2 != null) m2.Invoke(f, new object[] {new ControlTemplate()}); //
+
+            if (m1 == null) return;
+
+            var r = m1.Invoke(
+                f
+                , BindingFlags.NonPublic | BindingFlags.Instance
+                , null
+                , Array.Empty<object>()
+                , CultureInfo.CurrentCulture
+            );
+
+
+            var p = r.GetType()
+                .GetProperty("FE", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (p != null)
             {
-                m2.Invoke ( f , new object[] { new ControlTemplate ( ) } ) ; //
+                var fe = p.GetValue(r);
+                var w = new Window {Content = fe};
+                w.ShowDialog();
             }
 
-            if ( m1 == null )
-            {
-                return ;
-            }
-
-            var r = m1.Invoke (
-                               f
-                             , BindingFlags.NonPublic | BindingFlags.Instance
-                             , null
-                             , Array.Empty < object > ( )
-                             , CultureInfo.CurrentCulture
-                              ) ;
-
-
-            var p = r.GetType ( )
-                     .GetProperty ( "FE" , BindingFlags.Instance | BindingFlags.NonPublic ) ;
-            if ( p != null )
-            {
-                var fe = p.GetValue ( r ) ;
-                var w = new Window { Content = fe } ;
-                w.ShowDialog ( ) ;
-            }
-
-            Logger.Info ( r.GetType ( ) ) ;
+            Logger.Info(r.GetType());
         }
 #if false
         [ WpfFact ]
@@ -513,75 +514,73 @@ namespace ProjTests
         }
 
 #endif
-        public Guid ApplicationGuid { get ; } =
-            new Guid ( "d4870a23-f1ad-4618-b955-6b342c6afab6" ) ;
+        public Guid ApplicationGuid { get; } =
+            new Guid("d4870a23-f1ad-4618-b955-6b342c6afab6");
 
-        [ WpfFact ]
-        public void TestAdapter ( )
+        [WpfFact]
+        public void TestAdapter()
         {
             // var x = new TestApplication ( ) ;
-            DebugUtils.WriteLine ( $"{Thread.CurrentThread.ManagedThreadId} projTests" ) ;
-            using ( var instance = new ApplicationInstance (
-                                                            ApplicationInstance
-                                                               .CreateConfiguration (
-                                                                                     _output
-                                                                                        .WriteLine
-                                                                                   , ApplicationGuid
-                                                                                    )
-                                                           ) )
+            DebugUtils.WriteLine($"{Thread.CurrentThread.ManagedThreadId} projTests");
+            using (var instance = new ApplicationInstance(
+                ApplicationInstance
+                    .CreateConfiguration(
+                        _output
+                            .WriteLine
+                        , ApplicationGuid
+                    )
+            ))
             {
-                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
-                instance.AddModule ( new AnalysisControlsModule ( ) ) ;
-                instance.Initialize ( ) ;
-                var lifetimeScope = instance.GetLifetimeScope ( ) ;
-                LogManager.ThrowExceptions = true ;
+                instance.AddModule(new AnalysisAppLibModule());
+                instance.AddModule(new AnalysisControlsModule());
+                instance.Initialize();
+                var lifetimeScope = instance.GetLifetimeScope();
+                LogManager.ThrowExceptions = true;
                 var funcAry = lifetimeScope
-                   .Resolve < IEnumerable < Func < LayoutDocumentPane , IDisplayableAppCommand > >
-                    > ( ) ;
+                    .Resolve<IEnumerable<Func<LayoutDocumentPane, IDisplayableAppCommand>>
+                    >();
 
 
-                var m = new DockingManager ( ) ;
+                var m = new DockingManager();
 
-                var pane = new LayoutDocumentPane ( ) ;
+                var pane = new LayoutDocumentPane();
 
-                var group = new LayoutDocumentPaneGroup ( pane ) ;
+                var group = new LayoutDocumentPaneGroup(pane);
 
-                var mLayoutRootPanel = new LayoutPanel ( group ) ;
-                var layout = new LayoutRoot { RootPanel = mLayoutRootPanel } ;
-                m.Layout = layout ;
-                Window w = new AppWindow ( lifetimeScope ) ;
-                w.Content = m ;
-                
-                foreach ( var func in funcAry )
-                {
+                var mLayoutRootPanel = new LayoutPanel(group);
+                var layout = new LayoutRoot {RootPanel = mLayoutRootPanel};
+                m.Layout = layout;
+                Window w = new AppWindow(lifetimeScope);
+                w.Content = m;
+
+                foreach (var func in funcAry)
                     try
                     {
-                        DebugUtils.WriteLine ( $"func is {func}" ) ;
-                        var xx = func ( pane ) ;
-                        DebugUtils.WriteLine ( xx.DisplayName ) ;
-                        DebugUtils.WriteLine (
-                                              $"{Thread.CurrentThread.ManagedThreadId} projTests"
-                                             ) ;
-                        xx.ExecuteAsync ( )
-                          .ContinueWith (
-                                         task => DebugUtils.WriteLine (
-                                                                       // ReSharper disable once PossibleNullReferenceException
-                                                                       task.IsFaulted
-                                                                           ? task
-                                                                            .Exception.ToString ( )
-                                                                           : task
-                                                                            .Result.ToString ( )
-                                                                      )
-                                        )
-                          .Wait ( ) ;
+                        DebugUtils.WriteLine($"func is {func}");
+                        var xx = func(pane);
+                        DebugUtils.WriteLine(xx.DisplayName);
+                        DebugUtils.WriteLine(
+                            $"{Thread.CurrentThread.ManagedThreadId} projTests"
+                        );
+                        xx.ExecuteAsync()
+                            .ContinueWith(
+                                task => DebugUtils.WriteLine(
+                                    // ReSharper disable once PossibleNullReferenceException
+                                    task.IsFaulted
+                                        ? task
+                                            .Exception.ToString()
+                                        : task
+                                            .Result.ToString()
+                                )
+                            )
+                            .Wait();
                     }
-                    catch ( Exception ex )
+                    catch (Exception ex)
                     {
-                        DebugUtils.WriteLine ( ex.ToString ( ) ) ;
+                        DebugUtils.WriteLine(ex.ToString());
                     }
-                }
 
-                w.ShowDialog ( ) ;
+                w.ShowDialog();
                 // var source = new TaskCompletionSource < bool > ( ) ;
                 // x.TCS = source ;
                 // x.Run ( w ) ;
@@ -590,55 +589,52 @@ namespace ProjTests
             }
         }
 
-        [ WpfFact ]
-        public void TestExceptionInfo ( )
+        [WpfFact]
+        public void TestExceptionInfo()
         {
-            var @in = File.OpenRead ( @"c:\data\logs\exception.bin" ) ;
-            var f = new BinaryFormatter ( ) ;
-            var exception = ( Exception ) f.Deserialize ( @in ) ;
-            var h = new HandleExceptionImpl ( ) ;
-            h.HandleException ( exception ) ;
-            var f2 = new SoapFormatter ( ) ;
-            var w = File.OpenWrite ( @"C:\data\logs\exception.xml" ) ;
-            f2.Serialize ( w , exception ) ;
-            w.Flush ( ) ;
-            w.Close ( ) ;
+            var @in = File.OpenRead(@"c:\data\logs\exception.bin");
+            var f = new BinaryFormatter();
+            var exception = (Exception) f.Deserialize(@in);
+            var h = new HandleExceptionImpl();
+            h.HandleException(exception);
+            var f2 = new SoapFormatter();
+            var w = File.OpenWrite(@"C:\data\logs\exception.xml");
+            f2.Serialize(w, exception);
+            w.Flush();
+            w.Close();
         }
 
 
         // ReSharper disable once UnusedMember.Local
-        private int CountChildren ( [ NotNull ] DependencyObject tv )
+        private int CountChildren([NotNull] DependencyObject tv)
         {
-            var count = 1 ;
-            foreach ( var child in LogicalTreeHelper.GetChildren ( tv ) )
-            {
-                count += CountChildren ( ( DependencyObject ) child ) ;
-            }
+            var count = 1;
+            foreach (var child in LogicalTreeHelper.GetChildren(tv)) count += CountChildren((DependencyObject) child);
 
-            return count ;
+            return count;
         }
 
-        [ WpfFact ]
-        public void TestResourcesModel ( )
+        [WpfFact]
+        public void TestResourcesModel()
         {
-            using ( var instance =
-                new ApplicationInstance (
-                                         new ApplicationInstance.ApplicationInstanceConfiguration ( _output.WriteLine , ApplicationGuid )
-                                        ) )
+            using (var instance =
+                new ApplicationInstance(
+                    new ApplicationInstance.ApplicationInstanceConfiguration(_output.WriteLine, ApplicationGuid)
+                ))
             {
                 instance.AddModule(new AnalysisControlsModule());
-                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
-                instance.Initialize ( ) ;
-                var lifetimescope = instance.GetLifetimeScope ( ) ;
+                instance.AddModule(new AnalysisAppLibModule());
+                instance.Initialize();
+                var lifetimescope = instance.GetLifetimeScope();
 
                 var model = lifetimescope.Resolve<AllResourcesTreeViewModel>();
 
-                DumpTree ( null , model.AllResourcesCollection ) ;
+                DumpTree(null, model.AllResourcesCollection);
             }
         }
 
-        [ WpfFact ( Timeout = 30000 ) ]
-        public void Test123 ( )
+        [WpfFact(Timeout = 30000)]
+        public void Test123()
         {
             // AppLoggingConfigHelper.Performant = true ;
             // for (int i = 0 ; i < 100; i++ )
@@ -649,250 +645,227 @@ namespace ProjTests
             // }
         }
 
-        [ WpfFact ]
-        private void Dump1 ( )
+        [WpfFact]
+        private void Dump1()
         {
-            var factory = new JsonImageConverterFactory ( ) ;
-            var x = new LineGeometry ( new Point ( 0 , 0 ) , new Point ( 10 , 10 ) ) ;
-            var y = new GeometryDrawing (
-                                         new SolidColorBrush ( Colors.Blue )
-                                       , new Pen ( new SolidColorBrush ( Colors.Green ) , 2 )
-                                       , x
-                                        ) ;
-            ImageSource xx = new DrawingImage ( y ) ;
+            var factory = new JsonImageConverterFactory();
+            var x = new LineGeometry(new Point(0, 0), new Point(10, 10));
+            var y = new GeometryDrawing(
+                new SolidColorBrush(Colors.Blue)
+                , new Pen(new SolidColorBrush(Colors.Green), 2)
+                , x
+            );
+            ImageSource xx = new DrawingImage(y);
             var jsonConverter =
-                ( JsonConverter < ImageSource > ) factory.CreateConverter (
-                                                                           xx.GetType ( )
-                                                                         , new
-                                                                               JsonSerializerOptions ( )
-                                                                          ) ;
-            var memoryStream = new MemoryStream ( ) ;
-            var writer = new JsonWriterOptions ( ) ;
-            var jsonWriterOptions = new JsonSerializerOptions ( ) ;
-            var utf8JsonWriter = new Utf8JsonWriter ( memoryStream , writer ) ;
-            jsonConverter.Write ( utf8JsonWriter , xx , jsonWriterOptions ) ;
-            utf8JsonWriter.Flush ( ) ;
-            memoryStream.Flush ( ) ;
-            var bytes = new byte[ memoryStream.Length ] ;
-            memoryStream.Seek ( 0 , SeekOrigin.Begin ) ;
-            memoryStream.Read ( bytes , 0 , ( int ) memoryStream.Length ) ;
+                (JsonConverter<ImageSource>) factory.CreateConverter(
+                    xx.GetType()
+                    , new
+                        JsonSerializerOptions()
+                );
+            var memoryStream = new MemoryStream();
+            var writer = new JsonWriterOptions();
+            var jsonWriterOptions = new JsonSerializerOptions();
+            var utf8JsonWriter = new Utf8JsonWriter(memoryStream, writer);
+            jsonConverter.Write(utf8JsonWriter, xx, jsonWriterOptions);
+            utf8JsonWriter.Flush();
+            memoryStream.Flush();
+            var bytes = new byte[memoryStream.Length];
+            memoryStream.Seek(0, SeekOrigin.Begin);
+            memoryStream.Read(bytes, 0, (int) memoryStream.Length);
             // ReSharper disable once UnusedVariable
-            var json = Encoding.UTF8.GetString ( bytes ) ;
+            var json = Encoding.UTF8.GetString(bytes);
         }
 
         // ReSharper disable once UnusedMember.Local
-        private void DumpTree (
-            AllResourcesTree                             tree
-          , [ NotNull ] IEnumerable < ResourceNodeInfo > modelAllResourcesCollection
-          , int                                          depth = 0
+        private void DumpTree(
+            AllResourcesTree tree
+            , [NotNull] IEnumerable<ResourceNodeInfo> modelAllResourcesCollection
+            , int depth = 0
         )
         {
-            foreach ( var resourceNodeInfo in modelAllResourcesCollection )
+            foreach (var resourceNodeInfo in modelAllResourcesCollection)
             {
                 try
                 {
-                    var json1 = JsonSerializer.Serialize (
-                                                          resourceNodeInfo.Key
-                                                        , TestJsonSerializerOptions
-                                                         ) ;
+                    var json1 = JsonSerializer.Serialize(
+                        resourceNodeInfo.Key
+                        , TestJsonSerializerOptions
+                    );
 
-                    Logger.Debug ( json1 ) ;
-                    var json2 = JsonSerializer.Serialize (
-                                                          resourceNodeInfo.Data
-                                                        , TestJsonSerializerOptions
-                                                         ) ;
-                    Logger.Debug ( json2 ) ;
+                    Logger.Debug(json1);
+                    var json2 = JsonSerializer.Serialize(
+                        resourceNodeInfo.Data
+                        , TestJsonSerializerOptions
+                    );
+                    Logger.Debug(json2);
                 }
-                catch ( Exception ex )
+                catch (Exception ex)
                 {
-                    Logger.Error ( ex , ex.Message ) ;
+                    Logger.Error(ex, ex.Message);
                 }
 
-                var selector = new ResourceDetailTemplateSelector ( ) ;
+                var selector = new ResourceDetailTemplateSelector();
                 if (tree != null)
                 {
-                    var dt = selector.SelectTemplate ( resourceNodeInfo.Data , tree ) ;
-                    if ( dt != null )
+                    var dt = selector.SelectTemplate(resourceNodeInfo.Data, tree);
+                    if (dt != null)
                     {
-                        var xaml = XamlWriter.Save ( dt ) ;
-                        DebugUtils.WriteLine ( xaml ) ;
+                        var xaml = XamlWriter.Save(dt);
+                        DebugUtils.WriteLine(xaml);
                     }
                 }
 
-                Logger.Info (
-                             "{x}{key} = {data}"
-                           , string.Concat ( Enumerable.Repeat ( "  " , depth ) )
-                           , resourceNodeInfo.Key
-                           , resourceNodeInfo.Data
-                            ) ;
+                Logger.Info(
+                    "{x}{key} = {data}"
+                    , string.Concat(Enumerable.Repeat("  ", depth))
+                    , resourceNodeInfo.Key
+                    , resourceNodeInfo.Data
+                );
                 // ReSharper disable once AssignNullToNotNullAttribute
-                DumpTree ( tree , resourceNodeInfo.Children , depth + 1 ) ;
+                DumpTree(tree, resourceNodeInfo.Children, depth + 1);
             }
         }
 
         public JsonSerializerOptions TestJsonSerializerOptions
         {
-            get { return _testJsonSerializerOptions ; }
-            set { _testJsonSerializerOptions = value ; }
+            get { return _testJsonSerializerOptions; }
+            set { _testJsonSerializerOptions = value; }
         }
 
-        [ Fact ]
-        public void TestModule1 ( )
+        [Fact]
+        public void TestModule1()
         {
-            var module = new AnalysisAppLibModule ( ) ;
+            var module = new AnalysisAppLibModule();
 
-            var mock = new Mock < ContainerBuilder > ( ) ;
-            mock.Setup ( cb => module.DoLoad ( cb ) ) ;
+            var mock = new Mock<ContainerBuilder>();
+            mock.Setup(cb => module.DoLoad(cb));
         }
 
-        [ Fact ]
-        public void DeserializeLog ( )
+        [Fact]
+        public void DeserializeLog()
         {
-            var ctx = ( ICompilationUnitRootContext ) AnalysisService.Parse (
-                                                                             Resources.Program_Parse
-                                                                           , "test"
-                                                                            ) ;
-            var info1 = LogEventInfo.Create ( LogLevel.Debug , "test" , "test" ) ;
-            info1.Properties[ "node" ] = ctx.CompilationUnit ;
+            var ctx = (ICompilationUnitRootContext) AnalysisService.Parse(
+                Resources.Program_Parse
+                , "test"
+            );
+            var info1 = LogEventInfo.Create(LogLevel.Debug, "test", "test");
+            info1.Properties["node"] = ctx.CompilationUnit;
 
-            var options = new JsonSerializerOptions ( ) ;
-            options.Converters.Add ( new JsonConverterLogEventInfo ( ) ) ;
-            options.Converters.Add ( new JsonSyntaxNodeConverter ( ) ) ;
+            var options = new JsonSerializerOptions();
+            options.Converters.Add(new JsonConverterLogEventInfo());
+            options.Converters.Add(new JsonSyntaxNodeConverter());
 
-            var json = JsonSerializer.Serialize ( info1 , options ) ;
-            Logger.Info ( json ) ;
+            var json = JsonSerializer.Serialize(info1, options);
+            Logger.Info(json);
             try
             {
                 // ReSharper disable once UnusedVariable
-                var info2 = JsonSerializer.Deserialize < LogEventInfo > ( json , options ) ;
+                var info2 = JsonSerializer.Deserialize<LogEventInfo>(json, options);
             }
-            catch ( JsonException x )
+            catch (JsonException x)
             {
-                var substring = "" ;
-                if ( ! x.BytePositionInLine.HasValue )
-                {
-                    throw new UnableToDeserializeLogEventInfo ( substring , x ) ;
-                }
+                var substring = "";
+                if (!x.BytePositionInLine.HasValue) throw new UnableToDeserializeLogEventInfo(substring, x);
 
                 try
                 {
-                    var eBytePositionInLine = ( int ) x.BytePositionInLine.Value - 16 ;
-                    if ( eBytePositionInLine < 0 )
-                    {
-                        eBytePositionInLine = 0 ;
-                    }
+                    var eBytePositionInLine = (int) x.BytePositionInLine.Value - 16;
+                    if (eBytePositionInLine < 0) eBytePositionInLine = 0;
 
-                    var length = 32 ;
-                    var endIndex = eBytePositionInLine + length ;
-                    if ( endIndex >= json.Length )
-                    {
-                        endIndex = json.Length ;
-                    }
+                    var length = 32;
+                    var endIndex = eBytePositionInLine + length;
+                    if (endIndex >= json.Length) endIndex = json.Length;
 
-                    length    = endIndex - eBytePositionInLine ;
-                    substring = json.Substring ( eBytePositionInLine , length ) ;
+                    length = endIndex - eBytePositionInLine;
+                    substring = json.Substring(eBytePositionInLine, length);
                 }
-                catch ( ArgumentOutOfRangeException )
+                catch (ArgumentOutOfRangeException)
                 {
-                    substring = json ;
+                    substring = json;
                 }
 
-                Logger.Warn ( "Start of problem is {problem}" , substring ) ;
+                Logger.Warn("Start of problem is {problem}", substring);
 
-                throw new UnableToDeserializeLogEventInfo ( substring , x ) ;
+                throw new UnableToDeserializeLogEventInfo(substring, x);
             }
 
             //Assert.Equal ( info1.CallerClassName , info2.CallerClassName ) ;
 
-            var t = File.OpenText ( @"C:\data\logs\ProjInterface.json.test" ) ;
-            var lineNo = 0 ;
-            while ( ! t.EndOfStream )
+            var t = File.OpenText(@"C:\data\logs\ProjInterface.json.test");
+            var lineNo = 0;
+            while (!t.EndOfStream)
             {
-                lineNo += 1 ;
-                var line = t.ReadLine ( ) ;
+                lineNo += 1;
+                var line = t.ReadLine();
 
-                LogEventInfo info ;
+                LogEventInfo info;
                 try
                 {
-                    info = JsonSerializer.Deserialize < LogEventInfo > (
-                                                                        line
-                                                                        ?? throw new
-                                                                            InvalidOperationException ( )
-                                                                      , options
-                                                                       ) ;
+                    info = JsonSerializer.Deserialize<LogEventInfo>(
+                        line
+                        ?? throw new
+                            InvalidOperationException()
+                        , options
+                    );
                 }
-                catch ( JsonException x )
+                catch (JsonException x)
                 {
-                    var substring = "" ;
-                    if ( ! x.BytePositionInLine.HasValue )
-                    {
-                        throw new UnableToDeserializeLogEventInfo ( substring , x ) ;
-                    }
+                    var substring = "";
+                    if (!x.BytePositionInLine.HasValue) throw new UnableToDeserializeLogEventInfo(substring, x);
 
                     try
                     {
-                        var eBytePositionInLine = ( int ) x.BytePositionInLine.Value - 16 ;
-                        if ( eBytePositionInLine < 0 )
-                        {
-                            eBytePositionInLine = 0 ;
-                        }
+                        var eBytePositionInLine = (int) x.BytePositionInLine.Value - 16;
+                        if (eBytePositionInLine < 0) eBytePositionInLine = 0;
 
-                        var length = 32 ;
-                        var endIndex = eBytePositionInLine + length ;
-                        if ( line        != null
-                             && endIndex >= line.Length )
-                        {
-                            endIndex = line.Length ;
-                        }
+                        var length = 32;
+                        var endIndex = eBytePositionInLine + length;
+                        if (line != null
+                            && endIndex >= line.Length)
+                            endIndex = line.Length;
 
-                        length = endIndex - eBytePositionInLine ;
-                        if ( line != null )
-                        {
-                            substring = line.Substring ( eBytePositionInLine , length ) ;
-                        }
+                        length = endIndex - eBytePositionInLine;
+                        if (line != null) substring = line.Substring(eBytePositionInLine, length);
                     }
-                    catch ( ArgumentOutOfRangeException )
+                    catch (ArgumentOutOfRangeException)
                     {
-                        substring = line ;
+                        substring = line;
                     }
 
-                    Logger.Warn (
-                                 "Start of problem is line {lineno} {problem}"
-                               , lineNo
-                               , substring
-                                ) ;
+                    Logger.Warn(
+                        "Start of problem is line {lineno} {problem}"
+                        , lineNo
+                        , substring
+                    );
 
-                    throw new UnableToDeserializeLogEventInfo ( substring , x ) ;
+                    throw new UnableToDeserializeLogEventInfo(substring, x);
                 }
 
-                if ( info == null )
-                {
-                    continue ;
-                }
+                if (info == null) continue;
 
-                Logger.Debug ( info.FormattedMessage ) ;
-                foreach ( var keyValuePair in info.Properties )
+                Logger.Debug(info.FormattedMessage);
+                foreach (var keyValuePair in info.Properties)
                 {
-                    Logger.Debug ( keyValuePair.Key ) ;
-                    Logger.Debug ( keyValuePair.Value.ToString ( ) ) ;
+                    Logger.Debug(keyValuePair.Key);
+                    Logger.Debug(keyValuePair.Value.ToString());
                 }
             }
         }
 
-        private void CurrentDomainOnFirstChanceException (
-            object                        sender
-          , FirstChanceExceptionEventArgs e
+        private void CurrentDomainOnFirstChanceException(
+            object sender
+            , FirstChanceExceptionEventArgs e
         )
         {
-            HandleInnerExceptions ( e ) ;
+            HandleInnerExceptions(e);
         }
 
-        private void HandleInnerExceptions ( FirstChanceExceptionEventArgs e )
+        private void HandleInnerExceptions(FirstChanceExceptionEventArgs e)
         {
             try
             {
                 // ReSharper disable once UnusedVariable
-                var msg = $"{e.Exception}" ;
+                var msg = $"{e.Exception}";
 #if false
                 try
                 {
@@ -907,74 +880,74 @@ namespace ProjTests
                 }
                 Logger.Error(msg);
 #endif
-                DebugUtils.WriteLine ( "Exception: " + e.Exception ) ;
-                var inner = e.Exception.InnerException ;
-                var seen = new HashSet < object > ( ) ;
-                while ( inner != null
-                        && ! seen.Contains ( inner ) )
+                DebugUtils.WriteLine("Exception: " + e.Exception);
+                var inner = e.Exception.InnerException;
+                var seen = new HashSet<object>();
+                while (inner != null
+                       && !seen.Contains(inner))
                 {
 #if false
                     Logger.Error(inner, inner.ToString);
 #endif
 
-                    DebugUtils.WriteLine ( "Exception: " + e.Exception ) ;
-                    seen.Add ( inner ) ;
-                    inner = inner.InnerException ;
+                    DebugUtils.WriteLine("Exception: " + e.Exception);
+                    seen.Add(inner);
+                    inner = inner.InnerException;
                 }
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
-                DebugUtils.WriteLine ( "Exception: " + ex ) ;
+                DebugUtils.WriteLine("Exception: " + ex);
             }
         }
 
-        [ WpfFact ]
-        public void TestFormattedCodeControl2 ( )
+        [WpfFact]
+        public void TestFormattedCodeControl2()
         {
-            var codeControl = new FormattedCode2 ( ) ;
-            var w = new Window { Content = codeControl } ;
+            var codeControl = new FormattedCode2();
+            var w = new Window {Content = codeControl};
 
-            var t = new Task ( ( ) => { } ) ;
-            w.Closed += ( sender , args ) => t.Start ( ) ;
+            var t = new Task(() => { });
+            w.Closed += (sender, args) => t.Start();
             //FormattdCode1.SetValue(ComboBox.Edit.Editable)
 
-            var sourceText = Resources.Program_Parse ;
-            codeControl.SourceCode = sourceText ;
+            var sourceText = Resources.Program_Parse;
+            codeControl.SourceCode = sourceText;
 
-            var context = ( ISemanticModelContext ) AnalysisService.Parse ( sourceText , "test1" ) ;
-            var syntaxTree = context.CurrentModel.SyntaxTree ;
-            var model = context.CurrentModel ;
+            var context = (ISemanticModelContext) AnalysisService.Parse(sourceText, "test1");
+            var syntaxTree = context.CurrentModel.SyntaxTree;
+            var model = context.CurrentModel;
             // ReSharper disable once UnusedVariable
-            var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot ( ) ;
-            var tcs = new TaskCompletionSource < bool > ( ) ;
-            Task.Run ( ( ) => codeControl.Refresh ( ) )
-                .ContinueWith ( task => tcs.SetResult ( true ) ) ;
+            var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot();
+            var tcs = new TaskCompletionSource<bool>();
+            Task.Run(() => codeControl.Refresh())
+                .ContinueWith(task => tcs.SetResult(true));
 
-            w.Show ( ) ;
+            w.Show();
 
             try
             {
-                var bmp = new RenderTargetBitmap (
-                                                  ( int ) w.ActualWidth
-                                                , ( int ) w.ActualHeight
-                                                , 72
-                                                , 72
-                                                , PixelFormats.Pbgra32
-                                                 ) ;
-                bmp.Render ( codeControl ) ;
-                var pngImage = new PngBitmapEncoder ( ) ;
-                pngImage.Frames.Add ( BitmapFrame.Create ( bmp ) ) ;
-                using ( Stream fileStream = File.Create ( @"c:\data\test\out.png" ) )
+                var bmp = new RenderTargetBitmap(
+                    (int) w.ActualWidth
+                    , (int) w.ActualHeight
+                    , 72
+                    , 72
+                    , PixelFormats.Pbgra32
+                );
+                bmp.Render(codeControl);
+                var pngImage = new PngBitmapEncoder();
+                pngImage.Frames.Add(BitmapFrame.Create(bmp));
+                using (Stream fileStream = File.Create(@"c:\data\test\out.png"))
                 {
-                    pngImage.Save ( fileStream ) ;
+                    pngImage.Save(fileStream);
                 }
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
-                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
+                DebugUtils.WriteLine(ex.ToString());
             }
 
-            tcs.Task.Wait ( ) ;
+            tcs.Task.Wait();
 
             // var argument1 = XamlWriter.Save ( codeControl.FlowViewerDocument );
             // File.WriteAllText ( @"c:\data\out.xaml", argument1 ) ;
@@ -988,19 +961,21 @@ namespace ProjTests
         ///
         /// resources.</summary>
         ///
-        [ Fact ]
-        public void TestSerialize ( ) { }
-
-        [ Fact ]
-        public void TestRewrite ( )
+        [Fact]
+        public void TestSerialize()
         {
-            var ctx = AnalysisService.Parse ( Resources.Program_Parse , "test" ) ;
+        }
+
+        [Fact]
+        public void TestRewrite()
+        {
+            var ctx = AnalysisService.Parse(Resources.Program_Parse, "test");
             // ReSharper disable once UnusedVariable
-            var comp = ctx.CompilationUnit ;
+            var comp = ctx.CompilationUnit;
             // ReSharper disable once UnusedVariable
-            var tree = ctx.CurrentModel.SyntaxTree ;
+            var tree = ctx.CurrentModel.SyntaxTree;
             // ReSharper disable once UnusedVariable
-            var codeAnalyseContext = AnalysisService.Parse ( Resources.Program_Parse , "test" ) ;
+            var codeAnalyseContext = AnalysisService.Parse(Resources.Program_Parse, "test");
             // var syntaxNode = logUsagesRewriter.Visit ( tree.GetRoot ( ) ) ;
             // var s = new StringWriter ( ) ;
             // using ( var fileStream = File.OpenWrite ( @"out.cs" ) )
@@ -1010,11 +985,11 @@ namespace ProjTests
             // }
         }
 
-        [ Fact ]
-        public void TestColorConverter ( )
+        [Fact]
+        public void TestColorConverter()
         {
             // ReSharper disable once UnusedVariable
-            var c = new ColorConverter ( ) ;
+            var c = new ColorConverter();
         }
 
 #if PYTHON
@@ -1054,145 +1029,142 @@ namespace ProjTests
             }
         }
 #endif
-        public void Dispose ( )
+        public void Dispose()
         {
             // _loggingFixture?.Dispose ( ) ;
-            AppDomain.CurrentDomain.FirstChanceException -= CurrentDomainOnFirstChanceException ;
+            AppDomain.CurrentDomain.FirstChanceException -= CurrentDomainOnFirstChanceException;
             // if ( ! _disableLogging )
             // {
             // _loggingFixture.SetOutputHelper ( null ) ;
             // }
         }
 
-        [ WpfFact ]
-        public void TestExceptionUserControl ( )
+        [WpfFact]
+        public void TestExceptionUserControl()
         {
-            var w = new Window ( ) ;
-            Exception ex = new AggregateException (
-                                                   new ArgumentException (
-                                                                          // ReSharper disable once LocalizableElement
-                                                                          "Boo"
-                                                                          // ReSharper disable once NotResolvedInText
-                                                                        , "param"
-                                                                        , new
-                                                                              InvalidOperationException ( )
-                                                                         )
-                                                 , new InvalidOperationException ( "boo2" )
-                                                  ) ;
+            var w = new Window();
+            Exception ex = new AggregateException(
+                new ArgumentException(
+                    // ReSharper disable once LocalizableElement
+                    "Boo"
+                    // ReSharper disable once NotResolvedInText
+                    , "param"
+                    , new
+                        InvalidOperationException()
+                )
+                , new InvalidOperationException("boo2")
+            );
             var dd = new ExceptionDataInfo
-                     {
-                         Exception = ex , ParsedExceptions = Utils.GenerateParsedException ( ex )
-                     } ;
+            {
+                Exception = ex, ParsedExceptions = Utils.GenerateParsedException(ex)
+            };
 
-            w.Content = new ExceptionUserControl { DataContext = dd } ;
-            w.ShowDialog ( ) ;
+            w.Content = new ExceptionUserControl {DataContext = dd};
+            w.ShowDialog();
         }
 
-        [ WpfFact ]
-        public void TestView1 ( )
+        [WpfFact]
+        public void TestView1()
         {
-            using ( var instance = new ApplicationInstance (
-                                                            new ApplicationInstance.
-                                                                ApplicationInstanceConfiguration (
-                                                                                                  _output
-                                                                                                     .WriteLine
-                                                                                                , ApplicationGuid
-                                                                                                 )
-                                                           ) )
+            using (var instance = new ApplicationInstance(
+                new ApplicationInstance.
+                    ApplicationInstanceConfiguration(
+                        _output
+                            .WriteLine
+                        , ApplicationGuid
+                    )
+            ))
             {
-                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
-                instance.Initialize ( ) ;
-                var scope = instance.GetLifetimeScope ( ) ;
+                instance.AddModule(new AnalysisAppLibModule());
+                instance.Initialize();
+                var scope = instance.GetLifetimeScope();
 
-                var xx = new BinaryFormatter ( ) ;
-                var ee = new Exception ( ) ;
-                var s = new MemoryStream ( ) ;
-                xx.Serialize ( s , ee ) ;
-                s.Flush ( ) ;
-                s.Seek ( 0 , SeekOrigin.Begin ) ;
-                var bytes = new byte[ s.Length ] ;
-                var sLength = ( int ) s.Length ;
+                var xx = new BinaryFormatter();
+                var ee = new Exception();
+                var s = new MemoryStream();
+                xx.Serialize(s, ee);
+                s.Flush();
+                s.Seek(0, SeekOrigin.Begin);
+                var bytes = new byte[s.Length];
+                var sLength = (int) s.Length;
                 // ReSharper disable once UnusedVariable
-                var read = s.Read ( bytes , 0 , sLength ) ;
+                var read = s.Read(bytes, 0, sLength);
 
-                var view = scope.Resolve < EventLogView > ( ) ;
-                Assert.NotNull ( view.ViewModel ) ;
-                var w = new Window { Content = view } ;
-                w.ShowDialog ( ) ;
+                var view = scope.Resolve<EventLogView>();
+                Assert.NotNull(view.ViewModel);
+                var w = new Window {Content = view};
+                w.ShowDialog();
             }
         }
 
-        [ WpfFact ]
-        public void TestWriteBrush ( )
+        [WpfFact]
+        public void TestWriteBrush()
         {
-            var brushConverter = new JsonBrushConverter ( ) ;
-            var opt = new JsonSerializerOptions ( ) ;
-            opt.Converters.Add ( brushConverter ) ;
-            var brush = new SolidColorBrush ( Colors.Blue ) ;
-            var json = JsonSerializer.Serialize ( brush , opt ) ;
-            Logger.Info ( "json is {json}" , json ) ;
-            var b = new LinearGradientBrush (
-                                             Colors.Blue
-                                           , Colors.Green
-                                           , new Point ( 0 ,  0 )
-                                           , new Point ( 10 , 10 )
-                                            ) ;
-            DebugUtils.WriteLine ( JsonSerializer.Serialize ( b , opt ) ) ;
+            var brushConverter = new JsonBrushConverter();
+            var opt = new JsonSerializerOptions();
+            opt.Converters.Add(brushConverter);
+            var brush = new SolidColorBrush(Colors.Blue);
+            var json = JsonSerializer.Serialize(brush, opt);
+            Logger.Info("json is {json}", json);
+            var b = new LinearGradientBrush(
+                Colors.Blue
+                , Colors.Green
+                , new Point(0, 0)
+                , new Point(10, 10)
+            );
+            DebugUtils.WriteLine(JsonSerializer.Serialize(b, opt));
         }
 
-        [ Fact ]
-        public void TestApp ( )
+        [Fact]
+        public void TestApp()
         {
-            var info = new ProcessStartInfo (
-                                             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\build\bin\debug\x86\ProjInterface\ProjInterface.exe"
-                                            ) ;
-            var proc = Process.Start ( info ) ;
+            var info = new ProcessStartInfo(
+                @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\NewRoot\build\bin\debug\x86\ProjInterface\ProjInterface.exe"
+            );
+            var proc = Process.Start(info);
 
-            Thread.Sleep ( 5000 ) ;
+            Thread.Sleep(5000);
             try
             {
-                var walker = new TreeWalker ( Condition.TrueCondition ) ;
+                var walker = new TreeWalker(Condition.TrueCondition);
 
-                var r = AutomationElement.RootElement ;
-                AutomationElement child = null ;
+                var r = AutomationElement.RootElement;
+                AutomationElement child = null;
                 try
                 {
-                    child = walker.GetFirstChild ( r ) ;
+                    child = walker.GetFirstChild(r);
                 }
-                catch ( Exception )
+                catch (Exception)
                 {
-                    proc?.Kill ( ) ;
-                    proc = null ;
-                }
-
-                var lastChild = child ;
-                for ( ; ; )
-                {
-                    HandleChild ( lastChild ) ;
-                    var next = walker.GetNextSibling ( lastChild ) ;
-                    if ( next == null )
-                    {
-                        break ;
-                    }
-
-                    lastChild = next ;
+                    proc?.Kill();
+                    proc = null;
                 }
 
-                foreach ( AutomationElement o in r.FindAll (
-                                                            TreeScope.Children
-                                                          , Condition.TrueCondition
-                                                           ) )
+                var lastChild = child;
+                for (;;)
                 {
-                    DebugUtils.WriteLine ( o.ToString ( ) ) ;
+                    HandleChild(lastChild);
+                    var next = walker.GetNextSibling(lastChild);
+                    if (next == null) break;
+
+                    lastChild = next;
+                }
+
+                foreach (AutomationElement o in r.FindAll(
+                    TreeScope.Children
+                    , Condition.TrueCondition
+                ))
+                {
+                    DebugUtils.WriteLine(o.ToString());
                     try
                     {
-                        DebugUtils.WriteLine (
-                                              o.GetCachedPropertyValue (
-                                                                        AutomationElement
-                                                                           .ClassNameProperty
-                                                                       )
-                                               .ToString ( )
-                                             ) ;
+                        DebugUtils.WriteLine(
+                            o.GetCachedPropertyValue(
+                                    AutomationElement
+                                        .ClassNameProperty
+                                )
+                                .ToString()
+                        );
                     }
                     catch
                     {
@@ -1211,50 +1183,48 @@ namespace ProjTests
             }
             finally
             {
-                proc?.Kill ( ) ;
+                proc?.Kill();
             }
         }
 
-        private static void HandleChild ( AutomationElement child )
+        private static void HandleChild(AutomationElement child)
         {
             try
             {
-                var cacheRequest = new CacheRequest ( ) ;
-                cacheRequest.Add ( AutomationElement.ClassNameProperty ) ;
-                foreach ( var automationProperty in child.GetSupportedProperties ( ) )
-                {
+                var cacheRequest = new CacheRequest();
+                cacheRequest.Add(AutomationElement.ClassNameProperty);
+                foreach (var automationProperty in child.GetSupportedProperties())
                     try
                     {
-                        var propValue = child.GetCurrentPropertyValue ( automationProperty ) ;
-                        DebugUtils.WriteLine ( automationProperty.ProgrammaticName ) ;
+                        var propValue = child.GetCurrentPropertyValue(automationProperty);
+                        DebugUtils.WriteLine(automationProperty.ProgrammaticName);
 #pragma warning disable CS0612 // Type or member is obsolete
-                        DebugUtils.WriteLine ( propValue ) ;
+                        DebugUtils.WriteLine(propValue);
 #pragma warning restore CS0612 // Type or member is obsolete
                     }
-                    catch ( Exception )
+                    catch (Exception)
                     {
                         // ignored
                     }
-                }
 
-                var c = child.GetUpdatedCache ( cacheRequest ) ;
-                var cn = c.GetCachedPropertyValue ( AutomationElement.ClassNameProperty ) ;
+                var c = child.GetUpdatedCache(cacheRequest);
+                var cn = c.GetCachedPropertyValue(AutomationElement.ClassNameProperty);
 #pragma warning disable 612
-                DebugUtils.WriteLine ( cn ) ;
+                DebugUtils.WriteLine(cn);
 #pragma warning restore 612
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
-                DebugUtils.WriteLine ( "Got exception " + ex.Message ) ;
+                DebugUtils.WriteLine("Got exception " + ex.Message);
             }
         }
 
 
-        [ Fact ]
-        public void TestXmlDoc ( )
+        [Fact]
+        public void TestXmlDoc()
         {
-            var x = TypesViewModel.LoadDoc ( ) ;
-            XmlDocElements.DocMembers ( x ) ;
+            var x = TypesViewModel.LoadDoc();
+            XmlDocElements.DocMembers(x);
             // foreach ( var codeElementDocumentation in y.Select ( XmlDocElements.HandleDocElement ) )
             // {
             // if ( codeElementDocumentation != null )
@@ -1276,117 +1246,115 @@ namespace ProjTests
             // }
         }
 
-        [ WpfFact ]
-        public void TestControl111 ( )
+        [WpfFact]
+        public void TestControl111()
         {
-            using ( var instance = new ApplicationInstance (
-                                                            new ApplicationInstance.
-                                                                ApplicationInstanceConfiguration (
-                                                                                                  _output
-                                                                                                     .WriteLine
-                                                                                                , ApplicationGuid
-                                                                                                 )
-                                                           ) )
+            using (var instance = new ApplicationInstance(
+                new ApplicationInstance.
+                    ApplicationInstanceConfiguration(
+                        _output
+                            .WriteLine
+                        , ApplicationGuid
+                    )
+            ))
             {
-                instance.AddModule ( new AnalysisControlsModule ( ) ) ;
-                instance.AddModule ( new AnalysisAppLibModule ( ) ) ;
-                instance.Initialize ( ) ;
-                var lifetimeScope = instance.GetLifetimeScope ( ) ;
+                instance.AddModule(new AnalysisControlsModule());
+                instance.AddModule(new AnalysisAppLibModule());
+                instance.Initialize();
+                var lifetimeScope = instance.GetLifetimeScope();
 
-                var t1 = new UiElementTypeConverter ( lifetimeScope ) ;
-                var t = t1.ControlForValue ( typeof ( ProjTests ) , 1 ) ;
-                var ff = new ScrollViewer ( ) { Content = t } ;
-                var w1 = new Window { Content           = ff } ;
-                w1.ShowDialog ( ) ;
+                var t1 = new UiElementTypeConverter(lifetimeScope);
+                var t = t1.ControlForValue(typeof(ProjTests), 1);
+                var ff = new ScrollViewer() {Content = t};
+                var w1 = new Window {Content = ff};
+                w1.ShowDialog();
             }
         }
 
-        [ WpfFact ]
-        public void Test111 ( )
+        [WpfFact]
+        public void Test111()
         {
-            var x = new ResourceManager (
-                                         "AnalysisControls.g"
-                                       , typeof ( PythonControl ).Assembly
-                                        ) ;
+            var x = new ResourceManager(
+                "AnalysisControls.g"
+                , typeof(PythonControl).Assembly
+            );
             // ReSharper disable once ResourceItemNotResolved
-            var y = x.GetStream ( "mainstatusbar.baml" ) ;
+            var y = x.GetStream("mainstatusbar.baml");
             // ReSharper disable once AssignNullToNotNullAttribute
-            var b = new Baml2006Reader ( y , new XamlReaderSettings ( ) ) ;
-            var c = b.SchemaContext ;
+            var b = new Baml2006Reader(y, new XamlReaderSettings());
+            var c = b.SchemaContext;
             // ReSharper disable once UnusedVariable
-            var t = c.GetXamlType ( typeof ( TypesViewModel ) ) ;
+            var t = c.GetXamlType(typeof(TypesViewModel));
         }
 
-        [ Fact ]
-        public void TestLambdaAppCommand ( )
+        [Fact]
+        public void TestLambdaAppCommand()
         {
-            AppLoggingConfigHelper.EnsureLoggingConfigured ( SlogMethod ) ;
+            AppLoggingConfigHelper.EnsureLoggingConfigured(SlogMethod);
 
 #pragma warning disable 1998
-            async Task < IAppCommandResult > CommandFunc ( LambdaAppCommand command )
+            async Task<IAppCommandResult> CommandFunc(LambdaAppCommand command)
 #pragma warning restore 1998
             {
-                Logger.Info ( $"{command}" ) ;
-                Logger.Info ( $"{command.Argument}" ) ;
-                return AppCommandResult.Success ;
+                Logger.Info($"{command}");
+                Logger.Info($"{command.Argument}");
+                return AppCommandResult.Success;
             }
 
-            var c = new LambdaAppCommand (
-                                          "test"
-                                        , CommandFunc
-                                        , "arg"
-                                        , exception
-                                              => DebugUtils.WriteLine ( $"badness: {exception}" )
-                                         ) ;
-            c.ExecuteAsync ( )
-             .ContinueWith (
-                            task => {
-                                if ( task.IsFaulted )
-                                {
-                                    DebugUtils.WriteLine ( "Faulted" ) ;
-                                }
+            var c = new LambdaAppCommand(
+                "test"
+                , CommandFunc
+                , "arg"
+                , exception
+                    => DebugUtils.WriteLine($"badness: {exception}")
+            );
+            c.ExecuteAsync()
+                .ContinueWith(
+                    task =>
+                    {
+                        if (task.IsFaulted) DebugUtils.WriteLine("Faulted");
 
-                                if ( ! task.IsCompleted )
-                                {
-                                    return ;
-                                }
+                        if (!task.IsCompleted) return;
 
-                                DebugUtils.WriteLine ( "completed" ) ;
-                                DebugUtils.WriteLine ( task.Result.ToString ( ) ) ;
-                            }
-                           )
-             .Wait ( 10000 ) ;
+                        DebugUtils.WriteLine("completed");
+                        DebugUtils.WriteLine(task.Result.ToString());
+                    }
+                )
+                .Wait(10000);
         }
 
-        private void SlogMethod ( string message ) { }
-
-        [ Fact ]
-        public void TestXaml1 ( )
+        private void SlogMethod(string message)
         {
-            var context = XamlReader.GetWpfSchemaContext ( ) ;
-            var xamlType = context.GetXamlType ( typeof ( Type ) ) ;
-            var xamlType2 = context.GetXamlType ( typeof ( SyntaxFieldInfo ) ) ;
-            // ReSharper disable once UnusedVariable
-            var typeMember = xamlType2.GetMember ( "Type" ) ;
+        }
 
-            var valueSerializer = xamlType.ValueSerializer ;
-            var typeConverter = xamlType.TypeConverter ;
+        [Fact]
+        public void TestXaml1()
+        {
+            var context = XamlReader.GetWpfSchemaContext();
+            var xamlType = context.GetXamlType(typeof(Type));
+            var xamlType2 = context.GetXamlType(typeof(SyntaxFieldInfo));
+            // ReSharper disable once UnusedVariable
+            var typeMember = xamlType2.GetMember("Type");
+
+            var valueSerializer = xamlType.ValueSerializer;
+            var typeConverter = xamlType.TypeConverter;
             // ReSharper disable once UnusedVariable
             var str1 =
-                typeConverter.ConverterInstance.ConvertToString ( typeof ( List < string > ) ) ;
+                typeConverter.ConverterInstance.ConvertToString(typeof(List<string>));
             // var str = valueSerializer.ConverterInstance.ConvertToString (
             // typeof ( List < string > )
             // , null
             // ) ;
-            var @out = XamlWriter.Save (
-                                        new SyntaxFieldInfo
-                                        {
-                                            Name = "test" , Type = typeof ( List < string > )
-                                        }
-                                       ) ;
-            DebugUtils.WriteLine ( @out ) ;
-            Logger.Info ( @out ) ;
+            var @out = XamlWriter.Save(
+                new SyntaxFieldInfo
+                {
+                    Name = "test", Type = typeof(List<string>)
+                }
+            );
+            DebugUtils.WriteLine(@out);
+            Logger.Info(@out);
         }
+
         [WpfFact]
         public void TestRibbonBuilder()
         {
@@ -1396,36 +1364,26 @@ namespace ProjTests
             //     , assembly
             // );
             // ReSharper disable once ResourceItemNotResolved
-            var assembly = typeof(AnalysisControlsModule).Assembly;
-             var x = new ResourceManager(
-                 "AnalysisControls.g"
-                 , assembly
-             );
-
-            var y = x.GetStream("templates.baml");
-            // ReSharper disable once AssignNullToNotNullAttribute
-            var b = new Baml2006Reader(y, new XamlReaderSettings());
-            
-            ResourceDictionary oo = (ResourceDictionary) XamlReader.Load(b);
+            var oo = ControlsResources();
 
             var w2 = new RWindow();
             //w2.ShowDialog();
             using (var instance = new ApplicationInstance(
-                                                            new ApplicationInstance.
-                                                                ApplicationInstanceConfiguration(
-                                                                                                  _output
-                                                                                                     .WriteLine
-                                                                                                , ApplicationGuid
-                                                                                                 )
-                                                           ))
+                new ApplicationInstance.
+                    ApplicationInstanceConfiguration(
+                        _output
+                            .WriteLine
+                        , ApplicationGuid
+                    )
+            ))
             {
                 instance.AddModule(new AnalysisControlsModule());
                 instance.AddModule(new AnalysisAppLibModule());
-                
+
                 instance.Initialize();
 
-                ReplaySubject<AdhocWorkspace> workspaceReplaySubject = new ReplaySubject<AdhocWorkspace>();
-                ReplaySubject<CommandProgress> progress = new ReplaySubject<CommandProgress>();
+                var workspaceReplaySubject = new ReplaySubject<AdhocWorkspace>();
+                var progress = new ReplaySubject<CommandProgress>();
                 var lifetimeScope = instance.GetLifetimeScope(containerBuilder =>
                 {
                     containerBuilder.RegisterInstance(workspaceReplaySubject).AsSelf().AsImplementedInterfaces();
@@ -1434,7 +1392,7 @@ namespace ProjTests
 
                 var sourceDocs = new ObservableCollection<AppDoc>();
 
-                ControlsProvider provider = lifetimeScope.Resolve<ControlsProvider>();
+                var provider = lifetimeScope.Resolve<ControlsProvider>();
                 foreach (var providerType in provider.Types)
                 {
                     DebugUtils.WriteLine(providerType.FullName);
@@ -1442,30 +1400,26 @@ namespace ProjTests
                 }
 
                 foreach (var displayableAppCommand in lifetimeScope.Resolve<IEnumerable<IDisplayableAppCommand>>())
-                {
                     DebugUtils.WriteLine(displayableAppCommand.DisplayName);
-                }
                 var builder = lifetimeScope.Resolve<RibbonBuilder>();
                 var ribbon = builder.Ribbon;
                 ribbon.SelectionChanged += (sender, args) => DebugUtils.WriteLine(args.AddedItems[0].ToString());
                 var w = new RibbonWindow();
                 var dp = new DockPanel();
-                ObservableCollection<CommandProgress> progresses = new ObservableCollection<CommandProgress>();
-                var ais = lifetimeScope.Resolve < ReplaySubject<ActivationInfo>>();
-                ObservableCollection<ActivationInfo> ci = new ObservableCollection<ActivationInfo>();
+                var progresses = new ObservableCollection<CommandProgress>();
+                var ais = lifetimeScope.Resolve<ReplaySubject<ActivationInfo>>();
+                var ci = new ObservableCollection<ActivationInfo>();
                 object resources = null;
                 var lb = AnalysisControlsModule.ReplayListView(ci, ais, oo);
-                
+
                 var lv = AnalysisControlsModule.ReplayListView(progresses, progress, oo);
                 workspaceReplaySubject.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send)
                     .Subscribe(
-
                         workspace =>
                         {
                             workspace.WorkspaceFailed += (sender, args) =>
                             {
                                 DebugUtils.WriteLine(args.Diagnostic.Message);
-
                             };
                             workspace.WorkspaceChanged += OnWorkspaceOnWorkspaceChanged;
                         });
@@ -1475,23 +1429,19 @@ namespace ProjTests
                 var uiElement = new Grid();
 
                 var m = new DockingManager();
-                
+
                 sourceDocs.CollectionChanged += (sender, args) =>
                 {
                     switch (args.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
                             foreach (var argsNewItem in args.NewItems)
-                            {
                                 DebugUtils.WriteLine("added " + argsNewItem.ToString());
-                            }
 
                             break;
                         case NotifyCollectionChangedAction.Remove:
                             foreach (var argsOldItem in args.OldItems)
-                            {
                                 DebugUtils.WriteLine($"removed " + argsOldItem.ToString());
-                            }
                             break;
                         case NotifyCollectionChangedAction.Replace:
                             break;
@@ -1502,28 +1452,43 @@ namespace ProjTests
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
-
                 };
                 m.DocumentsSource = sourceDocs;
                 sourceDocs.Add(new AppDoc() {Title = "test"});
                 var pane = new LayoutDocumentPane();
-                pane.Children.Add(new LayoutDocument() { Content =  lv });
+                pane.Children.Add(new LayoutDocument() {Content = lv});
 
-                pane.Children.Add(new LayoutDocument() { Content = lb, Title = "Activations" });
+                pane.Children.Add(new LayoutDocument() {Content = lb, Title = "Activations"});
                 var group = new LayoutDocumentPaneGroup(pane);
 
                 var mLayoutRootPanel = new LayoutPanel(group);
-                var layout = new LayoutRoot { RootPanel = mLayoutRootPanel };
+                var layout = new LayoutRoot {RootPanel = mLayoutRootPanel};
                 m.Layout = layout;
 
                 uiElement.Children.Add(m);
-                
+
                 dp.Children.Add(uiElement);
 
                 dp.LastChildFill = true;
                 w.Content = dp;
                 w.ShowDialog();
             }
+        }
+
+        private static ResourceDictionary ControlsResources()
+        {
+            var assembly = typeof(AnalysisControlsModule).Assembly;
+            var x = new ResourceManager(
+                "AnalysisControls.g"
+                , assembly
+            );
+
+            var y = x.GetStream("templates.baml");
+            // ReSharper disable once AssignNullToNotNullAttribute
+            var b = new Baml2006Reader(y, new XamlReaderSettings());
+
+            var oo = (ResourceDictionary) XamlReader.Load(b);
+            return oo;
         }
 
         private async void OnWorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args)
@@ -1558,23 +1523,19 @@ namespace ProjTests
                             var oldDoc = args.OldSolution.GetDocument(dc);
                             var newDoc = args.NewSolution.GetDocument(dc);
                             var x = await newDoc.GetTextChangesAsync(oldDoc);
-                                foreach(var xx in x)
-                                {
-                                    DebugUtils.WriteLine(xx.NewText);
-                                }
+                            foreach (var xx in x) DebugUtils.WriteLine(xx.NewText);
                         }
-                        DebugUtils.WriteLine(String.Join(", ", ch1.GetAddedMetadataReferences().Select(xxx=>xxx.Display)));
-                        if (!docChanges && !metadata)
-                        {
-                            DebugUtils.WriteLine(ch1.ToString());
-                        }
+
+                        DebugUtils.WriteLine(string.Join(", ",
+                            ch1.GetAddedMetadataReferences().Select(xxx => xxx.Display)));
+                        if (!docChanges && !metadata) DebugUtils.WriteLine(ch1.ToString());
                     }
+
                     break;
                 case WorkspaceChangeKind.ProjectReloaded:
                     break;
                 case WorkspaceChangeKind.DocumentAdded:
                     if (project != null)
-                    {
                         if (args.DocumentId != null)
                         {
                             var doc = project
@@ -1585,9 +1546,8 @@ namespace ProjTests
                                 // DebugUtils.WriteLine(text.ToString());
                             }
                         }
-                    }
 
-                    
+
                     break;
                 case WorkspaceChangeKind.DocumentRemoved:
                     break;
@@ -1617,6 +1577,7 @@ namespace ProjTests
                     throw new ArgumentOutOfRangeException();
             }
         }
+
         [WpfFact]
         public void TestControl2()
         {
@@ -1624,9 +1585,9 @@ namespace ProjTests
             var type2 = typeof(Dictionary<string, ConcurrentDictionary<object, Window>>);
 
 
-            DevTypeControl d = new DevTypeControl {Type = type2};
+            var d = new DevTypeControl {Type = type2};
             //CustomControl2 c = new CustomControl2() { Type = type2 };
-            Window w = new Window();
+            var w = new Window();
             //w.Padding = new Thickness(10);
             //c.Margin = new Thickness(15);
             w.Content = d;
@@ -1642,7 +1603,7 @@ namespace ProjTests
             // CustomControl2 c2 = new CustomControl2() { Type = type };
             // p2.Children.Add(c2);
             // p1.Children.Add(p3);
-            
+
             // Type type3 = typeof(object[]);
 
             // CustomControl2 c3 = new CustomControl2() { Type = type3 };
@@ -1664,12 +1625,9 @@ namespace ProjTests
             x.Tree = comp.SyntaxTree;
             x.Node = comp.CompilationUnit;
             foreach (var diagnostic in comp.Compilation.GetDiagnostics())
-            {
                 DebugUtils.WriteLine(diagnostic.Properties.Count.ToString());
-
-            }
             x.Errors = comp.Compilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error)
-                .Select(d => (CompilationError)new DiagnosticError(d)).ToList();
+                .Select(d => (CompilationError) new DiagnosticError(d)).ToList();
             Assert.Equal(7, x.Errors.Count);
             var charPos = 0;
             TextWriter writer = new StringWriter();
@@ -1678,22 +1636,24 @@ namespace ProjTests
             {
                 if (tr is CustomTextCharacters trc)
                 {
-  		    Logger.Info("writing text " + trc.Text);
+                    Logger.Info("writing text " + trc.Text);
                     writer.Write(trc.Text);
-                } else if (tr is TextEndOfLine teol)
+                }
+                else if (tr is TextEndOfLine teol)
                 {
                     writer.WriteLine("");
-                } else {
-throw new InvalidOperationException(tr.GetType().FullName);
-}
+                }
+                else
+                {
+                    throw new InvalidOperationException(tr.GetType().FullName);
+                }
+
                 charPos += tr.Length;
             }
 
             DebugUtils.WriteLine(writer.ToString());
-            
-
-
         }
+
         [WpfFact]
         public void TestControl21()
         {
@@ -1703,15 +1663,15 @@ throw new InvalidOperationException(tr.GetType().FullName);
 
             var d = new FormattedTextControl() {BorderThickness = new Thickness(3), BorderBrush = Brushes.Pink};
             var xb = new TextBlock();
-            xb.SetBinding(TextBlock.TextProperty, new Binding("HoverColumn") { Source = d });
+            xb.SetBinding(TextBlock.TextProperty, new Binding("HoverColumn") {Source = d});
             var xy = new TextBlock();
-            xy.SetBinding(TextBlock.TextProperty, new Binding("HoverRow") { Source = d });
-            var stackPanel = new StackPanel { Orientation = Orientation.Horizontal};
-            stackPanel.Children.Add(new TextBlock { Text = "( " });
+            xy.SetBinding(TextBlock.TextProperty, new Binding("HoverRow") {Source = d});
+            var stackPanel = new StackPanel {Orientation = Orientation.Horizontal};
+            stackPanel.Children.Add(new TextBlock {Text = "( "});
             stackPanel.Children.Add(xb);
-            stackPanel.Children.Add(new TextBlock { Text = ", " });
+            stackPanel.Children.Add(new TextBlock {Text = ", "});
             stackPanel.Children.Add(xy);
-            stackPanel.Children.Add(new TextBlock { Text = " )" });
+            stackPanel.Children.Add(new TextBlock {Text = " )"});
             ss.Children.Add(stackPanel);
 
             //var textBlock = new TextBlock();
@@ -1720,17 +1680,18 @@ throw new InvalidOperationException(tr.GetType().FullName);
             ss.Children.Add(d);
             d.VerticalAlignment = VerticalAlignment.Stretch;
             d.HorizontalAlignment = HorizontalAlignment.Stretch;
-	    var n = SyntaxFactory.ParseCompilationUnit(AnalysisAppLib.Properties.Resources.Program_Parse).NormalizeWhitespace("    ");
-        var stree = SyntaxFactory.SyntaxTree(n);
-d.Tree = stree;
-var compilation = AnalysisService.CreateCompilation("x", stree);
-d.Compilation = compilation;
-d.Model = compilation.GetSemanticModel(stree);
+            var n = SyntaxFactory.ParseCompilationUnit(AnalysisAppLib.Properties.Resources.Program_Parse)
+                .NormalizeWhitespace("    ");
+            var stree = SyntaxFactory.SyntaxTree(n);
+            d.SyntaxTree = stree;
+            var compilation = AnalysisService.CreateCompilation("x", stree);
+            d.Compilation = compilation;
+            d.Model = compilation.GetSemanticModel(stree);
             d.Node = stree.GetRoot();
-    		
-		    
+
+
             //CustomControl2 c = new CustomControl2() { Type = type2 };
-            Window w = new Window();
+            var w = new Window();
             //w.Padding = new Thickness(10);
             //c.Margin = new Thickness(15);
             w.Content = ss;
@@ -1758,30 +1719,258 @@ d.Model = compilation.GetSemanticModel(stree);
             // w.Content = p1;
             // w.ShowDialog();
         }
-    }
 
-    public class ProjTestsModule : Module
-    {
-        protected override void Load(ContainerBuilder builder)
+        [WpfFact]
+        public void TestDiag()
+        {
+            ProjTestsHelper.TestSyntaxControl(new CodeDiagnostics());
+        }
+
+        [WpfFact]
+        public void TestCodeControl2()
+        {
+            ProjTestsHelper.TestSyntaxControl(new CodeControl2());
+        }
+
+        [WpfFact]
+        public void TestText()
+        {
+            double EmSize = 12;
+            Visual h = new Border();
+            var PixelsPerDip = VisualTreeHelper.GetDpi(h).PixelsPerDip;
+            var syntaxTree = ProjTestsHelper.SetupSyntaxParams(out var compilation);
+            var Store = FormattingHelper.UpdateTextSource(syntaxTree.GetRoot(), compilation, syntaxTree, PixelsPerDip,
+                EmSize);
+            var formatter = TextFormatter.Create();
+            var textStorePosition = 0;
+            var OutputWidth = 800;
+            var Typeface = new Typeface("Courier New");
+
+            var CurrentRendering = new FontRendering(
+                EmSize,
+                TextAlignment.Left,
+                null,
+                Brushes.Black,
+                Typeface);
+            double maxX = 0;
+            
+            var line = 0;
+            
+            
+            var group = new DrawingGroup();
+            var dc = group.Open();
+
+            var context = new LineContext();
+
+            IList<LineInfo> allLineInfos = new List<LineInfo>();
+            while (context.TextStorePosition < Store.Length)
+                using (var myTextLine = formatter.FormatLine(
+                    Store,
+                    context.TextStorePosition,
+                    OutputWidth,
+                    new GenericTextParagraphProperties(CurrentRendering, PixelsPerDip),
+                    null))
+                {
+
+                    var infos = new List<RegionInfo>();
+                    context.MyTextLine = myTextLine;
+                    FormattingHelper.HandleTextLine(infos, context, dc, out var lineInfo);
+                    
+                    allLineInfos.Add(lineInfo);
+                }
+
+            foreach (var allLineInfo in allLineInfos)
+            {
+                if (allLineInfo == null)
+                    throw new InvalidOperationException();
+                if (allLineInfo.Regions == null) throw new InvalidOperationException(allLineInfo.LineNumber.ToString());
+                foreach (var regionInfo in allLineInfo.Regions)
+                {
+                    if (regionInfo == null) throw new InvalidOperationException();
+                    foreach (var ch in regionInfo.Characters)
+                        if (ch == null)
+                            throw new InvalidOperationException();
+                }
+            }
+
+            var outq = (from li in allLineInfos
+                let x = li
+                from r in li.Regions
+                from ch in r.Characters
+                select ProjTestsHelper.Merge(ch, r, li)).ToList();
+
+            using (var writer = new CsvWriter(new ExcelSerializer("c:\\temp\\out.xlsx")))
+            {
+                writer.WriteRecords(allLineInfos);
+            }
+
+            using (var writer = new CsvWriter(new ExcelSerializer("c:\\temp\\out2.xlsx")))
+            {
+                writer.WriteRecords(outq);
+            }
+        }
+
+        [WpfFact]
+        public void TestEnhanced()
+        {
+            ProjTestsHelper.TestSyntaxControl(new EnhancedCodeControl());
+        }
+
+        [WpfFact]
+        public void TestFormattedControl()
+        {
+            ProjTestsHelper.TestSyntaxControl(new FormattedTextControl());
+        }
+
+        [WpfFact]
+        public void TestMain1()
+        {
+            Main1Model.SelectVsInstance();
+            var r = ControlsResources();
+            Main1 mainw = new Main1();
+            mainw.Resources = r;
+            Window w = new Window()
+            {
+                Content = mainw
+            };
+            TaskCompletionSource<int> t = new TaskCompletionSource<int>();
+            
+            ReplaySubject<Workspace> replay = new ReplaySubject<Workspace>();
+            mainw.ViewModel = new Main1Model(replay);
+            mainw.AddHandler(WorkspaceView.SelectedProjectChangedEvent,
+                new RoutedPropertyChangedEventHandler<ProjectModel>(Target), true);
+
+            w.Loaded += (sender, args) =>
+            {
+                mainw.ViewModel.LoadSolution(solutionPath);
+                mainw.ViewModel.WorkspaceView.SelectedDocumentChanged +=
+                    (sender1, args1) => DebugUtils.WriteLine(args1.NewValue.Name);
+                mainw.ViewModel.WorkspaceView.SelectedProjectChanged +=
+                    (sender2, args2) =>
+                    {
+                        DebugUtils.WriteLine(args2.NewValue.Name + $" {args2.NewValue.Documents.Count}" +" [" + String.Join(", ",
+                                                 args2.NewValue.RootPathInfo.Entries.Values.Select(x => x.Path)) + "]");
+                    };
+
+            };
+
+            w.Closed += (sender, args) =>
+            {
+                t.SetResult(0);
+            };
+            w.ShowDialog();
+            //Task.WaitAll(t.Task);
+
+        }
+
+        private void Target(object sender, RoutedPropertyChangedEventArgs<ProjectModel> e)
         {
             
         }
-    }
 
-    public class TestApp1 : System.Windows.Application
-    {
-        #region Overrides of Application
-        protected override void OnStartup ( StartupEventArgs e ) { base.OnStartup ( e ) ; }
-        #endregion
-    }
 
-    class Generic1<TA>
-    {
+        [WpfFact]
+        public void TestAllCommand()
+        {
+            using (var instance = new ApplicationInstance(
+                new ApplicationInstance.
+                    ApplicationInstanceConfiguration(
+                        _output
+                            .WriteLine
+                        , ApplicationGuid
+                    )
+            ))
+            {
+                instance.AddModule(new AnalysisControlsModule());
+                instance.AddModule(new AnalysisAppLibModule());
 
-    }
+                instance.Initialize();
 
-    class Generic2<TB> : Generic1<TB>
-    {
+                //       var workspaceReplaySubject = new ReplaySubject<AdhocWorkspace>();
+                //     var progress = new ReplaySubject<CommandProgress>();
+                var lifetimeScope = instance.GetLifetimeScope(containerBuilder =>
+                {
+                    //containerBuilder.RegisterInstance(workspaceReplaySubject).AsSelf().AsImplementedInterfaces();
+                    //containerBuilder.RegisterInstance(progress).AsSelf().AsImplementedInterfaces();
+                });
+                var allCommands = lifetimeScope.Resolve<AllCommands>();
+                foreach (var meta in allCommands.Commands1)
+                {
+                    DebugUtils.WriteLine("Command");
+                    var props = MetaHelper.GetMetadataProps(meta.Metadata);
+                    DebugUtils.WriteLine($"{props.Title} - {props.Category}");
+                    // foreach (var keyValuePair in meta.Metadata)
+                    // {
+                        // DebugUtils.WriteLine($"{keyValuePair.Key} = {keyValuePair.Value}");
+                    // }
+                }
+                var e = allCommands.GetComponent();
 
+            }
+        }
+        [WpfFact]
+        public void TestWorkspaceView()
+        {
+            var c = new WorkspaceView();
+            System.Reactive.Subjects.ReplaySubject<Workspace> replay= new ReplaySubject<Workspace>();
+            Main1Model model = new Main1Model(replay);
+            model.CreateWorkspace();
+            c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierRoot") {Source = model});
+            model.CreateProject();
+            model.AddDocument(model.HierRoot[0].Projects[0], @"C:\temp\program.cs");
+            
+//            model.Workspace.AddProject("test", LanguageNames.CSharp);
+            Window w = new Window() {Content = c};
+            w.ShowDialog();
+        }
+
+        [WpfFact]
+        public void TestWorkspaceView2()
+        {
+            AppDomain.CurrentDomain.AssemblyLoad +=
+                (sender, args) => DebugUtils.WriteLine(args.LoadedAssembly.FullName);
+            var c = new WorkspaceView();
+            System.Reactive.Subjects.ReplaySubject<Workspace> replay = new ReplaySubject<Workspace>();
+            Main1Model model = new Main1Model(replay);
+            model.LoadSolution(
+                solutionPath);
+            c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierRoot") { Source = model });
+            Window w = new Window() { Content = c };
+            w.ShowDialog();
+        }
+
+        [WpfFact]
+        public void TestWorkspaceModel()
+        {
+            
+            System.Reactive.Subjects.ReplaySubject<Workspace> replay = new ReplaySubject<Workspace>();
+            Main1Model model = new Main1Model(replay);
+            model.LoadSolution(
+                solutionPath).ContinueWith(
+                task =>
+                {
+                    var sol = model.HierRoot.FirstOrDefault();
+                    foreach (var projectModel in sol.Projects)
+                    {
+                        foreach (var projectModelDocument in projectModel.Documents)
+                        {
+                            DebugUtils.WriteLine(projectModelDocument.Name);
+                        }
+                    }
+                });
+            
+        }
+        
+        [WpfFact]
+        public void TestMain1_()
+        {
+            Assert.True(MSBuildLocator.CanRegister);
+            ProjectModel m = new ProjectModel();
+            m.Documents.Add(new DocumentModel(){FilePath = "test\\one\\tewo"});
+            foreach (var kv in m.RootPathInfo.Entries)
+            {
+                DebugUtils.WriteLine(kv.Value.ToString());
+            }
+        }
     }
 }

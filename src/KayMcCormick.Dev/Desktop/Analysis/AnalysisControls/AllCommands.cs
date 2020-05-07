@@ -4,42 +4,61 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using AnalysisAppLib;
 using Autofac.Features.Metadata;
 using AvalonDock.Layout;
 using KayMcCormick.Dev;
-using KayMcCormick.Dev.Command;
-using KayMcCormick.Lib.Wpf;
 using KayMcCormick.Lib.Wpf.Command;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AllCommands : IRibbonComponent
     {
-        private IEnumerable<Meta<IAppCommand>> _commands;
-        private readonly IEnumerable<IDisplayableAppCommand> _dispCmds;
+        private readonly IEnumerable<Meta<Lazy<IBaseLibCommand>>> _commands;
+        private readonly IEnumerable<IDisplayableAppCommand> _displayCommands;
         private readonly ReplaySubject<DocContent> _docContent;
-        private readonly IEnumerable<Func<LayoutDocumentPane, IDisplayableAppCommand>> _funcs;
-        private List<Meta<IAppCommand>> _cmds;
+        private readonly IEnumerable<Func<LayoutDocumentPane, IDisplayableAppCommand>> _funcs = null;
+        private List<Meta<Lazy<IBaseLibCommand>>> _cmds;
 
-        public AllCommands(IEnumerable<Meta<IAppCommand>> commands, IEnumerable<IDisplayableAppCommand> dispCmds,
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="commands"></param>
+        /// <param name="displayCommands"></param>
+        /// <param name="docContent"></param>
+        public AllCommands(IEnumerable<Meta<Lazy<IBaseLibCommand>>> commands, IEnumerable<IDisplayableAppCommand> displayCommands,
             ReplaySubject<DocContent> docContent)
         {
             _commands = commands;
-            _dispCmds = dispCmds;
+            _displayCommands = displayCommands;
             _docContent = docContent;
             _cmds = _commands.ToList();
             
-        
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public LayoutDocumentPane DocPane { get; set; }
 
+        public IEnumerable<Meta<Lazy<IBaseLibCommand>>> Commands1
+        {
+            get { return _commands; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public object GetComponent()
         {
-            RibbonGroup myGroup = new RibbonGroup();
+            var myGroup = new RibbonGroup();
             var x = new RibbonTextBox();
             x.PreviewKeyDown += (sender, args) =>
             {
@@ -55,26 +74,25 @@ namespace AnalysisControls
                 }
             };
             myGroup.Items.Add(x);
-            RibbonGallery gallery = new RibbonGallery();
-            var galCat = new RibbonGalleryCategory();
-            galCat.MaxColumnCount = 1;
-            galCat.MinColumnCount = 1;
-            List<RibbonGalleryItem> items = new List<RibbonGalleryItem>();
+            var gallery = new RibbonGallery();
+            var galCat = new RibbonGalleryCategory { MaxColumnCount = 1, MinColumnCount = 1 };
+            var galCat2 = new RibbonGalleryCategory { MaxColumnCount = 1, MinColumnCount = 1,DisplayMemberPath = "Title"};
+            var items = new List<RibbonGalleryItem>();
+            var items2 = new List<object>();
             foreach (var baseLibCommand in _commands)
             {
                 var ribbonGalleryItem = new RibbonGalleryItem();
-                var ribbonButton = new RibbonButton();
                 var props = MetaHelper.GetMetadataProps(baseLibCommand.Metadata);
-
                 var ribbonButtonContent = props.Title ?? "no title";
-                TextBlock bl = new TextBlock() {Text = ribbonButtonContent};
-                ribbonButton.Content = bl;
-                ribbonButton.Command = baseLibCommand.Value.Command;
                 ribbonGalleryItem.Content = ribbonButtonContent;
                 ribbonGalleryItem.Tag = baseLibCommand.Value;
                 items.Add(ribbonGalleryItem);
+                var commandInfo = new CommandInfo() {Command = baseLibCommand};
+                DebugUtils.WriteLine(commandInfo.TheCommand.GetType().FullName);
+                DebugUtils.WriteLine(commandInfo.Title);
+                items2.Add(commandInfo);
             }
-            foreach (var cmd1 in _dispCmds)
+            foreach (var cmd1 in _displayCommands)
             {
                 var ribbonGalleryItem = new RibbonGalleryItem();
                 var ribbonButtonContent = cmd1.DisplayName;
@@ -95,6 +113,11 @@ namespace AnalysisControls
 
             galCat.ItemsSource = items;
             gallery.ItemsSource = new[]{galCat};
+            galCat2.ItemsSource = items2;
+            var gallery2 = new RibbonGallery();
+            gallery2.ItemsSource = new[] { galCat2 };
+            var split = new RibbonSplitButton() { Label = "Command", LabelPosition = RibbonSplitButtonLabelPosition.DropDown };
+            //split.Items.Add(gallery2);
 
             var ribbonComboBox = new RibbonComboBox();
             ribbonComboBox.Items.Add(gallery);
@@ -118,12 +141,28 @@ namespace AnalysisControls
                     return result;
 
             }, null);
-            RibbonControl status = new RibbonControl();
-            
-            status.Content = statusContent;
+            var status = new RibbonControl {Content = statusContent};
+
             myGroup.Items.Add(status);
+            //myGroup.Items.Add(split);
+            var combo2 = new RibbonComboBox();
+            combo2.Label = "Command Info";
+            combo2.Items.Add(gallery2);
+            var group2 = new RibbonGroup();
+            var g2 = new RibbonControlGroup();
+            group2.Items.Add(g2);
+            var comboBox = new RibbonComboBox();
+            //comboBox.Items.Add(gallery2);
+            comboBox.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("SelectedItem.Metadata")
+            {
+                Source = gallery2
+            });
+            g2.Items.Add(comboBox);
+
             myGroup.Items.Add(ribbonComboBox);
-            return myGroup;
+            myGroup.Items.Add(combo2);
+
+            return new[] {myGroup, group2};
         }
     }
 }

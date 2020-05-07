@@ -24,12 +24,12 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        TypeDocInfo GetTypeDocumentation ( Type type ) ;
+        ICodeElementDocumentation GetTypeDocumentation ( Type type ) ;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="methodDocumentation"></param>
-        void CollectDoc ( CodeElementDocumentation methodDocumentation ) ;
+        void CollectDoc ( ICodeElementDocumentation methodDocumentation ) ;
     }
 }

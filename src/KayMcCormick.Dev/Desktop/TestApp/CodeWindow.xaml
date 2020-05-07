@@ -15,9 +15,9 @@
     
   </Window.Resources>
   <Grid>
-    <anal:FormattedTextControl  
-      Tree="{anal:SyntaxTree SyntaxTrees={StaticResource trees},Index=0}" 
+    <anal:EnhancedCodeControl  
+      SyntaxTree="{anal:SyntaxTree SyntaxTrees={StaticResource trees},Index=0}" 
       Compilation="{anal:Compilation OutputKind=DynamicallyLinkedLibrary,SyntaxTrees={StaticResource trees}}">
-</anal:FormattedTextControl>
+</anal:EnhancedCodeControl>
   </Grid>
 </Window>

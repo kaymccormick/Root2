@@ -10,12 +10,10 @@
 // ---
 #endregion
 using System ;
-using System.Collections ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.IO ;
 using System.Linq ;
-using System.Reflection ;
 using System.Windows.Markup ;
 using System.Xml ;
 using System.Xml.Linq ;
@@ -224,144 +222,6 @@ namespace AnalysisAppLib
         }
 
         // ReSharper disable once UnusedMember.Global
-        internal void LoadFactoryMethodSignaturesAndDocumentation (
-            ISyntaxTypesService       sts
-          , [ NotNull ] IDocInterface docInterface
-        )
-        {
-            var si = docInterface.GetTypeDocumentation ( typeof ( SyntaxFactory ) ) ;
-            var methodInfos = typeof ( SyntaxFactory )
-                             .GetMethods ( BindingFlags.Static | BindingFlags.Public )
-                             .ToList ( ) ;
-
-            foreach ( var methodInfo in methodInfos.Where (
-                                                           info => typeof ( SyntaxNode )
-                                                              .IsAssignableFrom ( info.ReturnType )
-                                                          ) )
-            {
-                var key = new AppTypeInfoKey ( methodInfo.ReturnType ) ;
-                var info = sts.GetAppTypeInfo ( key ) ;
-                var appMethodInfo = new AppMethodInfo { MethodInfo = methodInfo } ;
-                if ( si != null
-                     && si.MethodDocumentation.TryGetValue ( methodInfo.Name , out var methodDoc ) )
-                {
-                    var p = string.Join (
-                                         ","
-                                       , methodInfo
-                                        .GetParameters ( )
-                                        .Select (
-                                                 parameterInfo
-                                                     => parameterInfo.ParameterType.FullName
-                                                )
-                                        ) ;
-                    //DebugUtils.WriteLine ( $"xx: {p}" ) ;
-                    foreach ( var methodDocumentation in methodDoc )
-                    {
-                        //  DebugUtils.WriteLine ( methodDocumentation.Parameters ) ;
-                        if ( methodDocumentation.Parameters != p )
-                        {
-                            continue ;
-                        }
-
-                        //    DebugUtils.WriteLine ( $"Docs for {methodInfo}" ) ;
-                        appMethodInfo.XmlDoc = methodDocumentation ;
-                        docInterface.CollectDoc ( methodDocumentation ) ;
-                    }
-                }
-
-                info.FactoryMethods.Add ( appMethodInfo ) ;
-                //Logger.Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
-            }
-
-            foreach ( var pair in Map.Dict.Where (
-                                                  v => ! v.Key.Equals (
-                                                                       new AppTypeInfoKey (
-                                                                                           typeof (
-                                                                                               CSharpSyntaxNode
-                                                                                           )
-                                                                                          )
-                                                                      )
-                                                 ) )
-            {
-                //}.Where ( pair => pair.Key.IsAbstract == false ) )
-                {
-                    var type = GetTypeInfo ( pair.Value ) ;
-                    foreach ( var propertyInfo in type.GetProperties (
-                                                                      BindingFlags.DeclaredOnly
-                                                                      | BindingFlags.Instance
-                                                                      | BindingFlags.Public
-                                                                     ) )
-                    {
-                        if ( propertyInfo.DeclaringType != type )
-                        {
-                            continue ;
-                        }
-
-                        var t = propertyInfo.PropertyType ;
-
-                        AppTypeInfo typeInfo = null ;
-                        AppTypeInfo otherTypeInfo = null ;
-                        if ( t.IsGenericType )
-                        {
-                            DebugUtils.WriteLine ( $"{t} is Generic" ) ;
-                            var typeArg = t.GenericTypeArguments[ 0 ] ;
-                            DebugUtils.WriteLine ( $"{typeArg}" ) ;
-                            if ( typeof ( SyntaxNode ).IsAssignableFrom ( typeArg )
-                                 && typeof ( IEnumerable ).IsAssignableFrom ( t ) )
-                            {
-                                typeInfo = ( AppTypeInfo ) Map[ typeArg ] ;
-                            }
-                        }
-                        else
-                        {
-                            if ( ! Map.Dict.TryGetValue (
-                                                         new AppTypeInfoKey ( t )
-                                                       , out typeInfo
-                                                        ) )
-                            {
-                                if ( ! _otherTyps.TryGetValue ( t , out otherTypeInfo ) )
-                                {
-                                    otherTypeInfo = _otherTyps[ t ] = new AppTypeInfo { Type = t } ;
-                                }
-                            }
-                        }
-
-                        if ( typeInfo         == null
-                             && otherTypeInfo == null )
-                        {
-                            continue ;
-                        }
-
-                        var info = docInterface.GetTypeDocumentation ( type ) ;
-                        if ( info.PropertyDocumentation.TryGetValue (
-                                                                     propertyInfo.Name
-                                                                   , out var propDoc
-                                                                    ) )
-                        {
-                        }
-
-                        if ( propDoc != null )
-                        {
-                            docInterface.CollectDoc ( propDoc ) ;
-                            // pair.Value.Components.Add (
-                            // new ComponentInfo
-                            // {
-                            // XmlDoc         = propDoc
-                            // , IsSelfOwned    = true
-                            // , OwningTypeInfo = pair.Value
-                            // , IsList         = isList
-                            // , TypeInfo =
-                            // typeInfo ?? otherTypeInfo
-                            // , PropertyName = propertyInfo.Name
-                            // }
-                            // ) ;
-                        }
-
-                        //Logger.Info ( t.ToString ( ) ) ;
-                    }
-                }
-            }
-        }
 
         private Type GetTypeInfo ( [ NotNull ] AppTypeInfo pairValue ) { return pairValue.Type ; }
 

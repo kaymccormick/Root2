@@ -269,7 +269,10 @@ namespace ProjInterface
                                           ) ;
 #endif
             builder.RegisterModule < AnalysisAppLibModule > ( ) ;
-            builder.RegisterType < Window1 > ( ).AsSelf ( ).WithCallerMetadata ( ) ;
+
+            builder.RegisterType<Window1>().AsSelf().As<Window>().WithCallerMetadata().OnActivating(OnWindowActivating);
+            builder.RegisterType<Window2>().AsSelf().As<Window>().WithCallerMetadata().OnActivating(OnWindowActivating);
+            //builder.RegisterType<Window2>().AsSelf().As<Window>().WithCallerMetadata().OnActivating(OnWindowActivating);
 #if EXPLORER
 if(RegiserExplorerTypes){
             builder.RegisterAdapter < AppExplorerItem , IExplorerItem > (
@@ -340,26 +343,10 @@ if(RegiserExplorerTypes){
                 // var meta = o.Metadata;
                 
             // })
-            builder.RegisterType < UiElementTypeConverter > ( ).AsSelf ( ) ;
+            
 
 
 #if PYTHON
-            builder.RegisterAssemblyTypes (
-                                           Assembly.GetCallingAssembly ( )
-                             , typeof ( PythonControl ).Assembly
-                                          )
-                   .Where (
-                           type => {
-                               var isAssignableFrom =
-                                   typeof ( IDisplayableAppCommand ).IsAssignableFrom ( type )
-                                   && type != typeof ( LambdaAppCommand ) ;
-                               DebugUtils.WriteLine ( $"{type.FullName} - {isAssignableFrom}" ) ;
-                               return isAssignableFrom ;
-                           }
-                          )
-                   .As < IDisplayableAppCommand > ( )
-                   .As < IAppCommand > ( )
-                   .As < IDisplayable > ( ) ;
 #endif
 
             // builder.Register (
@@ -369,6 +356,11 @@ if(RegiserExplorerTypes){
             // .As < IViewWithTitle > ( )
             // .As < LogViewerControl > ( )
             // .WithCallerMetadata ( ) ;
+        }
+
+        private void OnWindowActivating<T>(IActivatingEventArgs<T> obj) where T : Window
+        {
+            //obj.Instance.SetValue(AttachedProperties.LifetimeScopeProperty, obj.Context.Resolve<ILifetimeScope>());
         }
 
         private void ComponentRegistryBuilderOnRegistered (

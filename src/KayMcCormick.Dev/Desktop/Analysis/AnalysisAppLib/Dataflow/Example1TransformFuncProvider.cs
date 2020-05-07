@@ -16,7 +16,8 @@ using System.Threading.Tasks.Dataflow ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.VisualBasic ;
+using Microsoft.CodeAnalysis.CSharp;
+
 
 namespace AnalysisAppLib.Dataflow
 {
@@ -65,8 +66,8 @@ namespace AnalysisAppLib.Dataflow
                                                                      == SyntaxKind
                                                                         .CompilationUnit
                                                                      || x.Kind ( )
-                                                                     == SyntaxKind
-                                                                        .NamespaceBlock
+                                                                     == SyntaxKind.NamespaceDeclaration
+                                                                        
                                                                ) )
             {
                 if ( model == null )

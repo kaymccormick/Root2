@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -73,22 +73,43 @@
   <ItemGroup>
     <Compile Include="AppContainerFixture.cs" />
     <Compile Include="AppProjTests.cs" />
+    <Compile Include="CharRow.cs" />
     <Compile Include="ContainerTests.cs" />
+    <Compile Include="Generic1.cs" />
+    <Compile Include="Generic2.cs" />
     <Compile Include="MyConverter1.cs" />
     <Compile Include="MyXmlWriter.cs" />
     <Compile Include="ProjectFixture.cs" />
     <Compile Include="ProjTests.cs" />
+    <Compile Include="ProjTestsHelper.cs" />
+    <Compile Include="ProjTestsModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestApp1.cs" />
     <Compile Include="TestApplication.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac.Extras.AttributeMetadata">
       <Version>5.0.0</Version>
     </PackageReference>
+    <PackageReference Include="CsvHelper.Excel">
+      <Version>1.0.6</Version>
+    </PackageReference>
     <PackageReference Include="Dirkster.AvalonDock">
       <Version>4.10.0</Version>
     </PackageReference>
+    <PackageReference Include="EPPlus">
+      <Version>5.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="ExcelFile.net">
+      <Version>1.2.0</Version>
+    </PackageReference>
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
+    <PackageReference Include="LinqToExcel">
+      <Version>1.11.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime">
+      <Version>16.5.0</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Build.Locator">
       <Version>1.2.6</Version>
     </PackageReference>
@@ -115,6 +136,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
       <Version>16.6.13</Version>
+    </PackageReference>
+    <PackageReference Include="MindFusion.Spreadsheet">
+      <Version>1.6.0</Version>
     </PackageReference>
     <PackageReference Include="Moq">
       <Version>4.13.1</Version>

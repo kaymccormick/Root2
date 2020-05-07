@@ -10,6 +10,7 @@ namespace AnalysisControls
     {
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
+
             return base.CanConvertTo(context, destinationType);
         }
     }

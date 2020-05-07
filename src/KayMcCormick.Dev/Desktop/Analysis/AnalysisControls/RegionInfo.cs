@@ -113,6 +113,8 @@ namespace AnalysisControls
             }
         }
 
+        public string Key { get; set; }
+
         public RegionInfo(TextRun textRun, Rect boundingRect, List<CharacterCell> characters)
         {
             TextRun = textRun;

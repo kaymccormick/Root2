@@ -12,6 +12,9 @@
 #endregion
 using System ;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
 using AnalysisAppLib.Properties ;
 using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
@@ -140,5 +143,20 @@ namespace AnalysisAppLib
             var compilation = CreateCompilation ( assemblyName , syntaxTree, extraRefs) ;
             return CreateFromCompilation ( syntaxTree , compilation ) ;
         }
+        public static ICodeAnalyseContext Load([NotNull] string filename
+            , [NotNull] string assemblyName, bool extraRefs = true)
+        {
+
+            if (assemblyName == null)
+            {
+                throw new ArgumentNullException(nameof(assemblyName));
+            }
+
+            var code = File.ReadAllText(filename);
+            var syntaxTree = CSharpSyntaxTree.ParseText(code);
+            var compilation = CreateCompilation(assemblyName, syntaxTree, extraRefs);
+            return CreateFromCompilation(syntaxTree, compilation);
+        }
+
     }
 }

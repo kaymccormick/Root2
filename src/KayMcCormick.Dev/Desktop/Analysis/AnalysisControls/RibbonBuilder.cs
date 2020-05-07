@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls.Ribbon;
+﻿using System.Collections;
+using System.Windows.Controls.Ribbon;
 using AvalonDock.Layout;
 
 namespace AnalysisControls
@@ -26,10 +27,7 @@ namespace AnalysisControls
 
                 return _ribbon;
             }
-            set
-            {
-                _ribbon = value;
-            }
+            set { _ribbon = value; }
         }
 
         public LayoutDocumentPane DocPane { get; set; }
@@ -43,11 +41,28 @@ namespace AnalysisControls
                 var ribbonTab = new RibbonTab();
                 ribbonTab.Header = appRibbonTab.Category.Category.ToString();
                 r.Items.Add(ribbonTab);
-                
-                ribbonTab.Items.Add(_allCommands.GetComponent());
+
+                var newItem = _allCommands.GetComponent();
+                if (newItem is IEnumerable v)
+                {
+                    foreach (var o in v)
+                    {
+                        ribbonTab.Items.Add(o);
+                    }
+                }
+                else
+                {
+                    ribbonTab.Items.Add(newItem);
+                }
             }
 
             return r;
         }
     }
+
+    class MyRibbon : Ribbon
+    {
+
+    }
+
 }

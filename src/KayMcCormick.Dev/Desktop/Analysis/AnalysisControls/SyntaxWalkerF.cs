@@ -22,7 +22,7 @@ namespace AnalysisControls
         
         private readonly CustomTextSource3 s3;
         private Func<object, string, TextRunProperties> _propertiesFunc;
-        private int _curPos;
+        public int CurPos { get; set; }
         private Stack<SyntaxNode> nodes=new Stack<SyntaxNode>();
         private List<NodeRuns> runs= new List<NodeRuns>();
         private Stack<List<NodeRuns>> _nodeStack = new Stack<List<NodeRuns>>();
@@ -51,10 +51,9 @@ namespace AnalysisControls
             VisitLeadingTrivia(token);
             DoToken(token);
             VisitTrailingTrivia(token);
-            base.VisitToken(token);
         }
 
-        private new void VisitLeadingTrivia(SyntaxToken token)
+        public override  void VisitLeadingTrivia(SyntaxToken token)
         {
             foreach (var syntaxTrivia in token.LeadingTrivia)
             {
@@ -64,9 +63,20 @@ namespace AnalysisControls
 
         private void DoTrivia(SyntaxTrivia syntaxTrivia)
         {
-            if (syntaxTrivia.Span.Start != _curPos)
+            DebugUtils.WriteLine("At " + syntaxTrivia.Kind().ToString());
+            if (syntaxTrivia.HasStructure)
             {
-                if (_curPos < syntaxTrivia.Span.Start)
+                var w = new TriviaWalker(_lrun, _source3, _takeTextRun, _propertiesFunc,
+                    SyntaxWalkerDepth.StructuredTrivia);
+                w.CurPos = CurPos;
+                w.Visit(syntaxTrivia.GetStructure());
+                CurPos = w.CurPos;
+                return;
+            }
+
+            if (syntaxTrivia.Span.Start != CurPos)
+            {
+                if (CurPos < syntaxTrivia.Span.Start)
                 {
                     
                 }
@@ -110,7 +120,7 @@ namespace AnalysisControls
             _textRuns.Add(run);
             //_nodeStack.Peek().TakeTextRun(run);
             var l = run.Length;
-            _curPos += l;
+            CurPos += l;
             _takeTextRun(run);
         }
 
@@ -118,7 +128,7 @@ namespace AnalysisControls
         {
             var textRunProperties = _propertiesFunc(syntaxTrivia, text);
             var syn = new SyntaxTriviaTextCharacters(text, 0, syntaxTrivia.Span.Length,
-                textRunProperties, syntaxTrivia.Span, syntaxTrivia)
+                textRunProperties, syntaxTrivia.FullSpan, syntaxTrivia)
             {
                 Index = syntaxTrivia.SpanStart
             };
@@ -137,13 +147,13 @@ namespace AnalysisControls
             DebugUtils.WriteLine($"At {node.Kind()}");
             var l = node.GetLocation();
             var s1 = l.SourceSpan.Start;
-            var pos = _curPos;
+            var pos = CurPos;
 
-            if (s1 < _curPos)
+            if (s1 < CurPos)
             {
-                DebugUtils.WriteLine($"Skipping {_curPos - s1} characters");
+                DebugUtils.WriteLine($"Skipping {CurPos - s1} characters");
             }
-            if (_curPos > s1)
+            if (CurPos > s1)
             {
                 DebugUtils.WriteLine("Position mismatch");
                 int end = 0;
@@ -172,7 +182,7 @@ namespace AnalysisControls
                     DebugUtils.WriteLine($"{index} [{span}] " + textRun.Length.ToString() + $" {textRun}");
                 }   
 
-                throw new InvalidOperationException($"{_curPos} is not {s1}");
+                throw new InvalidOperationException($"{CurPos} is not {s1}");
             }
             base.DefaultVisit(node);
             var n = nodes.Pop();
@@ -188,12 +198,13 @@ namespace AnalysisControls
 
         public Stack<SyntaxNode> seen { get; set; } = new Stack<SyntaxNode>();
 
-        private new void VisitTrailingTrivia(SyntaxToken token)
+        public override void VisitTrailingTrivia(SyntaxToken token)
         {
             foreach (var syntaxTrivia in token.TrailingTrivia)
             {
                 DoTrivia(syntaxTrivia);
             }
+            base.VisitTrailingTrivia(token);
         }
 
         public void DoToken(SyntaxToken token)
@@ -254,6 +265,13 @@ namespace AnalysisControls
 
         // }
 
+    }
+
+    internal class TriviaWalker : SyntaxWalkerF
+    {
+        public TriviaWalker(IList<TextRun> lrun, CustomTextSource3 source3, Action<TextRun> takeTextRun, Func<object, string, TextRunProperties> propertiesFunc, SyntaxWalkerDepth depth = SyntaxWalkerDepth.StructuredTrivia) : base(lrun, source3, takeTextRun, propertiesFunc, depth)
+        {
+        }
     }
 
     internal class NodeRuns

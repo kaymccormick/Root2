@@ -248,6 +248,23 @@ namespace AnalysisControls
                                      )
                        .WithMetadata ( "Ribbon" , true )
                        .WithCallerMetadata ( ) ;
+                builder.RegisterType<UiElementTypeConverter>().AsSelf();
+            // builder.RegisterAssemblyTypes(
+            //         Assembly.GetExecutingAssembly()
+            //         , typeof(AnalysisControlsModule).Assembly
+            //     )
+            //     .Where(
+            //         type => {
+            //             var isAssignableFrom =
+            //                 typeof(IDisplayableAppCommand).IsAssignableFrom(type)
+            //                 && type != typeof(LambdaAppCommand);
+            //             DebugUtils.WriteLine($"{type.FullName} - {isAssignableFrom}");
+            //             return isAssignableFrom;
+            //         }
+            //     )
+            //     .AsImplementedInterfaces()
+            //     .WithCallerMetadata();
+
 
             // var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
             // foreach ( var name in names )
@@ -256,7 +273,7 @@ namespace AnalysisControls
             //     DebugUtils.WriteLine ( info.ResourceLocation ) ;
             //
             // }
-
+            builder.RegisterType<Main1Model>();
             builder.RegisterCallback((x) =>
             {
                 

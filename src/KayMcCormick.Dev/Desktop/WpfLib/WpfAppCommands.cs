@@ -115,6 +115,12 @@ namespace KayMcCormick.Lib.Wpf
                                , nameof ( AddDocument )
                                , typeof ( WpfAppCommands )
                                 ) ;
+        public static readonly RoutedUICommand CreateSolution = new RoutedUICommand("Create solution", nameof(CreateSolution),
+            typeof(WpfAppCommands));
+        public static readonly RoutedUICommand CreateProject = new RoutedUICommand("Create project", nameof(CreateProject),
+            typeof(WpfAppCommands));
+        public static readonly RoutedUICommand OpenSolutionItem = new RoutedUICommand("Open solution item", nameof(OpenSolutionItem),
+            typeof(WpfAppCommands));
 
     }
 }

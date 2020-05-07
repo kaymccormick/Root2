@@ -1,0 +1,26 @@
+﻿<RibbonWindow x:Class="ProjInterface.Window2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjInterface"
+        xmlns:anal="http://kaymccormick.com/xaml/analysis"
+        xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+        mc:Ignorable="d"
+        Title="Window2" Height="450" Width="800">
+  <RibbonWindow.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
+        <ResourceDictionary
+          Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
+        <ResourceDictionary
+          Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
+
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+    </RibbonWindow.Resources>
+    <anal:Main1 RibbonBuilder="{kmWpf:Resolve anal:RibbonBuilder}"
+                ViewModel="{kmWpf:Resolve anal:Main1Model}"/>
+</RibbonWindow>

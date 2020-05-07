@@ -9,23 +9,25 @@
 // 
 // ---
 #endregion
-using System ;
-using System.Collections ;
-using System.Collections.Generic ;
-using System.Linq ;
-using System.Xml ;
-using System.Xml.Linq ;
-using AnalysisAppLib.Syntax ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
-using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml;
+using System.Xml.Linq;
+using AnalysisAppLib;
+using AnalysisAppLib.Syntax;
+using JetBrains.Annotations;
+using KayMcCormick.Dev;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 #if POCO
 #endif
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisControls
 {
     /// <summary>
     /// 

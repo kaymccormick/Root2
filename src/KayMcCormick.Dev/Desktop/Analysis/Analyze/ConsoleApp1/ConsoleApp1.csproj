@@ -166,9 +166,6 @@
     <PackageReference Include="ConsoleMenu-choice">
       <Version>1.0.2</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Build.Locator">
-      <Version>1.2.6</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.AnalyzerUtilities">
       <Version>3.0.0</Version>
     </PackageReference>

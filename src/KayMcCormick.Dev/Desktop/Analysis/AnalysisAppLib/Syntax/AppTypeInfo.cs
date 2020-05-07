@@ -177,7 +177,7 @@ namespace AnalysisAppLib.Syntax
         /// <summary>
         /// </summary>
         [NotMapped]
-        public TypeDocumentation DocInfo { get; set; }
+        public ICodeElementDocumentation DocInfo { get; set; }
 
         /// <summary>
         /// 
@@ -888,7 +888,7 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         [JsonIgnore]
         [NotMapped]
-        public MethodDocumentation XmlDoc { get; set; }
+        public ICodeElementDocumentation XmlDoc { get; set; }
 
         /// <summary>
         /// Primary key

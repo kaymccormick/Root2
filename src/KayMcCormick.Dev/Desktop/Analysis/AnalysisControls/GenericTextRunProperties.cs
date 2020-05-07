@@ -11,6 +11,7 @@ namespace AnalysisControls
     {
         private TextRunProperties _baseProps;
         private Brush _backgroundBrush = null;
+        private Brush _foregroundBrush;
 
         public MyTextRunProperties(TextRunProperties baseProps)
         {
@@ -39,7 +40,7 @@ namespace AnalysisControls
 
         public override Brush ForegroundBrush
         {
-            get { return _baseProps.ForegroundBrush; }
+            get { return _foregroundBrush ?? _baseProps.ForegroundBrush; }
         }
 
         public override Brush BackgroundBrush
@@ -50,6 +51,11 @@ namespace AnalysisControls
         public void SetBackgroundBrush(Brush backgroundBrush)
         {
             _backgroundBrush = backgroundBrush;
+        }
+
+        public void SetForegroundBrush(Brush foregroundBrush)
+        {
+            _foregroundBrush = foregroundBrush;
         }
 
         public override CultureInfo CultureInfo

@@ -52,6 +52,7 @@ using Application = System.Windows.Application ;
 namespace ProjInterface
 {
     [ TitleMetadata ( "Docking window" ) ]
+    [ShortKeyMetadata("Window1")]
     public sealed partial class Window1 : RibbonWindow
       , IViewWithTitle
       , IView < DockWindowViewModel >
@@ -505,7 +506,7 @@ namespace ProjInterface
             {
                 if (layoutContent is LayoutDocument d)
                 {
-                    DocInfo di = new DocInfo()
+                    var di = new DocModel()
                     {
                         ContentId = d.ContentId, Title = d.Title,
                         Description = d.Description,
@@ -699,15 +700,6 @@ namespace ProjInterface
         {
             throw new NotImplementedException();
         }
-    }
-
-    public class DocInfo
-    {
-        public string ContentId { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public DateTime? LastActivationTimeStamp { get; set; }
-        public bool IsVisible { get; set; }
     }
 
     public class BaseAppCommandConverter : IValueConverter
