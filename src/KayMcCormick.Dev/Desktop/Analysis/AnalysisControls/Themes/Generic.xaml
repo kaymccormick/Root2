@@ -101,6 +101,9 @@
         <ControlTemplate TargetType="{x:Type local:CustomControl2}">
           <ControlTemplate.Resources>
             <kmWpf:TypeInfoConverter x:Key="TypeInfoConverter" />
+            <converters:SymbolInfoConverter x:Key="SymbolInfoConverter"/>
+            <local:TestConverter2 x:Key="TestConverter2"/>
+
             <local:AConverter x:Key="AConverter" />
             <kmWpf:MethodInfoConverter x:Key="MethodInfoConverter" />
 
@@ -219,7 +222,7 @@
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}"
                   HorizontalAlignment="Left" x:Name="border1">
-            <Grid DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent},Path=Type}">
+            <Grid DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent},Path=TypeInfoProvider}">
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -279,7 +282,7 @@
                             <RowDefinition Height="Auto" />
                           </Grid.RowDefinitions>
                           <TextBlock Grid.Row="0" Grid.Column="0" Text="Namespace" />
-                          <TextBlock Grid.Row="1" Grid.Column="0" Text="Assembly" />
+                          <TextBlock Grid.Row="1" Grid.Column="0" Text="Assembly.Name" />
                           <TextBlock Grid.Row="2" Grid.Column="0" Text="AssemblyQualifiedName" />
 
                           <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Namespace}" Margin="10,5,0,0" />
@@ -304,8 +307,8 @@
                           <ItemsControl DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
                                         ItemsSource="{Binding Path=Ancestors}">
                             <ItemsControl.ItemTemplate>
-                              <DataTemplate DataType="{x:Type system:Type}">
-                                <local:DevTypeControl FontSize="14" Type="{Binding}" />
+                              <DataTemplate DataType="{x:Type local:ITypeInfoProvider}">
+                                <TextBlock FontSize="14" Text="{Binding}" />
                               </DataTemplate>
                             </ItemsControl.ItemTemplate>
                             <ItemsControl.ItemsPanel>
@@ -332,18 +335,18 @@
                             <RowDefinition Height="Auto" />
                           </Grid.RowDefinitions>
                           <TextBlock Text="Generic Type" />
-                          <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=Type.IsGenericType}" />
+                          <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=IsGenericType}" />
                           <TextBlock Grid.Row="1" Grid.Column="0" Text="Generic Type Definition" />
                           <local:DevTypeControl Grid.Row="1" Grid.Column="1" FontSize="14"
-                                                Type="{Binding ConverterParameter=GenericTypeDefinition,Converter={StaticResource TypeInfoConverter},Path=Type}" />
+                                                Type="{Binding Path=TypeInfoProvider.GenericTypeDefinition}" />
                         </Grid>
                       </GroupBox>
                       <GroupBox Padding="3" Grid.Row="5" Grid.Column="0" Header="Interfaces">
                         <ItemsControl DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                                      ItemsSource="{Binding Type,Converter={StaticResource TypeInfoConverter},ConverterParameter=Interfaces}">
+                                      ItemsSource="{Binding TypeInfoProvider.Interfaces}">
                           <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type system:Type}">
-                              <local:DevTypeControl Grid.Row="1" Grid.Column="1" FontSize="14" Type="{Binding}"
+                            <DataTemplate DataType="{x:Type local:ITypeInfoProvider}">
+                              <TextBlock Grid.Row="1" Grid.Column="1" FontSize="14" Text="{Binding}"
                                                     Margin="5,0,0,5" />
                             </DataTemplate>
                           </ItemsControl.ItemTemplate>
@@ -359,15 +362,13 @@
                 </TabItem>
                 <TabItem Header="Properties">
                   <ListView
-                    ItemsSource="{Binding Converter={StaticResource TypeInfoConverter},ConverterParameter=Properties}">
+                    ItemsSource="{Binding Properties}">
                     <ListView.View>
                       <GridView>
                         <GridViewColumn Header="Property Type">
                           <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type reflection:PropertyInfo}">
-                              <local:DevTypeControl Type="{Binding PropertyType}" />
-
-
+                            <DataTemplate DataType="{x:Type local:IPropertyInfo}">
+                              <TextBlock Text="{Binding PropertyType,Converter={StaticResource TestConverter2}}" />
                             </DataTemplate>
                           </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -378,19 +379,19 @@
                 </TabItem>
                 <TabItem Header="Methods">
                   <ListView
-                    ItemsSource="{Binding Converter={StaticResource TypeInfoConverter},ConverterParameter=Methods}">
+                    ItemsSource="{Binding Methods}">
                     <ListView.View>
                       <GridView>
                         <GridViewColumn Header="Return Type">
                           <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type reflection:MethodInfo}">
+                            <DataTemplate DataType="{x:Type local:IMethodInfo}">
                               <local:DevTypeControl VerticalAlignment="Top" Type="{Binding ReturnType}" />
                             </DataTemplate>
                           </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <GridViewColumn Header="Declaring Type">
                           <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type reflection:MethodInfo}">
+                            <DataTemplate DataType="{x:Type local:IMethodInfo}">
                               <local:DevTypeControl Type="{Binding DeclaringType}" VerticalAlignment="Top" />
                             </DataTemplate>
                           </GridViewColumn.CellTemplate>
@@ -398,16 +399,16 @@
 
                         <GridViewColumn Header="Name">
                           <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type reflection:MethodInfo}">
+                            <DataTemplate DataType="{x:Type local:IMethodInfo}">
                               <TextBlock VerticalAlignment="Top" Text="{Binding Name}" />
                             </DataTemplate>
                           </GridViewColumn.CellTemplate>
                         </GridViewColumn>
                         <GridViewColumn Header="Parameters">
                           <GridViewColumn.CellTemplate>
-                            <DataTemplate DataType="{x:Type reflection:MethodInfo}">
+                            <DataTemplate DataType="{x:Type local:IMethodInfo}">
                               <ItemsControl
-                                ItemsSource="{Binding Converter={StaticResource MethodInfoConverter},ConverterParameter=Parameters}">
+                                ItemsSource="{Binding Parameters}">
                                 <ItemsControl.ItemsPanel>
                                   <ItemsPanelTemplate>
                                     <WrapPanel />
@@ -415,10 +416,10 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
 
-                                  <DataTemplate DataType="{x:Type reflection:ParameterInfo}">
+                                  <DataTemplate DataType="{x:Type local:IParameterInfo}">
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                                       <ItemsControl
-                                        ItemsSource="{Binding Converter={StaticResource ParameterInfoConverter},ConverterParameter=Tags}">
+                                        ItemsSource="{Binding Tags}">
                                         <ItemsControl.ItemsPanel>
                                           <ItemsPanelTemplate>
                                             <StackPanel Orientation="Horizontal" />
@@ -432,11 +433,10 @@
                                         </ItemsControl.ItemTemplate>
                                       </ItemsControl>
                                       <local:DevTypeControl FontWeight="Bold" VerticalContentAlignment="Center"
-                                                            Type="{Binding ParameterType}" />
+                                                            Type="{Binding Type}" />
                                       <TextBlock Text=" " />
                                       <TextBlock Text="{Binding Name}" />
-                                      <TextBlock Text=", "
-                                                 Visibility="{Binding Converter={StaticResource ParameterInfoConverter},ConverterParameter=CommaVisibility}" />
+                                      <TextBlock Text=", "/>
                                     </StackPanel>
                                   </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -914,7 +914,7 @@
               <ToolBarTray Grid.Row="1" Grid.Column="0">
                 <ToolBar Band="1" BandIndex="1">
                   <TextBlock Text="{Binding CurrentOperation.Desc}"></TextBlock>
-                  <Button Content="Create workspace" Command="kmWpf:WpfAppCommands.CreateWorkspace" />
+                  <Button Content="Create workspace" Command="kmWpf:WpfAppCommands.CreateWorkspace"  />
                   <Button Content="Create solution" Command="kmWpf:WpfAppCommands.CreateSolution" />
                   <Button Content="Create project" Command="kmWpf:WpfAppCommands.CreateProject" />
                 </ToolBar>

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -62,7 +64,7 @@ namespace Client2
             logControl.SetBinding(LogEventInstancesControl.EventsSourceProperty,
                 new Binding("ViewModel.LogEntries") {Source = this});
 
-            Main1.ViewModel.Documents.Add(new DocModel { Title = "Log", Content = logControl} );
+            Main1.ViewModel?.Documents.Add(new DocModel { Title = "Log", Content = logControl} );
         }
 
         private void Action()
@@ -79,6 +81,39 @@ namespace Client2
 
     public class ClientViewModel
     {
+        public ClientViewModel()
+        {
+            var ribbonModelTab = new RibbonModelTab {Header = "Test"};
+            var group = new RibbonModelTabItemGroup() {Header = "my group"};
+            group.Items.Add(new RibbonModelItem() { });
+            ribbonModelTab.Items.Add(group);
+        
+            RibbonItems.Add(ribbonModelTab);
+        }
+
         public LogEventInstanceObservableCollection LogEntries { get; set; } = new LogEventInstanceObservableCollection();
+
+        public ObservableCollection<RibbonModelTab> RibbonItems { get; } = new ObservableCollection<RibbonModelTab>();
+    }
+
+    public class RibbonModelTab
+    {
+        public string Header { get; set; }
+        public ObservableCollection<RibbonModelTabItem> Items = new ObservableCollection<RibbonModelTabItem>();
+    }
+
+    public class RibbonModelTabItem
+    {
+
+    }
+
+    public class RibbonModelTabItemGroup : RibbonModelTabItem
+    {
+        public string Header { get; set; }
+        public ObservableCollection<RibbonModelItem> Items { get; }= new ObservableCollection<RibbonModelItem>();
+    }
+
+    public class RibbonModelItem
+    {
     }
 }

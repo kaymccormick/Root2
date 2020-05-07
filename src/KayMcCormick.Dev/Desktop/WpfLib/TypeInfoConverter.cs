@@ -26,6 +26,7 @@ namespace KayMcCormick.Lib.Wpf
           , CultureInfo culture
         )
         {
+            
             var source = ( Type ) value ;
             if ( value == null )
             {

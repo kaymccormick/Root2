@@ -518,7 +518,7 @@ namespace ProjTests
             new Guid("d4870a23-f1ad-4618-b955-6b342c6afab6");
 
         [WpfFact]
-        public void TestAdapter()
+        public void TestAdapter0()
         {
             // var x = new TestApplication ( ) ;
             DebugUtils.WriteLine($"{Thread.CurrentThread.ManagedThreadId} projTests");
@@ -2017,7 +2017,7 @@ namespace ProjTests
         [WpfFact]
         public void TestTypeAdapter()
         {
-            string code = "public class foo { class bar { } }";
+            string code = "namespace foo.bar { public class foo { class bar { } } }";
             var tree = ProjTestsHelper.SetupSyntaxParams(out var comp, code);
             foreach (var typeSymbol in comp.GetSymbolsWithName(n => true).OfType<ITypeSymbol>())
             {
@@ -2030,7 +2030,8 @@ namespace ProjTests
                     case IErrorTypeSymbol errorTypeSymbol:
                         break;
                     case INamedTypeSymbol namedTypeSymbol:
-                        
+ 		    
+                DebugUtils.WriteLine(namedTypeSymbol.ConstructedFrom.ToString());
                         break;
                     case IPointerTypeSymbol pointerTypeSymbol:
                         break;
@@ -2043,6 +2044,11 @@ namespace ProjTests
                 TypeInfoProvider2 prov = new TypeInfoProvider2(typeSymbol);
                 DebugUtils.WriteLine(typeSymbol.ToDisplayString());
                 DebugUtils.WriteLine(prov.IsNested.ToString());
+                DebugUtils.WriteLine(prov.Assembly.Name.ToString());
+                DebugUtils.WriteLine(typeof(string).AssemblyQualifiedName);
+                CustomControl2 cc = new CustomControl2() {TypeInfoProvider = prov};
+                Window w = new Window {Content = cc};
+                w.ShowDialog();
             }
         }
 

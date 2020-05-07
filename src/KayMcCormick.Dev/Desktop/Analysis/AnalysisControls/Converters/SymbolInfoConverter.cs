@@ -32,6 +32,10 @@ namespace AnalysisControls.Converters
                 }
 
                 return Enumerable.Empty<object>();
+            } else if((string)parameter == "GenericTypeDefinition") {
+                INamedTypeSymbol s = symbol as INamedTypeSymbol;
+                return s.OriginalDefinition;
+
             }
 
             switch (symbol)

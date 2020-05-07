@@ -63,6 +63,8 @@ namespace KayMcCormick.Lib.Wpf
         /// </summary>
         public Type ComponentType { get ; set ; }
 
+        public bool Throw { get; set; } = true;
+
         #region Overrides of MarkupExtension
         /// <summary>
         /// </summary>
@@ -72,69 +74,81 @@ namespace KayMcCormick.Lib.Wpf
         /// <exception cref="Exception"></exception>
         public override object ProvideValue ( IServiceProvider serviceProvider )
         {
-            if ( serviceProvider == null )
+            try
             {
-                throw new ArgumentNullException ( nameof ( serviceProvider ) ) ;
-            }
-
-
-            // ReSharper disable once UnusedVariable
-            var p = ( IAmbientProvider ) serviceProvider.GetService (
-                                                                     typeof ( IAmbientProvider )
-                                                                    ) ;
-            ILifetimeScope scope = null ;
-            var service = serviceProvider.GetService ( typeof ( IProvideValueTarget ) ) ;
-            if ( service != null )
-            {
-                var pp = ( IProvideValueTarget ) service ;
-
-                var o = pp.TargetObject ;
-                if ( o is DependencyObject d )
+                if (serviceProvider == null)
                 {
-                    scope = ( ILifetimeScope ) d.GetValue (
-                                                           AttachedProperties.LifetimeScopeProperty
-                                                          ) ;
+                    throw new ArgumentNullException(nameof(serviceProvider));
                 }
-            }
 
-            if ( scope == null )
-            {
-                var svc = serviceProvider.GetService ( typeof ( IRootObjectProvider ) ) ;
-                if ( svc != null )
+
+                // ReSharper disable once UnusedVariable
+                var p = (IAmbientProvider) serviceProvider.GetService(
+                    typeof(IAmbientProvider)
+                );
+                ILifetimeScope scope = null;
+                var service = serviceProvider.GetService(typeof(IProvideValueTarget));
+                if (service != null)
                 {
-                    var rootP = ( IRootObjectProvider ) svc ;
-                    if ( rootP.RootObject is DependencyObject d )
+                    var pp = (IProvideValueTarget) service;
+
+                    var o = pp.TargetObject;
+                    if (o is DependencyObject d)
                     {
-                        scope = ( ILifetimeScope ) d.GetValue (
-                                                               AttachedProperties
-                                                                  .LifetimeScopeProperty
-                                                              ) ;
+                        scope = (ILifetimeScope) d.GetValue(
+                            AttachedProperties.LifetimeScopeProperty
+                        );
                     }
                 }
-            }
 
-            if ( scope != null )
-            {
-                try
+                if (scope == null)
                 {
-                    if ( Argument != null )
+                    var svc = serviceProvider.GetService(typeof(IRootObjectProvider));
+                    if (svc != null)
                     {
-                        return scope.Resolve (
-                                              ComponentType
-                                            , new PositionalParameter ( 1 , Argument )
-                                             ) ;
+                        var rootP = (IRootObjectProvider) svc;
+                        if (rootP.RootObject is DependencyObject d)
+                        {
+                            scope = (ILifetimeScope) d.GetValue(
+                                AttachedProperties
+                                    .LifetimeScopeProperty
+                            );
+                        }
                     }
-
-                    return scope.Resolve ( ComponentType ) ;
                 }
-                catch ( Exception ex )
+
+                if (scope != null)
                 {
-                    DebugUtils.WriteLine(ex.ToString());
-                    return null ;
+                    try
+                    {
+                        if (Argument != null)
+                        {
+                            return scope.Resolve(
+                                ComponentType
+                                , new PositionalParameter(1, Argument)
+                            );
+                        }
+
+                        return scope.Resolve(ComponentType);
+                    }
+                    catch (Exception ex)
+                    {
+                        DebugUtils.WriteLine(ex.ToString());
+                        return null;
+                    }
+                }
+
+                throw new Exception("No lifetime scope");
+            }
+            catch (Exception ex)
+            {
+                if(Throw)
+                {
+                    throw;
                 }
             }
 
-            throw new Exception ( "No lifetime scope" ) ;
+            return null;
         }
         #endregion
     }

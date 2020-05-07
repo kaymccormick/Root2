@@ -107,16 +107,7 @@ namespace AnalysisControls
             Anchorables = _anchorables;
             SetBinding(DocumentsProperty, new Binding("ViewModel.Documents") {Source = this});
             SetBinding(AnchorablesProperty, new Binding("ViewModel.Anchorables") {Source = this});
-            //Documents.Add(new DocInfo { Description = "test", Content = Properties.Resources.Program_Parse});
-        }
 
-        public override void OnApplyTemplate()
-        {
-            _dockingManager = (DockingManager)GetTemplateChild("DockingManager");
-            _dockingManager.ActiveContentChanged += DockingManagerOnActiveContentChanged;
-            _grid = (Grid) GetTemplateChild("Grid");
-            AllowDrop = true;
-            DragOver += OnDragOver;
             var b = new CommandBinding(WpfAppCommands.CreateWorkspace, OncreateWorkSpaceExecuted, CanExecute);
             CommandBindings.Add(b);
             var b2 = new CommandBinding(WpfAppCommands.CreateSolution, OnCreateSolutionExecuted);
@@ -126,6 +117,19 @@ namespace AnalysisControls
             CommandBindings.Add(new CommandBinding(WpfAppCommands.OpenSolutionItem, OnSolutionItemExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.LoadSolution, LoadSolutionExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.BrowseSymbols, OnBrowseSymbolsExecuted));
+
+            //Documents.Add(new DocInfo { Description = "test", Content = Properties.Resources.Program_Parse});
+        }
+
+        public override void OnApplyTemplate()
+        {
+            CommandManager.AddPreviewCanExecuteHandler(this, PreviewCanExecute);
+            CommandManager.AddPreviewExecutedHandler(this, PrepviewExecuted);
+            _dockingManager = (DockingManager)GetTemplateChild("DockingManager");
+            _dockingManager.ActiveContentChanged += DockingManagerOnActiveContentChanged;
+            _grid = (Grid) GetTemplateChild("Grid");
+            AllowDrop = true;
+            DragOver += OnDragOver;
             _layoutDocumentPaneGroup =
                 (LayoutDocumentPaneGroup) GetTemplateChild("LayoutDocumentPaneGroup");
 
@@ -135,7 +139,7 @@ namespace AnalysisControls
             listBox.View = listBoxView;
             listBoxView.Columns.Add(new GridViewColumn() { DisplayMemberBinding = new Binding("Project")});
             
-            var anchorableModel = new DocModel() { Content = ViewModel.Messages, Title="Messages" };
+            
             if (ViewModel == null)
             {
                 
@@ -143,8 +147,34 @@ namespace AnalysisControls
             }
             else
             {
+                var anchorableModel = new DocModel() { Content = ViewModel?.Messages, Title = "Messages" };
                 ViewModel.Documents.Add(anchorableModel);
             }
+        }
+
+        private void PrepviewExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            string cmd = e.Command.ToString();
+            if (e.Command is RoutedUICommand rui)
+            {
+                cmd = rui.Text;
+            }
+
+            DebugUtils.WriteLine($"{cmd} {e.Handled} {e.Handled}");
+
+        }
+
+        private void PreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            string cmd = e.Command.ToString();
+            if (e.Command is RoutedUICommand rui)
+            {
+                cmd = rui.Text;
+            }
+
+            DebugUtils.WriteLine($"{cmd} {e.CanExecute} {e.Handled}");
+        
+
         }
 
         private async void OnBrowseSymbolsExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -186,11 +216,16 @@ namespace AnalysisControls
 
         private void CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (ViewModel.Workspace == null) e.CanExecute = true;
+            if (ViewModel?.Workspace == null)
+            {
+                e.CanExecute = true;
+                    e.ContinueRouting = false;
+            }
         }
 
         private void OncreateWorkSpaceExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            DebugUtils.WriteLine(nameof(OnCreateProjectExecuted));
             ViewModel.CreateWorkspace();
         }
 
@@ -246,11 +281,15 @@ namespace AnalysisControls
             {
                 _viewModel = value;
                 DataContext = _viewModel;
-                foreach (var anchorable in _anchorables)
+                if (_viewModel != null)
                 {
-                    _viewModel.Anchorables.Add(anchorable);
+                    foreach (var anchorable in _anchorables)
+                    {
+                        _viewModel.Anchorables.Add(anchorable);
+                    }
+
+                    _viewModel.View = this;
                 }
-                _viewModel.View = this;
             }
         }
 

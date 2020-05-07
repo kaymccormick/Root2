@@ -19,6 +19,7 @@ using NLog;
 using NLog.Targets;
 using ProjInterface;
 using static NLog.LogManager ;
+using Application = System.Windows.Application;
 
 namespace Client2
 {
@@ -179,6 +180,10 @@ namespace Client2
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            Client2Window1 w = new Client2Window1(null, new ClientViewModel(), null);
+            w.Show();
+            return;
+            
             var result = CommandLine.Parser.Default.ParseArguments<ProjInterfaceOptions>(e.Args)
                 .WithNotParsed(errors => MessageBox.Show(String.Join("", errors), "error"));
 
@@ -326,7 +331,7 @@ namespace Client2
                 => GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
             try
             {
-                var app = new Client2App ( ) ;
+                var app = new Client2App2 ( ) ;
                 app.Run ( ) ;
             }
             catch ( Exception ex )
@@ -338,6 +343,16 @@ namespace Client2
         private static void CurrentDomainOnAssemblyLoad(object sender, AssemblyLoadEventArgs args)
         {
             DebugUtils.WriteLine(args.LoadedAssembly.FullName);
+        }
+    }
+
+    internal class Client2App2 : Application
+    {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            Client2Window1 window1 = new Client2Window1(null, new ClientViewModel(), null);
+            window1.Show();
         }
     }
 }

@@ -13,6 +13,8 @@ using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Data;
 using System.Windows.Input ;
+using AnalysisAppLib;
+using AnalysisControls;
 using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
 using Autofac ;
@@ -22,6 +24,7 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Lib.Wpf ;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore.Internal;
 
 #if ENABLE_CONSOLE
@@ -50,6 +53,8 @@ namespace TestApp
 
         public MainWindow ( [ CanBeNull ] ILifetimeScope lifetimeScope ) : base ( lifetimeScope )
         {
+
+            var xx = AnalysisService.Load(@"C:\temp\Program.cs", "xx");
             if ( Instance != null )
             {
                 throw new InvalidOperationException ( "MainWindow already instantiated." ) ;
@@ -97,6 +102,8 @@ namespace TestApp
             }
             _testAppApp = new TestAppApp ( config ) ;
             InitializeComponent ( ) ;
+            CustomControl2.TypeInfoProvider =
+                new TypeInfoProvider2((ITypeSymbol) xx.Compilation.GetSymbolsWithName(x => true, SymbolFilter.Type).First());
             NamespaceNodesRoot = AssemblyInfoConverter.CreateNamespaceNodes(Assembly.GetExecutingAssembly());
         }
 

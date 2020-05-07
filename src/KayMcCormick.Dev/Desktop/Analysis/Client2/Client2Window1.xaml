@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:Client2"
         xmlns:anal="http://kaymccormick.com/xaml/analysis"
         xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+        xmlns:primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon"
         mc:Ignorable="d"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="Client2Window1" Height="450" Width="800">
   <RibbonWindow.Resources>
     <ResourceDictionary>
@@ -18,11 +20,38 @@
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
         <ResourceDictionary>
-          </ResourceDictionary>
+          <Style TargetType="{x:Type primitives:RibbonGroupsPanel}">
+            <Setter Property="ItemsControl.ItemsSource" Value="{Binding Items}"/>
+          </Style>
+          <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelTab}" ItemsSource="{Binding Items}">
+            <HierarchicalDataTemplate.ItemTemplate>
+              <DataTemplate>
+                <RibbonGroup Header="{Binding Header}"/>
+              </DataTemplate>
+            </HierarchicalDataTemplate.ItemTemplate>
+            <TextBlock Text="{Binding Header}"></TextBlock>
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelTabItemGroup}" ItemsSource="{Binding Items}">
+            <HierarchicalDataTemplate.ItemTemplate>
+              <DataTemplate>
+                <RibbonControlGroup ItemsSource="{Binding Items}"></RibbonControlGroup>
+              </DataTemplate>
+            </HierarchicalDataTemplate.ItemTemplate>
+            <TextBlock Text="{Binding Header}"/>
+          </HierarchicalDataTemplate>
+        </ResourceDictionary>
         </ResourceDictionary.MergedDictionaries>
       </ResourceDictionary>
-    </RibbonWindow.Resources>
+  </RibbonWindow.Resources>
           <Grid>
-<anal:Main1 x:Name="Main1" ViewModel="{kmWpf:Resolve anal:Main1Model}"/>        
+            <Grid.RowDefinitions><RowDefinition Height="Auto"></RowDefinition><RowDefinition Height="*"></RowDefinition></Grid.RowDefinitions>
+            <Ribbon ItemsSource="{Binding ViewModel.RibbonItems}">
+      <Ribbon.ItemTemplate>
+        <DataTemplate>
+                  <RibbonTab Header="{Binding Header}"></RibbonTab>
+                </DataTemplate>
+              </Ribbon.ItemTemplate>
+            </Ribbon>
+            <anal:Main1 Grid.Row="1" Grid.Column="0" x:Name="Main1" ViewModel="{kmWpf:Resolve anal:Main1Model,Throw=false}"/>        
     </Grid>
 </RibbonWindow>

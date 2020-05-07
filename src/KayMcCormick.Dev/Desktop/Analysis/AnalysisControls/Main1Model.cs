@@ -136,7 +136,8 @@ namespace AnalysisControls
                 if (Equals(value, _workspace)) return;
                 _workspace = value;
                 _workspaceView = new WorkspaceView() {Solutions = HierRoot};
-                Anchorables.Add(new AnchorableModel() {Content = _workspaceView, Title = "Workspace"});
+                Anchorables.Add(new AnchorableModel() {Content =
+                    _workspaceView, Title = "Workspace"});
                 _workspace.WorkspaceChanged += WorkspaceOnWorkspaceChanged;
                 var model = this;
                 Diagnostics.Clear();
