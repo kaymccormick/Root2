@@ -220,8 +220,8 @@ namespace Client2
                    .AsImplementedInterfaces ( )
                    .WithCallerMetadata ( ) ;
 
-            builder.RegisterType < EventLogView > ( ).AsSelf ( ).WithCallerMetadata ( ) ;
-            builder.RegisterType < EventLogViewModel > ( ).WithCallerMetadata ( ) ;
+            // builder.RegisterType < EventLogView > ( ).AsSelf ( ).WithCallerMetadata ( ) ;
+            // builder.RegisterType < EventLogViewModel > ( ).WithCallerMetadata ( ) ;
 #if PYTHON
             builder.RegisterBuildCallback (
                                            scope => {
@@ -257,31 +257,32 @@ if(RegiserExplorerTypes){
                                                                         ) ;
 }
 #endif
-            builder.RegisterType < AllResourcesTree > ( )
-                   .As < UserControl > ( )
-                   .AsSelf ( )
-                   .As < IViewWithTitle > ( )
-                   .As < IControlView > ( )
-                   .WithCallerMetadata ( ) ;
-            builder.RegisterType < AllResourcesView > ( )
-                   .As < UserControl > ( )
-                   .AsSelf ( )
-                   .As < IViewWithTitle > ( )
-                   .As < IControlView > ( )
-                
-                   .WithCallerMetadata ( ) ;
-            builder.RegisterType < WorkspaceControl > ( )
-                   .As < IViewWithTitle > ( )
-                   .As < IControlView > ( )
-                   .WithCallerMetadata ( ) ;
-            builder.RegisterType < WorkspaceViewModel > ( ).WithCallerMetadata ( ) ;
-            builder.RegisterInstance ( Application.Current )
-                   .As < IResourceResolver > ( )
-                   .WithCallerMetadata ( ) ;
+            // builder.RegisterType < AllResourcesTree > ( )
+            //        .As < UserControl > ( )
+            //        .AsSelf ( )
+            //        .As < IViewWithTitle > ( )
+            //        .As < IControlView > ( )
+            //        .WithCallerMetadata ( ) ;
+            // builder.RegisterType < AllResourcesView > ( )
+            //        .As < UserControl > ( )
+            //        .AsSelf ( )
+            //        .As < IViewWithTitle > ( )
+            //        .As < IControlView > ( )
+            //     
+            //        .WithCallerMetadata ( ) ;
+            // builder.RegisterType < WorkspaceControl > ( )
+            //        .As < IViewWithTitle > ( )
+            //        .As < IControlView > ( )
+            //        .WithCallerMetadata ( ) ;
+            // builder.RegisterType < WorkspaceViewModel > ( ).WithCallerMetadata ( ) ;
+            // builder.RegisterInstance ( Application.Current )
+            //        .As < IResourceResolver > ( )
+            //        .WithCallerMetadata ( ) ;
 
 
             builder.RegisterType<Client2Window1>().AsSelf().As<Window>();
-            builder.RegisterType<ClientViewModel>().AsSelf();
+            builder.RegisterType<RibbonModel>().AsSelf();
+            builder.RegisterType<ClientModel>().AsSelf();
 
 
 #if PYTHON

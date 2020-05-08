@@ -29,7 +29,7 @@ namespace ProjInterface
         public Window2(ILifetimeScope scope)
         {
             SetValue(AttachedProperties.LifetimeScopeProperty, scope);
-            InitializeComponent();
+            InitializeComponent();  
         }
 
         private void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)

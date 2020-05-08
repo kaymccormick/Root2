@@ -180,7 +180,7 @@ namespace Client2
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            Client2Window1 w = new Client2Window1(null, new ClientViewModel(), null);
+            Client2Window1 w = new Client2Window1(null, new ClientModel(), null);
             w.Show();
             return;
             
@@ -351,8 +351,17 @@ namespace Client2
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            Client2Window1 window1 = new Client2Window1(null, new ClientViewModel(), null);
-            window1.Show();
+            if (e.Args.Any() && e.Args[0] == "test")
+            {
+                TestRibbonWindow testRibbonWindowwindow1 = new TestRibbonWindow();
+                testRibbonWindowwindow1.Show();
+            }
+            else
+            {
+                Client2Window1 window1 = new Client2Window1(null, new ClientModel(), null);
+                window1.Show();
+            }
+
         }
     }
 }

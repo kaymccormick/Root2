@@ -20,37 +20,76 @@
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
         <ResourceDictionary>
-          <Style TargetType="{x:Type primitives:RibbonGroupsPanel}">
-            <Setter Property="ItemsControl.ItemsSource" Value="{Binding Items}"/>
-          </Style>
+
+          <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelItemButton}">
+            <RibbonButton Label="{Binding Label}" Command="{Binding Command}" CommandParameter="{Binding CommandParameter}" CommandTarget="{Binding CommandTarget}"></RibbonButton>
+          </HierarchicalDataTemplate>
+
+          <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelItemSplitButton}">
+            <RibbonSplitButton Label="{Binding Label}" ItemsSource="{Binding Items}"
+            ></RibbonSplitButton>
+          </HierarchicalDataTemplate>
+
+          <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelItemComboBox}">
+            <RibbonComboBox  Label="{Binding Label}" ItemsSource="{Binding Items}"
+                            />
+          </HierarchicalDataTemplate>
+          
+          <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelItemMenuButton}">
+            <RibbonMenuButton Label="{Binding Label}" ItemsSource="{Binding Items}"
+            ></RibbonMenuButton>
+          </HierarchicalDataTemplate>
+  
+          <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelGalleryCategory}" ItemsSource="{Binding Items}">
+            <TextBlock Text="{Binding Label}"/>
+          </HierarchicalDataTemplate>
+
+          <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelItemTextBox}">
+            <RibbonTextBox Label="{Binding Label}"/>
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelGalleryItem}">
+            <TextBlock Text="{Binding Content}"/>
+          </HierarchicalDataTemplate>
+
           <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelTab}" ItemsSource="{Binding Items}">
-            <HierarchicalDataTemplate.ItemTemplate>
-              <DataTemplate>
-                <RibbonGroup Header="{Binding Header}"/>
-              </DataTemplate>
-            </HierarchicalDataTemplate.ItemTemplate>
             <TextBlock Text="{Binding Header}"></TextBlock>
           </HierarchicalDataTemplate>
-          <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelTabItemGroup}" ItemsSource="{Binding Items}">
-            <HierarchicalDataTemplate.ItemTemplate>
-              <DataTemplate>
-                <RibbonControlGroup ItemsSource="{Binding Items}"></RibbonControlGroup>
-              </DataTemplate>
-            </HierarchicalDataTemplate.ItemTemplate>
+          <Style TargetType="RibbonTab">
+            <Setter Property="DataContext" Value="{Binding}"/>
+            <Setter Property="ItemsSource" Value="{Binding Items}"/>
+            <Setter Property="ItemTemplate">
+              <Setter.Value>
+                <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelTabItemGroup}">
+                  <HierarchicalDataTemplate.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:RibbonModelItem}">
+                      <ContentControl Content="{Binding Content}"/>
+                    </DataTemplate>
+                  </HierarchicalDataTemplate.ItemTemplate>
+                </HierarchicalDataTemplate></Setter.Value>
+            </Setter>
+          </Style>
+            <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelTabItemGroup}" ItemsSource="{Binding Items}">
             <TextBlock Text="{Binding Header}"/>
           </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelAppMenuItem}" ItemsSource="{Binding Items}">
+            <RibbonApplicationMenuItem Header="{Binding Header}" ImageSource="{Binding ImageSource}"
+                                       KeyTip="{Binding KeyTip}"></RibbonApplicationMenuItem>
+          </HierarchicalDataTemplate>
+          <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelAppSplitMenuItem}" ItemsSource="{Binding Items}">
+            <RibbonApplicationSplitMenuItem Header="{Binding Header}" ImageSource="{Binding ImageSource}"
+                                       KeyTip="{Binding KeyTip}"></RibbonApplicationSplitMenuItem>
+          </HierarchicalDataTemplate>
+
         </ResourceDictionary>
         </ResourceDictionary.MergedDictionaries>
       </ResourceDictionary>
   </RibbonWindow.Resources>
           <Grid>
             <Grid.RowDefinitions><RowDefinition Height="Auto"></RowDefinition><RowDefinition Height="*"></RowDefinition></Grid.RowDefinitions>
-            <Ribbon ItemsSource="{Binding ViewModel.RibbonItems}">
-      <Ribbon.ItemTemplate>
-        <DataTemplate>
-                  <RibbonTab Header="{Binding Header}"></RibbonTab>
-                </DataTemplate>
-              </Ribbon.ItemTemplate>
+            <Ribbon DataContext="{Binding ViewModel.Ribbon}"  ItemsSource="{Binding RibbonItems}">
+              <Ribbon.ApplicationMenu>
+        <RibbonApplicationMenu ItemsSource="{Binding AppMenu.Items}"/>
+      </Ribbon.ApplicationMenu>
             </Ribbon>
             <anal:Main1 Grid.Row="1" Grid.Column="0" x:Name="Main1" ViewModel="{kmWpf:Resolve anal:Main1Model,Throw=false}"/>        
     </Grid>

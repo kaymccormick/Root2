@@ -76,6 +76,7 @@
       <HintPath>..\..\..\..\..\..\ironpython2\bin\Debug\net45\Microsoft.Scripting.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero2" />
+    <Reference Include="PresentationFramework.Classic" />
     <Reference Include="ReachFramework" />
     <Reference Include="System" />
     <Reference Include="System.Activities" />
@@ -110,6 +111,10 @@
     <Compile Include="Explorer\Shell.cs" />
     <Compile Include="Explorer\ShellExplorerItem.cs" />
     <Compile Include="Explorer\ShellExplorerItemProvider.cs" />
+    <Compile Include="RibbonModelItemSplitButton.cs" />
+    <Compile Include="TestRibbonWindow.xaml.cs">
+      <DependentUpon>TestRibbonWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\AnalyzeResultsViewModel.cs" />
     <Compile Include="Client2App.xaml.cs">
       <DependentUpon>Client2App.xaml</DependentUpon>
@@ -256,6 +261,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Client2Window1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TestRibbonWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
