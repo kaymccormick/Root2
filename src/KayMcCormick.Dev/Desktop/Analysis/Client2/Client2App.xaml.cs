@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using AnalysisControls;
 using Autofac;
@@ -351,17 +352,116 @@ namespace Client2
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            if (e.Args.Any() && e.Args[0] == "test")
+            bool select = false;
+            var keyb = InputManager.Current.PrimaryKeyboardDevice;
+            if (keyb.Modifiers == ModifierKeys.Control)
             {
-                TestRibbonWindow testRibbonWindowwindow1 = new TestRibbonWindow();
-                testRibbonWindowwindow1.Show();
+                select = true;
+            } else if (keyb.Modifiers == ModifierKeys.Shift)
+            {
+                TetExit = true;
+                StartupCommand = new TestAndExitCommand();
+            }
+
+            if (keyb.IsKeyToggled(Key.LeftCtrl))
+            {
+                select = true;
+            }
+            if(select)
+            {
+                ShutdownMode = ShutdownMode.OnExplicitShutdown;
+                SelectAppAction();
             }
             else
             {
-                Client2Window1 window1 = new Client2Window1(null, new ClientModel(), null);
-                window1.Show();
+                Client2Window1 main = new Client2Window1();
+                RunWindow(main);
             }
 
+            // if (e.Args.Any() && e.Args[0] == "test")
+            // {
+                // TestRibbonWindow testRibbonWindowwindow1 = new TestRibbonWindow();
+                // testRibbonWindowwindow1.Show();
+            // }
+            // else
+            // {
+                // Client2Window1 window1 = new Client2Window1(null, new ClientModel(), null);
+                // window1.Show();
+            // }
         }
+
+        public ICommand StartupCommand { get; set; }
+
+        public bool TetExit { get; set; }
+
+        private void SelectAppAction()
+        {
+            var selectWindow = new ListBox();
+            object[] winTypes = new object[] {typeof(Client2Window1), typeof(TestRibbonWindow), WpfAppCommands.QuitApplication};
+            Client2App2 app = this;
+            selectWindow.ItemsSource = winTypes;
+            
+            Window w = new Window() {Content = selectWindow, Width = 200, Height = 400, FontSize = 16};
+            w.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            w.Closed += (sender, args) =>
+            {
+                if ((bool?)w.Tag != true)
+                {
+                    Shutdown();
+                }
+            };
+            selectWindow.SelectionChanged += (sender, args) =>
+            {
+                app.StartWindow = args.AddedItems[0];
+                w.Tag = true;
+                w.Close();
+            };
+
+
+            w.ShowDialog();
+            if (StartWindow == null) return;
+            {
+                if (StartWindow is Type t)
+                {
+                    var window = (Window) Activator.CreateInstance((Type) StartWindow);
+                    MainWindow = window;
+                    window.Closed += (sender, args) => { SelectAppAction(); };
+                    RunWindow(window);
+                    
+                    
+                } else if (StartWindow is RoutedUICommand ui)
+                {
+                    if (ui == WpfAppCommands.QuitApplication)
+                    {
+                        Shutdown();
+                    }
+                }
+            }
+        }
+
+        private void RunWindow(Window window)
+        {
+            window.Loaded += (sender, args) =>
+            {
+                StartupCommand?.Execute(null);
+            };
+            window.Show();
+        }
+
+        public object StartWindow { get; set; }
+    }
+
+    public class TestAndExitCommand : ICommand {
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            Application.Current.Shutdown();
+        }
+
+        public event EventHandler CanExecuteChanged;
     }
 }

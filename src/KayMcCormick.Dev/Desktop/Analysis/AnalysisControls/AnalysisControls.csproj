@@ -174,6 +174,22 @@
     <Compile Include="RectConverter.cs" />
     <Compile Include="RegionInfo.cs" />
     <Compile Include="RibbonBuilder.cs" />
+    <Compile Include="Ribbon\RibbonModel.cs" />
+    <Compile Include="Ribbon\RibbonModelApplicationMenu.cs" />
+    <Compile Include="Ribbon\RibbonModelAppMenuElement.cs" />
+    <Compile Include="Ribbon\RibbonModelAppMenuItem.cs" />
+    <Compile Include="Ribbon\RibbonModelAppSplitMenuItem.cs" />
+    <Compile Include="Ribbon\RibbonModelGallery.cs" />
+    <Compile Include="Ribbon\RibbonModelGalleryCategory.cs" />
+    <Compile Include="Ribbon\RibbonModelGalleryItem.cs" />
+    <Compile Include="Ribbon\RibbonModelItem.cs" />
+    <Compile Include="Ribbon\RibbonModelItemButton.cs" />
+    <Compile Include="Ribbon\RibbonModelItemComboBox.cs" />
+    <Compile Include="Ribbon\RibbonModelItemMenuButton.cs" />
+    <Compile Include="Ribbon\RibbonModelItemSplitButton.cs" />
+    <Compile Include="Ribbon\RibbonModelItemTextBox.cs" />
+    <Compile Include="Ribbon\RibbonModelTab.cs" />
+    <Compile Include="Ribbon\RibbonModelTabItemGroup.cs" />
     <Compile Include="RWindow.xaml.cs">
       <DependentUpon>RWindow.xaml</DependentUpon>
     </Compile>

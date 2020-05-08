@@ -258,11 +258,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="JSON\" />
+    <Folder Include="Ribbon\" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Client2Window1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RibbonResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="TestRibbonWindow.xaml">
       <SubType>Designer</SubType>

@@ -38,7 +38,7 @@ namespace AnalysisControls
         /// <returns></returns>
         public Ribbon BuildRibbon()
         {
-            Ribbon r = new Ribbon();
+            Ribbon  r = new Ribbon ();
             _allCommands.DocPane = DocPane;
             foreach (var appRibbonTab in appRibbon.Tabs)
             {

@@ -1,0 +1,14 @@
+          <Style TargetType="RibbonTab">
+            <Setter Property="DataContext" Value="{Binding}"/>
+            <Setter Property="ItemsSource" Value="{Binding Items}"/>
+            <Setter Property="ItemTemplate">
+              <Setter.Value>
+                <HierarchicalDataTemplate DataType="{x:Type local:RibbonModelTabItemGroup}">
+                  <HierarchicalDataTemplate.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:RibbonModelItem}">
+                      <ContentControl Content="{Binding Content}"/>
+                    </DataTemplate>
+                  </HierarchicalDataTemplate.ItemTemplate>
+                </HierarchicalDataTemplate></Setter.Value>
+            </Setter>
+          </Style>

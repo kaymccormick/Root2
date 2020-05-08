@@ -56,6 +56,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Terminal.Gui", "..\..\..\gu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client2", "Desktop\Analysis\Client2\Client2.csproj", "{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RibbonTestApp", "Desktop\RibbonTestApp\RibbonTestApp.csproj", "{FCD18E4D-AA94-4DB0-8C0A-D2647C7FFCB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -236,6 +238,18 @@ Global
 		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}.Release|x64.Build.0 = Release|x64
 		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}.Release|x86.ActiveCfg = Release|x86
 		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D}.Release|x86.Build.0 = Release|x86
+		{FCD18E4D-AA94-4DB0-8C0A-D2647C7FFCB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCD18E4D-AA94-4DB0-8C0A-D2647C7FFCB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCD18E4D-AA94-4DB0-8C0A-D2647C7FFCB2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FCD18E4D-AA94-4DB0-8C0A-D2647C7FFCB2}.Debug|x64.Build.0 = Debug|Any CPU
+		{FCD18E4D-AA94-4DB0-8C0A-D2647C7FFCB2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FCD18E4D-AA94-4DB0-8C0A-D2647C7FFCB2}.Debug|x86.Build.0 = Debug|Any CPU
+		{FCD18E4D-AA94-4DB0-8C0A-D2647C7FFCB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCD18E4D-AA94-4DB0-8C0A-D2647C7FFCB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCD18E4D-AA94-4DB0-8C0A-D2647C7FFCB2}.Release|x64.ActiveCfg = Release|Any CPU
+		{FCD18E4D-AA94-4DB0-8C0A-D2647C7FFCB2}.Release|x64.Build.0 = Release|Any CPU
+		{FCD18E4D-AA94-4DB0-8C0A-D2647C7FFCB2}.Release|x86.ActiveCfg = Release|Any CPU
+		{FCD18E4D-AA94-4DB0-8C0A-D2647C7FFCB2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
