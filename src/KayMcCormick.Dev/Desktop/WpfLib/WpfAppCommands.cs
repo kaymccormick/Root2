@@ -134,6 +134,12 @@ namespace KayMcCormick.Lib.Wpf
                 , typeof(WpfAppCommands)
             );
 
+        public static readonly RoutedUICommand SerializeContents=
+            new RoutedUICommand(
+                "Browse symbols"
+                , nameof(BrowseSymbols)
+                , typeof(WpfAppCommands)
+            );
 
     }
 }

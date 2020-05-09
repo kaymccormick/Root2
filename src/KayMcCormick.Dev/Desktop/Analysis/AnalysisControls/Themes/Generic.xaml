@@ -819,6 +819,7 @@
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
               <StackPanel Orientation="Horizontal">
+                <Button Command="kmWpf:WpfAppCommands.SerializeContents" CommandTarget="{x:Reference CodeControl}"/>
                 <ComboBox
                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=local:EnhancedCodeControl,AncestorLevel=3,Mode=FindAncestor},Path=CommonFontSizes}"
                   SelectedValue="{Binding ElementName=Rectangle,Path=(TextElement.FontSize),Mode=TwoWay,FallbackValue=12}"
@@ -910,8 +911,7 @@
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
-              <ContentControl Grid.Row="0" Grid.Column="0" DataContext="{TemplateBinding RibbonBuilder}" Content="{Binding Path=Ribbon}" />
-              <ToolBarTray Grid.Row="1" Grid.Column="0">
+              <ToolBarTray Grid.Row="0" Grid.Column="0">
                 <ToolBar Band="1" BandIndex="1">
                   <TextBlock Text="{Binding CurrentOperation.Desc}"></TextBlock>
                   <Button Content="Create workspace" Command="kmWpf:WpfAppCommands.CreateWorkspace"  />
@@ -919,7 +919,7 @@
                   <Button Content="Create project" Command="kmWpf:WpfAppCommands.CreateProject" />
                 </ToolBar>
               </ToolBarTray>
-              <Border Grid.Row="2" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">
+              <Border Grid.Row="1" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">
               <avalondock:DockingManager DocumentsSource="{Binding Documents}"
                                          x:Name="DockingManager" AnchorablesSource="{Binding Anchorables}"
                                          ActiveContent="{Binding ActiveContent,Mode=TwoWay}">
@@ -983,8 +983,11 @@
                   </TextBlock.ContextMenu>
                 </TextBlock>
               </HierarchicalDataTemplate>
+              <HierarchicalDataTemplate DataType="{x:Type local:DiagnosticNodeModel}">
+                <TextBlock Text="{Binding Message}" />
+              </HierarchicalDataTemplate>
 
-              <HierarchicalDataTemplate DataType="{x:Type local:PathModel}" ItemsSource="{Binding Entries.Values}">
+<HierarchicalDataTemplate DataType="{x:Type local:PathModel}" ItemsSource="{Binding Entries.Values}">
                 <TextBlock Text="{Binding ElementName}" />
               </HierarchicalDataTemplate>
               <HierarchicalDataTemplate DataType="{x:Type local:DocumentModel}">

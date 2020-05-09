@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using AnalysisControls;
 using Autofac;
@@ -20,11 +19,10 @@ using NLog;
 using NLog.Targets;
 using ProjInterface;
 using static NLog.LogManager ;
-using Application = System.Windows.Application;
 
 namespace Client2
 {
-    internal sealed partial class Client2App : BaseApp , IResourceResolver
+    internal sealed partial class Client2App : BaseApp
     {
         private new static readonly Logger Logger = GetCurrentClassLogger ( ) ;
 
@@ -50,103 +48,6 @@ namespace Client2
         }
 
         // ReSharper disable once UnusedMember.Local
-        private void ExploreAssemblies ( )
-        {
-            var resourceLocator = new Uri (
-                                           "/ProjInterface;component/AppResources.xaml"
-                                         , UriKind.Relative
-                                          ) ;
-            GetResourceStream ( resourceLocator ) ;
-            foreach ( var referencedAssembly in Assembly
-                                               .GetExecutingAssembly ( )
-                                               .GetReferencedAssemblies ( )
-                                               .Where (
-                                                       referencedAssembly
-                                                           => referencedAssembly.Name
-                                                              == "WindowsBase"
-                                                      ) )
-            {
-                DebugUtils.WriteLine ( referencedAssembly.ToString ( ) ) ;
-                var assembly = AppDomain.CurrentDomain.GetAssemblies ( ) ;
-                foreach ( var assembly1 in assembly.Where (
-                                                           assembly1 => assembly1.GetName ( ).Name
-                                                                        == "WindowsBase"
-                                                          ) )
-                {
-                    DebugUtils.WriteLine ( assembly1.FullName ) ;
-                    foreach ( var type in assembly1.GetTypes ( ) )
-                    {
-                        DebugUtils.WriteLine (
-                                              $"Assembly type {type.FullName}: public={type.IsPublic}"
-                                             ) ;
-                        var staticFields =
-                            type.GetFields ( BindingFlags.NonPublic | BindingFlags.Static ) ;
-                        foreach ( var staticField in staticFields )
-                        {
-                            DebugUtils.WriteLine (
-                                                  $"{type.FullName}.{staticField.Name}: t[{staticField.FieldType.FullName}]"
-                                                 ) ;
-                            try
-                            {
-                                var val = staticField.GetValue ( null ) ;
-                                if ( val == null )
-                                {
-                                    DebugUtils.WriteLine ( "val is null" ) ;
-                                }
-                                else
-                                {
-                                    DebugUtils.WriteLine ( $"val is {val}" ) ;
-                                    DumpTypeInstanceInfo ( val ) ;
-                                }
-                            }
-                            catch ( Exception )
-                            {
-                                // ignored
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void DumpTypeInstanceInfo ( [ NotNull ] object val )
-        {
-            if ( val.GetType ( ).IsPrimitive )
-            {
-                return ;
-            }
-
-            var nonPublicFields = val.GetType ( )
-                                     .GetFields ( BindingFlags.Instance | BindingFlags.NonPublic ) ;
-            // ReSharper disable once UnusedVariable
-            var publicProperties =
-                val.GetType ( ).GetFields ( BindingFlags.Instance | BindingFlags.Public ) ;
-            // ReSharper disable once UnusedVariable
-            var nonPublicProperties =
-                val.GetType ( ).GetFields ( BindingFlags.Instance | BindingFlags.NonPublic ) ;
-            foreach ( var nonPublicField in nonPublicFields )
-            {
-                object v = null ;
-                try
-                {
-                    v = nonPublicField.GetValue ( val ) ;
-                }
-                catch ( Exception )
-                {
-                    DebugUtils.WriteLine ( "Unable to get field value" ) ;
-                }
-
-                if ( v == null )
-                {
-                    continue ;
-                }
-
-                var t = v.GetType ( ) ;
-                DebugUtils.WriteLine (
-                                      $"nonpublic field {nonPublicField.Name} is of type {t.FullName} and value {v}"
-                                     ) ;
-            }
-        }
 
         private static void PopulateJsonConverters ( bool disableLogging )
         {
@@ -181,9 +82,9 @@ namespace Client2
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            Client2Window1 w = new Client2Window1(null, new ClientModel(), null);
-            w.Show();
-            return;
+            // Client2Window1 w = new Client2Window1(null, new ClientModel(), null);
+            // w.Show();
+            // return;
             
             var result = CommandLine.Parser.Default.ParseArguments<ProjInterfaceOptions>(e.Args)
                 .WithNotParsed(errors => MessageBox.Show(String.Join("", errors), "error"));
@@ -212,6 +113,9 @@ namespace Client2
             Logger.Trace("{methodName}", nameof(OnStartup));
             var lifetimeScope = Scope;
             var wins = Scope.Resolve<IEnumerable<Meta<Lazy<Window>>>>();
+
+
+
             var winChose = wins.Where(z => z.Metadata.ContainsKey("ShortKey") && (string)z.Metadata["ShortKey"] == Options.window);
             if (!winChose.Any())
             {
@@ -272,6 +176,7 @@ namespace Client2
             // {
                 // MessageBox.Show(ex.ToString ( ) , "error" ) ;
             // }
+
         }
 
         public ProjInterfaceOptions Options { get; set; }
@@ -294,174 +199,5 @@ namespace Client2
             return TryFindResource ( resourceKey ) ;
         }
         #endregion
-    }
-
-    internal class ProjInterfaceOptions
-    {
-        [Option('w', "window", Default = "Client2Window1")]
-        public string window { get; set; }
-        [Option('c', "command")]
-        public string Command { get; set; }
-        [Option('a', "arg")]
-        public string Argument { get; set; }
-
-    }
-
-    internal class Test1
-    {
-    }
-
-    internal static class CustomAppEntry
-    {
-        /// <summary>
-        /// Application Entry Point.
-        /// </summary>
-        [ STAThread ]
-        public static void Main ( )
-        {
-            var loggingConfiguration = AppLoggingConfiguration.Default ;
-            loggingConfiguration.IsEnabledCacheTarget = true ;
-            loggingConfiguration.MinLogLevel          = LogLevel.Trace ;
-
-            Main1Model.SelectVsInstance();
-            AppDomain.CurrentDomain.AssemblyLoad += CurrentDomainOnAssemblyLoad;
-            AppLoggingConfigHelper.EnsureLoggingConfigured(message => DebugUtils.WriteLine(message),
-                loggingConfiguration);
-
-            AppDomain.CurrentDomain.ProcessExit += ( sender , args )
-                => GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
-            try
-            {
-                var app = new Client2App2 ( ) ;
-                app.Run ( ) ;
-            }
-            catch ( Exception ex )
-            {
-                
-            }
-        }
-
-        private static void CurrentDomainOnAssemblyLoad(object sender, AssemblyLoadEventArgs args)
-        {
-            DebugUtils.WriteLine(args.LoadedAssembly.FullName);
-        }
-    }
-
-    internal class Client2App2 : Application
-    {
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
-            bool select = false;
-            var keyb = InputManager.Current.PrimaryKeyboardDevice;
-            if (keyb.Modifiers == ModifierKeys.Control)
-            {
-                select = true;
-            } else if (keyb.Modifiers == ModifierKeys.Shift)
-            {
-                TetExit = true;
-                StartupCommand = new TestAndExitCommand();
-            }
-
-            if (keyb.IsKeyToggled(Key.LeftCtrl))
-            {
-                select = true;
-            }
-            if(select)
-            {
-                ShutdownMode = ShutdownMode.OnExplicitShutdown;
-                SelectAppAction();
-            }
-            else
-            {
-                Client2Window1 main = new Client2Window1();
-                RunWindow(main);
-            }
-
-            // if (e.Args.Any() && e.Args[0] == "test")
-            // {
-                // TestRibbonWindow testRibbonWindowwindow1 = new TestRibbonWindow();
-                // testRibbonWindowwindow1.Show();
-            // }
-            // else
-            // {
-                // Client2Window1 window1 = new Client2Window1(null, new ClientModel(), null);
-                // window1.Show();
-            // }
-        }
-
-        public ICommand StartupCommand { get; set; }
-
-        public bool TetExit { get; set; }
-
-        private void SelectAppAction()
-        {
-            var selectWindow = new ListBox();
-            object[] winTypes = new object[] {typeof(Client2Window1), typeof(TestRibbonWindow), WpfAppCommands.QuitApplication};
-            Client2App2 app = this;
-            selectWindow.ItemsSource = winTypes;
-            
-            Window w = new Window() {Content = selectWindow, Width = 200, Height = 400, FontSize = 16};
-            w.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            w.Closed += (sender, args) =>
-            {
-                if ((bool?)w.Tag != true)
-                {
-                    Shutdown();
-                }
-            };
-            selectWindow.SelectionChanged += (sender, args) =>
-            {
-                app.StartWindow = args.AddedItems[0];
-                w.Tag = true;
-                w.Close();
-            };
-
-
-            w.ShowDialog();
-            if (StartWindow == null) return;
-            {
-                if (StartWindow is Type t)
-                {
-                    var window = (Window) Activator.CreateInstance((Type) StartWindow);
-                    MainWindow = window;
-                    window.Closed += (sender, args) => { SelectAppAction(); };
-                    RunWindow(window);
-                    
-                    
-                } else if (StartWindow is RoutedUICommand ui)
-                {
-                    if (ui == WpfAppCommands.QuitApplication)
-                    {
-                        Shutdown();
-                    }
-                }
-            }
-        }
-
-        private void RunWindow(Window window)
-        {
-            window.Loaded += (sender, args) =>
-            {
-                StartupCommand?.Execute(null);
-            };
-            window.Show();
-        }
-
-        public object StartWindow { get; set; }
-    }
-
-    public class TestAndExitCommand : ICommand {
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-
-        public void Execute(object parameter)
-        {
-            Application.Current.Shutdown();
-        }
-
-        public event EventHandler CanExecuteChanged;
     }
 }

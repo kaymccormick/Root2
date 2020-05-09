@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +12,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using System.Windows.Shapes;
+using AnalysisAppLib;
 using KayMcCormick.Dev;
+using KayMcCormick.Lib.Wpf;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -22,6 +25,24 @@ namespace AnalysisControls
     /// </summary>
     public class FormattedTextControl : SyntaxNodeControl
     {
+        public static readonly DependencyProperty SourceTextProperty = DependencyProperty.Register(
+            "SourceText", typeof(string), typeof(FormattedTextControl), new PropertyMetadata(default(string), OnSourceTextUpdated));
+
+        private static void OnSourceTextUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var c = (FormattedTextControl) d;
+            var ctx =            AnalysisService.Parse((string) e.NewValue, "x");
+c.SyntaxTree = ctx.SyntaxTree;
+c.Model = ctx.CurrentModel;
+c.Compilation = ctx.Compilation;
+
+        }
+
+        public string SourceText
+        {
+            get { return (string) GetValue(SourceTextProperty); }
+            set { SetValue(SourceTextProperty, value); }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -229,6 +250,20 @@ namespace AnalysisControls
 
         {
             PixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.SerializeContents, Executed));
+        }
+
+        private async void Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var tesxt = await SyntaxTree.GetTextAsync();
+            var root = await SyntaxTree.GetRootAsync();
+            using(var s = new FileStream(@"C:\temp\serialize.bin", FileMode.Create))
+
+            {
+                root.SerializeTo(s);
+            }
+
+            
         }
 
         /// <summary>
@@ -240,7 +275,10 @@ namespace AnalysisControls
             if (!UiLoaded)
                 return;
             if (Compilation != null && Compilation.SyntaxTrees.Contains(SyntaxTree) == false)
-                throw new InvalidOperationException("Compilation does not contain syntax tree.");
+            {
+                Compilation = null;
+            }
+                //throw new InvalidOperationException("Compilation does not contain syntax tree.");
 
             if (ReferenceEquals(Node.SyntaxTree, SyntaxTree) == false)
                 throw new InvalidOperationException("Node is not within syntax tree");
@@ -282,8 +320,8 @@ namespace AnalysisControls
 
             if (_rectangle != null)
             {
-                dpd.AddValueChanged(_rectangle, Handler);
-                dpd2.AddValueChanged(_rectangle, Handler2);
+                // dpd.AddValueChanged(_rectangle, Handler);
+                // dpd2.AddValueChanged(_rectangle, Handler2);
             }
 
             SetFontFamily();
@@ -314,6 +352,18 @@ namespace AnalysisControls
         {
             if (_rectangle != null) _fontFamily = (FontFamily) _rectangle.GetValue(TextElement.FontFamilyProperty);
             if (_fontFamily != null) Typeface = new Typeface(_fontFamily, _fontStyle, _fontWeight, _fontStretch);
+        }
+
+        protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
+        {
+            base.OnTemplateChanged(oldTemplate, newTemplate);
+            DebugUtils.WriteLine($"{newTemplate}");
+        }
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+            DebugUtils.WriteLine($"{e.Property.Name}");
         }
 
         private void Handler(object sender, EventArgs e)

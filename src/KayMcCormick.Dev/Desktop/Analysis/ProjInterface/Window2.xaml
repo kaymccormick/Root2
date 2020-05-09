@@ -24,6 +24,6 @@
   <RibbonWindow.CommandBindings>
     <CommandBinding Command="kmWpf:WpfAppCommands.LoadSolution" Executed="CommandBinding_OnExecuted"></CommandBinding>
   </RibbonWindow.CommandBindings>
-    <anal:Main1 x:FieldModifier="public" x:Name="Main1" RibbonBuilder="{kmWpf:Resolve anal:RibbonBuilder}"
+    <anal:Main1 x:FieldModifier="public" x:Name="Main1" 
                 ViewModel="{kmWpf:Resolve anal:Main1Model}"/>
 </RibbonWindow>

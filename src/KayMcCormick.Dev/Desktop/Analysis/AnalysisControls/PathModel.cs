@@ -8,10 +8,19 @@ namespace AnalysisControls
     /// </summary>
     public class PathModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="kind"></param>
         public PathModel(PathModelKind kind)
         {
             Kind = kind;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsVirtualNode { get; set; }
 
         /// <summary>
         ///
@@ -44,12 +53,20 @@ namespace AnalysisControls
         {
             return $"{nameof(Entries)}: {Entries.Keys.Join(";")}, {nameof(Path)}: {Path}, {nameof(Item)}: {Item}, {nameof(Parent)}: {Parent}, {nameof(ElementName)}: {ElementName}";
         }
+
+        public void Add(PathModel docs)
+        {
+
+            Entries[docs.ElementName] = docs;
+        }
     }
 
     public enum PathModelKind  
     {
         None = 0,
         Directory ,
-        File
+        File,
+        Virtual,
+        Diagnostic
     }
 }

@@ -6,6 +6,7 @@ using System.Xaml;
 using AnalysisAppLib;
 using AnalysisAppLib.Properties;
 using AnalysisControls;
+using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using XamlReader = System.Windows.Markup.XamlReader;
@@ -63,7 +64,9 @@ namespace ProjTests
             control.SyntaxTree = tree;
             control.Compilation = compilation;
             control.Model = compilation.GetSemanticModel(tree);
-            var w = new Window {Content = control, ShowActivated = true, Resources = resources};
+            var r  = new MyResourceDictionary();
+            r.MergedDictionaries.Add(resources);
+            var w = new Window {Content = control, ShowActivated = true, Resources = r};
             w.ShowDialog();
         }
 
@@ -95,6 +98,19 @@ namespace ProjTests
 
             var oo = (ResourceDictionary) XamlReader.Load(b);
             return oo;
+        }
+    }
+
+    internal class MyResourceDictionary: ResourceDictionary
+    {
+        public MyResourceDictionary()
+        {
+        }
+
+        protected override void OnGettingValue(object key, ref object value, out bool canCache)
+        {
+            base.OnGettingValue(key, ref value, out canCache);
+            DebugUtils.WriteLine($"{key}- {value}");
         }
     }
 }

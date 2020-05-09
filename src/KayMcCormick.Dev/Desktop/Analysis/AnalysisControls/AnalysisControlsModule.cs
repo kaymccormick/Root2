@@ -10,8 +10,10 @@
 // ---
 #endregion
 using System ;
+using System.Collections;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel ;
 using System.Linq ;
 using System.Reactive.Concurrency;
@@ -22,6 +24,8 @@ using System.Text.Json ;
 using System.Threading.Tasks;
 using System.Windows ;
 using System.Windows.Controls ;
+using System.Windows.Controls.Primitives;
+using System.Windows.Controls.Ribbon;
 using System.Windows.Data ;
 using System.Windows.Markup ;
 using System.Windows.Threading;
@@ -80,6 +84,7 @@ namespace AnalysisControls
                 );
             if (RegisterControlViewCommandAdapters)
             {
+                
                 builder
                     .RegisterAdapter<Meta<Func<LayoutDocumentPane, IControlView>>,
                         Func<LayoutDocumentPane, IDisplayableAppCommand>>(ControlViewCommandAdapter)
@@ -102,47 +107,124 @@ namespace AnalysisControls
                 .SingleInstance()
                 .WithCallerMetadata();
 
-
-            builder.RegisterType<RibbonBuilder>();
-            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AssignableTo<IRibbonComponent>()
-                .AsImplementedInterfaces().AsSelf();
-            //builder.RegisterAdapter<>()
-            builder.RegisterType<AppRibbon>().AsImplementedInterfaces().AsSelf().WithCallerMetadata();
-            builder.RegisterType<AppRibbonTab>().AsImplementedInterfaces().AsSelf().WithCallerMetadata();
-            foreach (Category enumValue in typeof(Category).GetEnumValues())
+            if (RibbonFunc2)
             {
-                CategoryInfo cat = new CategoryInfo(enumValue);
-                builder.RegisterInstance(cat).As<CategoryInfo>();
-            }
-            builder.Register((c, p) =>
-            {
-                var r = new AppRibbonTabSet();
-                foreach (var ct in c.Resolve<IEnumerable<CategoryInfo>>())
+                builder.RegisterType<RibbonBuilder>();
+                builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AssignableTo<IRibbonComponent>()
+                    .AsImplementedInterfaces().AsSelf();
+                //builder.RegisterAdapter<>()
+                builder.RegisterType<AppRibbon>().AsImplementedInterfaces().AsSelf().WithCallerMetadata();
+                builder.RegisterType<AppRibbonTab>().AsImplementedInterfaces().AsSelf().WithCallerMetadata();
+                foreach (Category enumValue in typeof(Category).GetEnumValues())
                 {
-                    var tab = new AppRibbonTab {Category = ct};
-                    r.TabSet.Add(tab);
+                    CategoryInfo cat = new CategoryInfo(enumValue);
+                    builder.RegisterInstance(cat).As<CategoryInfo>();
                 }
-                foreach (var meta in c.Resolve<IEnumerable<Meta<Lazy<IBaseLibCommand>>>>())
-                {
-                    DebugUtils.WriteLine(meta.ToString());
-                    var props = MetaHelper.GetProps(meta);
-                    DebugUtils.WriteLine(props.ToString());
-                }
-                return r;
-            });
 
-            builder.RegisterAssemblyTypes(ThisAssembly).AssignableTo<IBaseLibCommand>().AsImplementedInterfaces()
-                .WithCallerMetadata();
-            foreach ( var qq in typeof ( AnalysisCommands ).GetProperties (
-                                                                           BindingFlags.Static
-                                                                           | BindingFlags.Public
-                                                                          ) )
-            {
-                var t = qq.PropertyType ;
+                builder.Register((c, p) =>
+                {
+                    var r = new AppRibbonTabSet();
+                    foreach (var ct in c.Resolve<IEnumerable<CategoryInfo>>())
+                    {
+                        var tab = new AppRibbonTab {Category = ct};
+                        r.TabSet.Add(tab);
+                    }
+
+                    foreach (var meta in c.Resolve<IEnumerable<Meta<Lazy<IBaseLibCommand>>>>())
+                    {
+                        DebugUtils.WriteLine(meta.ToString());
+                        var props = MetaHelper.GetProps(meta);
+                        DebugUtils.WriteLine(props.ToString());
+                    }
+
+                    return r;
+                });
+
+                builder.RegisterAssemblyTypes(ThisAssembly).AssignableTo<IBaseLibCommand>().AsImplementedInterfaces()
+                    .WithCallerMetadata();
+                builder.Register((c, p) =>
+                {
+
+                    var cm = c.Resolve<IEnumerable<Meta<Lazy<IBaseLibCommand>>>>();
+
+                    Dictionary<Category, Info1> dict = new Dictionary<Category, Info1>();
+                    foreach (var c1 in cm)
+                    {
+                        foreach (var m1 in c1.Metadata)
+                        {
+                            DebugUtils.WriteLine($"{m1.Key} = {m1.Value}");
+                        }
+
+                        CommandInfo ci = new CommandInfo {Command = c1};
+
+                        if (c1.Metadata.TryGetValue("Category", out var cv))
+                        {
+                        }
+
+                        Category cat = Category.None;
+                        try
+                        {
+                            cat = (Category) cv;
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+
+                        c1.Metadata.TryGetValue("Group", out var group);
+                        if (group == null)
+                        {
+                            group = "no group";
+                        }
+
+                        if (!dict.TryGetValue(cat, out var i1))
+                        {
+                            i1 = new Info1()
+                            {
+                                Category = (Category) cat,
+                            };
+                            dict[cat] = i1;
+                        }
+
+                        if (group == null)
+                        {
+                            i1.Ungrouped.Add(ci);
+                        }
+                        else
+                        {
+                            if (!i1.Infos.TryGetValue((string) group, out var i2))
+                            {
+
+                                i2 = new Info2 {Group = (string) group};
+                                i1.Infos[(string) group] = i2;
+                            }
+
+                            i2.Infos.Add(ci);
+                        }
+                    }
+
+                    DebugUtils.WriteLine("***");
+                    foreach (var k in dict.Keys)
+                    {
+                        DebugUtils.WriteLine(k.ToString());
+                        foreach (var cx in dict[k].Infos)
+                        {
+                            foreach (var cxx in cx.Value.Infos)
+                            {
+                                DebugUtils.WriteLine(cxx.Command.ToString());
+                            }
+
+                        }
+
+                    }
+
+                    return dict;
+
+                }).AsSelf().WithCallerMetadata().SingleInstance();
+
             }
 
-
-                var kayTypes = AppDomain.CurrentDomain.GetAssemblies ( )
+            var kayTypes = AppDomain.CurrentDomain.GetAssemblies ( )
                                         .Where (
                                                 a => a
                                                     .GetCustomAttributes < AssemblyCompanyAttribute
@@ -162,7 +244,7 @@ namespace AnalysisControls
             var xx = new CustomTypes(kayTypes);
                 builder.RegisterInstance(xx);
                 //builder.Register((c, p) => { return kayTypes; }).Keyed<IEnumerable<Type>>("Custom");
-                builder.RegisterType<UiElementTypeConverter>();
+                builder.RegisterType<UiElementTypeConverter>().SingleInstance().WithCallerMetadata();
                 builder.Register((c, p) =>
                 {
                     var lifetimeScope = c.Resolve<ILifetimeScope>();
@@ -171,26 +253,7 @@ namespace AnalysisControls
                     };
                     return f;
                 }).As < Func<Type, TypeConverter>>();
-                
-                foreach ( var kayType in kayTypes )
 
-                {
-                    // builder.RegisterType ( kayType )
-                           // .WithMetadata < TypeUsageMetadata > (
-                                                                // m => m.For (
-                                                                            // metadata
-                                                                                // => metadata
-                                                                                          // .UiConversion
-                                                                                       // = true
-                                                                           // )
-                                                               // ) ;
-
-                    // m.For ( tm => tm.UiConversion = true ));
-                }
-
-
-                //builder.RegisterGeneric(typeof(TypeServices<>));
-                // builder.RegisterType <TypeConverter1> ( ).Where(a => a.As < TypeConverter > ( ) ;
                 var types = new[] { typeof ( AppTypeInfo ) , typeof ( SyntaxFieldInfo ) } ;
                 builder.RegisterInstance ( types )
                        .WithMetadata ( "Custom" , true )
@@ -204,21 +267,6 @@ namespace AnalysisControls
                        .AsSelf ( )
                        .AsImplementedInterfaces ( ) ;
 
-#if false
-            builder.RegisterAssemblyTypes(ThisAssembly).Where(type => {
-                                                                  var isAssignableFrom =
- typeof ( IViewModel )
-                                                                                            .IsAssignableFrom (
-                                                                                                               type
-                                                                                                              )
-                                                                                         || typeof ( IView1 )
-                                                                                            .IsAssignableFrom (
-                                                                                                               type
-                                                                                                              ) ;
-                                                                  return isAssignableFrom ;
-                                                              }              ).AsImplementedInterfaces().AsSelf().WithAttributedMetadata();
-
-#else
 
                 builder.RegisterAdapter < IBaseLibCommand , IAppCommand > (
                                                                            (
@@ -249,112 +297,10 @@ namespace AnalysisControls
                        .WithMetadata ( "Ribbon" , true )
                        .WithCallerMetadata ( ) ;
                 builder.RegisterType<UiElementTypeConverter>().AsSelf();
-            // builder.RegisterAssemblyTypes(
-            //         Assembly.GetExecutingAssembly()
-            //         , typeof(AnalysisControlsModule).Assembly
-            //     )
-            //     .Where(
-            //         type => {
-            //             var isAssignableFrom =
-            //                 typeof(IDisplayableAppCommand).IsAssignableFrom(type)
-            //                 && type != typeof(LambdaAppCommand);
-            //             DebugUtils.WriteLine($"{type.FullName} - {isAssignableFrom}");
-            //             return isAssignableFrom;
-            //         }
-            //     )
-            //     .AsImplementedInterfaces()
-            //     .WithCallerMetadata();
-
-
-            // var names = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-            // foreach ( var name in names )
-            // {
-            //     var info = Assembly.GetExecutingAssembly ( ).GetManifestResourceInfo ( name ) ;
-            //     DebugUtils.WriteLine ( info.ResourceLocation ) ;
-            //
-            // }
-            builder.RegisterType<Main1Model>();
-            builder.RegisterCallback((x) =>
-            {
                 
-            });
-            builder.Register((c, p)=>
-            {
-
-                var cm = c.Resolve<IEnumerable<Meta<Lazy<IBaseLibCommand>>>>();
-
-                Dictionary<Category, Info1> dict = new Dictionary<Category, Info1>();
-                foreach (var c1 in cm)
-                {
-                    foreach (var m1 in c1.Metadata)
-                    {
-                        DebugUtils.WriteLine($"{m1.Key} = {m1.Value}");
-                    }
-                    CommandInfo ci = new CommandInfo { Command = c1 };
-
-                    if (c1.Metadata.TryGetValue("Category", out var cv))
-                    {
-                    }
-
-                    Category cat = Category.None;
-                    try
-                    {
-                        cat = (Category) cv;
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-
-                    c1.Metadata.TryGetValue("Group", out var group);
-                    if (group == null)
-                    {
-                        group = "no group";
-                    }
-
-                    if (!dict.TryGetValue(cat, out var i1))
-                    {
-                        i1 = new Info1()
-                        {
-                            Category = (Category)cat,
-                        };
-                        dict[cat] = i1;
-                    }
-                    if (group == null)
-                    {
-                        i1.Ungrouped.Add(ci);
-                    }
-                    else
-                    {
-                        if (!i1.Infos.TryGetValue((string)group, out var i2))
-                        {
-
-                            i2 = new Info2 { Group = (string)group };
-                            i1.Infos[(string)group] = i2;
-                        }
-
-                        i2.Infos.Add(ci);
-                    }
-                }
-
-                DebugUtils.WriteLine("***");
-                foreach (var k in dict.Keys)
-                {
-                    DebugUtils.WriteLine(k.ToString());
-                    foreach (var cx in dict[k].Infos)
-                    {
-                        foreach (var cxx in cx.Value.Infos)
-                        {
-                            DebugUtils.WriteLine(cxx.Command.ToString());
-                        }
-
-                    }
-
-                }
-                return dict;
-
-            }).AsSelf().WithCallerMetadata().SingleInstance();
-                builder.Register (
+            builder.RegisterType<Main1Model>();
+           
+            builder.Register (
                                   ( context , parameters ) => {
                                       try
                                       {
@@ -414,8 +360,7 @@ namespace AnalysisControls
                        .AsImplementedInterfaces ( )
                        .WithCallerMetadata ( ) ;
 
-
-                builder.RegisterType < SyntaxPanel > ( )
+            builder.RegisterType < SyntaxPanel > ( )
                        .Keyed < IControlView > ( typeof ( CompilationUnitSyntax ) )
                        .AsSelf ( )
                        .WithCallerMetadata ( ) ;
@@ -423,8 +368,9 @@ namespace AnalysisControls
                        .AsImplementedInterfaces ( )
                        .AsSelf ( )
                        .WithCallerMetadata ( ) ;
-#endif
-            }
+        }
+
+        public bool RibbonFunc2 { get; set; }
 
         private IDisplayableAppCommand ControlViewCommandAdapter2(IComponentContext arg1, IEnumerable<Parameter> arg2, Meta<Lazy<IControlView>> arg3)
         {
@@ -626,5 +572,107 @@ namespace AnalysisControls
                     });
                 return lb;
             }
+    }
+    public  class MyRibbonComboBox : RibbonComboBox
+    {
+        protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+        {
+
+            base.PrepareContainerForItemOverride(element, item);
+        }
+
+        protected override void ClearContainerForItemOverride(DependencyObject element, object item)
+        {
+            base.ClearContainerForItemOverride(element, item);
+        }
+
+        protected override bool IsItemItsOwnContainerOverride(object item)
+        {
+            return base.IsItemItsOwnContainerOverride(item);
+        }
+
+        protected override DependencyObject GetContainerForItemOverride()
+        {
+            return base.GetContainerForItemOverride();
+        }
+
+        public MyRibbonComboBox()
+        {
+            
+        }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+        }
+
+        protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+        {
+            base.OnItemsSourceChanged(oldValue, newValue);
+        }
+
+        protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            base.OnItemsChanged(e);
+        }
+
+        protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
+        {
+            base.OnVisualChildrenChanged(visualAdded, visualRemoved);
+        }
+    }
+
+    public class MyItemContainerGenerator : IItemContainerGenerator
+    {
+        public ItemContainerGenerator GetItemContainerGeneratorForPanel(Panel panel)
+        {
+            return null;
+            ;
+        }
+
+        public IDisposable StartAt(GeneratorPosition position, GeneratorDirection direction)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDisposable StartAt(GeneratorPosition position, GeneratorDirection direction, bool allowStartAtRealizedItem)
+        {
+            throw new NotImplementedException();
+        }
+
+        public DependencyObject GenerateNext()
+        {
+            throw new NotImplementedException();
+        }
+
+        public DependencyObject GenerateNext(out bool isNewlyRealized)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PrepareItemContainer(DependencyObject container)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Remove(GeneratorPosition position, int count)
+        {
+            throw new NotImplementedException();
+        }
+
+        public GeneratorPosition GeneratorPositionFromIndex(int itemIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int IndexFromGeneratorPosition(GeneratorPosition position)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

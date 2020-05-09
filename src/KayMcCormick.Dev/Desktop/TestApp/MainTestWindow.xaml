@@ -16,9 +16,5 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Window.Resources>
-    <anal:Main1 VerticalContentAlignment="Stretch">
-      <anal:Main1.ViewModel>
-        <anal:Main1Model/>
-      </anal:Main1.ViewModel>
-      </anal:Main1>
+  <anal:CodeControl1/>
 </Window>

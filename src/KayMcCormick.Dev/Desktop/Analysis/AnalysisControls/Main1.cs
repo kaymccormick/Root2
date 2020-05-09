@@ -77,8 +77,8 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public static readonly DependencyProperty RibbonBuilderProperty = DependencyProperty.Register(
-            "RibbonBuilder", typeof(RibbonBuilder), typeof(Main1), new PropertyMetadata(default(RibbonBuilder)));
+        // public static readonly DependencyProperty RibbonBuilderProperty = DependencyProperty.Register(
+            // "RibbonBuilder", typeof(RibbonBuilder), typeof(Main1), new PropertyMetadata(default(RibbonBuilder)));
 
         private Grid _grid;
         private Main1Model _viewModel;
@@ -88,11 +88,11 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public RibbonBuilder RibbonBuilder
-        {
-            get { return (RibbonBuilder) GetValue(RibbonBuilderProperty); }
-            set { SetValue(RibbonBuilderProperty, value); }
-        }
+        // public RibbonBuilder RibbonBuilder
+        // {
+            // get { return (RibbonBuilder) GetValue(RibbonBuilderProperty); }
+            // set { SetValue(RibbonBuilderProperty, value); }
+        // }
 
         static Main1()
         {
@@ -199,9 +199,9 @@ namespace AnalysisControls
             if (_dockingManager.ActiveContent != null) DebugUtils.WriteLine(_dockingManager.ActiveContent.ToString());
         }
 
-        private void OnSolutionItemExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void OnSolutionItemExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            ViewModel.OpenSolutionItem(e.Parameter);
+            await ViewModel.OpenSolutionItem(e.Parameter);
         }
 
         private void OnCreateProjectExecuted(object sender, ExecutedRoutedEventArgs e)

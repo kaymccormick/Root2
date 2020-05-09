@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using AnalysisAppLib.Syntax;
 using JetBrains.Annotations;
+using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
 
 namespace AnalysisControls
@@ -17,6 +18,19 @@ namespace AnalysisControls
     /// </summary>
     public class ProjectModel : INotifyPropertyChanged
     {
+        public ProjectModel()
+        {
+            Documents.CollectionChanged += DocumentsOnCollectionChanged;
+            PathModel docs = new PathModel(PathModelKind.Virtual);
+            docs.ElementName = "Documents";
+            RootPathInfo.Add(docs);
+            DocumentsPath = docs;
+            PathModel diag = new PathModel(PathModelKind.Virtual) {ElementName = "Diagnostics"};
+            RootPathInfo.Add(diag);
+        }
+
+        public PathModel DocumentsPath { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -48,13 +62,7 @@ namespace AnalysisControls
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// 
-        /// </summary>
-        public ProjectModel()
-        {
-            Documents.CollectionChanged += DocumentsOnCollectionChanged;
-        }
-
+        
         private void DocumentsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
@@ -86,8 +94,9 @@ namespace AnalysisControls
             foreach (DocumentModel eNewItem in eOldItems)
             {
                 var filePath = eNewItem.FilePath;
-                filePath = Ext.GetRelativePath(eNewItem.Project.FilePath, filePath);
-                var pathInfo = GetPathInfo(filePath);
+                if (eNewItem.Project.FilePath != null)
+                    filePath = Ext.GetRelativePath(eNewItem.Project.FilePath, filePath);
+                var pathInfo = GetPathInfo(filePath, DocumentsPath);
                 pathInfo.Entries.Remove(System.IO.Path.GetFileName(filePath));
                 while (!pathInfo.Entries.Any())
                 {
@@ -104,8 +113,8 @@ namespace AnalysisControls
             foreach (DocumentModel eNewItem in eNewItems)
             {
                 var filePath = eNewItem.FilePath;
-                if (eNewItem.Project != null) filePath = Ext.GetRelativePath(eNewItem.Project.FilePath, filePath);
-                var pathInfo = GetPathInfo(filePath);
+                if (eNewItem.Project != null && eNewItem.Project.FilePath != null) filePath = Ext.GetRelativePath(eNewItem.Project.FilePath, filePath);
+                var pathInfo = GetPathInfo(filePath, DocumentsPath);
                 pathInfo.Entries[filePath] = new PathModel(PathModelKind.File)
                 {
                     ElementName = System.IO.Path.GetFileName(filePath), Item = eNewItem, Parent = pathInfo,
@@ -114,20 +123,27 @@ namespace AnalysisControls
             }
         }
 
-        private PathModel GetPathInfo(string filePath)
+        private PathModel GetPathInfo(string filePath, PathModel root)
         {
             var dirs = new Queue<string>(filePath.Split(System.IO.Path.DirectorySeparatorChar));
-            var cur = RootPathInfo;
+            var cur = root;
             var curPath = "";
+            int pathi = 0;
             while (dirs.Count > 1)
             {
                 var s = dirs.Dequeue();
+                if (pathi == 0)
+                {
+                    DebugUtils.WriteLine("First path element is " + s);
+                }
+
                 curPath += s + System.IO.Path.DirectorySeparatorChar;
                 
                 if (cur.Entries.TryGetValue(s, out var val)) continue;
                 val = new PathModel(PathModelKind.Directory) {Path = curPath, Parent = cur, ElementName = s};
                 cur.Entries[s] = val;
                 cur = val;
+                pathi++;
             }
 
             return cur;

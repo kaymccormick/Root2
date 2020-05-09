@@ -402,6 +402,10 @@
     BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
     UriSource="Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
     x:Key="HelpStatusColor" />
+  <BitmapImage
+    BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
+    UriSource="Assets/Document.ico"
+    x:Key="DocumentIcon" />
   <system:Double x:Key="DefaultFontSize">24</system:Double>
 
 

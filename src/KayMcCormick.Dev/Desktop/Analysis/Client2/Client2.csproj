@@ -104,14 +104,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AppAction.cs" />
+    <Compile Include="AppHelpers.cs" />
+    <Compile Include="Client2App2.cs" />
     <Compile Include="Client2Window1.xaml.cs">
       <DependentUpon>Client2Window1.xaml</DependentUpon>
     </Compile>
     <Compile Include="Client2Module.cs" />
+    <Compile Include="CustomAppEntry.cs" />
     <Compile Include="Explorer\Shell.cs" />
     <Compile Include="Explorer\ShellExplorerItem.cs" />
     <Compile Include="Explorer\ShellExplorerItemProvider.cs" />
+    <Compile Include="IRibbonModelProvider.cs" />
+    <Compile Include="MyInfo.cs" />
+    <Compile Include="ProjInterfaceOptions.cs" />
     <Compile Include="RibbonModelItemSplitButton.cs" />
+    <Compile Include="RibbonTabProvider1.cs" />
+    <Compile Include="RibbonViewGroupProvider.cs" />
+    <Compile Include="RibbonViewGroupProviderBase.cs" />
+    <Compile Include="RibbonViewGroupProviderBaseImpl.cs" />
+    <Compile Include="TabItemTemplateSelector.cs" />
+    <Compile Include="TestAndExitCommand.cs" />
     <Compile Include="TestRibbonWindow.xaml.cs">
       <DependentUpon>TestRibbonWindow.xaml</DependentUpon>
     </Compile>

@@ -1881,18 +1881,35 @@ namespace ProjTests
             mainw.AddHandler(WorkspaceView.SelectedProjectChangedEvent,
                 new RoutedPropertyChangedEventHandler<ProjectModel>(Target), true);
 
-            w.Loaded += (sender, args) =>
+            w.Loaded += async (sender, args) =>
             {
-                mainw.ViewModel.LoadSolution(solutionPath);
-                mainw.ViewModel.WorkspaceView.SelectedDocumentChanged +=
-                    (sender1, args1) => DebugUtils.WriteLine(args1.NewValue.Name);
-                mainw.ViewModel.WorkspaceView.SelectedProjectChanged +=
-                    (sender2, args2) =>
+                try
+                {
+                    if (mainw.ViewModel.WorkspaceView != null)
                     {
-                        DebugUtils.WriteLine(args2.NewValue.Name + $" {args2.NewValue.Documents.Count}" +" [" + String.Join(", ",
-                                                 args2.NewValue.RootPathInfo.Entries.Values.Select(x => x.Path)) + "]");
-                    };
+                        mainw.ViewModel.WorkspaceView.SelectedDocumentChanged +=
+                            (sender1, args1) => DebugUtils.WriteLine(args1.NewValue.Name);
+                        mainw.ViewModel.WorkspaceView.SelectedProjectChanged +=
+                            (sender2, args2) =>
+                            {
+                                DebugUtils.WriteLine(args2.NewValue.Name + $" {args2.NewValue.Documents.Count}" + " [" +
+                                                     String.Join(", ",
+                                                         args2.NewValue.RootPathInfo.Entries.Values
+                                                             .Select(x => x.Path)) +
+                                                     "]");
+                            };
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
 
+                    await mainw.ViewModel.LoadSolution(solutionPath);
+                }
+                catch(Exception ex)
+                {
+                    DebugUtils.WriteLine(ex.ToString());
+                }
             };
 
             w.Closed += (sender, args) =>
@@ -2007,7 +2024,7 @@ namespace ProjTests
         {
             Assert.True(MSBuildLocator.CanRegister);
             ProjectModel m = new ProjectModel();
-            m.Documents.Add(new DocumentModel(){FilePath = "test\\one\\tewo"});
+            m.Documents.Add(new DocumentModel(m){FilePath = "test\\one\\tewo"});
             foreach (var kv in m.RootPathInfo.Entries)
             {
                 DebugUtils.WriteLine(kv.Value.ToString());
@@ -2052,5 +2069,51 @@ namespace ProjTests
             }
         }
 
+        [WpfFact]
+        public void TestMdodel1()
+        {
+            Main1Model model = new Main1Model();
+            model.CreateWorkspace();
+
+            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+            model.Documents.CollectionChanged += (sender, e) =>
+            {
+                if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    foreach (var eNewItem in e.NewItems)
+                    {
+                        if (eNewItem is DocModel d)
+                        {
+                            if (d.Content is FormattedTextControl fmt)
+                            {
+                                tcs.SetResult(fmt.SyntaxTree);
+                                
+                            }
+                        }
+                    }
+                }
+            }
+            ;
+            model.ProjectedAddedEvent += (sender, args) => { model.AddDocument(args.Model, @"C:\temp\program.cs"); };
+            model.DocumentAddedEvent += async (sender, args) =>
+            {
+                await model.OpenSolutionItem(args.Document);
+            };
+            var p = model.CreateProject(); ;
+            tcs.Task.Wait(5000);
+            if (tcs.Task.Result is SyntaxTree t)
+            {
+                DebugUtils.WriteLine(t.Length.ToString());
+            }
+
+            ;
+            
+               
+        }
+
+        private void Documents_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+         
+        }
     }
 }

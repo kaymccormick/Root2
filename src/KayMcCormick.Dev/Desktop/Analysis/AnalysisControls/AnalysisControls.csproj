@@ -105,6 +105,9 @@
     <Compile Include="AppTextSource.cs" />
     <Compile Include="CategoryInfo.cs" />
     <Compile Include="CharacterCell.cs" />
+    <Compile Include="CodeControl1.xaml.cs">
+      <DependentUpon>CodeControl1.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CodeControl2.cs" />
     <Compile Include="CodeDiagnostics.cs" />
     <Compile Include="CodeProps.cs" />
@@ -189,7 +192,7 @@
     <Compile Include="Ribbon\RibbonModelItemSplitButton.cs" />
     <Compile Include="Ribbon\RibbonModelItemTextBox.cs" />
     <Compile Include="Ribbon\RibbonModelTab.cs" />
-    <Compile Include="Ribbon\RibbonModelTabItemGroup.cs" />
+    <Compile Include="Ribbon\RibbonModelGroup.cs" />
     <Compile Include="RWindow.xaml.cs">
       <DependentUpon>RWindow.xaml</DependentUpon>
     </Compile>
@@ -261,6 +264,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Content>
+    <Page Include="CodeControl1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="FormattedCode2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -278,6 +285,10 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Page Include="Ribbon1Dict.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RibbonModel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

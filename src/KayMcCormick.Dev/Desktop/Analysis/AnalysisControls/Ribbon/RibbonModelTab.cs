@@ -7,9 +7,9 @@ namespace AnalysisControls.RibbonM
         public string Header { get; set; }
         public ObservableCollection<RibbonModelItem> Items { get; } = new ObservableCollection<RibbonModelItem>();
 
-        public RibbonModelTabItemGroup CreateGroup(string @group)
+        public RibbonModelGroup CreateGroup(string @group)
         {
-            var r = new RibbonModelTabItemGroup() {Header = @group};
+            var r = new RibbonModelGroup() {Header = @group};
             Items.Add(r);
             return r;
         }

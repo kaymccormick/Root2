@@ -46,8 +46,11 @@ namespace AnalysisControls
                 case NotifyCollectionChangedAction.Add:
                     if (e.NewStartingIndex + e.NewItems.Count == EventsSource.Count())
                     {
-                        ((LogEventsSource) Store).AppendRange(e.NewItems);
-                        UpdateFormattedTextPartial();
+                        if (Store != null)
+                        {
+                            ((LogEventsSource) Store).AppendRange(e.NewItems);
+                            UpdateFormattedTextPartial();
+                        }
                     }
 
                     break;
@@ -249,7 +252,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public AppTextSource Store { get; private set; }
+        public LogEventsSource Store { get; private set; }
 
         private DrawingBrush _myDrawingBrush = new DrawingBrush();
         private DrawingGroup _textDest = new DrawingGroup();

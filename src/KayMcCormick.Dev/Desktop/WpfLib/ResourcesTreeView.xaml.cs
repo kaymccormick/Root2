@@ -10,7 +10,7 @@ namespace KayMcCormick.Lib.Wpf
     /// <summary>
     /// Interaction logic for ResourcesTreeView.xaml
     /// </summary>
-    public partial class ResourcesTreeView : UserControl, IControlView, IView1, IView <AllResourcesTreeViewModel>
+    public partial class ResourcesTreeView : UserControl, IView1, IView <AllResourcesTreeViewModel>
     {
         private AllResourcesTreeViewModel _viewModel ;
         private Frame _targetFrame ;

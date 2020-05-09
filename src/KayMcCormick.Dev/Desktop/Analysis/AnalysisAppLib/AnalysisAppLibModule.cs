@@ -118,25 +118,6 @@ namespace AnalysisAppLib
             builder.RegisterType<ResourceNodeInfo>().As<IHierarchicalNode>();
             builder.RegisterGeneric(typeof(ReplaySubject<>)).SingleInstance();
             
-            if ( false )
-            {
-                builder.Register < Func<object, DataTable>> (
-                                                                  ( c , p ) => o
-                                                                      => DataAdapter ( c , p , o )
-                                                                 )
-                       .As < Func<object, DataTable>> ( ) ;
-
-
-                builder.RegisterAdapter < object , DataTable > ( DataAdapter ) ;
-                builder.RegisterAdapter < object , IDictionary > ( DictAdapter ) ;
-            }
-            builder.RegisterType<TestModel>();
-
-            builder.RegisterType < AppDbContext > ( )
-                   .AsSelf ( )
-                   .As < DbContext > ( )
-                   .WithCallerMetadata ( ) ;
-
             builder.RegisterType < SyntaxTypesService > ( )
                    .As < ISyntaxTypesService > ( )
                    .WithCallerMetadata ( ) ;
@@ -145,10 +126,6 @@ namespace AnalysisAppLib
                    .WithCallerMetadata ( ) ;
             builder.RegisterModule < LegacyAppBuildModule > ( ) ;
             builder.RegisterType < ModelResources > ( ).WithCallerMetadata ( ).SingleInstance ( ) ;
-            builder.RegisterType < CodeGenCommand > ( )
-                   .AsSelf ( )
-                   .AsImplementedInterfaces ( )
-                   .WithCallerMetadata ( ) ;
             builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly ( ) )
                    .Where (
                            type => {

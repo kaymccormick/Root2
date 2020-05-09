@@ -9,6 +9,11 @@ namespace AnalysisControls
     /// </summary>
     public class DocumentModel
     {
+        public DocumentModel(ProjectModel project)
+        {
+            Project = project;
+        }
+
         /// <summary>
         /// 
         /// </summary>
