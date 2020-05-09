@@ -23,9 +23,10 @@ namespace AnalysisControls
         protected override void UpdateFormattedText()
         {
             DebugUtils.WriteLine(nameof(UpdateFormattedText));
+            if (Typeface == null) Typeface = new Typeface("Courier New");
             var currentRendering = CurrentRendering;
             var maxX = MaxX;
-            if (Typeface == null) Typeface = new Typeface("Courier New");
+            
             double pixelsPerDip = PixelsPerDip;
             FormattingHelper.UpdateFormattedText(OutputWidth, ref currentRendering, EmSize, Typeface, _textDest,
                 Store,

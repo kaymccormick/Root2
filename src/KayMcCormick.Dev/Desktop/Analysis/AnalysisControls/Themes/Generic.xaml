@@ -526,8 +526,10 @@
               </Grid.ColumnDefinitions>
               <ScrollViewer VerticalAlignment="Stretch" x:Name="ScrollViewer" HorizontalContentAlignment="Left"
                             VerticalContentAlignment="Top">
+
+                <Grid x:Name="InnerGrid">
                 <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left" Stroke="Aqua"
-                           TextElement.FontSize="12">
+                             TextElement.FontSize="12">
                   <Rectangle.Fill>
                     <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top" TileMode="None"
                                   Stretch="Uniform">
@@ -537,6 +539,21 @@
                     </DrawingBrush>
                   </Rectangle.Fill>
                 </Rectangle>
+                  <Rectangle x:Name="Rect2" Panel.ZIndex="100" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <Rectangle.Fill>
+                      <DrawingBrush x:Name="DrawingBrush2" AlignmentX="Left" AlignmentY="Top" TileMode="None"
+                                    Stretch="Uniform">
+                        <DrawingBrush.Drawing>
+                          <DrawingGroup x:Name="DG2" />
+                        </DrawingBrush.Drawing>
+                      </DrawingBrush>
+                    </Rectangle.Fill>
+                  </Rectangle>
+<Canvas x:Name="Canvas" Panel.ZIndex="101" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+</Canvas>
+
+</Grid>
+
               </ScrollViewer>
             </Grid>
           </Border>
@@ -802,9 +819,6 @@
                 <converters:SyntaxTokenConverter x:Key="SyntaxTokenConverter" />
                 <converters:SyntaxTriviaConverter x:Key="SyntaxTriviaConverter" />
                 <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
-                <Style TargetType="{x:Type TextBlock}">
-                  <Setter Property="Margin" Value="10" />
-                </Style>
               </Grid.Resources>
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -819,7 +833,6 @@
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
               <StackPanel Orientation="Horizontal">
-                <Button Command="kmWpf:WpfAppCommands.SerializeContents" CommandTarget="{x:Reference CodeControl}"/>
                 <ComboBox
                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=local:EnhancedCodeControl,AncestorLevel=3,Mode=FindAncestor},Path=CommonFontSizes}"
                   SelectedValue="{Binding ElementName=Rectangle,Path=(TextElement.FontSize),Mode=TwoWay,FallbackValue=12}"

@@ -47,6 +47,10 @@ namespace AnalysisControls
         /// </summary>
         public int Row { get; set; }
 
+        public CharacterCell PreviousCell { get; set; }
+        public CharacterCell NextCell { get; set; }
+        public RegionInfo Region { get; set; }
+
         /// <inheritdoc />
         public override string ToString()
         {

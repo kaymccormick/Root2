@@ -197,6 +197,7 @@ namespace AnalysisControls
                         lineContext.LineOriginPoint.X + lineContext.MyTextLine.WidthIncludingTrailingWhitespace + 2,
                         lineContext.LineOriginPoint.Y + 2, 10, 10));
             DebugUtils.WriteLine("no end of line");
+            CharacterCell prevCell = null;
             foreach (var textRunSpan in lineContext.MyTextLine.GetTextRunSpans())
             {
                 if (textRunSpan.Value is CustomTextCharacters c)
@@ -225,6 +226,7 @@ namespace AnalysisControls
                         new List<CharacterCell>();
                     var renderingEmSize = rectGlyphRun.FontRenderingEmSize;
 
+                    
                     for (var i = 0; i < rectGlyphRun.Characters.Count; i++)
                     {
                         var advanceWidth = rectGlyphRun.AdvanceWidths[i];
@@ -246,8 +248,12 @@ namespace AnalysisControls
                         var topSide = rectGlyphRun.GlyphTypeface.TopSideBearings[gi];
                         var bounds = new Rect(new Point(cell.X, cell.Y + topSide), s);
 
-                        cellBounds.Add(new CharacterCell(bounds, new Point(cellColumn, lineContext.CurCellRow), c));
+                        var celll0 = new CharacterCell(bounds, new Point(cellColumn, lineContext.CurCellRow), c);
+                        cellBounds.Add(celll0);
                         cell.Offset(advanceWidth, 0);
+                        celll0.PreviousCell = prevCell;
+                        if (prevCell != null) prevCell.NextCell = celll0;
+                        prevCell = celll0;
 
                         cellColumn++;
                         characterOffset++;
@@ -308,7 +314,14 @@ namespace AnalysisControls
             lineContext.LineOriginPoint = new Point(lineContext.LineOriginPoint.X,
                 lineContext.LineOriginPoint.Y + lineContext.MyTextLine.Height);
             if (lineContext.MyTextLine.Width >= lineContext.MaxX) lineContext.MaxX = lineContext.MyTextLine.Width;
-            lineContext.ReturnValue = lineInfo;
+            var lastLine = lineContext.LineInfo;
+            if (lastLine != null)
+            {
+                lastLine.NextLine = lineInfo;
+                lineInfo.PrevLine = lastLine;
+            }
+
+            lineContext.LineInfo = lineInfo;
         }
 
         private static DrawingGroup SaveDrawingGroup(LineContext lineContext)

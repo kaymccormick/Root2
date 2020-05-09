@@ -46,10 +46,31 @@ namespace AnalysisControls
     /// </summary>
     public class EnhancedCodeControl : SyntaxNodeControl
     {
+        protected override Size MeasureOverride(Size constraint)
+        {   
+            return base.MeasureOverride(constraint);
+        }
+
+        protected override Size ArrangeOverride(Size arrangeBounds)
+        {
+            return base.ArrangeOverride(arrangeBounds);
+        }
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+        }
+
         static EnhancedCodeControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(EnhancedCodeControl), new FrameworkPropertyMetadata(typeof(EnhancedCodeControl)));
+            CompilationProperty.AddOwner(typeof(EnhancedCodeControl));
+//            SyntaxNodeControl.CompilationProperty.OverrideMetadata(typeof(EnhancedCodeControl), new PropertyMetadata(null, PropertyChangedCallback));
+        }
 
+        private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            
         }
 
         public static double[] CommonFontSizes => new double[] {

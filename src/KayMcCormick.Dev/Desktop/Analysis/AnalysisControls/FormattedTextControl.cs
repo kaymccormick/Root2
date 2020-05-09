@@ -13,10 +13,15 @@ using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using System.Windows.Shapes;
 using AnalysisAppLib;
+using DocumentFormat.OpenXml.Wordprocessing;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.EntityFrameworkCore.Internal;
+using Border = System.Windows.Controls.Border;
+using FontFamily = System.Windows.Media.FontFamily;
+using TextAlignment = System.Windows.TextAlignment;
 
 namespace AnalysisControls
 {
@@ -25,16 +30,79 @@ namespace AnalysisControls
     /// </summary>
     public class FormattedTextControl : SyntaxNodeControl
     {
+        public static readonly DependencyProperty InsertionPointProperty = DependencyProperty.Register(
+            "InsertionPoint", typeof(int), typeof(FormattedTextControl), new PropertyMetadata(default(int)));
+
+        public int InsertionPoint
+        {
+            get { return (int) GetValue(InsertionPointProperty); }
+            set { SetValue(InsertionPointProperty, value); }
+        }
         public static readonly DependencyProperty SourceTextProperty = DependencyProperty.Register(
             "SourceText", typeof(string), typeof(FormattedTextControl), new PropertyMetadata(default(string), OnSourceTextUpdated));
 
         private static void OnSourceTextUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+
+            
             var c = (FormattedTextControl) d;
-            var ctx =            AnalysisService.Parse((string) e.NewValue, "x");
-c.SyntaxTree = ctx.SyntaxTree;
+            
+            var eNewValue = (string)e.NewValue;
+            if (e.OldValue != null)
+            {
+
+                var newTree = c.SyntaxTree.WithChangedText(Microsoft.CodeAnalysis.Text.SourceText.From(eNewValue));
+                c.SyntaxTree = newTree;
+#if false
+                foreach (var textChange in newTree.GetChanges(c.SyntaxTree))
+                {
+                    var i =  textChange.Span.Start;
+                    LineInfo theLine = null;
+                    for (var line = c.LineInfos.FirstOrDefault(); line != null; line = line.NextLine)
+                    {
+                        
+                        if (line.Offset + line.Length >= i)
+                        {
+                            theLine = line;
+                            break;
+                        }
+                    }
+
+                    if (theLine != null)
+                    {
+                        var region = theLine.Regions[0];
+                        while (region != null)
+                        {
+                            if (region.Offset + region.Length >= i)
+                            {
+                                break;
+                            }
+                            region = region.NextRegion;
+                        }
+
+                        if (region != null)
+                        {
+                            var chi = i - region.Offset;
+
+                        }
+                    }
+                    
+                }
+#endif
+                foreach (var changedSpan in c.SyntaxTree.GetChangedSpans(newTree))
+                {
+                    
+                }
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(eNewValue))
+            {
+                var ctx = AnalysisService.Parse(eNewValue, "x");
+                c.SyntaxTree = ctx.SyntaxTree;
 c.Model = ctx.CurrentModel;
 c.Compilation = ctx.Compilation;
+            }
 
         }
 
@@ -69,7 +137,7 @@ c.Compilation = ctx.Compilation;
         public override void EndInit()
         {
             base.EndInit();
-            Model = Compilation.GetSemanticModel(SyntaxTree);
+            Model = Compilation?.GetSemanticModel(SyntaxTree);
         }
 
         /// <summary>
@@ -161,7 +229,23 @@ c.Compilation = ctx.Compilation;
         /// <summary>
         /// 
         /// </summary>
-        protected FontRendering CurrentRendering { get; private set; }
+        protected FontRendering CurrentRendering
+        {
+            get
+            {
+                if (_currentRendering == null)
+                {
+                    _currentRendering = new FontRendering(
+                        EmSize,
+                        TextAlignment.Left,
+                        null,
+                        Brushes.Black,
+                        Typeface);
+                }
+                return _currentRendering;
+            }
+            private set { _currentRendering = value; }
+        }
 
         /// <summary>
         /// 
@@ -171,7 +255,26 @@ c.Compilation = ctx.Compilation;
         /// <summary>
         /// 
         /// </summary>
-        public CustomTextSource3 Store { get; private set; }
+        public CustomTextSource3 Store
+        {
+            get
+            {
+                if (_store == null)
+                {
+                    _store = new SyntaxNodeCustomTextSource(PixelsPerDip)
+                    {
+                        EmSize = EmSize,
+                        Compilation = Compilation,
+                        Tree = SyntaxTree,
+                        Node = Node,
+                        Errors = Errors
+                    };
+                    _store.Init(); 
+                }
+                return _store;
+            }
+            private set { _store = value; }
+        }
 
         private DrawingBrush _myDrawingBrush = new DrawingBrush();
         private DrawingGroup _textDest = new DrawingGroup();
@@ -280,6 +383,10 @@ c.Compilation = ctx.Compilation;
             }
                 //throw new InvalidOperationException("Compilation does not contain syntax tree.");
 
+                if (Node == null || SyntaxTree == null)
+                {
+                return;
+                }
             if (ReferenceEquals(Node.SyntaxTree, SyntaxTree) == false)
                 throw new InvalidOperationException("Node is not within syntax tree");
             Store = new SyntaxNodeCustomTextSource(PixelsPerDip)
@@ -326,17 +433,177 @@ c.Compilation = ctx.Compilation;
 
             SetFontFamily();
 
-            _grid = (Grid) GetTemplateChild("Grid");
+
+            _grid = (Grid)GetTemplateChild("Grid");
+            _canvas = (Canvas) GetTemplateChild("Canvas");
+            _innerGrid = (Grid)GetTemplateChild("InnerGrid");
+            var tryGetGlyphTypeface = Typeface.TryGetGlyphTypeface(out var gf);
+            EmSize = (double)_rectangle.GetValue(TextElement.FontSizeProperty);
+
+            _textCaret = new TextCaret(gf.Height * EmSize);
+            _canvas.Children.Add(_textCaret);
+            
             _border = (Border) GetTemplateChild("Border");
             _myDrawingBrush = (DrawingBrush) GetTemplateChild("DrawingBrush");
 
             _textDest = (DrawingGroup) GetTemplateChild("TextDest");
-
+            _rect2 = (Rectangle) GetTemplateChild("Rect2");
+            _dg2 = (DrawingGroup) GetTemplateChild("DG2");
             UiLoaded = true;
-            EmSize = (double) _rectangle.GetValue(TextElement.FontSizeProperty);
+        
+            
             UpdateTextSource();
-            UpdateFormattedText();
+            if (Store != null)
+            {
+                UpdateFormattedText();
+            }
+
         }
+
+        public LineInfo InsertionLine { get; set; }
+
+        public CharacterCell InsertionCharacter { get; set; }
+
+        public RegionInfo InsertionRegion { get; set; }
+
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            base.OnPreviewKeyDown(e);
+            switch (e.Key)
+            {
+                case Key.Left:
+                {
+                    var ip = --InsertionPoint;
+                    if (ip < 0) ip = 0;
+                    DebugUtils.WriteLine($"{ip}");
+
+                    var newc = InsertionCharacter.PreviousCell;
+                    if (newc?.Region != InsertionRegion)
+                    {
+                        InsertionRegion = newc.Region;
+                        if (newc.Region.Line != InsertionLine)
+                        {
+                            InsertionLine = newc.Region.Line;
+                        }
+                    }
+                    InsertionCharacter = newc;
+                        var top = InsertionLine.Origin.Y;
+                        DebugUtils.WriteLine("Setting top to " + top);
+
+                        _textCaret.SetValue(Canvas.TopProperty, top);
+                        if (InsertionCharacter != null)
+                            _textCaret.SetValue(Canvas.LeftProperty, InsertionCharacter.Bounds.Left);
+                }
+                    break;
+                case Key.Right:
+                {
+                    DebugUtils.WriteLine("incrementing insertion point");
+                    var ip = ++InsertionPoint;
+                    DebugUtils.WriteLine($"{ip}");
+
+                    var newc = InsertionCharacter.NextCell;
+                    if (newc.Region != InsertionRegion)
+                    {
+                        InsertionRegion = newc.Region;
+                        if (newc.Region.Line != InsertionLine)
+                        {
+                            InsertionLine = newc.Region.Line;
+                        }
+                    }
+                    InsertionCharacter = newc;
+
+                    var top = InsertionLine.Origin.Y;
+                    DebugUtils.WriteLine("Setting top to " + top);
+
+                    _textCaret.SetValue(Canvas.TopProperty, top); 
+                    _textCaret.SetValue(Canvas.LeftProperty, InsertionCharacter.Bounds.Left);
+
+                    e.Handled = true;
+                    break;
+                    
+                }
+            }
+        }
+
+        protected override void OnPreviewTextInput(TextCompositionEventArgs e)
+        {
+            base.OnPreviewTextInput(e);
+
+            var prev = SourceText.Substring(0, InsertionPoint);
+            var next = SourceText.Substring(InsertionPoint);
+            var code = prev + e.Text + next;
+            if (InsertionLine != null)
+            {
+                var l =InsertionLine.Text.Substring(0, InsertionPoint - InsertionLine.Offset) + e.Text;
+                var end = InsertionLine.Offset + InsertionLine.Length;
+                if (end - InsertionPoint > 0 )
+                {
+                    var start = InsertionPoint - InsertionLine.Offset;
+                    var length = end - InsertionPoint;
+                    if (start + length > InsertionLine.Text.Length)
+                    {
+                        length = length - ((start + length) - InsertionLine.Text.Length);
+                    }
+                    l += InsertionLine.Text.Substring(start,length);
+                }
+            }
+
+            ChangingText = true;
+            Store.TextInput(InsertionPoint, e.Text);
+            DrawingGroup d = new DrawingGroup();
+
+            var dc = d.Open();
+            var lineNo = InsertionLine?.LineNumber ?? 0;
+            using (var myTextLine = Formatter.FormatLine(
+                Store,
+                InsertionLine?.Offset ?? 0,
+                OutputWidth,
+                new GenericTextParagraphProperties(CurrentRendering, PixelsPerDip), null))
+            {
+                var y = InsertionLine?.Origin.Y ?? 0;
+                var x = InsertionLine?.Origin.X ?? 0;
+
+                LineContext linecctx = new LineContext()
+                {
+                    LineNumber = lineNo,
+                    CurCellRow = lineNo,
+                    LineInfo = InsertionLine,
+                    LineOriginPoint = new Point(x, y),
+                    MyTextLine = myTextLine,
+                    TextStorePosition = InsertionLine?.Offset ?? 0
+                };
+
+                myTextLine.Draw(dc, InsertionLine.Origin, InvertAxes.None);
+                List<RegionInfo> regions = new List<RegionInfo>();
+                FormattingHelper.HandleTextLine(regions, ref linecctx, dc, out var lineI);
+                
+            }
+            dc.Close();
+
+            _textDest.Children[lineNo] = d.Children[0];
+            InvalidateVisual();
+
+            InsertionPoint = InsertionPoint + e.Text.Length;
+            if (e.Text.Length == 1)
+            {
+                //_textCaret.SetValue(Canvas.LeftProperty, 0);
+            }
+
+            AdvanceInsertionPoint(e.Text.Length);
+
+            SourceText = code;
+            ChangingText = false;
+            e.Handled = true;
+        }
+
+        private void AdvanceInsertionPoint(int textLength)
+        {
+            InsertionPoint += textLength;
+
+
+        }
+
+        public bool ChangingText { get; set; }
 
         private void Handler2(object sender, EventArgs e)
         {
@@ -373,6 +640,9 @@ c.Compilation = ctx.Compilation;
             UpdateFormattedText();
         }
 
+        protected TextFormatter Formatter { get; set; } = TextFormatter.Create();
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -398,18 +668,17 @@ c.Compilation = ctx.Compilation;
 
             // Create a DrawingGroup object for storing formatted text.
 
-            var dc0 = _textDest.Open();
-            var d = new DrawingGroup();
-            var dc = d.Open();
-
-            var formatter = TextFormatter.Create();
-
+            var dc = _textDest.Open();
+            
             // Format each line of text from the text store and draw it.
             TextLineBreak prev = null;
+            LineInfo prevLine = null;
+            CharacterCell prevCell = null;
+            RegionInfo prevRegion = null;
+            var line = 0;
             while (textStorePosition < Store.Length)
             {
-                var line = 0;
-                using (var myTextLine = formatter.FormatLine(
+                using (var myTextLine = Formatter.FormatLine(
                     Store,
                     textStorePosition,
                     OutputWidth,
@@ -421,7 +690,15 @@ c.Compilation = ctx.Compilation;
                     _chars.Add(lineChars);
 
                     var lineInfo = new LineInfo {Offset = textStorePosition, Length = myTextLine.Length};
+                    lineInfo.PrevLine = prevLine;
+                    lineInfo.LineNumber = line;
+                    
+                    if (prevLine != null)
+                    {
+                        prevLine.NextLine = lineInfo;
+                    }
 
+                    prevLine = lineInfo;
                     LineInfos.Add(lineInfo);
                     var dd = new DrawingGroup();
                     var dc1 = dd.Open();
@@ -459,6 +736,7 @@ c.Compilation = ctx.Compilation;
                     foreach (var rect in myTextLine.GetIndexedGlyphRuns())
                     {
                         var rectGlyphRun = rect.GlyphRun;
+
                         if (rectGlyphRun != null)
                         {
                             var size = new Size(0, 0);
@@ -496,7 +774,14 @@ c.Compilation = ctx.Compilation;
                                     // new NumberSubstitution(), _pixelsPerDip), new Point(bounds.Left, bounds.Top));
                                 }
 
-                                cellBounds.Add(new CharacterCell(bounds, new Point(cellColumn, _chars.Count - 1), c));
+                                var char0 = new CharacterCell(bounds, new Point(cellColumn, _chars.Count - 1), c);
+                                char0.PreviousCell = prevCell;
+                                
+                                if(prevCell != null)
+                                prevCell.NextCell = char0;
+                                prevCell = char0;
+
+                                cellBounds.Add(char0);
                                 cell.Offset(rectGlyphRun.AdvanceWidths[i], 0);
 
                                 cellColumn++;
@@ -530,13 +815,24 @@ c.Compilation = ctx.Compilation;
 
                                 var tuple = new RegionInfo(textSpanValue, r, cellBounds)
                                 {
+                                    Line = lineInfo,
                                     Offset = regionOffset,
                                     Length = textSpan.Length,
                                     SyntaxNode = node,
                                     SyntaxToken = token,
-                                    Trivia = trivia
+                                    Trivia = trivia,
+                                    PrevRegion = prevRegion
                                 };
+                                foreach (var ch in tuple.Characters)
+                                {
+                                    ch.Region = tuple;
+                                }
                                 lineRegions.Add(tuple);
+                                if (prevRegion != null)
+                                {
+                                    prevRegion.NextRegion = tuple;
+                                }
+                                prevRegion = tuple;
                                 Infos.Add(tuple);
                             }
 
@@ -564,39 +860,16 @@ c.Compilation = ctx.Compilation;
                     var textLineBreak = myTextLine.GetTextLineBreak();
                     if (textLineBreak != null) DebugUtils.WriteLine(textLineBreak.ToString());
                     line++;
-                    if (line % 20 == 0)
-                    {
-                        dc.Close();
-                        dc0.DrawDrawing(d);
-                        d = new DrawingGroup();
-                        dc = d.Open();
-                    }
 
                     prev = textLineBreak;
                     if (prev != null) DebugUtils.WriteLine("Line break!");
-                    //DebugUtils.WriteLine(linePosition.Y.ToString());
-                    // TheLine = myTextLine;
-                    // var p2 = new Point(linePosition.X, linePosition.Y);
-                    // foreach (var indexedGlyphRun in myTextLine.GetIndexedGlyphRuns())
-
-                    // {
-                    // var box = indexedGlyphRun.GlyphRun.BuildGeometry().Bounds;
-                    // DebugUtils.WriteLine(box.ToString());
-                    // var last = indexedGlyphRun.GlyphRun.AdvanceWidths.Last();
-                    // p2.Offset(last, 0);
-                    // dc.DrawRectangle(null, new Pen(Brushes.Pink,2), box);
-
-
-                    // DebugUtils.WriteLine(box.ToString());
-                    // DebugUtils.WriteLine(indexedGlyphRun.GlyphRun.BuildGeometry().Bounds);
-                    // p2.Offset(box.Width, 0);    
-                    // }
-
+          
                     // Update the index position in the text store.
                     textStorePosition += myTextLine.Length;
                     // Update the line position coordinate for the displayed line.
                     linePosition.Y += myTextLine.Height;
                     if (myTextLine.Width >= MaxX) MaxX = myTextLine.Width;
+                    
                 }
 
                 _pos = linePosition;
@@ -604,14 +877,35 @@ c.Compilation = ctx.Compilation;
 
 
             dc.Close();
-            dc0.DrawDrawing(d);
             // Persist the drawn text content.
-            dc0.Close();
 
             _rectangle.Width = MaxX;
             _rectangle.Height = _pos.Y;
 
+            UpdateCaretPosition();
             InvalidateVisual();
+        }
+
+        private void UpdateCaretPosition()
+        {
+            var insertionPoint = InsertionPoint;
+            var l0 = LineInfos.Where(l => l.Offset + l.Length >= insertionPoint).FirstOrDefault();
+            if (l0 != null)
+            {
+                InsertionLine = l0;
+                _textCaret.SetValue(Canvas.TopProperty, l0.Origin.Y);
+                var rr = l0.Regions.FirstOrDefault(r => r.Offset + r.Length >= insertionPoint);
+                InsertionRegion = rr;
+                if (rr != null)
+                {
+                    var ch = rr.Characters[insertionPoint - rr.Offset];
+                    InsertionCharacter = ch;
+                    var x = ch.Bounds.Right - (ch.Bounds.Width / 2);
+                    _textCaret.SetValue(Canvas.LeftProperty, x);
+                }
+
+            }
+
         }
 
         /// <summary>
@@ -675,6 +969,13 @@ c.Compilation = ctx.Compilation;
         private int _startRow;
         private int _startOffset;
         private DrawingGroup _selectionGeometry;
+        private Rectangle _rect2;
+        private DrawingGroup _dg2;
+        private Grid _innerGrid;
+        private TextCaret _textCaret;
+        private Canvas _canvas;
+        private FontRendering _currentRendering;
+        private CustomTextSource3 _store;
 
         /// <inheritdoc />
         protected override void OnMouseMove(MouseEventArgs e)
@@ -711,8 +1012,15 @@ c.Compilation = ctx.Compilation;
                         IOperation operation = null;
                         if (Model != null)
                         {
-                            sym = Model?.GetDeclaredSymbol(tuple.SyntaxNode);
-                            operation = Model.GetOperation(tuple.SyntaxNode);
+                            try
+                            {
+                                sym = Model?.GetDeclaredSymbol(tuple.SyntaxNode);
+                                operation = Model.GetOperation(tuple.SyntaxNode);
+                            }
+                            catch
+                            {
+
+                            }
                         }
 
                         if (sym != null)
@@ -898,5 +1206,49 @@ c.Compilation = ctx.Compilation;
             // _startColumn = HoverColumn;
             // _selecting = true;
         }
+
+        protected override void OnNodeUpdated()
+        {
+            base.OnNodeUpdated();
+            if (!ChangingText)
+            {
+                UpdateTextSource();
+                UpdateFormattedText();
+            }
+        }
+
+    }
+
+    public class TextCaret : UIElement
+    {
+        private int _caretWidth = 3;
+        private Pen _pen;
+
+        public TextCaret(double lineHeight)
+        {
+            this.lineHeight = lineHeight;
+            _pen = new Pen(Brushes.Black,  3);
+        }
+
+        public TextCaret()
+        {
+            _pen = new Pen(Brushes.Black,  lineHeight);
+        }
+
+        protected override Size MeasureCore(Size availableSize)
+        {
+            return new Size(_caretWidth + 1, lineHeight);
+        }
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            base.OnRender(drawingContext);
+            var c = VisualTreeHelper.GetContentBounds(this);
+            DebugUtils.WriteLine(c.ToString());
+            drawingContext.DrawLine(_pen, new Point(0, 0), new Point(0, lineHeight));
+
+        }
+
+        public double lineHeight { get; set; }
     }
 }

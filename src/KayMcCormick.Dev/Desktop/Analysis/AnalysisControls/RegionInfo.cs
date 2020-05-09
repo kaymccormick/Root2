@@ -114,6 +114,9 @@ namespace AnalysisControls
         }
 
         public string Key { get; set; }
+        public LineInfo Line { get; set; }
+        public RegionInfo NextRegion { get; set; }
+        public RegionInfo PrevRegion { get; set; }
 
         public RegionInfo(TextRun textRun, Rect boundingRect, List<CharacterCell> characters)
         {

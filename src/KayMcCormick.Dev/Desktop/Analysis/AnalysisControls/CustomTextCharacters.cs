@@ -61,5 +61,9 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public int? Index { get; set; }
+
+        public TextRun NextTextRun { get; set; }
+        public TextRun PrevTextRun { get; set; }
+        public bool Invalid { get; set; }
     }
 }

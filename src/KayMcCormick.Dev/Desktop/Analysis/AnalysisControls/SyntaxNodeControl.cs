@@ -13,8 +13,8 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public static readonly DependencyProperty CompilationProperty = DependencyProperty.Register(
-            "Compilation", typeof(CSharpCompilation), typeof(SyntaxNodeControl), new PropertyMetadata(default(CSharpCompilation)));
+        public static readonly DependencyProperty CompilationProperty = DependencyProperty.RegisterAttached(
+            "Compilation", typeof(CSharpCompilation), typeof(SyntaxNodeControl), new FrameworkPropertyMetadata(default(CSharpCompilation), FrameworkPropertyMetadataOptions.Inherits));
 
         /// <summary>
         /// 
@@ -64,7 +64,18 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public static readonly DependencyProperty NodeProperty = DependencyProperty.Register(
-            "Node", typeof(SyntaxNode), typeof(SyntaxNodeControl), new PropertyMetadata(default(SyntaxNode)));
+            "Node", typeof(SyntaxNode), typeof(SyntaxNodeControl), new PropertyMetadata(default(SyntaxNode), OnNodeUpdated));
+
+        private static void OnNodeUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            SyntaxNodeControl ss = (SyntaxNodeControl)d;
+            ss.OnNodeUpdated();
+        }
+
+        protected virtual void OnNodeUpdated()
+        {
+
+        }
 
         /// <summary>
         /// 
@@ -80,12 +91,20 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public static readonly DependencyProperty SyntaxTreeProperty = DependencyProperty.Register(
-            "SyntaxTree", typeof(SyntaxTree), typeof(SyntaxNodeControl), new PropertyMetadata(default(SyntaxTree), SyntaxTreeUpdated));
+            "SyntaxTree", typeof(SyntaxTree), typeof(SyntaxNodeControl), new FrameworkPropertyMetadata(default(SyntaxTree),FrameworkPropertyMetadataOptions.Inherits, SyntaxTreeUpdated, CoerceValueCallback));
+
+        private static object CoerceValueCallback(DependencyObject d, object basevalue)
+        {
+            return basevalue;
+        }
 
         private static void SyntaxTreeUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             SyntaxNodeControl x = (SyntaxNodeControl) d;
-            x.Node = ((SyntaxTree) e.NewValue)?.GetRoot();
+            var eNewValue = ((SyntaxTree) e.NewValue);
+            x.Model = null;
+            x.Compilation = null;
+            x.Node = eNewValue?.GetRoot();
         }
 
         /// <summary>

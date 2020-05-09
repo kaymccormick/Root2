@@ -37,6 +37,9 @@ namespace AnalysisControls
         /// </summary>
         public Point Origin { get; set; }
 
+        public LineInfo NextLine { get; set; }
+        public LineInfo PrevLine { get; set; }
+
         public override string ToString()
         {
             return $"{nameof(LineNumber)}: {LineNumber}, {nameof(Offset)}: {Offset}, {nameof(Length)}: {Length}, {nameof(Text)}: {Text}, {nameof(Regions)}: {Regions}, {nameof(Size)}: {Size}, {nameof(Origin)}: {Origin}";

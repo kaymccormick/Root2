@@ -27,6 +27,7 @@ namespace AnalysisControls
         private List<NodeRuns> runs= new List<NodeRuns>();
         private Stack<List<NodeRuns>> _nodeStack = new Stack<List<NodeRuns>>();
         private List<TextRun> _textRuns = new List<TextRun>();
+        private TextRun _prevTextRun;
 
         public SyntaxWalkerF( IList<TextRun> lrun, 
             
@@ -117,11 +118,20 @@ namespace AnalysisControls
 
         private void Take(TextRun run)
         {
+            if (run is CustomTextCharacters cc)
+            {
+                cc.PrevTextRun = _prevTextRun;
+            }
+            if (_prevTextRun is CustomTextCharacters cc1)
+            {
+                cc1.NextTextRun = run;
+            }
             _textRuns.Add(run);
             //_nodeStack.Peek().TakeTextRun(run);
             var l = run.Length;
             CurPos += l;
             _takeTextRun(run);
+            _prevTextRun = run;
         }
 
         private void Insert(SyntaxTrivia syntaxTrivia, string text)
@@ -224,6 +234,7 @@ namespace AnalysisControls
             {
                 text = ProcessText(text);
                 var textRunProperties = _propertiesFunc(token, text);
+                
                 var syn = new SyntaxTokenTextCharacters(text, token.Span.Length, textRunProperties, token, nodes.Peek())
                 {
                     Index = token.SpanStart

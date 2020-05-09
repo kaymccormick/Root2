@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Tracing;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.ExceptionServices ;
@@ -47,6 +48,17 @@ namespace TestApp
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            foreach (var eventSource in EventSource.GetSources())
+            {
+                var n = eventSource.Name;
+                try
+                {
+                    var s = new TraceSource(n);
+                    if (s.Listeners != null) s.Listeners.Add(new MyTraceListener(s));
+                }
+                catch
+                {}
+            }
             PresentationTraceSources.Refresh();
             foreach (var p in typeof(PresentationTraceSources).GetProperties(BindingFlags.Static | BindingFlags.Public))
             {
@@ -84,27 +96,37 @@ namespace TestApp
             }
             
             base.OnStartup(e);
-            EnhancedCodeControl control = new EnhancedCodeControl();
-            control.BeginInit();
-            control.EndInit();
-            NewFunction(control);
 
-            control.BorderThickness = new Thickness(3);
-            control.BorderBrush = Brushes.Pink;
-            control.VerticalAlignment = VerticalAlignment.Stretch;
-            control.HorizontalAlignment = HorizontalAlignment.Stretch;
-            var tree = SetupSyntaxParams(out var compilation);
+            var ctx = AnalysisService.Load(@"C:\temp\program.cs", "x");
+                EnhancedCodeWindow ww = new EnhancedCodeWindow();
+                ww.SyntaxTree = ctx.SyntaxTree;
+                ww.Compilation = ctx.Compilation;
+                
+                ww.DataContext = ctx;
+                ww.ShowDialog();
+            
+                return;
+            // EnhancedCodeControl control = new EnhancedCodeControl();
+            // var w = new MyWindow();
 
-            control.SyntaxTree = tree;
-            control.Compilation = compilation;
-            control.Model = compilation.GetSemanticModel(tree);
-            
-            var w = new MyWindow();
-            
-            NewFunction(w);
-            w.Content = control;
-            w.ShowActivated = true;
-            w.ShowDialog();
+            // NewFunction(w);
+            // w.Content = control;
+
+            // control.BeginInit();
+            // NewFunction(control);
+
+            // control.BorderThickness = new Thickness(3);
+            // control.BorderBrush = Brushes.Pink;
+            // control.VerticalAlignment = VerticalAlignment.Stretch;
+            // control.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+            // control.SyntaxTree = tree;
+            // control.Compilation = compilation;
+            // control.Model = compilation.GetSemanticModel(tree);
+            // control.EndInit();
+
+            // w.ShowActivated = true;
+            // w.ShowDialog();
         }
 
         public void TestSyntaxControl(SyntaxNodeControl control)
@@ -180,7 +202,8 @@ namespace TestApp
 
         public override void TraceData(TraceEventCache eventCache, string source, TraceEventType eventType, int id, object data)
         {
-            DebugUtils.WriteLine($"{eventCache.Callstack[0].ToString()}");
+            DoDebug(eventCache, source, eventType, id, data);
+            //DebugUtils.WriteLine($"{eventCache.Callstack[0].ToString()}");
             base.TraceData(eventCache, source, eventType, id, data);
         }
 
@@ -197,33 +220,43 @@ namespace TestApp
             base.TraceEvent(eventCache, source, eventType, id);
         }
 
-        private void DoDebug(TraceEventCache eventCache, string source, TraceEventType eventType, int id, object[] data = null)
+        private void DoDebug(TraceEventCache eventCache, string source, TraceEventType eventType, int id,
+            object data = null, string message = null)
         {
-            DebugUtils.WriteLine($"{eventCache.Callstack} {source} {eventType} {id}");
+            foreach (var o in eventCache.LogicalOperationStack)
+            {
+
+                DebugUtils.WriteLine($"{o}");
+            }
+            DebugUtils.WriteLine($"{source} {eventType} {id} {message}");
             if (data != null)
-                foreach (var o in data)
+                if (data is object[] oo)
                 {
-                    DebugUtils.WriteLine(o.ToString());
+                    foreach (var o in oo)
+                    {
+                        DebugUtils.WriteLine(o.ToString());
+                    }
                 }
         }
 
         public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string message)
         {
-            DebugUtils.WriteLine($"{eventCache.Callstack[0].ToString()}");
+            DoDebug(eventCache, source, eventType, id, null, message);
+            //DebugUtils.WriteLine($"{eventCache.Callstack[0].ToString()}");
             base.TraceEvent(eventCache, source, eventType, id, message);
         }
 
         public override void TraceEvent(TraceEventCache eventCache, string source, TraceEventType eventType, int id, string format,
             params object[] args)
         {
-            DebugUtils.WriteLine($"{eventCache.Callstack[0].ToString()}");
+            //DebugUtils.WriteLine($"{eventCache.Callstack[0].ToString()}");
             base.TraceEvent(eventCache, source, eventType, id, format, args);
 
         }
 
         public override void TraceTransfer(TraceEventCache eventCache, string source, int id, string message, Guid relatedActivityId)
         {
-            DebugUtils.WriteLine($"{eventCache.Callstack[0].ToString()}");
+         //   DebugUtils.WriteLine($"{eventCache.Callstack[0].ToString()}");
             base.TraceTransfer(eventCache, source, id, message, relatedActivityId);
         }
 

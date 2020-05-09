@@ -178,8 +178,8 @@ namespace AnalysisControls
         private void GenerateText()
         {
             var f = new SyntaxWalkerF(col, this, TakeTextRun, MakeProperties);
-            
-            f.DefaultVisit(Node);
+
+            if (Node != null) f.DefaultVisit(Node);
             var i = 0;
             chars.Clear();
             //var model =  Compilation?.GetSemanticModel(Tree);
@@ -319,6 +319,64 @@ namespace AnalysisControls
         public override void Init()
         {
             GenerateText();
+        }
+
+        public void TextInput(int InsertionPoint, string text)
+        {
+            if (chars.Count > InsertionPoint)
+            {
+                var xx = chars[InsertionPoint];
+                var x = col[xx];
+                if (x is CustomTextCharacters ch)
+                {
+                    var prev = ch.Text.Substring(0, InsertionPoint - ch.Index.Value);
+                    var next = ch.Text.Substring((ch.Index.Value + ch.Length) - InsertionPoint);
+                    var t = prev + text + next;
+                    Length += text.Length;
+                    var customTextCharacters = new CustomTextCharacters(t, BaseProps, new TextSpan());
+                    if (ch.PrevTextRun is CustomTextCharacters cc0)
+                    {
+                        cc0.NextTextRun = customTextCharacters;
+                    }
+
+                    ch.PrevTextRun = null;
+                    ch.NextTextRun = null;
+                    ch.Invalid = true;
+                    customTextCharacters.PrevTextRun = ch.PrevTextRun;
+                    customTextCharacters.Index = ch.Index;
+                    col[xx] = customTextCharacters;
+
+                    UpdateCharMap();
+                }
+            }
+            else
+            {
+                var customTextCharacters = new CustomTextCharacters(text, BaseProps, new TextSpan());
+                // customTextCharacters.PrevTextRun = ch.PrevTextRun;
+                customTextCharacters.Index = InsertionPoint;
+                col.Add(customTextCharacters);
+
+                UpdateCharMap();
+            }
+        }
+
+        private void UpdateCharMap()
+        {
+            var i = 0;
+            chars.Clear();
+            //var model =  Compilation?.GetSemanticModel(Tree);
+            foreach (var textRun in col)
+            {
+                Length += textRun.Length;
+                chars.AddRange(Enumerable.Repeat(i, textRun.Length));
+                i++;
+
+                if (textRun.Properties is GenericTextRunProperties gp)
+                {
+                    //DebugUtils.WriteLine(gp.SyntaxToken.ToString());
+                }
+            }
+
         }
     }
 }

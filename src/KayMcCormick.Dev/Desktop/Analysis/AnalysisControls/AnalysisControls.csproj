@@ -142,6 +142,9 @@
     <Compile Include="DocumentModel.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
     <Compile Include="EnhancedCodeControl.cs" />
+    <Compile Include="EnhancedCodeWindow.xaml.cs">
+      <DependentUpon>EnhancedCodeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ErrorsTextSource.cs" />
     <Compile Include="Filter.cs" />
     <Compile Include="FontRendering.cs" />
@@ -265,6 +268,10 @@
       <SubType>Designer</SubType>
     </Content>
     <Page Include="CodeControl1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EnhancedCodeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

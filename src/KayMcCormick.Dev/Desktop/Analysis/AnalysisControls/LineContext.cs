@@ -76,7 +76,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public LineInfo ReturnValue { get; set; }
+        public LineInfo LineInfo { get; set; }
 
         /// <summary>
         /// 
@@ -84,5 +84,6 @@ namespace AnalysisControls
         public IList<string> LineParts { get; set; } = new List<string>();
 
         public IList<int> Offsets { get; set; } = new List<int>();
+        
     }
 }
