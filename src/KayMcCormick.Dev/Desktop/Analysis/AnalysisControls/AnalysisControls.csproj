@@ -160,6 +160,7 @@
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
     <Compile Include="IRibbonComponent.cs" />
+    <Compile Include="IRibbonModelProvider.cs" />
     <Compile Include="JsonConverters.cs" />
     <Compile Include="JsonSyntaxTokenConverter.cs" />
     <Compile Include="LineContext.cs" />
@@ -168,8 +169,10 @@
     <Compile Include="LogEventsSource.cs" />
     <Compile Include="Main1.cs" />
     <Compile Include="Main1Model.cs" />
+    <Compile Include="MenuTemplateSelector.cs" />
     <Compile Include="MessagesModel.cs" />
     <Compile Include="MiscCommands.cs" />
+    <Compile Include="MyRibbonMenuButton.cs" />
     <Compile Include="MyXDescriptor.cs" />
     <Compile Include="PageFunction1.xaml.cs">
       <DependentUpon>PageFunction1.xaml</DependentUpon>
@@ -180,6 +183,11 @@
     <Compile Include="RectConverter.cs" />
     <Compile Include="RegionInfo.cs" />
     <Compile Include="RibbonBuilder.cs" />
+    <Compile Include="RibbonModelRadioButton.cs" />
+    <Compile Include="RibbonTabProvider1.cs" />
+    <Compile Include="RibbonViewGroupProviderBase.cs" />
+    <Compile Include="RibbonViewGroupProviderBaseImpl.cs" />
+    <Compile Include="RibbonViewGroupProviderBaseImpl2.cs" />
     <Compile Include="Ribbon\RibbonModel.cs" />
     <Compile Include="Ribbon\RibbonModelApplicationMenu.cs" />
     <Compile Include="Ribbon\RibbonModelAppMenuElement.cs" />
@@ -196,6 +204,7 @@
     <Compile Include="Ribbon\RibbonModelItemTextBox.cs" />
     <Compile Include="Ribbon\RibbonModelTab.cs" />
     <Compile Include="Ribbon\RibbonModelGroup.cs" />
+    <Compile Include="Ribbon\TestRibbonTabDef2.cs" />
     <Compile Include="RWindow.xaml.cs">
       <DependentUpon>RWindow.xaml</DependentUpon>
     </Compile>
@@ -215,9 +224,13 @@
     <Compile Include="SyntaxTriviaTextCharacters.cs" />
     <Compile Include="SyntaxWalker2.cs" />
     <Compile Include="SyntaxWalkerF.cs" />
+    <Compile Include="TemplateWindow.xaml.cs">
+      <DependentUpon>TemplateWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Test.cs" />
     <Compile Include="TestConverter1.cs" />
     <Compile Include="TestConverter2.cs" />
+    <Compile Include="TextCaret.cs" />
     <Compile Include="UiConverter.cs" />
     <Compile Include="ViewModel\ComponentTypesViewModel.cs" />
     <Compile Include="WorkspaceControl.xaml.cs">
@@ -300,6 +313,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="RWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TemplateWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

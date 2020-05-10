@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,37 +14,32 @@ using KayMcCormick.Lib.Wpf;
 
 namespace AnalysisControls
 {
-    /// <summary>
-    /// Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
-    ///
-    /// Step 1a) Using this custom control in a XAML file that exists in the current project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is 
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:AnalysisControls"
-    ///
-    ///
-    /// Step 1b) Using this custom control in a XAML file that exists in a different project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is 
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:AnalysisControls;assembly=AnalysisControls"
-    ///
-    /// You will also need to add a project reference from the project where the XAML file lives
-    /// to this project and Rebuild to avoid compilation errors:
-    ///
-    ///     Right click on the target project in the Solution Explorer and
-    ///     "Add Reference"->"Projects"->[Browse to and select this project]
-    ///
-    ///
-    /// Step 2)
-    /// Go ahead and use your control in the XAML file.
-    ///
-    ///     <MyNamespace:Main1/>
-    ///
-    /// </summary>
     public class Main1 : Control, IView<Main1Model>
     {
+        protected override Size MeasureOverride(Size constraint)
+        {
+            var size = base.MeasureOverride(constraint);
+            DebugUtils.WriteLine($"Constraint is {constraint}");
+            DebugUtils.WriteLine($"Size is {size}");
+            return size;
+        }
+
+        protected override Size ArrangeOverride(Size arrangeBounds)
+        {
+            var outv = base.ArrangeOverride(arrangeBounds);
+            DebugUtils.WriteLine($"Arrange input {arrangeBounds} out {outv}");
+            return outv;
+        }
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+            if (e.Property.Name == "ActualWidth" || e.Property.Name == "ActualHeight")
+            {
+                DebugUtils.WriteLine($"Property update {e.Property.Name} from {e.OldValue} to {e.NewValue}");
+            }
+        }
+
         public static readonly DependencyProperty AnchorablesProperty = DependencyProperty.Register(
             "Anchorables", typeof(IEnumerable), typeof(Main1),
             new PropertyMetadata(default(IEnumerable)));
@@ -117,10 +113,52 @@ namespace AnalysisControls
             CommandBindings.Add(new CommandBinding(WpfAppCommands.OpenSolutionItem, OnSolutionItemExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.LoadSolution, LoadSolutionExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.BrowseSymbols, OnBrowseSymbolsExecuted));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewDetails, OnViewDetailsExecutedAsync));
 
             //Documents.Add(new DocInfo { Description = "test", Content = Properties.Resources.Program_Parse});
         }
 
+        private async void OnViewDetailsExecutedAsync(object sender, ExecutedRoutedEventArgs e)
+        {
+
+            DataGrid dg = new DataGrid();
+            var desc = e.Parameter?.ToString() ?? "";
+            if (e.Parameter is PathModel pm)
+            {
+                if (pm.Item is DocumentModel dm)
+                {
+                    var root = await dm.Document.GetSyntaxRootAsync();
+                    var c = root.DescendantNodesAndTokensAndSelf().ToList();
+                    dg.ItemsSource = c;
+                    desc = dm.Document.Name;
+                }
+                else
+                {
+                    dg.ItemsSource = pm.Children;
+                }
+            } else if (e.Parameter is ProjectModel pm2)
+            {
+                var project = ViewModel.Workspace.CurrentSolution.GetProject(pm2.Id);
+                if (project == null)
+                {
+                    return;
+                }
+                else
+                    dg.ItemsSource = project.Documents;
+            } else
+            {
+                dg.ItemsSource = new[]{e.Parameter};
+            }
+
+            var detailsTitle = "Details for " + desc;
+            var docModel = new DocModel {Title = detailsTitle, Content = dg};
+            ViewModel.Documents.Add(docModel);
+            ViewModel.ActiveContent = docModel;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public override void OnApplyTemplate()
         {
             CommandManager.AddPreviewCanExecuteHandler(this, PreviewCanExecute);

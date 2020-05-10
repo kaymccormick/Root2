@@ -141,5 +141,12 @@ namespace KayMcCormick.Lib.Wpf
                 , typeof(WpfAppCommands)
             );
 
+        public static readonly RoutedUICommand ViewDetails =
+            new RoutedUICommand(
+                "View details"
+                , nameof(ViewDetails)
+                , typeof(WpfAppCommands)
+            );
+
     }
 }

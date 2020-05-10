@@ -1,7 +1,7 @@
 ﻿using AnalysisControls.RibbonM;
 using Autofac;
 
-namespace Client2
+namespace AnalysisControls
 {
     public abstract class RibbonViewGroupProviderBase : IRibbonModelProvider<RibbonModelGroup>
     {

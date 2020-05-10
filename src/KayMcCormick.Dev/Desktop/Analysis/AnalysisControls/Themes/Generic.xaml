@@ -911,8 +911,8 @@
         <ControlTemplate TargetType="{x:Type local:Main1}">
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}">
-            <Grid AllowDrop="True" x:Name="Grid">
+                  BorderThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Stretch">
+            <Grid AllowDrop="True" x:Name="Grid" VerticalAlignment="Stretch">
               <Grid.Resources>
                 <local:TestConverter2 x:Key="TestConverter"/>
               </Grid.Resources>
@@ -935,6 +935,7 @@
               <Border Grid.Row="1" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">
               <avalondock:DockingManager DocumentsSource="{Binding Documents}"
                                          x:Name="DockingManager" AnchorablesSource="{Binding Anchorables}"
+                                         VerticalAlignment="Stretch"
                                          ActiveContent="{Binding ActiveContent,Mode=TwoWay}">
                 <avalondock:DockingManager.DocumentHeaderTemplate>
                   <DataTemplate
@@ -992,6 +993,7 @@
                   <TextBlock.ContextMenu>
                     <ContextMenu>
                       <MenuItem Header="Symbols" Command="kmWpf:WpfAppCommands.BrowseSymbols" CommandParameter="{Binding}"/>
+                      <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails" CommandParameter="{Binding}"/>
                     </ContextMenu>
                   </TextBlock.ContextMenu>
                 </TextBlock>
@@ -1000,11 +1002,23 @@
                 <TextBlock Text="{Binding Message}" />
               </HierarchicalDataTemplate>
 
-<HierarchicalDataTemplate DataType="{x:Type local:PathModel}" ItemsSource="{Binding Entries.Values}">
-                <TextBlock Text="{Binding ElementName}" />
+<HierarchicalDataTemplate DataType="{x:Type local:PathModel}" ItemsSource="{Binding Children}">
+                <TextBlock Text="{Binding ElementName}" >
+                  <TextBlock.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails" CommandParameter="{Binding}"/>
+                    </ContextMenu>
+                  </TextBlock.ContextMenu>
+</TextBlock>
               </HierarchicalDataTemplate>
               <HierarchicalDataTemplate DataType="{x:Type local:DocumentModel}">
-                <TextBlock Text="{Binding Name}" />
+                <TextBlock Text="{Binding Name}">
+                  <TextBlock.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails" CommandParameter="{Binding}"/>
+                    </ContextMenu>
+                  </TextBlock.ContextMenu>
+</TextBlock>
               </HierarchicalDataTemplate>
 
             </Border.Resources>
@@ -1045,4 +1059,33 @@
         </Setter.Value>
       </Setter>
     </Style>
+
+  <Style TargetType="{x:Type local:AssembliesControl}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:AssembliesControl}">
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <Border.Resources>
+            </Border.Resources>
+	    <ListView x:Name="ListView">
+	    <ListView.View>
+	    <GridView>
+                  <GridViewColumn Header="Name">
+                    <GridViewColumn.CellTemplate>
+                      <DataTemplate DataType="{x:Type reflection:Assembly}">
+                        <TextBlock DataContext="{Binding Converter={StaticResource AssemblyInfoConverter},ConverterParameter=Name}" Text="{Binding Path=Name}"></TextBlock>
+                      </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                  </GridViewColumn>
+		  </GridView>
+		  </ListView.View>
+		  </ListView>
+          </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
 </ResourceDictionary>

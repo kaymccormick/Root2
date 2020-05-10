@@ -46,6 +46,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.TextFormatting;
@@ -59,6 +60,7 @@ using AnalysisAppLib.Syntax;
 using AnalysisAppLib.XmlDoc;
 using AnalysisControls;
 using AnalysisControls.Properties;
+using AnalysisControls.RibbonM;
 using AnalysisControls.ViewModel;
 using Autofac;
 using AvalonDock;
@@ -2023,7 +2025,7 @@ namespace ProjTests
         public void TestMain1_()
         {
             Assert.True(MSBuildLocator.CanRegister);
-            ProjectModel m = new ProjectModel();
+            ProjectModel m = new ProjectModel(null);
             m.Documents.Add(new DocumentModel(m){FilePath = "test\\one\\tewo"});
             foreach (var kv in m.RootPathInfo.Entries)
             {
@@ -2106,14 +2108,67 @@ namespace ProjTests
                 DebugUtils.WriteLine(t.Length.ToString());
             }
 
-            ;
-            
-               
+
         }
+
+        [WpfFact]
+        public void TestRibbonModel()
+        {
+            RibbonModel m = new RibbonModel();
+            RibbonTabProvider1 p = new RibbonTabProvider1();
+            var t = p.ProvideModelItem(null);
+            m.RibbonItems.Add(t);
+            RibbonViewGroupProviderBaseImpl x = new RibbonViewGroupProviderBaseImpl();
+            t.Items.Add(x.ProvideModelItem(null));
+            TemplateWindow window = new TemplateWindow();
+            window.Content = new Ribbon {ItemsSource = m.RibbonItems};
+            window.ShowDialog();
+
+        }
+
+
 
         private void Documents_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
          
+        }
+        [WpfFact]
+        public void TestCodeEntry()
+        {
+
+            FormattedTextControl  c = new FormattedTextControl();
+            Window w = new Window {Content = c};
+            w.Loaded += (sender, args) =>
+            {
+                Queue<string> texts = new Queue<string>();
+                texts.Enqueue("public ");
+                texts.Enqueue("class {\n ");
+                texts.Enqueue("}");
+
+                void DoText(string arg)
+                {
+                    var textCompositionEventArgs = new TextCompositionEventArgs(
+                        InputManager.Current.PrimaryKeyboardDevice,
+                        new TextComposition(InputManager.Current, c, arg));
+                    textCompositionEventArgs.RoutedEvent = TextCompositionManager.PreviewTextInputEvent;
+                    c.RaiseEvent(textCompositionEventArgs);
+                }
+
+                async Task DoTexts(Task t)
+                {
+                    
+                    if (texts.Any())
+                    {
+                        var text = texts.Dequeue();
+                        DoText(text);
+                        await Task.Delay(1000);
+                        await DoTexts(null);
+                    }
+                }
+
+                DoTexts(null).ContinueWith(t => w.Close());
+            };
+            w.ShowDialog();
         }
     }
 }

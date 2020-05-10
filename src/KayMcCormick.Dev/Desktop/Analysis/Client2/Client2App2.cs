@@ -94,7 +94,7 @@ namespace Client2
         }
 
         public IEnumerable Items { get; }=new object[] 
-            {typeof(Client2Window1), typeof(TestRibbonWindow), WpfAppCommands.QuitApplication};
+            {typeof(Client2Window1), typeof(TestRibbonWindow),typeof(TestRibbonWindow2), WpfAppCommands.QuitApplication};
 
         public object SelectedItem { get; set; }
         public TimeSpan Timeout { get; }

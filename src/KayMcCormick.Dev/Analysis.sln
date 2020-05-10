@@ -60,6 +60,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RibbonTestApp", "Desktop\Ri
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeView", "Desktop\Analysis\CodeView\CodeView.csproj", "{95CA5BCA-FBD7-4386-9606-9DB6F2909F12}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildalyzerBuild", "BuildalyzerBuild\BuildalyzerBuild.csproj", "{F4E98DBA-CA43-429B-88E8-FE4990EB34F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -264,6 +266,18 @@ Global
 		{95CA5BCA-FBD7-4386-9606-9DB6F2909F12}.Release|x64.Build.0 = Release|Any CPU
 		{95CA5BCA-FBD7-4386-9606-9DB6F2909F12}.Release|x86.ActiveCfg = Release|Any CPU
 		{95CA5BCA-FBD7-4386-9606-9DB6F2909F12}.Release|x86.Build.0 = Release|Any CPU
+		{F4E98DBA-CA43-429B-88E8-FE4990EB34F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4E98DBA-CA43-429B-88E8-FE4990EB34F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4E98DBA-CA43-429B-88E8-FE4990EB34F8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F4E98DBA-CA43-429B-88E8-FE4990EB34F8}.Debug|x64.Build.0 = Debug|Any CPU
+		{F4E98DBA-CA43-429B-88E8-FE4990EB34F8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F4E98DBA-CA43-429B-88E8-FE4990EB34F8}.Debug|x86.Build.0 = Debug|Any CPU
+		{F4E98DBA-CA43-429B-88E8-FE4990EB34F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4E98DBA-CA43-429B-88E8-FE4990EB34F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4E98DBA-CA43-429B-88E8-FE4990EB34F8}.Release|x64.ActiveCfg = Release|Any CPU
+		{F4E98DBA-CA43-429B-88E8-FE4990EB34F8}.Release|x64.Build.0 = Release|Any CPU
+		{F4E98DBA-CA43-429B-88E8-FE4990EB34F8}.Release|x86.ActiveCfg = Release|Any CPU
+		{F4E98DBA-CA43-429B-88E8-FE4990EB34F8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -287,6 +301,7 @@ Global
 		{A4F87345-3C09-4BF5-9B68-7E18E3154392} = {18C721D5-8339-4A66-8A6F-2B974ACD9598}
 		{FE6A2695-A003-4DD0-8C5F-D08433D3D35D} = {99D68A6A-FD3D-4AAB-A02C-4307A6851F17}
 		{95CA5BCA-FBD7-4386-9606-9DB6F2909F12} = {18C721D5-8339-4A66-8A6F-2B974ACD9598}
+		{F4E98DBA-CA43-429B-88E8-FE4990EB34F8} = {99D68A6A-FD3D-4AAB-A02C-4307A6851F17}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E0A2F67-7D8F-4910-BFB7-8AE9E0B25204}

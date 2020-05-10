@@ -13,12 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using System.Windows.Shapes;
 using AnalysisAppLib;
-using DocumentFormat.OpenXml.Wordprocessing;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.EntityFrameworkCore.Internal;
 using Border = System.Windows.Controls.Border;
 using FontFamily = System.Windows.Media.FontFamily;
 using TextAlignment = System.Windows.TextAlignment;
@@ -30,17 +28,30 @@ namespace AnalysisControls
     /// </summary>
     public class FormattedTextControl : SyntaxNodeControl
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty InsertionPointProperty = DependencyProperty.Register(
-            "InsertionPoint", typeof(int), typeof(FormattedTextControl), new PropertyMetadata(default(int)));
+            "InsertionPoint", typeof(int), typeof(FormattedTextControl), new PropertyMetadata(default(int), OnInsertionPointUpdated));
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int InsertionPoint
         {
             get { return (int) GetValue(InsertionPointProperty); }
             set { SetValue(InsertionPointProperty, value); }
         }
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty SourceTextProperty = DependencyProperty.Register(
-            "SourceText", typeof(string), typeof(FormattedTextControl), new PropertyMetadata(default(string), OnSourceTextUpdated));
+            "SourceText", typeof(string), typeof(FormattedTextControl), new PropertyMetadata("", OnSourceTextUpdated));
 
+        private static void OnInsertionPointUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+	DebugUtils.WriteLine($"Insertion Point Updated to {e.NewValue}");
+	}
         private static void OnSourceTextUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
 
@@ -48,15 +59,20 @@ namespace AnalysisControls
             var c = (FormattedTextControl) d;
             
             var eNewValue = (string)e.NewValue;
-            if (e.OldValue != null)
+            if (e.OldValue == null || c.SyntaxTree == null)
             {
-
+            //    var tree = CSharpSyntaxTree.ParseText(eNewValue, new CSharpParseOptions(LanguageVersion.CSharp7_3));
+            //    c.SyntaxTree = tree;
+            }
+            else
+            {
                 var newTree = c.SyntaxTree.WithChangedText(Microsoft.CodeAnalysis.Text.SourceText.From(eNewValue));
                 c.SyntaxTree = newTree;
 #if false
                 foreach (var textChange in newTree.GetChanges(c.SyntaxTree))
                 {
-                    var i =  textChange.Span.Start;
+		DebugUtils.WriteLine($"{textChange.Span}");
+                    var i = textChange.Span.Start;
                     LineInfo theLine = null;
                     for (var line = c.LineInfos.FirstOrDefault(); line != null; line = line.NextLine)
                     {
@@ -91,7 +107,6 @@ namespace AnalysisControls
 #endif
                 foreach (var changedSpan in c.SyntaxTree.GetChangedSpans(newTree))
                 {
-                    
                 }
             }
 
@@ -106,6 +121,9 @@ c.Compilation = ctx.Compilation;
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string SourceText
         {
             get { return (string) GetValue(SourceTextProperty); }
@@ -358,7 +376,7 @@ c.Compilation = ctx.Compilation;
 
         private async void Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var tesxt = await SyntaxTree.GetTextAsync();
+            var text = await SyntaxTree.GetTextAsync();
             var root = await SyntaxTree.GetRootAsync();
             using(var s = new FileStream(@"C:\temp\serialize.bin", FileMode.Create))
 
@@ -380,15 +398,15 @@ c.Compilation = ctx.Compilation;
             if (Compilation != null && Compilation.SyntaxTrees.Contains(SyntaxTree) == false)
             {
                 Compilation = null;
+                DebugUtils.WriteLine("Compilation does not contain syntax tree.");
             }
-                //throw new InvalidOperationException("Compilation does not contain syntax tree.");
-
-                if (Node == null || SyntaxTree == null)
+            if (Node == null || SyntaxTree == null)
                 {
                 return;
                 }
             if (ReferenceEquals(Node.SyntaxTree, SyntaxTree) == false)
                 throw new InvalidOperationException("Node is not within syntax tree");
+            DebugUtils.WriteLine("Creating new " + nameof(SyntaxNodeCustomTextSource));
             Store = new SyntaxNodeCustomTextSource(PixelsPerDip)
             {
                 EmSize = EmSize,
@@ -450,7 +468,6 @@ c.Compilation = ctx.Compilation;
             _rect2 = (Rectangle) GetTemplateChild("Rect2");
             _dg2 = (DrawingGroup) GetTemplateChild("DG2");
             UiLoaded = true;
-        
             
             UpdateTextSource();
             if (Store != null)
@@ -460,12 +477,25 @@ c.Compilation = ctx.Compilation;
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public LineInfo InsertionLine { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public CharacterCell InsertionCharacter { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public RegionInfo InsertionRegion { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             base.OnPreviewKeyDown(e);
@@ -525,10 +555,12 @@ c.Compilation = ctx.Compilation;
             }
         }
 
+        /// <inheritdoc />
         protected override void OnPreviewTextInput(TextCompositionEventArgs e)
         {
             base.OnPreviewTextInput(e);
 
+            
             var prev = SourceText.Substring(0, InsertionPoint);
             var next = SourceText.Substring(InsertionPoint);
             var code = prev + e.Text + next;
@@ -554,6 +586,7 @@ c.Compilation = ctx.Compilation;
 
             var dc = d.Open();
             var lineNo = InsertionLine?.LineNumber ?? 0;
+            LineContext lineCtx;
             using (var myTextLine = Formatter.FormatLine(
                 Store,
                 InsertionLine?.Offset ?? 0,
@@ -563,24 +596,40 @@ c.Compilation = ctx.Compilation;
                 var y = InsertionLine?.Origin.Y ?? 0;
                 var x = InsertionLine?.Origin.X ?? 0;
 
-                LineContext linecctx = new LineContext()
+                lineCtx = new LineContext()
                 {
                     LineNumber = lineNo,
                     CurCellRow = lineNo,
                     LineInfo = InsertionLine,
                     LineOriginPoint = new Point(x, y),
                     MyTextLine = myTextLine,
+                    MaxX = MaxX,
+                    MaxY = MaxY,
                     TextStorePosition = InsertionLine?.Offset ?? 0
                 };
 
-                myTextLine.Draw(dc, InsertionLine.Origin, InvertAxes.None);
+                myTextLine.Draw(dc, lineCtx.LineOriginPoint, InvertAxes.None);
                 List<RegionInfo> regions = new List<RegionInfo>();
-                FormattingHelper.HandleTextLine(regions, ref linecctx, dc, out var lineI);
+                FormattingHelper.HandleTextLine(regions, ref lineCtx, dc, out var lineI);
+                InsertionLine = lineI;
                 
             }
             dc.Close();
+            DebugUtils.WriteLine($"{_rect.Width}x{_rect.Height}");
+            _textDest.Children.Add(d);
+            // if (_textDest.Children.Count < lineNo + 1)
+            // {
+            // _textDest.Children.Add(d.Children[0]);
+            // }
+            // else
+            // {
+            // _textDest.Children[lineNo] = d.Children[0];
+            // }
 
-            _textDest.Children[lineNo] = d.Children[0];
+            _rectangle.Width = lineCtx.MaxX;
+            _rectangle.Height = lineCtx.MaxY;
+            _rect2.Width = lineCtx.MaxX;
+            _rect2.Height = lineCtx.MaxY;
             InvalidateVisual();
 
             InsertionPoint = InsertionPoint + e.Text.Length;
@@ -589,9 +638,11 @@ c.Compilation = ctx.Compilation;
                 //_textCaret.SetValue(Canvas.LeftProperty, 0);
             }
 
-            AdvanceInsertionPoint(e.Text.Length);
+            //AdvanceInsertionPoint(e.Text.Length);
 
+            DebugUtils.WriteLine("About to update source text");
             SourceText = code;
+            DebugUtils.WriteLine("Done updating source text");
             ChangingText = false;
             e.Handled = true;
         }
@@ -603,6 +654,9 @@ c.Compilation = ctx.Compilation;
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool ChangingText { get; set; }
 
         private void Handler2(object sender, EventArgs e)
@@ -631,6 +685,18 @@ c.Compilation = ctx.Compilation;
         {
             base.OnPropertyChanged(e);
             DebugUtils.WriteLine($"{e.Property.Name}");
+	    if(e.Property.Name == "DesignerView1") {
+            DebugUtils.WriteLine($"{e.Property.Name} {e.OldValue} = {e.NewValue}");
+	    	    foreach(var m in e.NewValue.GetType().GetMethods()) {
+		    DebugUtils.WriteLine(m.ToString());
+		    }
+	    foreach(var ii in e.NewValue.GetType().GetInterfaces()) {
+	    DebugUtils.WriteLine(ii.ToString());
+	    }
+	    } else if(e.Property.Name == "InstanceBuilderContext") {
+            DebugUtils.WriteLine($"{e.Property.Name} {e.OldValue} = {e.NewValue}");
+	    }
+	    
         }
 
         private void Handler(object sender, EventArgs e)
@@ -640,6 +706,9 @@ c.Compilation = ctx.Compilation;
             UpdateFormattedText();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected TextFormatter Formatter { get; set; } = TextFormatter.Create();
 
 
@@ -774,9 +843,11 @@ c.Compilation = ctx.Compilation;
                                     // new NumberSubstitution(), _pixelsPerDip), new Point(bounds.Left, bounds.Top));
                                 }
 
-                                var char0 = new CharacterCell(bounds, new Point(cellColumn, _chars.Count - 1), c);
-                                char0.PreviousCell = prevCell;
-                                
+                                var char0 = new CharacterCell(bounds, new Point(cellColumn, _chars.Count - 1), c)
+                                {
+                                    PreviousCell = prevCell
+                                };
+
                                 if(prevCell != null)
                                 prevCell.NextCell = char0;
                                 prevCell = char0;
@@ -889,7 +960,7 @@ c.Compilation = ctx.Compilation;
         private void UpdateCaretPosition()
         {
             var insertionPoint = InsertionPoint;
-            var l0 = LineInfos.Where(l => l.Offset + l.Length >= insertionPoint).FirstOrDefault();
+            var l0 = LineInfos.FirstOrDefault(l => l.Offset + l.Length >= insertionPoint);
             if (l0 != null)
             {
                 InsertionLine = l0;
@@ -1019,7 +1090,7 @@ c.Compilation = ctx.Compilation;
                             }
                             catch
                             {
-
+                                // ignored
                             }
                         }
 
@@ -1207,48 +1278,19 @@ c.Compilation = ctx.Compilation;
             // _selecting = true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected override void OnNodeUpdated()
         {
             base.OnNodeUpdated();
             if (!ChangingText)
             {
+                DebugUtils.WriteLine("Node updated");
                 UpdateTextSource();
                 UpdateFormattedText();
             }
         }
 
-    }
-
-    public class TextCaret : UIElement
-    {
-        private int _caretWidth = 3;
-        private Pen _pen;
-
-        public TextCaret(double lineHeight)
-        {
-            this.lineHeight = lineHeight;
-            _pen = new Pen(Brushes.Black,  3);
-        }
-
-        public TextCaret()
-        {
-            _pen = new Pen(Brushes.Black,  lineHeight);
-        }
-
-        protected override Size MeasureCore(Size availableSize)
-        {
-            return new Size(_caretWidth + 1, lineHeight);
-        }
-
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            base.OnRender(drawingContext);
-            var c = VisualTreeHelper.GetContentBounds(this);
-            DebugUtils.WriteLine(c.ToString());
-            drawingContext.DrawLine(_pen, new Point(0, 0), new Point(0, lineHeight));
-
-        }
-
-        public double lineHeight { get; set; }
     }
 }

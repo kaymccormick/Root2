@@ -25,24 +25,28 @@ using NLog;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [TitleMetadata("Find Log Usages")]
     public sealed class AnalyzeCommand : IAnalyzeCommand
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private readonly Pipeline                      _pipeline ;
+        private Pipeline                      _pipeline ;
         private readonly IAddRuntimeResource           _add ;
         private          ITargetBlock < RejectedItem > _rejectDestination ;
         private          ResourceNodeInfo              _resultsNode ;
+        private Lazy<Pipeline> _lazyPipeline;
 
         /// <summary>
         /// Constructor. Takes pipeline instance.
         /// </summary>
         /// <param name="pipeline"></param>
         /// <param name="add"></param>
-        public AnalyzeCommand ( Pipeline pipeline , IAddRuntimeResource add )
+        public AnalyzeCommand ( Lazy<Pipeline> pipeline , IAddRuntimeResource add )
         {
-            _pipeline = pipeline ;
+            _lazyPipeline = pipeline ;
             _add      = add ;
         }
 
@@ -65,7 +69,7 @@ namespace AnalysisAppLib
             using ( MappedDiagnosticsLogicalContext.SetScoped ( "Command" , "AnalyzeCommand" ) )
             {
                 Logger.Debug ( "run command" ) ;
-                var pipeline = _pipeline ;
+                var pipeline = Pipeline ;
                 if ( pipeline == null )
                 {
                     throw new AnalyzeException ( "Pipeline is null" ) ;
@@ -88,7 +92,7 @@ namespace AnalysisAppLib
                 var actionBlock = new ActionBlock < ILogInvocation > ( LogInvocationAction ) ;
                 if ( RejectDestination != null )
                 {
-                    _pipeline.RejectBlock.LinkTo (
+                    Pipeline.RejectBlock.LinkTo (
                                                   RejectDestination
                                                 , new DataflowLinkOptions
                                                   {
@@ -132,15 +136,15 @@ namespace AnalysisAppLib
         {
             for ( ; ; )
             {
-                var blockCount = _pipeline.Block.Count ;
+                var blockCount = Pipeline.Block.Count ;
                 if ( blockCount != 0 )
                 {
                     Logger.Info ( blockCount ) ;
                 }
 
-                Logger.Info ( $"{_pipeline.Input.Completion.IsCompleted}" ) ;
+                Logger.Info ( $"{Pipeline.Input.Completion.IsCompleted}" ) ;
 
-                var dataflowBlocks = _pipeline.Blocks.Where ( x => ! x.Completion.IsCompleted ) ;
+                var dataflowBlocks = Pipeline.Blocks.Where ( x => ! x.Completion.IsCompleted ) ;
                 if ( dataflowBlocks.Any ( ) == false )
                 {
                     return 1 ;
@@ -192,6 +196,18 @@ namespace AnalysisAppLib
         {
             get { return _rejectDestination ; }
             set { _rejectDestination = value ; }
+        }
+
+        public Pipeline Pipeline
+        {
+            get
+            {
+                if (_pipeline == null)
+                {
+                    _pipeline = _lazyPipeline.Value;
+                }
+                return _pipeline;
+            }
         }
 
 

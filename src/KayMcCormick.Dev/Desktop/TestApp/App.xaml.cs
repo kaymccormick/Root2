@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Tracing;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.ExceptionServices ;
@@ -97,15 +99,19 @@ namespace TestApp
             
             base.OnStartup(e);
 
-            var ctx = AnalysisService.Load(@"C:\temp\program.cs", "x");
+            var cTempProgramCs = e.Args.FirstOrDefault();
+            if (cTempProgramCs != null)
+            {
+                var ctx = AnalysisService.Load(cTempProgramCs, "x");
                 EnhancedCodeWindow ww = new EnhancedCodeWindow();
                 ww.SyntaxTree = ctx.SyntaxTree;
                 ww.Compilation = ctx.Compilation;
                 
                 ww.DataContext = ctx;
                 ww.ShowDialog();
-            
-                return;
+            }
+
+            return;
             // EnhancedCodeControl control = new EnhancedCodeControl();
             // var w = new MyWindow();
 

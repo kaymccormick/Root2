@@ -1,6 +1,6 @@
 ﻿using Autofac;
 
-namespace Client2
+namespace AnalysisControls
 {
     public interface IRibbonModelProvider<T>
     {

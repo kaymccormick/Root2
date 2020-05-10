@@ -19,10 +19,19 @@ namespace AnalysisControls
         private SyntaxToken? _syntaxToken;
         private SyntaxNode _syntaxNode;
         private SyntaxTrivia? _trivia = default;
+
+        public override string ToString()
+        {
+            return $"{nameof(Offset)}: {Offset}, {nameof(Length)}: {Length}, {nameof(SyntaxToken)}: {SyntaxToken}, {nameof(TriviaValue)}: {TriviaValue}, {nameof(TextRun)}: {TextRun}, {nameof(BoundingRect)}: {BoundingRect}, {nameof(Key)}: {Key}";
+        }
+
         private TextRun _textRun;
         private Rect _boundingRect;
         private List<CharacterCell> _characters;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Offset
         {
             get { return _offset; }
@@ -34,6 +43,9 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Length
         {
             get { return _length; }
@@ -45,6 +57,9 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxToken? SyntaxToken
         {
             get { return _syntaxToken; }
@@ -56,6 +71,9 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxNode SyntaxNode
         {
             get { return _syntaxNode; }
@@ -68,6 +86,9 @@ namespace AnalysisControls
         }
 
         public SyntaxTrivia TriviaValue => Trivia.GetValueOrDefault();
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxTrivia? Trivia
         {
             get { return _trivia; }
@@ -80,6 +101,9 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TextRun TextRun
         {
             get { return _textRun; }
@@ -91,6 +115,9 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Rect BoundingRect
         {
             get { return _boundingRect; }
@@ -102,6 +129,9 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List<CharacterCell> Characters       
         {
             get { return _characters; }
@@ -113,11 +143,29 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Key { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public LineInfo Line { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public RegionInfo NextRegion { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public RegionInfo PrevRegion { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="textRun"></param>
+        /// <param name="boundingRect"></param>
+        /// <param name="characters"></param>
         public RegionInfo(TextRun textRun, Rect boundingRect, List<CharacterCell> characters)
         {
             TextRun = textRun;
@@ -125,6 +173,9 @@ namespace AnalysisControls
             Characters = characters;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

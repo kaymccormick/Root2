@@ -21,8 +21,6 @@ namespace CodeView
             {
                 Code = File.ReadAllText(e.Args[0]);
             }
-
-            Code = "";
         }
 
         public string Code { get; set; }

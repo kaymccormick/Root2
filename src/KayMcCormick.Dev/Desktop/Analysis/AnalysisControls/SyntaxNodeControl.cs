@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using KayMcCormick.Dev;
 
 namespace AnalysisControls
 {
@@ -100,11 +101,18 @@ namespace AnalysisControls
 
         private static void SyntaxTreeUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            SyntaxNodeControl x = (SyntaxNodeControl) d;
-            var eNewValue = ((SyntaxTree) e.NewValue);
-            x.Model = null;
-            x.Compilation = null;
-            x.Node = eNewValue?.GetRoot();
+            SyntaxNodeControl ss = (SyntaxNodeControl)d;
+            ss.OnSyntaxTreeUpdated((SyntaxTree)e.NewValue);
+        }
+
+        protected virtual void OnSyntaxTreeUpdated(SyntaxTree newValue)
+        {
+	    DebugUtils.WriteLine("Syntax tree updated");
+	DebugUtils.WriteLine("Resetting model and compilation to null");
+            Model = null;
+            Compilation = null;
+	DebugUtils.WriteLine("setting node to syntax root");
+            Node = newValue?.GetRoot();
         }
 
         /// <summary>

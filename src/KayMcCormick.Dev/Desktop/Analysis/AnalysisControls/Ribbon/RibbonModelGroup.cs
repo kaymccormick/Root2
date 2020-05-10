@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing.Drawing2D;
+using System.Windows.Media;
 
 namespace AnalysisControls.RibbonM
 {
@@ -18,11 +20,12 @@ namespace AnalysisControls.RibbonM
         /// <summary>
         /// 
         /// </summary>
-        public string Header { get; set; }
+        public object Header { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
-        public ObservableCollection<RibbonModelItem> Items { get; } = new ObservableCollection<RibbonModelItem>();
+        public ObservableCollection<object> Items { get; } = new ObservableCollection<object>();
 
         /// <summary>
         /// 
@@ -111,8 +114,122 @@ namespace AnalysisControls.RibbonM
         /// <returns></returns>
         public RibbonModelItemButton CreateButton(string label)
         {
-            var button = new RibbonModelItemButton() { Label = Label };
+            var button = new RibbonModelItemButton() {Label = label};
+            Items.Add(button);
             return button;
         }
+
+        public RibbonModelTwoLineText createTwoLineText(string label)
+        {
+            var t = new RibbonModelTwoLineText() {Label = label};
+            Items.Add(t);
+            return t;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="label"></param>
+        /// <returns></returns>
+        public RibbonModelItemTextBox CreateTextBox(string label)
+        {
+            var b = new RibbonModelItemTextBox() {Label = label};
+            Items.Add(b);
+            return b;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public RibbonModelTwoLineText CreateRibbonTwoLineText(string text)
+        {
+            var r = new RibbonModelTwoLineText() {Text = text};
+            Items.Add(r);
+            return r;
+        }
+        /// <returns></returns>
+        public RibbonModelToggleButton CreateRibbonToggleButton(string text)
+        {
+            var r = new RibbonModelToggleButton() { Label = text };
+            Items.Add(r);
+            return r;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public RibbonModelControlGroup CreateControlGroup()
+        {
+            var r= new RibbonModelControlGroup();
+            Items.Add(r);
+            return r;
+        }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class RibbonModelToggleButton : RibbonModelItem
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsChecked
+
+        {
+            get;
+            set;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class RibbonModelTwoLineText : RibbonModelItem
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public Geometry PathData
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Brush PathFill
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Brush PathStroke { get; set; } = Brushes.Black;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Text
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool HasTwoLines
+        {
+            get;
+            set;
+        }
+    }
+
 }

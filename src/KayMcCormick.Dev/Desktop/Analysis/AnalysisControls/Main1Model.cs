@@ -185,6 +185,9 @@ namespace AnalysisControls
         /// </summary>
         public List<WorkspaceDiagnostic> Diagnostics { get; set; } = new List<WorkspaceDiagnostic>();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event EventHandler<ProjectAddedventArgs> ProjectedAddedEvent;
         public event EventHandler<DocumentAddedventArgs> DocumentAddedEvent;
         public async void WorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs e)
@@ -229,7 +232,7 @@ namespace AnalysisControls
                     break;
                 case WorkspaceChangeKind.DocumentAdded:
                     var p0 = GetProjectModel(e.ProjectId);
-                    var d = new DocumentModel(p0);
+                    var d = new DocumentModel(p0, Workspace);
                     var doc = e.NewSolution.GetDocument(e.DocumentId);
                     if (doc != null)
                     {
@@ -237,9 +240,6 @@ namespace AnalysisControls
                         d.FilePath = doc.FilePath;
                     }
 
-                    d.Document = doc;
-
-                
                     Compilation compilation = null;
                     SemanticModel model = null;
 
@@ -248,10 +248,10 @@ namespace AnalysisControls
                         compilation = await doc.Project.GetCompilationAsync();
                         var errs = compilation.GetDiagnostics()
                             .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error);
-                        foreach (var diagnostic in compilation.GetDiagnostics())
+                        foreach (var diagnostic in errs)
                         {
-                            PathModel diag = null;
-                            diag.Add(new DiagnosticNodeModel(PathModelKind.Diagnostic) {Diagnostic = diagnostic});
+                            d.Project.Diag.Add(new DiagnosticNodeModel(PathModelKind.Diagnostic)
+                                {Diagnostic = diagnostic});
                         }
 
                         DebugUtils.WriteLine(String.Join("\n", errs));
@@ -350,7 +350,7 @@ namespace AnalysisControls
 
         private static SolutionModel SolutionModelFromSolution(Solution s)
         {
-            var m = new SolutionModel();
+            var m = new SolutionModel(s.Workspace);
             m.Id = s.Id;
             m.FilePath = s.FilePath;
             foreach (var sProject in s.Projects) m.Projects.Add(ProjectFromModel(m, sProject));
@@ -359,11 +359,11 @@ namespace AnalysisControls
 
         private static ProjectModel ProjectFromModel(SolutionModel s, Project sProject)
         {
-            var p = new ProjectModel();
+            var p = new ProjectModel(s.Workspace);
             p.Name = sProject.Name;
             p.Id = sProject.Id;
             p.Solution = s;
-            p.Project = sProject;
+            //p.Project = sProject;
             p.FilePath = sProject.FilePath;
             foreach (var sProjectDocument in sProject.Documents)
             {
@@ -376,8 +376,7 @@ namespace AnalysisControls
 
         private static DocumentModel DocumentFromModel(ProjectModel project, Document sProjectDocument)
         {
-            var d = new DocumentModel(project);
-            d.Document = sProjectDocument;
+            var d = new DocumentModel(project, project.Workspace);
             d.Name = sProjectDocument.Name;
             d.FilePath = sProjectDocument.FilePath;
             return d;
@@ -431,14 +430,18 @@ namespace AnalysisControls
             // {
 
             // }
-            
+
             if (Workspace is AdhocWorkspace ww)
             {
-                
+
                 var projectInfo = ProjectInfo.Create(ProjectId.CreateNewId(), VersionStamp.Create(), "unnamed project",
                     "unnamed assembly", LanguageNames.CSharp
-                );
-                var news = ww.CurrentSolution.AddProject(projectInfo);
+                ).WithMetadataReferences(new[]
+                {
+                    MetadataReference.CreateFromFile(typeof(object).Assembly.Location)
+                });
+
+            var news = ww.CurrentSolution.AddProject(projectInfo);
                 if (ww.TryApplyChanges(news))
                 {
                     return projectInfo;
@@ -622,7 +625,19 @@ namespace AnalysisControls
                 var listBox = new ListBox();
                 listBox.ItemTemplate = (DataTemplate) View.TryFindResource(new DataTemplateKey(typeof(ISymbol)));
                 var comp = await pm.Project.GetCompilationAsync();
-                listBox.ItemsSource = comp.GetSymbolsWithName(x => true);
+                var errs = comp.GetDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error);
+                if (errs.Any())
+                {
+                    DebugUtils.WriteLine("Errors");
+                    foreach (var diagnostic in errs)
+                    {
+                        DebugUtils.WriteLine(diagnostic.ToString());
+                    }
+                }
+
+                var listBoxItemsSource = comp.GetSymbolsWithName(x => true).ToList();
+                DebugUtils.WriteLine($"{listBoxItemsSource.Count} symbols");
+                listBox.ItemsSource = listBoxItemsSource;
                 Documents.Add(new DocModel()
                 {
                     Title = "Symbols for " + pm.Name,
@@ -630,26 +645,77 @@ namespace AnalysisControls
                 });
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        protected virtual void OnDocumentAddedEvent(DocumentAddedventArgs e)
+        {
+            DocumentAddedEvent?.Invoke(this, e);
+        }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class DiagnosticNodeModel : PathModel
     {
+        private Diagnostic _diagnostic;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="kind"></param>
         public DiagnosticNodeModel(PathModelKind kind) : base(kind)
         {
         }
 
-        public Diagnostic Diagnostic { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="docs"></param>
+        public override void Add(PathModel docs)
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Diagnostic Diagnostic
+        {
+            get { return _diagnostic; }
+            set
+            {
+                _diagnostic = value;
+                Message = _diagnostic.GetMessage();
+            }
+        }
+
+        public string Message { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class DocumentAddedventArgs
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public DocumentModel Document { get; set; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class ProjectAddedventArgs
     {
         private ProjectModel projectModel;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ProjectModel Model
         {
             get { return projectModel; }

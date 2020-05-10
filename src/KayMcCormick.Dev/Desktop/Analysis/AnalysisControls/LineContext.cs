@@ -84,6 +84,6 @@ namespace AnalysisControls
         public IList<string> LineParts { get; set; } = new List<string>();
 
         public IList<int> Offsets { get; set; } = new List<int>();
-        
+        public double MaxY { get; set; }
     }
 }

@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore.Internal;
 
 namespace AnalysisControls
@@ -6,8 +11,10 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class PathModel
+    public class PathModel : INotifyPropertyChanged
     {
+        private ObservableCollection<PathModel> _children = new ObservableCollection<PathModel>();
+
         /// <summary>
         /// 
         /// </summary>
@@ -45,6 +52,8 @@ namespace AnalysisControls
         /// </summary>
         public string ElementName { get; set; }
 
+        public virtual IEnumerable Children => _children;
+        
         /// <summary>
         /// 
         /// </summary>
@@ -54,10 +63,29 @@ namespace AnalysisControls
             return $"{nameof(Entries)}: {Entries.Keys.Join(";")}, {nameof(Path)}: {Path}, {nameof(Item)}: {Item}, {nameof(Parent)}: {Parent}, {nameof(ElementName)}: {ElementName}";
         }
 
-        public void Add(PathModel docs)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="docs"></param>
+        public virtual void Add(PathModel docs)
         {
-
             Entries[docs.ElementName] = docs;
+            _children.Add(docs);
+        }
+
+        public virtual bool Remove(PathModel p)
+        {
+            Entries.Remove(p.ElementName);
+            _children.Remove(p);
+            return true;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

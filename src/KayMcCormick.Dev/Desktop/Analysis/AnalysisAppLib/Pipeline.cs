@@ -1,8 +1,10 @@
 using System ;
 using System.Collections.Generic ;
 using System.Linq ;
+using System.Security.Policy;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
+using AnalysisAppLib.Dataflow;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
@@ -27,6 +29,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
+        [UsedImplicitly]
         public Pipeline (
             IAddRuntimeResource add
         )
@@ -34,6 +37,29 @@ namespace AnalysisAppLib
             
             
             _add           = add ;
+
+            AppDomainSetup setup = new AppDomainSetup();
+            setup.ApplicationBase = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\BuildalyzerBuild\bin\debug";
+            Evidence baseEvidence = AppDomain.CurrentDomain.Evidence;
+            Evidence evidence = new Evidence(baseEvidence);
+            //evidence.AddAssembly("(some assembly)");
+
+            var d =AppDomain.CreateDomain("newdomain", evidence, setup);
+            DebugUtils.WriteLine("Domain id is " + d.Id);
+            // d.AssemblyResolve += (sender, args) =>
+            // {
+                // DebugUtils.WriteLine(args.Name.ToString());
+                // return args.;
+            // };
+            var ass = d.Load("BuildalyzerBuild, Version=1.0.0.0, Culture=neutral");
+            foreach (var assExportedType in ass.ExportedTypes)
+            {
+                DebugUtils.WriteLine(assExportedType.FullName);
+            }
+
+            // IDataflowTransformFuncProvider<AnalysisRequest, Workspace> prov =
+                // Activator.CreateInstance<IDataflowTransformFuncProvider<AnalysisRequest, Workspace>>();
+
         }
 
         private readonly Func < ILogInvocation > _invocationFactory ;
@@ -103,7 +129,6 @@ namespace AnalysisAppLib
         /// <param name="documentAction1"></param>
         /// <param name="documentAction"></param>
         /// <param name="invocActions"></param>
-        /// <param name="outAct"></param>
         /// <param name="miscs"></param>
         /// <param name="add"></param>
         public Pipeline (
@@ -126,6 +151,15 @@ namespace AnalysisAppLib
 
             ResultBufferBlock =
                 new BufferBlock < ILogInvocation > ( new DataflowBlockOptions ( ) ) ;
+
+            AppDomainSetup setup = new AppDomainSetup();
+            setup.ApplicationBase = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\BuildalyzerBuild\bin\debug";
+            Evidence baseEvidence = AppDomain.CurrentDomain.Evidence;
+            Evidence evidence = new Evidence(baseEvidence);
+            //evidence.AddAssembly("(some assembly)");
+
+            var d = AppDomain.CreateDomain("newdomain", evidence, setup);
+            DebugUtils.WriteLine("Domain id is " + d.Id);
         }
 
         /// <summary>
@@ -134,9 +168,7 @@ namespace AnalysisAppLib
         public virtual void BuildPipeline ( )
         {
             var initWorkspace = Register (
-                                          Workspaces.InitializeWorkspace2Block (
-                                                                                null
-                                                                              , null
+                                          Workspaces.InitializeWorkspace2Block (null
                                                                               , _miscs
                                                                                )
                                          ) ;
@@ -448,19 +480,14 @@ namespace AnalysisAppLib
 
 
             [ NotNull ]
-            public static TransformBlock < AnalysisRequest , Workspace > InitializeWorkspace2Block (
-                ILoggerFactory                        provider
-              , Action < string >                     outAct
+            public static TransformBlock < AnalysisRequest , Workspace > InitializeWorkspace2Block (Action < string >                     outAct
               , IEnumerable < Action < IEventMisc > > miscs
             )
             {
                 var makeWs =
                     new TransformBlock < AnalysisRequest , Workspace > (
                                                                         req => MakeWorkspace2Async (
-                                                                                                    req
-                                                                                                  , provider
-                                                                                                  , outAct
-                                                                                                  , miscs
+                                                                                                    req, miscs
                                                                                                    )
                                                                        ) ;
                 return makeWs ;
@@ -471,10 +498,7 @@ namespace AnalysisAppLib
             [ ItemNotNull ]
             private static async Task < Workspace > MakeWorkspace2Async (
 #pragma warning restore 1998
-                [ NotNull ] AnalysisRequest                         req
-              , ILoggerFactory                                      lo
-              , [ NotNull ]   Action < string >                     outAct
-              , [ CanBeNull ] IEnumerable < Action < IEventMisc > > misc
+                [ NotNull ] AnalysisRequest                         req, [ CanBeNull ] IEnumerable < Action < IEventMisc > > misc
             )
 
             {
@@ -706,25 +730,6 @@ namespace AnalysisAppLib
     }
 
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public class LoggerFactory : ILoggerFactory
-    {
-        #region Implementation of IDisposable
-        /// <inheritdoc />
-        public void Dispose ( ) { }
-        #endregion
-        #region Implementation of ILoggerFactory
-        /// <inheritdoc />
-        [ CanBeNull ]
-        public ILogger CreateLogger ( string categoryName ) { return null ; }
-
-        /// <inheritdoc />
-        public void AddProvider ( ILoggerProvider provider ) { }
-        #endregion
-    }
-
     /// <inheritdoc />
     public class Myw : ILoggerProvider
     {
@@ -785,13 +790,5 @@ namespace AnalysisAppLib
         [ CanBeNull ]
         public IDisposable BeginScope < TState > ( TState state ) { return null ; }
         #endregion
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    // ReSharper disable once ClassNeverInstantiated.Global
-    public class MyTest
-    {
     }
 }

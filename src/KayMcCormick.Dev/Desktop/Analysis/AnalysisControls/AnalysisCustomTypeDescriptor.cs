@@ -1,8 +1,10 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Autofac;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf ;
 
@@ -16,6 +18,9 @@ namespace AnalysisControls
 
         private readonly Func < Type , TypeConverter > _funcConverter ;
         private readonly UiElementTypeConverter        _uiElementTypeConverter ;
+        private IPropertiesAdapter _propsAdapter;
+        private List<IPropertiesAdapter> _props;
+
         public override AttributeCollection GetAttributes()
         {
             return base.GetAttributes();
@@ -66,6 +71,11 @@ namespace AnalysisControls
                 var inst = Activator.CreateInstance(ti, BindingFlags.CreateInstance, null, new object[] {propertyInfo},
                     Thread.CurrentThread.CurrentCulture);
                 PropertyDescriptor xDescriptor = (PropertyDescriptor) inst;
+                foreach (var propertiesAdapter in _props)
+                {
+                    propertiesAdapter.UpdateProperty((IUpdatableProperty)inst);
+                }
+
                 p.Add(xDescriptor);
             }
             PropertyDescriptorCollection coll = new PropertyDescriptorCollection(p.ToArray());
@@ -93,16 +103,20 @@ namespace AnalysisControls
         /// <param name="funcConverter"></param>
         /// <param name="uiElementTypeConverter"></param>
         /// <param name="type"></param>
+        /// <param name="context"></param>
         public AnalysisCustomTypeDescriptor (
             Func < Type , TypeConverter > funcConverter
           , UiElementTypeConverter        uiElementTypeConverter
-          , Type                          type
+          , Type                          type, IEnumerable<IPropertiesAdapter> propsAdapters
+	  , IComponentContext context
         ) : base()
         {
-            DebugUtils.WriteLine("Constructor " + nameof(AnalysisCustomTypeDescriptor) + " " + type.FullName);
+            DebugUtils.WriteLine("Constructor " + GetType().FullName + " " + type.FullName);
             _funcConverter          = funcConverter ;
             _uiElementTypeConverter = uiElementTypeConverter ;
             Type                    = type ;
+            _props = propsAdapters.Where(p => p.HandleType(type)).ToList();
+            
         }
 
         #region Overrides of CustomTypeDescriptor
@@ -118,5 +132,22 @@ namespace AnalysisControls
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IPropertiesAdapter
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        PropertyDescriptorCollection GetProperties(Type t);
+
+        bool HandleType(Type type);
+        void UpdateProperty(IUpdatableProperty propertyDescriptor);
     }
 }

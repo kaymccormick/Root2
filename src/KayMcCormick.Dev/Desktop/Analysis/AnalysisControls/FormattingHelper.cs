@@ -79,10 +79,32 @@ namespace AnalysisControls
 
             dc0.Close();
             maxX = lineContext.MaxX;
-            maxY = lineContext.LineOriginPoint.Y;
+            maxY = lineContext.MaxY;
             return lineContext;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="currentRendering"></param>
+        /// <param name="emSize"></param>
+        /// <param name="typeface"></param>
+        /// <param name="textDest"></param>
+        /// <param name="textStore"></param>
+        /// <param name="pixelsPerDip"></param>
+        /// <param name="lineInfos"></param>
+        /// <param name="infos"></param>
+        /// <param name="maxX"></param>
+        /// <param name="maxY"></param>
+        /// <param name="textLineAction"></param>
+        /// <param name="brush"></param>
+        /// <param name="existingRect"></param>
+        /// <param name="formatter"></param>
+        /// <param name="lineContext"></param>
+        /// <param name="paragraphProperties"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static LineContext PartialUpdateFormattedText(double width, ref FontRendering currentRendering,
             double emSize,
             [NotNull] Typeface typeface, DrawingGroup textDest, AppTextSource textStore, double pixelsPerDip,
@@ -130,40 +152,18 @@ namespace AnalysisControls
 
             dc0.Close();
             maxX = lineContext.MaxX;
-            maxY = lineContext.LineOriginPoint.Y;
+            maxY = lineContext.MaxY;
             return lineContext;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="lineInfos"></param>
-        /// <param name="infos"></param>
-        /// <param name="maxX"></param>
-        /// <param name="textLineAction"></param>
-        /// <param name="myTextLine"></param>
-        /// <param name="linePosition"></param>
-        /// <param name="curCellRow"></param>
-        /// <param name="lineNumber"></param>
-        /// <param name="textStorePosition"></param>
-        /// <param name="dc"></param>
-        /// <returns></returns>
+     
         /// <summary>
         /// 
         /// </summary>
         /// <param name="infos"></param>
-        /// <param name="maxX"></param>
-        /// <param name="textLineAction"></param>
-        /// <param name="myTextLine"></param>
-        /// <param name="linePosition"></param>
-        /// <param name="curCellRow"></param>
-        /// <param name="lineNumber"></param>
-        /// <param name="textStorePosition"></param>
+        /// <param name="lineContext"></param>
         /// <param name="dc"></param>
         /// <param name="lineInfo"></param>
-        /// <param name="context"></param>
-        /// <param name="lineInfos"></param>
-        /// <returns></returns>
         public static void HandleTextLine(List<RegionInfo> infos, ref LineContext lineContext, DrawingContext dc,
             out LineInfo lineInfo)
         {
@@ -188,8 +188,7 @@ namespace AnalysisControls
             var cellColumn = 0;
             var characterOffset = lineContext.TextStorePosition;
             var regionOffset = lineContext.TextStorePosition;
-            
-            
+
             var eol = lineContext.MyTextLine.GetTextRunSpans().Select(xx => xx.Value).OfType<TextEndOfLine>();
             if (eol.Any())
                 dc.DrawRectangle(Brushes.Aqua, null,
@@ -200,10 +199,18 @@ namespace AnalysisControls
             CharacterCell prevCell = null;
             foreach (var textRunSpan in lineContext.MyTextLine.GetTextRunSpans())
             {
-                if (textRunSpan.Value is CustomTextCharacters c)
+                switch (textRunSpan.Value)
                 {
-                    lineContext.Offsets.Add(c.Index.GetValueOrDefault());
-                    lineContext.LineParts.Add(c.Text);
+                    case CustomTextCharacters c:
+                        lineContext.Offsets.Add(c.Index.GetValueOrDefault());
+                        lineContext.LineParts.Add(c.Text);
+                        break;
+                    case TextEndOfParagraph par:
+                        DebugUtils.WriteLine("End of paragraph length is " + par.Length);
+                        break;
+                    default:
+                        DebugUtils.WriteLine("Warning unrhandled element " + textRunSpan.Value.GetType().FullName);
+                        break;
                 }
 
                 DebugUtils.WriteLine(textRunSpan.Value.ToString());
@@ -225,7 +232,6 @@ namespace AnalysisControls
                     var cellBounds =
                         new List<CharacterCell>();
                     var renderingEmSize = rectGlyphRun.FontRenderingEmSize;
-
                     
                     for (var i = 0; i < rectGlyphRun.Characters.Count; i++)
                     {
@@ -233,6 +239,7 @@ namespace AnalysisControls
                         size.Width += advanceWidth;
                         var gi = rectGlyphRun.GlyphIndices[i];
                         var c = rectGlyphRun.Characters[i];
+			DebugUtils.WriteLine($"[{characterOffset}] char: " + c);
                         
                         var advWidth = rectGlyphRun.GlyphTypeface.AdvanceWidths[gi];
                         var advHeight = rectGlyphRun.GlyphTypeface.AdvanceHeights[gi];
@@ -248,12 +255,12 @@ namespace AnalysisControls
                         var topSide = rectGlyphRun.GlyphTypeface.TopSideBearings[gi];
                         var bounds = new Rect(new Point(cell.X, cell.Y + topSide), s);
 
-                        var celll0 = new CharacterCell(bounds, new Point(cellColumn, lineContext.CurCellRow), c);
-                        cellBounds.Add(celll0);
+                        var charCell = new CharacterCell(bounds, new Point(cellColumn, lineContext.CurCellRow), c);
+                        cellBounds.Add(charCell);
                         cell.Offset(advanceWidth, 0);
-                        celll0.PreviousCell = prevCell;
-                        if (prevCell != null) prevCell.NextCell = celll0;
-                        prevCell = celll0;
+                        charCell.PreviousCell = prevCell;
+                        if (prevCell != null) prevCell.NextCell = charCell;
+                        prevCell = charCell;
 
                         cellColumn++;
                         characterOffset++;
@@ -269,14 +276,16 @@ namespace AnalysisControls
                         SyntaxNode node = null;
                         SyntaxToken? token = null;
                         SyntaxTrivia? trivia = null;
-                        if (textSpanValue is SyntaxTokenTextCharacters stc)
+                        DebugUtils.WriteLine("text run is length " + textSpanValue.Length);
+                        switch (textSpanValue)
                         {
-                            node = stc.Node;
-                            token = stc.Token;
-                        }
-                        else if (textSpanValue is SyntaxTriviaTextCharacters stc2)
-                        {
-                            trivia = stc2.Trivia;
+                            case SyntaxTokenTextCharacters stc:
+                                node = stc.Node;
+                                token = stc.Token;
+                                break;
+                            case SyntaxTriviaTextCharacters stc2:
+                                trivia = stc2.Trivia;
+                                break;
                         }
 
                         var tuple = new RegionInfo(textSpanValue, r, cellBounds)
@@ -288,6 +297,7 @@ namespace AnalysisControls
                             SyntaxToken = token,
                             Trivia = trivia
                         };
+                        DebugUtils.WriteLine(tuple.ToString());
                         lineRegions.Add(tuple);
                         infos?.Add(tuple);
                     }
@@ -297,22 +307,27 @@ namespace AnalysisControls
                 }
 
             lineInfo.Text = string.Join("", lineContext.LineParts);
+            DebugUtils.WriteLine("Handled line of text: " + lineInfo.Text);
             lineInfo.Regions = lineRegions;
 
-            // Draw the formatted text into the drawing context.
+            DebugUtils.WriteLine($"Drawing text line at origin {lineContext.LineOriginPoint}");
             lineContext.MyTextLine.Draw(dc, lineContext.LineOriginPoint, InvertAxes.None);
             // ReSharper disable once UnusedVariable
             var p = new Point(lineContext.LineOriginPoint.X + lineContext.MyTextLine.WidthIncludingTrailingWhitespace,
                 lineContext.LineOriginPoint.Y);
+            DebugUtils.WriteLine("Top right corner of text is " + p);
             var textLineBreak = lineContext.MyTextLine.GetTextLineBreak();
             if (textLineBreak != null) DebugUtils.WriteLine(textLineBreak.ToString());
             lineContext.LineNumber++;
 
             // Update the index position in the text store.
+	    DebugUtils.WriteLine("line is length " + lineContext.MyTextLine.Length);
             lineContext.TextStorePosition += lineContext.MyTextLine.Length;
+            DebugUtils.WriteLine($"New text store position {lineContext.TextStorePosition}");
             // Update the line position coordinate for the displayed line.
             lineContext.LineOriginPoint = new Point(lineContext.LineOriginPoint.X,
                 lineContext.LineOriginPoint.Y + lineContext.MyTextLine.Height);
+            if (lineContext.LineOriginPoint.Y >= lineContext.MaxY) lineContext.MaxY = lineContext.LineOriginPoint.Y;
             if (lineContext.MyTextLine.Width >= lineContext.MaxX) lineContext.MaxX = lineContext.MyTextLine.Width;
             var lastLine = lineContext.LineInfo;
             if (lastLine != null)

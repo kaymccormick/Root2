@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls ;
 using System.Windows.Input ;
+using AnalysisAppLib;
 using AnalysisControls.ViewModel ;
 using Autofac ;
 using JetBrains.Annotations ;
@@ -13,6 +14,7 @@ namespace AnalysisControls
     ///     Interaction logic for PythonControl.xaml
     /// </summary>
     [ TitleMetadata ( "Python" ) ]
+    [ GroupMetadata ( "Views" ) ]
     public sealed partial class PythonControl : UserControl
       , IView < PythonViewModel >
       , IView1

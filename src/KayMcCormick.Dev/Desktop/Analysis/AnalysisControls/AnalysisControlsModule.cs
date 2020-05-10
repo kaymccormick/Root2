@@ -15,6 +15,7 @@ using System.Collections.Generic ;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel ;
+using System.Composition;
 using System.Linq ;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -38,6 +39,7 @@ using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
+using Autofac.Extras.AttributeMetadata;
 using Autofac.Features.AttributeFilters ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout;
@@ -48,6 +50,7 @@ using KayMcCormick.Dev.Container ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.ViewModel;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Container = Autofac.Core.Container;
 using MethodInfo = AnalysisAppLib.MethodInfo;
@@ -66,6 +69,7 @@ namespace AnalysisControls
         // ReSharper disable once AnnotateNotNullParameter
         protected override void Load ( ContainerBuilder builder )
         {
+	builder.RegisterType<SyntaxNodeProperties>().AsImplementedInterfaces();
             builder.RegisterType<MiscInstanceInfoProvider>()
                 .AsSelf()
                 .As<TypeDescriptionProvider>()
@@ -240,10 +244,11 @@ namespace AnalysisControls
             kayTypes.Add(typeof(MethodInfo));
             kayTypes.Add(typeof(PropertyInfo));
             kayTypes.Add(typeof(MemberInfo));
+            kayTypes.AddRange(typeof ( CSharpSyntaxNode ).Assembly.GetExportedTypes ( )
+                              .Where ( t => typeof ( CSharpSyntaxNode ).IsAssignableFrom ( t ) ));
 
             var xx = new CustomTypes(kayTypes);
                 builder.RegisterInstance(xx);
-                //builder.Register((c, p) => { return kayTypes; }).Keyed<IEnumerable<Type>>("Custom");
                 builder.RegisterType<UiElementTypeConverter>().SingleInstance().WithCallerMetadata();
                 builder.Register((c, p) =>
                 {
@@ -263,9 +268,8 @@ namespace AnalysisControls
                 // .WithParameter (
                 // new NamedParameter ( "types" , types )
                 // ) .AsSelf (  ) ;
-                builder.RegisterType < AnalysisCustomTypeDescriptor > ( )
-                       .AsSelf ( )
-                       .AsImplementedInterfaces ( ) ;
+//		builder.RegisterGeneric(typeof(AnalysisCustomTypeDescriptor<>)).AsSelf().AsImplementedInterfaces().SingleInstance();
+		builder.RegisterType<AnalysisCustomTypeDescriptor>().AsSelf().AsImplementedInterfaces();
 
 
                 builder.RegisterAdapter < IBaseLibCommand , IAppCommand > (
@@ -399,11 +403,11 @@ namespace AnalysisControls
             var view = x.Item1.Value;
             DebugUtils.WriteLine($"Calling view func ({command})");
             var n = DateTime.Now;
-            var pane1 = x.Item2.Resolve<LayoutDocumentPane>();
+            var pane1 = x.Item2.Resolve<ReplaySubject<IControlView>>();
             DebugUtils.WriteLine((DateTime.Now - n).ToString());
-            var doc = new LayoutDocument { Content = view };
-            pane1.Children.Add(doc);
-            pane1.SelectedContentIndex = pane1.Children.IndexOf(doc);
+            var props = MetaHelper.GetMetadataProps(x.Item1.Metadata);
+            //var doc = new DocModel {Content = view, Title = props.Title};
+            pane1.OnNext(view.Value);
             DebugUtils.WriteLine("returning success");
             return AppCommandResult.Success;
         }
@@ -675,4 +679,45 @@ namespace AnalysisControls
             throw new NotImplementedException();
         }
     }
+
+    [ApplyTypes(typeof(CSharpSyntaxNode))]
+public class SyntaxNodeProperties : IPropertiesAdapter {
+    public SyntaxNodeProperties()
+    {
+    }
+
+    public PropertyDescriptorCollection GetProperties(Type t)
+    {
+            return null;
+    }
+
+    public bool HandleType(Type type)
+    {
+        if(typeof(CSharpSyntaxNode).IsAssignableFrom(type))
+            {
+                return true;
+            }
+
+        return false;
+    }
+
+    public void UpdateProperty(IUpdatableProperty propertyDescriptor)
+    {
+        if (propertyDescriptor.Name == "Parent")
+        {
+            propertyDescriptor.SetIsBrowsable(false);
+        }
+    }
+}
+
+[MetadataAttribute]
+public class ApplyTypesAttribute : Attribute
+{
+    public ApplyTypesAttribute(Type type)
+    {
+            ApplyTypes = type;
+    }
+
+    public Type ApplyTypes { get; set; }
+}
 }

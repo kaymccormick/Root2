@@ -27,6 +27,7 @@ using System.Windows.Controls;
 using AnalysisAppLib;
 using AnalysisAppLib.Syntax;
 using AnalysisControls;
+using AnalysisControls.Commands;
 using AnalysisControls.RibbonM;
 using AnalysisControls.Scripting;
 using AnalysisControls.ViewModel;
@@ -179,6 +180,13 @@ namespace Client2
             {
                 var r = new RibbonModel();
                 r.AppMenu = c.Resolve<RibbonModelApplicationMenu>();
+		r.AppMenu.Items.Add(new RibbonModelAppMenuItem{Header="test"});
+                var tabs = c.Resolve<IEnumerable<Meta<Lazy<RibbonModelTab>>>>();
+                foreach (var meta in tabs)
+                {
+                    var ribbonModelTab = meta.Value.Value;
+                    r.RibbonItems.Add(ribbonModelTab);
+                }
                 var tabProviders = c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>();
                 foreach (var ribbonModelProvider in tabProviders)
                 {
@@ -193,6 +201,14 @@ namespace Client2
             builder.RegisterType<RibbonTabProvider1>().As<IRibbonModelProvider<RibbonModelTab>>().SingleInstance();
             builder.RegisterType<RibbonViewGroupProvider>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<RibbonViewGroupProviderBaseImpl>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance();
+            builder.RegisterType<RibbonViewGroupProviderBaseImpl2>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance();
+            builder.RegisterType<TestRibbonTabDef>().As<RibbonModelTab>().SingleInstance();
+            builder.RegisterType<TestRibbonTabDef2>().As<RibbonModelTab>().SingleInstance();
+            builder.RegisterType<RibbonModelGroupTest1>().As<RibbonModelGroup>().SingleInstance();
+            builder.RegisterType<RibbonModelGroupTest2>().As<RibbonModelGroup>().SingleInstance();
+            builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces();
+            builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces();
+            builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces();
         }
 
 #pragma warning disable 1998

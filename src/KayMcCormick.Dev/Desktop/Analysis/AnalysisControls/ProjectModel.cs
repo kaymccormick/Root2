@@ -18,17 +18,28 @@ namespace AnalysisControls
     /// </summary>
     public class ProjectModel : INotifyPropertyChanged
     {
-        public ProjectModel()
+        private PathModel _diag;
+
+        public Workspace Workspace { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ProjectModel(Workspace workspace)
         {
+            Workspace = workspace;
             Documents.CollectionChanged += DocumentsOnCollectionChanged;
             PathModel docs = new PathModel(PathModelKind.Virtual);
             docs.ElementName = "Documents";
             RootPathInfo.Add(docs);
             DocumentsPath = docs;
-            PathModel diag = new PathModel(PathModelKind.Virtual) {ElementName = "Diagnostics"};
-            RootPathInfo.Add(diag);
+            Diag = new ListPathModel(PathModelKind.Virtual) {ElementName = "Diagnostics"};
+            RootPathInfo.Add(Diag);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public PathModel DocumentsPath { get; set; }
 
         /// <summary>
@@ -51,17 +62,17 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public SolutionModel Solution { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
-        public Project Project { get; set; }
+        public Project Project => Workspace.CurrentSolution.GetProject(Id);
 
         /// <summary>
         /// 
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        /// <summary>
         
         private void DocumentsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -102,7 +113,7 @@ namespace AnalysisControls
                 {
                     var n = pathInfo.ElementName;
 
-                    pathInfo.Parent.Entries.Remove(n);
+                    pathInfo.Parent.Remove(pathInfo);
                     pathInfo = pathInfo.Parent;
                 }
             }
@@ -112,14 +123,17 @@ namespace AnalysisControls
         {
             foreach (DocumentModel eNewItem in eNewItems)
             {
+                DebugUtils.WriteLine($"Adding {eNewItem.Name}");
                 var filePath = eNewItem.FilePath;
                 if (eNewItem.Project != null && eNewItem.Project.FilePath != null) filePath = Ext.GetRelativePath(eNewItem.Project.FilePath, filePath);
                 var pathInfo = GetPathInfo(filePath, DocumentsPath);
-                pathInfo.Entries[filePath] = new PathModel(PathModelKind.File)
+                
+                var pathInfoEntry = new PathModel(PathModelKind.File)
                 {
                     ElementName = System.IO.Path.GetFileName(filePath), Item = eNewItem, Parent = pathInfo,
                     Path = filePath
                 };
+                pathInfo.Add(pathInfoEntry);
             }
         }
 
@@ -141,7 +155,7 @@ namespace AnalysisControls
                 
                 if (cur.Entries.TryGetValue(s, out var val)) continue;
                 val = new PathModel(PathModelKind.Directory) {Path = curPath, Parent = cur, ElementName = s};
-                cur.Entries[s] = val;
+                cur.Add(val);
                 cur = val;
                 pathi++;
             }
@@ -161,11 +175,43 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        public PathModel Diag
+        {
+            get { return _diag; }
+            set { _diag = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="propertyName"></param>
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ListPathModel : PathModel
+    {
+        private ObservableCollection<PathModel> _list = new ObservableCollection<PathModel>();
+        public override IEnumerable Children => _list;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="virtual"></param>
+        public ListPathModel(PathModelKind @virtual) : base(@virtual)
+        {
+        }
+
+        /// <inheritdoc />
+        public override void Add(PathModel docs)
+        {
+            _list.Add(docs);
         }
     }
 }

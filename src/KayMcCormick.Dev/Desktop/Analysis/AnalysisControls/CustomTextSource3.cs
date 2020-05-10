@@ -54,7 +54,7 @@ namespace AnalysisControls
             // Make sure text source index is in bounds.
             if (textSourceCharacterIndex < 0)
                 throw new ArgumentOutOfRangeException(nameof(textSourceCharacterIndex), "Value must be greater than 0.");
-            if (textSourceCharacterIndex >= Length) return new TextEndOfParagraph(1);
+            if (textSourceCharacterIndex >= Length) return new TextEndOfParagraph(2);
 
             // Create TextCharacters using the current font rendering properties.
             if (textSourceCharacterIndex < Length)

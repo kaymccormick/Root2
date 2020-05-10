@@ -11,7 +11,7 @@ namespace AnalysisControls
     /// </summary>
     /// <typeparam name="TInput"></typeparam>
     /// <typeparam name="TReturn"></typeparam>
-    public class MyXDescriptor<TInput, TReturn> : CustomPropertyDescriptor where TInput : class
+    public class MyXDescriptor<TInput, TReturn> : CustomPropertyDescriptor, IUpdatableProperty where TInput : class
     {
         private readonly PropertyInfo _propertyInfo;
         protected override AttributeCollection CreateAttributeCollection()
@@ -45,6 +45,11 @@ namespace AnalysisControls
         public override bool IsBrowsable
         {
             get { return _isBrowsable; }
+        }
+
+        public void SetIsBrowsable(bool isBrowsable)
+        {
+            _isBrowsable = isBrowsable;
         }
 
         private GetDelegate _getValue;
@@ -132,5 +137,11 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public override Type PropertyType => _type;
+    }
+
+    public interface IUpdatableProperty 
+    {
+        string Name { get; }
+        void SetIsBrowsable(bool isBrowsable);
     }
 }

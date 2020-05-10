@@ -37,7 +37,7 @@
     </Grid.RowDefinitions>
     <Ribbon ItemTemplateSelector="{StaticResource TabItemTemplateSelector}"  x:Name="_ribbon" DataContext="{Binding ViewModel.Ribbon}" ItemsSource="{Binding RibbonItems}">
       <Ribbon.TabHeaderTemplate><DataTemplate DataType="{x:Type ribbon:RibbonModelTab}">
-        <TextBlock  Foreground="Green" Text="{Binding Header}"></TextBlock>
+        <TextBlock Background="Aquamarine"  Foreground="Green" Text="{Binding Header}"></TextBlock>
       </DataTemplate></Ribbon.TabHeaderTemplate>
       <Ribbon.ApplicationMenu>
         <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" />

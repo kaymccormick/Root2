@@ -26,7 +26,7 @@ namespace ProjInterface.Explorer
     ///     Interaction logic for Window1.xaml
     /// </summary>
     // ReSharper disable once UnusedType.Global
-    public class Shell : HwndHost , IViewWithTitle , IControlView
+    class Shell : HwndHost , IViewWithTitle , IControlView
     {
         internal const int LBN_SELCHANGE   = 0x00000001 , WM_COMMAND    = 0x00000111
                          , LB_GETCURSEL    = 0x00000188 , LB_GETTEXTLEN = 0x0000018A

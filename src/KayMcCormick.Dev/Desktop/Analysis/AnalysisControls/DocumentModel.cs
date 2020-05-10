@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.CodeAnalysis;
 
 namespace AnalysisControls
@@ -9,8 +10,11 @@ namespace AnalysisControls
     /// </summary>
     public class DocumentModel
     {
-        public DocumentModel(ProjectModel project)
+        private readonly Workspace _workspace;
+
+        public DocumentModel(ProjectModel project, Workspace workspace)
         {
+            _workspace = workspace;
             Project = project;
         }
 
@@ -26,10 +30,13 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public ProjectModel Project { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
-        public Document Document { get; set; }
+        public Document Document =>
+            _workspace.CurrentSolution.GetDocument(DocumentId.CreateFromSerialized(Project.Id, Id));
+    
         /// <summary>
         /// 
         /// </summary>

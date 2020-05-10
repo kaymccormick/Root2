@@ -94,5 +94,14 @@ namespace AnalysisControls.RibbonM
 
             return ribbonGalleryItem;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static RibbonModelGallery CreateModelGallery()
+        {
+            return new RibbonModelGallery();
+        }
     }
 }

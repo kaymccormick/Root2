@@ -230,7 +230,7 @@ namespace Client2
                                 }
                                 else
                                 {
-                                    throw new InvalidOperationException();
+                                    //throw new InvalidOperationException();
                                 }
 
                             }

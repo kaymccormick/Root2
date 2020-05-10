@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive.Subjects;
+using AnalysisControls;
 using AnalysisControls.RibbonM;
 using Autofac;
 using KayMcCormick.Lib.Wpf;
