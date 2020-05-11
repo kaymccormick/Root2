@@ -22,10 +22,10 @@ using NLog ;
 
 namespace AnalysisControls
 {
-    // ReSharper disable once UnusedType.Global
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public class Visitor3 : CSharpSyntaxWalker
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;

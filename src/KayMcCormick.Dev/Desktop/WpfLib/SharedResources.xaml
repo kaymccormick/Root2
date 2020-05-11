@@ -383,27 +383,27 @@
   </DataTemplate>
 
   <BitmapImage
-    BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
+    BaseUri="pack://application:,,,/WpfLib;component/"
     UriSource="Assets/shell32_329.ico"
     x:Key="PowerOffImage" />
   <BitmapImage
-    BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
+    BaseUri="pack://application:,,,/WpfLib;component/"
     UriSource="Assets/ASPWebSite_16x.png"
     x:Key="BrowserIcon" />
   <BitmapImage
-    BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
+    BaseUri="pack://application:,,,/WpfLib;component/"
     UriSource="Assets/LaunchSamplingTargets/3x/Artboard1xxhdpi.png"
     x:Key="FilesIcon" />
   <BitmapImage
-    BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
+    BaseUri="pack://application:,,,/WpfLib;component/"
     UriSource="Assets/StatusAnnotations_Help_and_inconclusive_32xMD.png"
     x:Key="HelpStatus" />
   <BitmapImage
-    BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
+    BaseUri="pack://application:,,,/WpfLib;component/"
     UriSource="Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
     x:Key="HelpStatusColor" />
   <BitmapImage
-    BaseUri="pack://application:,,,/KayMcCormick.Lib.Wpf;component/"
+    BaseUri="pack://application:,,,/WpfLib;component/"
     UriSource="Assets/Document.ico"
     x:Key="DocumentIcon" />
   <system:Double x:Key="DefaultFontSize">24</system:Double>

@@ -34,6 +34,7 @@ using AnalysisControls.ViewModel;
 using Autofac;
 using Autofac.Core;
 using Autofac.Core.Registration;
+using Autofac.Features.AttributeFilters;
 using Autofac.Features.Metadata;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
@@ -153,7 +154,7 @@ namespace Client2
             builder.RegisterType<PythonControl>().AsSelf().As<IControlView>().WithMetadata(
                     "ImageSource"
                     , new Uri(
-                        "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/python1.jpg"
+                        "pack://application:,,,/WpfLib;component/Assets/python1.jpg"
                     )
                 )
                 .WithMetadata("Ribbon", true);
@@ -180,6 +181,7 @@ namespace Client2
             {
                 var r = new RibbonModel();
                 r.AppMenu = c.Resolve<RibbonModelApplicationMenu>();
+                r.ContextualTabGroups.Add(new RibbonModelContextualTabGroup() { Header = "Assemblies" });
 		r.AppMenu.Items.Add(new RibbonModelAppMenuItem{Header="test"});
                 var tabs = c.Resolve<IEnumerable<Meta<Lazy<RibbonModelTab>>>>();
                 foreach (var meta in tabs)
@@ -202,8 +204,10 @@ namespace Client2
             builder.RegisterType<RibbonViewGroupProvider>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<RibbonViewGroupProviderBaseImpl>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance();
             builder.RegisterType<RibbonViewGroupProviderBaseImpl2>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance();
-            builder.RegisterType<TestRibbonTabDef>().As<RibbonModelTab>().SingleInstance();
+            builder.RegisterType<TestRibbonTabDef>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
             builder.RegisterType<TestRibbonTabDef2>().As<RibbonModelTab>().SingleInstance();
+            builder.RegisterType<TestRibbonTabDef3>().As<RibbonModelTab>().SingleInstance();
+            builder.RegisterType<RibbonModelGroup1>().As<RibbonModelGroup>().SingleInstance();
             builder.RegisterType<RibbonModelGroupTest1>().As<RibbonModelGroup>().SingleInstance();
             builder.RegisterType<RibbonModelGroupTest2>().As<RibbonModelGroup>().SingleInstance();
             builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces();

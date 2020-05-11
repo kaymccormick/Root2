@@ -147,6 +147,18 @@ namespace KayMcCormick.Lib.Wpf
                 , nameof(ViewDetails)
                 , typeof(WpfAppCommands)
             );
+        public static readonly RoutedUICommand ViewFlatHierarchy =
+            new RoutedUICommand(
+                "View Flat Hierarchy"
+                , nameof(ViewFlatHierarchy)
+                , typeof(WpfAppCommands)
+            );
 
+        public static readonly RoutedUICommand ViewNestedHierarchy =
+            new RoutedUICommand(
+                "View Nested Hierarchy"
+                , nameof(ViewNestedHierarchy)
+                , typeof(WpfAppCommands)
+            );
     }
 }

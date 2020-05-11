@@ -80,5 +80,6 @@ namespace AnalysisAppLib
         void LoadTypeInfo ( );
 
         void DetailFields();
+        bool TryGetAppTypeInfo(object identifier, out AppTypeInfo appTypeInfo);
     }
 }

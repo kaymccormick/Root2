@@ -14,6 +14,8 @@
         /// </summary>
         public Category Category { get; set; }
 
+        public object TabHeader { get; set; }
+
         /// <inheritdoc />
         public override string ToString()
         {

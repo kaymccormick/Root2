@@ -28,6 +28,11 @@ namespace AnalysisAppLib
                 props.Category = c;
             }
 
+            if (metaMetadata.TryGetValue("TabHeader", out var tabHeader))
+            {
+                props.TabHeader = tabHeader;
+            }
+
             return props;
         }
 

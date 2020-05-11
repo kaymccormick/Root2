@@ -14,6 +14,7 @@ using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Logging ;
+using Microsoft.CodeAnalysis.CSharp;
 using NLog ;
 using NLog.Targets;
 using Application = System.Windows.Application ;
@@ -120,6 +121,10 @@ namespace KayMcCormick.Lib.Wpf
             var provider = Scope.Resolve<IControlsProvider>();
             foreach (var providerType in provider.Types)
             {
+                if (providerType.Assembly.FullName == typeof(CSharpSyntaxNode).Assembly.FullName)
+                {
+                    DebugUtils.WriteLine(providerType.ToString());
+                }
                 TypeDescriptor.AddProvider(provider.Provider, providerType);
                 
             }

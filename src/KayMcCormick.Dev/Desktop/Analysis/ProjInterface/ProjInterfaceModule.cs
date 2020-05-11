@@ -237,7 +237,7 @@ namespace ProjInterface
             builder.RegisterType < PythonControl > ( ).AsSelf ().As<IControlView> (  ).WithMetadata(
                                                                               "ImageSource"
                                                                 , new Uri(
-                                                                                      "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/python1.jpg"
+                                                                                      "pack://application:,,,/WpfLib;component/Assets/python1.jpg"
                                                                                      )
                                                                              )
                    .WithMetadata("Ribbon", true); ;

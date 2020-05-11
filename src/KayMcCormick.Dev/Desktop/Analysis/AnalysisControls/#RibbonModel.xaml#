@@ -1,16 +1,16 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:AnalysisControls"
                     xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonM">
-  <Style TargetType="{x:Type RibbonContextualTabGroup}">
+		    <Style TargetType="{x:Type RibbonContextualTabGroup}">
 		    <Setter Property="Header" Value="{Binding Header}"/>
-        <Setter Property="Visibility" Value="{Binding Visibility}"/>
 		    </Style>
 		    <Style TargetType="{x:Type RibbonGroup}">
 <Setter Property="ItemsSource" Value="{Binding Items}"/>
 </Style>
   <Style TargetType="{x:Type RibbonTab}">
   <Setter Property="ContextualTabGroupHeader" Value="{Binding ContextualTabGroupHeader}"/>
+  
   </Style>
   <Style TargetType="{x:Type RibbonMenuItem}">
         <Setter Property="Header" Value="{Binding Header}" />
@@ -28,7 +28,6 @@
         <Setter Property="IsChecked" Value="{Binding IsChecked}" />
         <Setter Property="CanUserResizeVertically" Value="{Binding IsVerticallyResizable}" />
         <Setter Property="CanUserResizeHorizontally" Value="{Binding IsHorizontallyResizable}" />
-        <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>
         <Setter Property="ItemsSource" Value="{Binding Items}" />
 
         <Style.Triggers>
@@ -69,8 +68,8 @@
                         Command="{Binding Command}"></RibbonToggleButton>
   </HierarchicalDataTemplate>
     <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelItemComboBox}">
-    <local:MyRibbonComboBox  Label="{Binding Label}" ItemsSource="{Binding Items}" 
-    >
+    <local:MyRibbonComboBox  Label="{Binding Label}" ItemsSource="{Binding Items}"
+                            >
       <local:MyRibbonComboBox.Resources>
         <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGallery}" ItemsSource="{Binding Items}">
           <TextBlock Text="{Binding Header}"></TextBlock>

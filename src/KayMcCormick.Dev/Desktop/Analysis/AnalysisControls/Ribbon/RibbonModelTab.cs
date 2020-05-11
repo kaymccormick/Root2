@@ -15,6 +15,7 @@ namespace AnalysisControls.RibbonM
     /// </summary>
     public class RibbonModelTab
     {
+        public object ContextualTabGroupHeader { get; set; }
         /// <summary>
         /// 
         /// </summary>

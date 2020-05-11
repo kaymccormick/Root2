@@ -8,7 +8,8 @@
   xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
   xmlns:converters="clr-namespace:AnalysisControls.Converters"
   xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
-  xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis">
+  xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
+  xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp">
   <Style TargetType="{x:Type local:CustomControl1}">
     <Setter Property="Template">
       <Setter.Value>
@@ -101,8 +102,8 @@
         <ControlTemplate TargetType="{x:Type local:CustomControl2}">
           <ControlTemplate.Resources>
             <kmWpf:TypeInfoConverter x:Key="TypeInfoConverter" />
-            <converters:SymbolInfoConverter x:Key="SymbolInfoConverter"/>
-            <local:TestConverter2 x:Key="TestConverter2"/>
+            <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
+            <local:TestConverter2 x:Key="TestConverter2" />
 
             <local:AConverter x:Key="AConverter" />
             <kmWpf:MethodInfoConverter x:Key="MethodInfoConverter" />
@@ -347,7 +348,7 @@
                           <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type local:ITypeInfoProvider}">
                               <TextBlock Grid.Row="1" Grid.Column="1" FontSize="14" Text="{Binding}"
-                                                    Margin="5,0,0,5" />
+                                         Margin="5,0,0,5" />
                             </DataTemplate>
                           </ItemsControl.ItemTemplate>
                           <ItemsControl.ItemsPanel>
@@ -436,7 +437,7 @@
                                                             Type="{Binding Type}" />
                                       <TextBlock Text=" " />
                                       <TextBlock Text="{Binding Name}" />
-                                      <TextBlock Text=", "/>
+                                      <TextBlock Text=", " />
                                     </StackPanel>
                                   </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -509,8 +510,8 @@
                 <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
                 <DataTemplate DataType="{x:Type local:CodeToolTipContent}">
                   <StackPanel Orientation="Vertical">
-                    <ContentControl Content="{Binding SyntaxNode}"></ContentControl>
-                    <ContentControl Content="{Binding Symbol}"></ContentControl>
+                    <ContentControl Content="{Binding SyntaxNode}" />
+                    <ContentControl Content="{Binding Symbol}" />
                   </StackPanel>
                 </DataTemplate>
 
@@ -528,17 +529,17 @@
                             VerticalContentAlignment="Top">
 
                 <Grid x:Name="InnerGrid">
-                <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left" Stroke="Aqua"
+                  <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left" Stroke="Aqua"
                              TextElement.FontSize="12">
-                  <Rectangle.Fill>
-                    <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top" TileMode="None"
-                                  Stretch="Uniform">
-                      <DrawingBrush.Drawing>
-                        <DrawingGroup x:Name="TextDest" />
-                      </DrawingBrush.Drawing>
-                    </DrawingBrush>
-                  </Rectangle.Fill>
-                </Rectangle>
+                    <Rectangle.Fill>
+                      <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top" TileMode="None"
+                                    Stretch="Uniform">
+                        <DrawingBrush.Drawing>
+                          <DrawingGroup x:Name="TextDest" />
+                        </DrawingBrush.Drawing>
+                      </DrawingBrush>
+                    </Rectangle.Fill>
+                  </Rectangle>
                   <Rectangle x:Name="Rect2" Panel.ZIndex="100" VerticalAlignment="Top" HorizontalAlignment="Left">
                     <Rectangle.Fill>
                       <DrawingBrush x:Name="DrawingBrush2" AlignmentX="Left" AlignmentY="Top" TileMode="None"
@@ -549,10 +550,9 @@
                       </DrawingBrush>
                     </Rectangle.Fill>
                   </Rectangle>
-<Canvas x:Name="Canvas" Panel.ZIndex="101" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-</Canvas>
+                  <Canvas x:Name="Canvas" Panel.ZIndex="101" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
 
-</Grid>
+                </Grid>
 
               </ScrollViewer>
             </Grid>
@@ -621,17 +621,17 @@
               <ScrollViewer VerticalAlignment="Stretch" x:Name="ScrollViewer" HorizontalContentAlignment="Left"
                             VerticalContentAlignment="Top" VerticalScrollBarVisibility="Hidden">
                 <Grid x:Name="InnerGrid">
-                <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left"
-                           TextElement.FontSize="12">
-                  <Rectangle.Fill>
-                    <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top" TileMode="None"
-                                  Stretch="Uniform">
-                      <DrawingBrush.Drawing>
-                        <DrawingGroup x:Name="TextDest" />
-                      </DrawingBrush.Drawing>
-                    </DrawingBrush>
-                  </Rectangle.Fill>
-                </Rectangle>
+                  <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left"
+                             TextElement.FontSize="12">
+                    <Rectangle.Fill>
+                      <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top" TileMode="None"
+                                    Stretch="Uniform">
+                        <DrawingBrush.Drawing>
+                          <DrawingGroup x:Name="TextDest" />
+                        </DrawingBrush.Drawing>
+                      </DrawingBrush>
+                    </Rectangle.Fill>
+                  </Rectangle>
                   <Rectangle x:Name="Rect2" Panel.ZIndex="100" VerticalAlignment="Top" HorizontalAlignment="Left">
                     <Rectangle.Fill>
                       <DrawingBrush x:Name="DrawingBrush2" AlignmentX="Left" AlignmentY="Top" TileMode="None"
@@ -914,60 +914,61 @@
                   BorderThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Stretch">
             <Grid AllowDrop="True" x:Name="Grid" VerticalAlignment="Stretch">
               <Grid.Resources>
-                <local:TestConverter2 x:Key="TestConverter"/>
+                <local:TestConverter2 x:Key="TestConverter" />
               </Grid.Resources>
               <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
               <ToolBarTray Grid.Row="0" Grid.Column="0">
                 <ToolBar Band="1" BandIndex="1">
-                  <TextBlock Text="{Binding CurrentOperation.Desc}"></TextBlock>
-                  <Button Content="Create workspace" Command="kmWpf:WpfAppCommands.CreateWorkspace"  />
+                  <TextBlock Text="{Binding CurrentOperation.Desc}" />
+                  <Button Content="Create workspace" Command="kmWpf:WpfAppCommands.CreateWorkspace" />
                   <Button Content="Create solution" Command="kmWpf:WpfAppCommands.CreateSolution" />
                   <Button Content="Create project" Command="kmWpf:WpfAppCommands.CreateProject" />
                 </ToolBar>
               </ToolBarTray>
               <Border Grid.Row="1" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">
-              <avalondock:DockingManager DocumentsSource="{Binding Documents}"
-                                         x:Name="DockingManager" AnchorablesSource="{Binding Anchorables}"
-                                         VerticalAlignment="Stretch"
-                                         ActiveContent="{Binding ActiveContent,Mode=TwoWay}">
-                <avalondock:DockingManager.DocumentHeaderTemplate>
-                  <DataTemplate
-                    DataType="{x:Type avalondock:LayoutDocument}">
-                    <StackPanel Opacity="1.0"
-                                Orientation="Horizontal">
-                      <Image Source="{Binding IconSource}"
-                             Margin="6,4,4,0" />
-                      <TextBlock Text="{Binding Content.Title,Converter={StaticResource TestConverter}}"
-                                 VerticalAlignment="Center" />
-                    </StackPanel>
-                  </DataTemplate>
-                </avalondock:DockingManager.DocumentHeaderTemplate>
-                <avalondock:DockingManager.AnchorableHeaderTemplate>
-                  <DataTemplate
-                    DataType="{x:Type avalondock:LayoutAnchorable}">
-                    <StackPanel Opacity="1.0"
-                                Orientation="Horizontal">
-                      <Image Source="{Binding IconSource}"
-                             Margin="6,4,4,0" />
-                      <TextBlock Text="{Binding Content.Title}"
-                                 VerticalAlignment="Center" />
-                    </StackPanel>
-                  </DataTemplate>
+                <avalondock:DockingManager DocumentsSource="{Binding Documents}"
+                                           x:Name="DockingManager" AnchorablesSource="{Binding Anchorables}"
+                                           VerticalAlignment="Stretch"
+                                           ActiveContent="{Binding ActiveContent,Mode=TwoWay}">
+                  <avalondock:DockingManager.DocumentHeaderTemplate>
+                    <DataTemplate
+                      DataType="{x:Type avalondock:LayoutDocument}">
+                      <StackPanel Opacity="1.0"
+                                  Orientation="Horizontal">
+                        <Image Source="{Binding IconSource}"
+                               Margin="6,4,4,0" />
+                        <TextBlock Text="{Binding Content.Title,Converter={StaticResource TestConverter}}"
+                                   VerticalAlignment="Center" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </avalondock:DockingManager.DocumentHeaderTemplate>
+                  <avalondock:DockingManager.AnchorableHeaderTemplate>
+                    <DataTemplate
+                      DataType="{x:Type avalondock:LayoutAnchorable}">
+                      <StackPanel Opacity="1.0"
+                                  Orientation="Horizontal">
+                        <Image Source="{Binding IconSource}"
+                               Margin="6,4,4,0" />
+                        <TextBlock Text="{Binding Content.Title}"
+                                   VerticalAlignment="Center" />
+                      </StackPanel>
+                    </DataTemplate>
                   </avalondock:DockingManager.AnchorableHeaderTemplate>
-                <avalondock:LayoutRoot>
-                  <avalondock:LayoutPanel>
-                    <avalondock:LayoutDocumentPaneGroup x:Name="LayoutDocumentPaneGroup" />
-                  </avalondock:LayoutPanel>
-                </avalondock:LayoutRoot>
-              </avalondock:DockingManager>
+                  <avalondock:LayoutRoot>
+                    <avalondock:LayoutPanel>
+                      <avalondock:LayoutDocumentPaneGroup x:Name="LayoutDocumentPaneGroup" />
+                    </avalondock:LayoutPanel>
+                  </avalondock:LayoutRoot>
+                </avalondock:DockingManager>
               </Border>
+              <StatusBar Grid.Row="2" Grid.Column="0" ItemsSource="{Binding ViewModel.StatusBarItems}" />
             </Grid>
           </Border>
         </ControlTemplate>
@@ -984,16 +985,19 @@
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
             <Border.Resources>
-              <local:TestConverter2 x:Key="TestConverter"></local:TestConverter2>
+              <local:TestConverter2 x:Key="TestConverter" />
               <HierarchicalDataTemplate DataType="{x:Type local:SolutionModel}" ItemsSource="{Binding Projects}">
                 <TextBlock Text="{Binding Id.Id}" />
               </HierarchicalDataTemplate>
-              <HierarchicalDataTemplate DataType="{x:Type local:ProjectModel}" ItemsSource="{Binding RootPathInfo.Entries.Values,Converter={StaticResource TestConverter}}">
-                <TextBlock Text="{Binding Name}" >
+              <HierarchicalDataTemplate DataType="{x:Type local:ProjectModel}"
+                                        ItemsSource="{Binding RootPathInfo.Entries.Values,Converter={StaticResource TestConverter}}">
+                <TextBlock Text="{Binding Name}">
                   <TextBlock.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Symbols" Command="kmWpf:WpfAppCommands.BrowseSymbols" CommandParameter="{Binding}"/>
-                      <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails" CommandParameter="{Binding}"/>
+                      <MenuItem Header="Symbols" Command="kmWpf:WpfAppCommands.BrowseSymbols"
+                                CommandParameter="{Binding}" />
+                      <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails"
+                                CommandParameter="{Binding}" />
                     </ContextMenu>
                   </TextBlock.ContextMenu>
                 </TextBlock>
@@ -1002,29 +1006,32 @@
                 <TextBlock Text="{Binding Message}" />
               </HierarchicalDataTemplate>
 
-<HierarchicalDataTemplate DataType="{x:Type local:PathModel}" ItemsSource="{Binding Children}">
-                <TextBlock Text="{Binding ElementName}" >
+              <HierarchicalDataTemplate DataType="{x:Type local:PathModel}" ItemsSource="{Binding Children}">
+                <TextBlock Text="{Binding ElementName}">
                   <TextBlock.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails" CommandParameter="{Binding}"/>
+                      <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails"
+                                CommandParameter="{Binding}" />
                     </ContextMenu>
                   </TextBlock.ContextMenu>
-</TextBlock>
+                </TextBlock>
               </HierarchicalDataTemplate>
               <HierarchicalDataTemplate DataType="{x:Type local:DocumentModel}">
                 <TextBlock Text="{Binding Name}">
                   <TextBlock.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails" CommandParameter="{Binding}"/>
+                      <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails"
+                                CommandParameter="{Binding}" />
                     </ContextMenu>
                   </TextBlock.ContextMenu>
-</TextBlock>
+                </TextBlock>
               </HierarchicalDataTemplate>
 
             </Border.Resources>
             <TreeView ItemsSource="{TemplateBinding Solutions}" x:Name="TreeView">
               <TreeView.InputBindings>
-                <KeyBinding Key="Enter" Command="{x:Static kmWpf:WpfAppCommands.OpenSolutionItem}" CommandParameter="{Binding ElementName=TreeView,Path=SelectedItem}"/>
+                <KeyBinding Key="Enter" Command="{x:Static kmWpf:WpfAppCommands.OpenSolutionItem}"
+                            CommandParameter="{Binding ElementName=TreeView,Path=SelectedItem}" />
               </TreeView.InputBindings>
             </TreeView>
           </Border>
@@ -1042,23 +1049,24 @@
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
             <Border.Resources>
-              <converters:SymbolInfoConverter x:Key="SymbolInfoConverter"/>
+              <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
             </Border.Resources>
 
-            
+
             <TreeView x:Name="TreeView">
               <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type codeAnalysis:INamespaceOrTypeSymbol}" ItemsSource="{Binding Converter={StaticResource SymbolInfoConverter},ConverterParameter=Members}">
-                  <local:SymbolTextControl DisplaySymbol="{Binding}"/>
+                <HierarchicalDataTemplate DataType="{x:Type codeAnalysis:INamespaceOrTypeSymbol}"
+                                          ItemsSource="{Binding Converter={StaticResource SymbolInfoConverter},ConverterParameter=Members}">
+                  <local:SymbolTextControl DisplaySymbol="{Binding}" />
                 </HierarchicalDataTemplate>
               </TreeView.ItemTemplate>
             </TreeView>
 
           </Border>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
   <Style TargetType="{x:Type local:AssembliesControl}">
     <Setter Property="Template">
@@ -1068,24 +1076,560 @@
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
             <Border.Resources>
+              <kmWpf:AssemblyInfoConverter x:Key="AssemblyInfoConverter" />
+
             </Border.Resources>
-	    <ListView x:Name="ListView">
-	    <ListView.View>
-	    <GridView>
+            <ListView x:Name="ListView" ItemsSource="{TemplateBinding AssemblySource}">
+              <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                  <Setter Property="ContextMenu">
+                    <Setter.Value>
+                      <ContextMenu>
+                        <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails" CommandParameter="{Binding}"/>
+                      </ContextMenu>
+                    </Setter.Value>
+                  </Setter>
+                </Style>
+              </ListView.ItemContainerStyle>
+              <ListView.View>
+                <GridView>
                   <GridViewColumn Header="Name">
                     <GridViewColumn.CellTemplate>
                       <DataTemplate DataType="{x:Type reflection:Assembly}">
-                        <TextBlock DataContext="{Binding Converter={StaticResource AssemblyInfoConverter},ConverterParameter=Name}" Text="{Binding Path=Name}"></TextBlock>
+                        <TextBlock
+                          DataContext="{Binding Converter={StaticResource AssemblyInfoConverter},ConverterParameter=Name}"
+                          Text="{Binding Path=Name}" />
                       </DataTemplate>
                     </GridViewColumn.CellTemplate>
                   </GridViewColumn>
-		  </GridView>
-		  </ListView.View>
-		  </ListView>
+                  <GridViewColumn Header="GAC" DisplayMemberBinding="{Binding GlobalAssemblyCache}" />
+                  <GridViewColumn Header="Company"
+                                  DisplayMemberBinding="{Binding ConverterParameter=Company,Converter={StaticResource AssemblyInfoConverter}}" />
+                  <GridViewColumn Header="Location">
+                    <GridViewColumn.CellTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding Location}" FontFamily="Lucida Console" />
+                      </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                  </GridViewColumn>
+                </GridView>
+              </ListView.View>
+            </ListView>
           </Border>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
+
+  
+  <Style TargetType="{x:Type local:SyntaxPanel}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:SyntaxPanel}">
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                  DataContext="{x:Null}"
+                  Grid.RowSpan="{TemplateBinding Grid.RowSpan}"
+                  Grid.Column="{TemplateBinding Grid.Column}"
+                  Grid.Row="{TemplateBinding Grid.Row}"
+                  >
+            <Border.Resources>
+              <Style x:Key="FieldNameStyle" TargetType="TextBlock">
+                <Setter Property="TextDecorations" Value="Underline"/>
+                <Setter Property="FontWeight" Value="Medium"/>
+              </Style>
+              <local:TestConverter2 x:Key="TestConverter2" />
+              <BooleanToVisibilityConverter x:Key="BooleanTpVisibilityConverter" />
+              <DataTemplate DataType="{x:Type syntax:AppTypeInfo}">
+                <local:SyntaxPanel Margin="30" SyntaxTypeInfo="{Binding}"/>
+              </DataTemplate>
+              <local:AppTypeInfoConvereter x:Key="AppTypeInfoConverter" />
+              <local:KindsConverter x:Key="KindsConverter"/>
+            </Border.Resources>
+
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="150"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+              </Grid.ColumnDefinitions>
+              <TextBlock FontSize="24" Text="{Binding Title}"></TextBlock>
+              <TreeView Grid.Row="1" Grid.Column="0" ItemsSource="{Binding Path=SubTypeInfos}">
+                <TreeView.ItemTemplate>
+                  <HierarchicalDataTemplate ItemsSource="{Binding Path=SubTypeInfos}" DataType="{x:Type syntax:AppTypeInfo}">
+                    <TextBlock Text="{Binding Title}"/>
+                  </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+              </TreeView>
+              <ContentPresenter x:Name="KindPresenter" Grid.Row="2" Grid.Column="0" Content="{Binding Converter={StaticResource KindsConverter},Mode=OneTime}">
+                <ContentPresenter.Resources>
+                  <DataTemplate DataType="{x:Type cSharp:SyntaxKind}">
+                    <TextBlock Text="{Binding Mode=OneTime}"/>
+                  </DataTemplate>
+                    <DataTemplate DataType="{x:Type syntax:SyntaxKindCollection}">
+                    <ListBox  Height="80"  Margin="0,10,0,10"  Grid.Row="1" ItemsSource="{Binding Mode=OneTime}"/>
+                  </DataTemplate>
+                </ContentPresenter.Resources>
+              </ContentPresenter> 
+              <ItemsControl ItemsSource="{Binding Fields}" Grid.Row="3">
+                <ItemsControl.ItemContainerStyle>
+                  <Style TargetType="ContentPresenter">
+                    <Setter Property="Control.BorderBrush" Value="BlueViolet"/>
+                    <Setter Property="Control.BorderThickness" Value="0"/>
+                    <Setter Property="DataContext" Value="{Binding Fields/}"></Setter>
+                    <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsCollection}" Value="true">
+                      <Setter Property="Control.Background" Value="Gray"/>
+                          <Setter Property="ContentTemplate">
+                        
+                            <Setter.Value>
+                        <DataTemplate DataType="{x:Type syntax:SyntaxFieldInfo}">
+                                <Grid TextElement.FontSize="18">
+                                  <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                  </Grid.RowDefinitions>
+                                  <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                  </Grid.ColumnDefinitions>
+                                  <TextBlock Style="{StaticResource FieldNameStyle}" Text="{Binding Name}" Visibility="Visible"/>
+                                  <TextBlock Grid.Row="0" Grid.Column="1" FontSize="14" FontStyle="Italic"  Text="Collection-Type "/>
+                                <Expander ExpandDirection="Down" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+                                  <ContentPresenter  Content="{Binding Converter={StaticResource AppTypeInfoConverter}}"/>
+                                </Expander>
+                              </Grid>
+                              </DataTemplate>
+                        </Setter.Value>
+                      </Setter>
+                    </DataTrigger>
+                      <DataTrigger Binding="{Binding IsCollection}" Value="false">
+                        <Setter Property="Control.Background" Value="Gray"/>
+                          <Setter Property="ContentTemplate">
+                          <Setter.Value>
+                            <DataTemplate DataType="{x:Type syntax:SyntaxFieldInfo}">
+                                <Grid ShowGridLines="True">
+                                  <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    
+                                  </Grid.RowDefinitions>
+                                  <Grid.ColumnDefinitions>
+                                  <ColumnDefinition Width="*"/>
+                                  <ColumnDefinition Width="*"/>
+                                  <ColumnDefinition Width="2*"/>
+                                  <ColumnDefinition Width="2*"/>
+                                  <ColumnDefinition Width="2*"/>
+                                  </Grid.ColumnDefinitions>
+
+                                  <TextBlock Style="{StaticResource FieldNameStyle}"  TextElement.FontSize="16" Grid.Row="0"  Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Name}"></TextBlock>
+                                  <TextBlock TextElement.FontSize="16" Grid.Row="0" Grid.Column="2" FontStyle="Italic" Text="Non-collection-type "/>
+                                  
+                                  <WrapPanel TextElement.FontSize="16" Grid.Column="3" Grid.Row="0">
+                                    <TextBlock  Text=" ( "/>
+                                  <TextBlock  FontStyle="Italic" Text="{Binding TypeName}"/>
+                                  <TextBlock Text=" )"/>
+                                  </WrapPanel>
+                                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4" Orientation="Horizontal">
+                                  <StackPanel.Style>
+                                      <Style TargetType="StackPanel">
+                                        <Style.Triggers>
+                                          <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                              <Condition Binding="{Binding Optional}" Value="false"/>
+                                              <Condition Binding="{Binding Override}" Value="false"/>
+                                            </MultiDataTrigger.Conditions>
+					    <Setter Property="Visibility" Value="Hidden"/>
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+                                      </Style>
+                                  </StackPanel.Style>
+                                  <TextBlock Text="Optional" Visibility="{Binding Optional,Converter={StaticResource BooleanTpVisibilityConverter}}"></TextBlock>
+                                <TextBlock Text="Override" Visibility="{Binding Override,Converter={StaticResource BooleanTpVisibilityConverter}}"></TextBlock>
+                                  </StackPanel>
+                                <ListBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" ItemsSource="{Binding Kinds}">
+                                  <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                      <Setter Property="FontSize" Value="18"/>
+                                    </Style>
+                                  </ListBox.ItemContainerStyle>
+                                  <ListBox.Style>
+                                    <Style TargetType="ListBox">
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=Kinds.Count}"
+                                                      Value="0">
+                                          <Setter Property="Visibility" Value="Hidden"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Path=Kinds.Count}"
+                                                     Value="1">
+                                          <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+
+</Style.Triggers>
+                                    </Style>
+                                  </ListBox.Style>
+                                  </ListBox>
+                                  <TextBlock Background="Black" Foreground="White"  Text="{Binding Converter={StaticResource AppTypeInfoConverter},ConverterParameter=Verify}" Visibility="Collapsed"/>
+                                <Expander ExpandDirection="Down" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4">
+                                  <ContentPresenter Content="{Binding Converter={StaticResource AppTypeInfoConverter}}"/>
+                                </Expander>
+                              </Grid>
+                            </DataTemplate>
+                          </Setter.Value>
+                        </Setter>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+               </ItemsControl.ItemContainerStyle>
+                <ItemsControl.Template>
+                  <ControlTemplate TargetType="ItemsControl">
+                    <Border Margin="0,5,0,5" Padding="10,5,10,5" BorderThickness="0">
+                      <ItemsPresenter/>
+                    </Border>
+                  </ControlTemplate></ItemsControl.Template>
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <StackPanel/>
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  </ItemsControl>
+              
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+    <Style TargetType="{x:Type local:SyntaxTypeComboBox}">
+    <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:SyntaxTypeComboBox}">
+                  <ControlTemplate.Resources>
+            <Color x:Key="WindowColor">#FFE8EDF9</Color>
+            <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
+            <Color x:Key="ContentAreaColorDark">#FF7381F9</Color>
+
+            <Color x:Key="DisabledControlLightColor">#FFE8EDF9</Color>
+            <Color x:Key="DisabledControlDarkColor">#FFC5CBF9</Color>
+            <Color x:Key="DisabledForegroundColor">#FF888888</Color>
+
+            <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
+            <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
+
+            <Color x:Key="ControlLightColor">White</Color>
+            <Color x:Key="ControlMediumColor">#FF7381F9</Color>
+            <Color x:Key="ControlDarkColor">#FF211AA9</Color>
+
+            <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
+            <Color x:Key="ControlPressedColor">#FF211AA9</Color>
+
+
+            <Color x:Key="GlyphColor">#FF444444</Color>
+            <Color x:Key="GlyphMouseOver">sc#1, 0.004391443, 0.002428215, 0.242281124</Color>
+
+            <!--Border colors-->
+            <Color x:Key="BorderLightColor">#FFCCCCCC</Color>
+            <Color x:Key="BorderMediumColor">#FF888888</Color>
+            <Color x:Key="BorderDarkColor">#FF444444</Color>
+
+            <Color x:Key="PressedBorderLightColor">#FF888888</Color>
+            <Color x:Key="PressedBorderDarkColor">#FF444444</Color>
+
+            <Color x:Key="DisabledBorderLightColor">#FFAAAAAA</Color>
+            <Color x:Key="DisabledBorderDarkColor">#FF888888</Color>
+
+            <Color x:Key="DefaultBorderBrushDarkColor">Black</Color>
+
+            <!--Control-specific resources.-->
+            <Color x:Key="HeaderTopColor">#FFC5CBF9</Color>
+            <Color x:Key="DatagridCurrentCellBorderColor">Black</Color>
+            <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
+
+            <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
+
+            <LinearGradientBrush x:Key="MenuPopupBrush"
+                     EndPoint="0.5,1"
+                     StartPoint="0.5,0">
+              <GradientStop Color="{DynamicResource ControlLightColor}"
+                Offset="0" />
+              <GradientStop Color="{DynamicResource ControlMediumColor}"
+                Offset="0.5" />
+              <GradientStop Color="{DynamicResource ControlLightColor}"
+                Offset="1" />
+            </LinearGradientBrush>
+
+            <LinearGradientBrush x:Key="ProgressBarIndicatorAnimatedFill"
+                     StartPoint="0,0"
+                     EndPoint="1,0">
+              <LinearGradientBrush.GradientStops>
+                <GradientStopCollection>
+                  <GradientStop Color="#000000FF"
+                    Offset="0" />
+                  <GradientStop Color="#600000FF"
+                    Offset="0.4" />
+                  <GradientStop Color="#600000FF"
+                    Offset="0.6" />
+                  <GradientStop Color="#000000FF"
+                    Offset="1" />
+                </GradientStopCollection>
+              </LinearGradientBrush.GradientStops>
+            </LinearGradientBrush>
+            <ControlTemplate x:Key="ComboBoxToggleButton"
+                 TargetType="{x:Type ToggleButton}">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <VisualStateManager.VisualStateGroups>
+                  <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal" />
+                    <VisualState x:Name="MouseOver">
+                      <Storyboard>
+                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).
+                (GradientBrush.GradientStops)[1].(GradientStop.Color)"
+                                          Storyboard.TargetName="Border">
+                          <EasingColorKeyFrame KeyTime="0"
+                                   Value="{StaticResource ControlMouseOverColor}" />
+                        </ColorAnimationUsingKeyFrames>
+                      </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="Pressed" />
+                    <VisualState x:Name="Disabled">
+                      <Storyboard>
+                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).
+                (GradientBrush.GradientStops)[1].(GradientStop.Color)"
+                                          Storyboard.TargetName="Border">
+                          <EasingColorKeyFrame KeyTime="0"
+                                   Value="{StaticResource DisabledControlDarkColor}" />
+                        </ColorAnimationUsingKeyFrames>
+                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.Fill).
+                (SolidColorBrush.Color)"
+                                          Storyboard.TargetName="Arrow">
+                          <EasingColorKeyFrame KeyTime="0"
+                                   Value="{StaticResource DisabledForegroundColor}" />
+                        </ColorAnimationUsingKeyFrames>
+                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.BorderBrush).
+                (GradientBrush.GradientStops)[1].(GradientStop.Color)"
+                                          Storyboard.TargetName="Border">
+                          <EasingColorKeyFrame KeyTime="0"
+                                   Value="{StaticResource DisabledBorderDarkColor}" />
+                        </ColorAnimationUsingKeyFrames>
+                      </Storyboard>
+                    </VisualState>
+                  </VisualStateGroup>
+                  <VisualStateGroup x:Name="CheckStates">
+                    <VisualState x:Name="Checked">
+                      <Storyboard>
+                        <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).
+                (GradientBrush.GradientStops)[1].(GradientStop.Color)"
+                                          Storyboard.TargetName="Border">
+                          <EasingColorKeyFrame KeyTime="0"
+                                   Value="{StaticResource ControlPressedColor}" />
+                        </ColorAnimationUsingKeyFrames>
+                      </Storyboard>
+                    </VisualState>
+                    <VisualState x:Name="Unchecked" />
+                    <VisualState x:Name="Indeterminate" />
+                  </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+                <Border x:Name="Border"
+            Grid.ColumnSpan="2"
+            CornerRadius="2"
+            BorderThickness="1">
+                  <Border.BorderBrush>
+                    <LinearGradientBrush EndPoint="0,1"
+                             StartPoint="0,0">
+                      <GradientStop Color="{DynamicResource BorderLightColor}"
+                        Offset="0" />
+                      <GradientStop Color="{DynamicResource BorderDarkColor}"
+                        Offset="1" />
+                    </LinearGradientBrush>
+                  </Border.BorderBrush>
+                  <Border.Background>
+
+                    <LinearGradientBrush StartPoint="0,0"
+                             EndPoint="0,1">
+                      <LinearGradientBrush.GradientStops>
+                        <GradientStopCollection>
+                          <GradientStop Color="{DynamicResource ControlLightColor}" />
+                          <GradientStop Color="{DynamicResource ControlMediumColor}"
+                            Offset="1.0" />
+                        </GradientStopCollection>
+                      </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+
+                  </Border.Background>
+                </Border>
+                <Border Grid.Column="0"
+            CornerRadius="2,0,0,2"
+            Margin="1" >
+                  <Border.Background>
+                    <SolidColorBrush Color="{DynamicResource ControlLightColor}"/>
+                  </Border.Background>
+                </Border>
+                <Path x:Name="Arrow"
+          Grid.Column="1"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Data="M 0 0 L 4 4 L 8 0 Z" >
+                  <Path.Fill>
+                    <SolidColorBrush Color="{DynamicResource GlyphColor}"/>
+                  </Path.Fill>
+                </Path>
+              </Grid>
+            </ControlTemplate>
+
+            <ControlTemplate x:Key="ComboBoxTextBox"
+                 TargetType="{x:Type TextBox}">
+              <Border x:Name="PART_ContentHost"
+          Focusable="False"
+          Background="{TemplateBinding Background}" />
+            </ControlTemplate>
+
+          </ControlTemplate.Resources>
+          <Grid>
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="MouseOver" />
+                <VisualState x:Name="Disabled">
+                  <Storyboard>
+                    <ColorAnimationUsingKeyFrames Storyboard.TargetName="PART_EditableTextBox"
+                                                Storyboard.TargetProperty="(TextElement.Foreground).
+                      (SolidColorBrush.Color)">
+                      <EasingColorKeyFrame KeyTime="0"
+                                         Value="{StaticResource DisabledForegroundColor}" />
+                    </ColorAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="EditStates">
+                <VisualState x:Name="Editable">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                 Storyboard.TargetName="PART_EditableTextBox">
+                      <DiscreteObjectKeyFrame KeyTime="0"
+                                            Value="{x:Static Visibility.Visible}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames
+                      Storyboard.TargetProperty="(UIElement.Visibility)"
+                                                 Storyboard.TargetName="ContentSite">
+                      <DiscreteObjectKeyFrame KeyTime="0"
+                                            Value="{x:Static Visibility.Hidden}" />
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="Uneditable" />
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <ToggleButton x:Name="ToggleButton"
+                        Template="{StaticResource ComboBoxToggleButton}"
+                        Grid.Column="2"
+                        Focusable="false"
+                        ClickMode="Press"
+                        IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, 
+              RelativeSource={RelativeSource TemplatedParent}}"/>
+            <ContentPresenter x:Name="ContentSite"
+                            IsHitTestVisible="False"
+                            Content="{TemplateBinding SelectionBoxItem}"
+                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                            Margin="3,3,23,3"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Left">
+            </ContentPresenter>
+            <TextBox x:Name="PART_EditableTextBox"
+                   Style="{x:Null}"
+                   Template="{StaticResource ComboBoxTextBox}"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Bottom"
+                   Margin="3,3,23,3"
+                   Focusable="True"
+                   Background="Transparent"
+                   Visibility="Hidden"
+                   IsReadOnly="{TemplateBinding IsReadOnly}" />
+            <Popup x:Name="Popup"
+                 Placement="Bottom"
+                 IsOpen="{TemplateBinding IsDropDownOpen}"
+                 AllowsTransparency="True"
+                 Focusable="False"
+                 PopupAnimation="Slide">
+              <Grid x:Name="DropDown"
+                  SnapsToDevicePixels="True"
+                  MinWidth="{TemplateBinding ActualWidth}"
+                  MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                <Border x:Name="DropDownBorder"
+                      BorderThickness="1">
+                  <Border.BorderBrush>
+                    <SolidColorBrush Color="{DynamicResource BorderMediumColor}" />
+                  </Border.BorderBrush>
+                  <Border.Background>
+                    <SolidColorBrush Color="{DynamicResource ControlLightColor}" />
+                  </Border.Background>
+                  <ScrollViewer Margin="4,6,4,6"
+                                SnapsToDevicePixels="True">
+                    <Grid>
+                      <StackPanel x:Name="ItemsHost" IsItemsHost="True"
+                              KeyboardNavigation.DirectionalNavigation="Contained">
+                        <StackPanel.Style>
+                          <Style>
+                            <Style.Triggers>
+                            </Style.Triggers>
+                          </Style>
+                        </StackPanel.Style>
+                      </StackPanel>
+                      <TreeView x:Name="TreeView" ItemsSource="{Binding Path=SyntaxTypesModel.TopLevelTypeInfos}">
+                        <TreeView.ItemTemplate>
+                          <HierarchicalDataTemplate ItemsSource="{Binding Path=SubTypeInfos}" DataType="{x:Type syntax:AppTypeInfo}">
+                            <TextBlock Text="{Binding Title}"/>
+                          </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                      </TreeView>
+                    </Grid>
+                  </ScrollViewer>
+                </Border>
+              </Grid>
+            </Popup>
+          </Grid>
+          <ControlTemplate.Triggers>
+          
+            <Trigger Property="HasItems"
+                     Value="false">
+              <Setter TargetName="DropDownBorder"
+                    Property="MinHeight"
+                    Value="95" />
+            </Trigger>
+            <Trigger Property="IsGrouping"
+                   Value="true">
+              <Setter Property="ScrollViewer.CanContentScroll"
+                    Value="false" />
+            </Trigger>
+            <Trigger SourceName="Popup"
+                   Property="AllowsTransparency"
+                   Value="true">
+              <Setter TargetName="DropDownBorder"
+                    Property="CornerRadius"
+                    Value="4" />
+              <Setter TargetName="DropDownBorder"
+                    Property="Margin"
+                    Value="0,2,0,0" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

@@ -96,6 +96,8 @@ namespace AnalysisAppLib.Syntax
             get { return _kinds ; }
         }
 
+        public SyntaxKindCollection SyntaxKinds { get; } = new SyntaxKindCollection();
+
         /// <summary>
         /// </summary>
         public string Title
@@ -231,6 +233,9 @@ namespace AnalysisAppLib.Syntax
         /// Primary key
         /// </summary>
         public int Id { get { return _id ; } set { _id = value ; } }
+
+        public IEnumerable<AppTypeInfo> AllTypes { get; set; }
+        public ITypesViewModel Model { get; set; }
 
         /// <summary>
         /// </summary>
@@ -605,6 +610,8 @@ namespace AnalysisAppLib.Syntax
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [JsonIgnore]
         public AppTypeInfo AppTypeInfo { get { return _appTypeInfo ; } set { _appTypeInfo = value ; } }
+
+        public ITypesViewModel Model { get; set; }
 
         /// <inheritdoc />
         public override string ToString()

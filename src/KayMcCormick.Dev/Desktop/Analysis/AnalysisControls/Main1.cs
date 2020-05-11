@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -127,10 +128,17 @@ namespace AnalysisControls
             {
                 if (pm.Item is DocumentModel dm)
                 {
-                    var root = await dm.Document.GetSyntaxRootAsync();
-                    var c = root.DescendantNodesAndTokensAndSelf().ToList();
-                    dg.ItemsSource = c;
-                    desc = dm.Document.Name;
+                    try
+                    {
+                        var root = await dm.Document.GetSyntaxRootAsync();
+                        var c = root.DescendantNodesAndTokensAndSelf().ToList();
+                        dg.ItemsSource = c;
+                        desc = dm.Document.Name;
+                    }
+                    catch (Exception ex)
+                    {
+                        DebugUtils.WriteLine(ex.ToString());
+                    }
                 }
                 else
                 {
@@ -145,7 +153,12 @@ namespace AnalysisControls
                 }
                 else
                     dg.ItemsSource = project.Documents;
-            } else
+            } else if (e.Parameter is Assembly a)
+            {
+                dg.ItemsSource = a.GetExportedTypes().ToList();
+            }
+
+            else
             {
                 dg.ItemsSource = new[]{e.Parameter};
             }

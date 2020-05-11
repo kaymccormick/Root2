@@ -2,6 +2,7 @@
 using System.Linq;
 using AnalysisAppLib;
 using Autofac.Features.AttributeFilters;
+using Autofac.Features.Metadata;
 
 namespace AnalysisControls.RibbonM
 {
@@ -9,12 +10,20 @@ namespace AnalysisControls.RibbonM
     public class TestRibbonTabDef2 : RibbonModelTab
     {
 
-        public TestRibbonTabDef2([MetadataFilter("Category", Category.Management)]IEnumerable<RibbonModelGroup> groups, ITypesViewModel typesViewModel)
+        public TestRibbonTabDef2([MetadataFilter("Category", Category.Management)]IEnumerable<Meta<RibbonModelGroup>> groups, ITypesViewModel typesViewModel)
         {
             Header = Category.Management;
             foreach (var ribbonModelGroup in groups)
             {
-                Items.Add(ribbonModelGroup);
+                var props = MetaHelper.GetMetadataProps(ribbonModelGroup.Metadata);
+                if (props.Category == Category.Infrastructure)
+                {
+                    Items.Add(ribbonModelGroup.Value);
+                }
+                else
+                {
+
+                }
             }
 
             var g = CreateGroup("Types");

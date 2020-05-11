@@ -103,6 +103,8 @@
     <Compile Include="AppRibbonTab.cs" />
     <Compile Include="AppRibbonTabSet.cs" />
     <Compile Include="AppTextSource.cs" />
+    <Compile Include="AppTypeInfoConvereter.cs" />
+    <Compile Include="AssembliesControl.cs" />
     <Compile Include="CategoryInfo.cs" />
     <Compile Include="CharacterCell.cs" />
     <Compile Include="CodeControl1.xaml.cs">
@@ -146,6 +148,7 @@
       <DependentUpon>EnhancedCodeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ErrorsTextSource.cs" />
+    <Compile Include="FieldsControl.cs" />
     <Compile Include="Filter.cs" />
     <Compile Include="FontRendering.cs" />
     <Compile Include="FormattedTextControl.cs" />
@@ -163,6 +166,7 @@
     <Compile Include="IRibbonModelProvider.cs" />
     <Compile Include="JsonConverters.cs" />
     <Compile Include="JsonSyntaxTokenConverter.cs" />
+    <Compile Include="KindsConverter.cs" />
     <Compile Include="LineContext.cs" />
     <Compile Include="LineInfo.cs" />
     <Compile Include="LogEventInstancesControl.cs" />
@@ -172,6 +176,7 @@
     <Compile Include="MenuTemplateSelector.cs" />
     <Compile Include="MessagesModel.cs" />
     <Compile Include="MiscCommands.cs" />
+    <Compile Include="MyRibbonComboBox.cs" />
     <Compile Include="MyRibbonMenuButton.cs" />
     <Compile Include="MyXDescriptor.cs" />
     <Compile Include="PageFunction1.xaml.cs">
@@ -205,6 +210,7 @@
     <Compile Include="Ribbon\RibbonModelTab.cs" />
     <Compile Include="Ribbon\RibbonModelGroup.cs" />
     <Compile Include="Ribbon\TestRibbonTabDef2.cs" />
+    <Compile Include="Ribbon\TestRibbonTabDef3.cs" />
     <Compile Include="RWindow.xaml.cs">
       <DependentUpon>RWindow.xaml</DependentUpon>
     </Compile>
@@ -218,10 +224,12 @@
     <Compile Include="SyntaxNodeControl.cs" />
     <Compile Include="SyntaxNodeCustomTextSource.cs" />
     <Compile Include="SyntaxNodeDepth.cs" />
+    <Compile Include="SyntaxPanel.cs" />
     <Compile Include="SyntaxRewriter1.cs" />
     <Compile Include="SyntaxTokenTextCharacters.cs" />
     <Compile Include="SyntaxTreeCollection.cs" />
     <Compile Include="SyntaxTriviaTextCharacters.cs" />
+    <Compile Include="SyntaxTypeComboBox.cs" />
     <Compile Include="SyntaxWalker2.cs" />
     <Compile Include="SyntaxWalkerF.cs" />
     <Compile Include="TemplateWindow.xaml.cs">

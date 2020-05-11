@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Shapes;
 
@@ -43,6 +44,12 @@ namespace AnalysisControls.RibbonM
         /// 
         /// </summary>
         public ObservableCollection<RibbonModelTab> RibbonItems { get; } = new ObservableCollection<RibbonModelTab>();
+
+        public ObservableCollection<RibbonModelContextualTabGroup> ContextualTabGroups
+        {
+            get;
+            set;
+        } = new ObservableCollection<RibbonModelContextualTabGroup>();
 
         /// <summary>
         /// 
@@ -103,5 +110,11 @@ namespace AnalysisControls.RibbonM
         {
             return new RibbonModelGallery();
         }
+    }
+
+    public class RibbonModelContextualTabGroup
+    {
+        public string Header { get; set; }
+        public Visibility Visibility { get; set; } = Visibility.Visible;
     }
 }

@@ -50,6 +50,7 @@ namespace TestApp
 
         protected override void OnStartup(StartupEventArgs e)
         {
+#if false
             foreach (var eventSource in EventSource.GetSources())
             {
                 var n = eventSource.Name;
@@ -74,6 +75,7 @@ namespace TestApp
                     ts.Switch = sourceSwitch;
                 }
             }
+#endif
             {
 
             }

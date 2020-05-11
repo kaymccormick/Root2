@@ -10,10 +10,8 @@
 // ---
 #endregion
 using System ;
-using System.Collections;
 using System.Collections.Generic ;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel ;
 using System.Composition;
 using System.Linq ;
@@ -26,7 +24,6 @@ using System.Threading.Tasks;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Controls.Primitives;
-using System.Windows.Controls.Ribbon;
 using System.Windows.Data ;
 using System.Windows.Markup ;
 using System.Windows.Threading;
@@ -105,12 +102,12 @@ namespace AnalysisControls
                     .WithCallerMetadata();
             }
 
-            builder.RegisterType<AllResourcesTreeViewModel>()
-                .AsSelf()
-                .As<IAddRuntimeResource>()
-                .SingleInstance()
-                .WithCallerMetadata();
-
+            // builder.RegisterType<AllResourcesTreeViewModel>()
+            //     .AsSelf()
+            //     .As<IAddRuntimeResource>()
+            //     .SingleInstance()
+            //     .WithCallerMetadata();
+            //
             if (RibbonFunc2)
             {
                 builder.RegisterType<RibbonBuilder>();
@@ -144,8 +141,8 @@ namespace AnalysisControls
                     return r;
                 });
 
-                builder.RegisterAssemblyTypes(ThisAssembly).AssignableTo<IBaseLibCommand>().AsImplementedInterfaces()
-                    .WithCallerMetadata();
+                // builder.RegisterAssemblyTypes(ThisAssembly).AssignableTo<IBaseLibCommand>().AsImplementedInterfaces()
+                // .WithCallerMetadata();
                 builder.Register((c, p) =>
                 {
 
@@ -159,7 +156,7 @@ namespace AnalysisControls
                             DebugUtils.WriteLine($"{m1.Key} = {m1.Value}");
                         }
 
-                        CommandInfo ci = new CommandInfo {Command = c1};
+                        CommandInfo ci = new CommandInfo { Command = c1 };
 
                         if (c1.Metadata.TryGetValue("Category", out var cv))
                         {
@@ -168,7 +165,7 @@ namespace AnalysisControls
                         Category cat = Category.None;
                         try
                         {
-                            cat = (Category) cv;
+                            cat = (Category)cv;
                         }
                         catch (Exception ex)
                         {
@@ -185,7 +182,7 @@ namespace AnalysisControls
                         {
                             i1 = new Info1()
                             {
-                                Category = (Category) cat,
+                                Category = (Category)cat,
                             };
                             dict[cat] = i1;
                         }
@@ -196,11 +193,11 @@ namespace AnalysisControls
                         }
                         else
                         {
-                            if (!i1.Infos.TryGetValue((string) group, out var i2))
+                            if (!i1.Infos.TryGetValue((string)group, out var i2))
                             {
 
-                                i2 = new Info2 {Group = (string) group};
-                                i1.Infos[(string) group] = i2;
+                                i2 = new Info2 { Group = (string)group };
+                                i1.Infos[(string)group] = i2;
                             }
 
                             i2.Infos.Add(ci);
@@ -226,6 +223,7 @@ namespace AnalysisControls
 
                 }).AsSelf().WithCallerMetadata().SingleInstance();
 
+
             }
 
             var kayTypes = AppDomain.CurrentDomain.GetAssemblies ( )
@@ -244,26 +242,31 @@ namespace AnalysisControls
             kayTypes.Add(typeof(MethodInfo));
             kayTypes.Add(typeof(PropertyInfo));
             kayTypes.Add(typeof(MemberInfo));
-            kayTypes.AddRange(typeof ( CSharpSyntaxNode ).Assembly.GetExportedTypes ( )
-                              .Where ( t => typeof ( CSharpSyntaxNode ).IsAssignableFrom ( t ) ));
-
+            var collection = typeof(CSharpSyntaxNode).Assembly.GetExportedTypes()
+                .Where(t => typeof(CSharpSyntaxNode).IsAssignableFrom(t)).ToList();
+            foreach (var type in collection)
+            {
+                DebugUtils.WriteLine("Type enabled for custom descriptor " + type.FullName);
+                kayTypes.Add(type);
+            }
+            
             var xx = new CustomTypes(kayTypes);
                 builder.RegisterInstance(xx);
                 builder.RegisterType<UiElementTypeConverter>().SingleInstance().WithCallerMetadata();
-                builder.Register((c, p) =>
-                {
-                    var lifetimeScope = c.Resolve<ILifetimeScope>();
-                    Func<Type, TypeConverter> f = (t) =>
-                    {                        return new UiElementTypeConverter(lifetimeScope);
-                    };
-                    return f;
-                }).As < Func<Type, TypeConverter>>();
+                // builder.Register((c, p) =>
+                // {
+                    // var lifetimeScope = c.Resolve<ILifetimeScope>();
+                    // Func<Type, TypeConverter> f = (t) =>
+                    // {                        return new UiElementTypeConverter(lifetimeScope);
+                    // };
+                    // return f;
+                // }).As < Func<Type, TypeConverter>>();
 
-                var types = new[] { typeof ( AppTypeInfo ) , typeof ( SyntaxFieldInfo ) } ;
-                builder.RegisterInstance ( types )
-                       .WithMetadata ( "Custom" , true )
-                       .AsImplementedInterfaces ( )
-                       .AsSelf ( ) ;
+                // var types = new[] { typeof ( AppTypeInfo ) , typeof ( SyntaxFieldInfo ) } ;
+                // builder.RegisterInstance ( types )
+                       // .WithMetadata ( "Custom" , true )
+                       // .AsImplementedInterfaces ( )
+                       // .AsSelf ( ) ;
                 builder.RegisterType < ControlsProvider > ( ).WithAttributeFiltering ( ).SingleInstance().As<IControlsProvider>().AsSelf();
                 // .WithParameter (
                 // new NamedParameter ( "types" , types )
@@ -296,7 +299,7 @@ namespace AnalysisControls
                        .As < IControlView > ( )
                        .WithMetadata (
                                       "ImageSource"
-                                    , "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
+                                    , "pack://application:,,,/WpfLib;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
                                      )
                        .WithMetadata ( "Ribbon" , true )
                        .WithCallerMetadata ( ) ;
@@ -364,16 +367,11 @@ namespace AnalysisControls
                        .AsImplementedInterfaces ( )
                        .WithCallerMetadata ( ) ;
 
-            builder.RegisterType < SyntaxPanel > ( )
-                       .Keyed < IControlView > ( typeof ( CompilationUnitSyntax ) )
-                       .AsSelf ( )
-                       .WithCallerMetadata ( ) ;
-                builder.RegisterType < SyntaxPanelViewModel > ( )
-                       .AsImplementedInterfaces ( )
-                       .AsSelf ( )
-                       .WithCallerMetadata ( ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool RibbonFunc2 { get; set; }
 
         private IDisplayableAppCommand ControlViewCommandAdapter2(IComponentContext arg1, IEnumerable<Parameter> arg2, Meta<Lazy<IControlView>> arg3)
@@ -576,54 +574,6 @@ namespace AnalysisControls
                     });
                 return lb;
             }
-    }
-    public  class MyRibbonComboBox : RibbonComboBox
-    {
-        protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
-        {
-
-            base.PrepareContainerForItemOverride(element, item);
-        }
-
-        protected override void ClearContainerForItemOverride(DependencyObject element, object item)
-        {
-            base.ClearContainerForItemOverride(element, item);
-        }
-
-        protected override bool IsItemItsOwnContainerOverride(object item)
-        {
-            return base.IsItemItsOwnContainerOverride(item);
-        }
-
-        protected override DependencyObject GetContainerForItemOverride()
-        {
-            return base.GetContainerForItemOverride();
-        }
-
-        public MyRibbonComboBox()
-        {
-            
-        }
-
-        public override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
-        }
-
-        protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
-        {
-            base.OnItemsSourceChanged(oldValue, newValue);
-        }
-
-        protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
-        {
-            base.OnItemsChanged(e);
-        }
-
-        protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
-        {
-            base.OnVisualChildrenChanged(visualAdded, visualRemoved);
-        }
     }
 
     public class MyItemContainerGenerator : IItemContainerGenerator

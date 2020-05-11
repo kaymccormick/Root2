@@ -145,7 +145,7 @@
     <Compile Include="IViewWithTitle.cs" />
     <Compile Include="Logging\LogEventInstanceObservableCollection.cs" />
     <Compile Include="ComponentInfo.cs" />
-    <Compile Include="DataBindingTraceFilter\WpfBindingFIlter.cs" />
+    <Compile Include="DataBindingTraceFilter\WpfBindingFilter.cs" />
     <Compile Include="DebugUtils.cs" />
     <Compile Include="DefaultObjectIdProvider.cs" />
     <Compile Include="ExitCode.cs" />

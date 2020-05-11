@@ -41,8 +41,15 @@ namespace Client2
                     return;
                 } else
                 {
-                    var app = new Client2App();
-                    app.Run();
+                    try
+                    {
+                        var app = new Client2App();
+                        app.Run();
+                    }
+                    catch (Exception ex)
+                    {
+                        DebugUtils.WriteLine(ex.ToString());
+                    }
                 }
 
             });

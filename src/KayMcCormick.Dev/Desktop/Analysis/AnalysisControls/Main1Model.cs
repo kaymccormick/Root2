@@ -77,14 +77,16 @@ namespace AnalysisControls
                     }
                 );
 
-            foreach (var vsi in vsInstances) DebugUtils.WriteLine($"{vsi.Name} {vsi.Version}");
+            var visualStudioInstances = vsInstances as VisualStudioInstance[] ?? vsInstances.ToArray();
+            foreach (var vsi in visualStudioInstances) DebugUtils.WriteLine($"{vsi.Name} {vsi.Version}");
 
-            var versions = vsInstances.Select(x => x.Version.Major).Distinct().OrderByDescending(i => i);
+            var versions = visualStudioInstances.Select(x => x.Version.Major).Distinct().OrderByDescending(i => i)
+                .ToList();
             DebugUtils.WriteLine(string.Join(", ", versions));
             var inst = versions.FirstOrDefault();
 
 
-            var visualStudioInstance = vsInstances.Where(instance => instance.Version.Major == inst)
+            var visualStudioInstance = visualStudioInstances.Where(instance => instance.Version.Major == inst)
                 .OrderByDescending(instance => instance.Version).FirstOrDefault();
             DebugUtils.WriteLine($"Registering {visualStudioInstance}");
             MSBuildLocator.RegisterInstance(visualStudioInstance);
@@ -105,7 +107,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <param name="replay"></param>
-        public Main1Model(ReplaySubject<Workspace> replay)
+        public Main1Model(ReplaySubject<Workspace> replay) : this()
         {
             _replay = replay;
         }
@@ -115,6 +117,11 @@ namespace AnalysisControls
         /// </summary>
         public Main1Model()
         {
+            Documents.Add(new DocModel
+            {
+                Title = "Assemblies",
+                Content = new AssembliesControl {AssemblySource = AppDomain.CurrentDomain.GetAssemblies()}
+            });
         }
 
         /// <summary>
@@ -137,8 +144,12 @@ namespace AnalysisControls
                 if (Equals(value, _workspace)) return;
                 _workspace = value;
                 _workspaceView = new WorkspaceView() {Solutions = HierRoot};
-                Anchorables.Add(new AnchorableModel() {Content =
-                    _workspaceView, Title = "Workspace"});
+                Anchorables.Add(new AnchorableModel()
+                {
+                    Content =
+                        _workspaceView,
+                    Title = "Workspace"
+                });
                 _workspace.WorkspaceChanged += WorkspaceOnWorkspaceChanged;
                 _workspace.DocumentOpened += WorkspaceOnDocumentOpened;
                 _workspace.DocumentActiveContextChanged += WorkspaceOnDocumentActiveContextChanged;
@@ -164,7 +175,8 @@ namespace AnalysisControls
             }
         }
 
-        private static Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private void WorkspaceOnDocumentClosed(object sender, DocumentEventArgs e)
         {
             Logger.Info($"{e.Document.Id} closed");
@@ -177,7 +189,7 @@ namespace AnalysisControls
 
         private void WorkspaceOnDocumentOpened(object sender, DocumentEventArgs e)
         {
-            Logger.Info($"{e.Document.Id} opened"); 
+            Logger.Info($"{e.Document.Id} opened");
         }
 
         /// <summary>
@@ -189,7 +201,18 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public event EventHandler<ProjectAddedventArgs> ProjectedAddedEvent;
-        public event EventHandler<DocumentAddedventArgs> DocumentAddedEvent;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler<DocumentAddedEventArgs> DocumentAddedEvent;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public async void WorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs e)
         {
             DebugUtils.WriteLine(e.Kind.ToString());
@@ -199,7 +222,7 @@ namespace AnalysisControls
                     HierRoot.Remove(HierRoot.First(s => s.Id == e.OldSolution.Id));
                     break;
                 case WorkspaceChangeKind.SolutionChanged:
-                    var ch0 = e.NewSolution.GetChanges(e.OldSolution);
+                    e.NewSolution.GetChanges(e.OldSolution);
 
                     break;
                 case WorkspaceChangeKind.SolutionAdded:
@@ -211,7 +234,7 @@ namespace AnalysisControls
                 case WorkspaceChangeKind.SolutionReloaded:
                     break;
                 case WorkspaceChangeKind.ProjectAdded:
-                    Solution eNewSolution = e.NewSolution;
+                    var eNewSolution = e.NewSolution;
                     var m = GetSolution(eNewSolution.Id);
                     if (m == default(SolutionModel))
                     {
@@ -238,6 +261,7 @@ namespace AnalysisControls
                     {
                         d.Name = doc.Name;
                         d.FilePath = doc.FilePath;
+                        d.Id = doc.Id.Id;
                     }
 
                     Compilation compilation = null;
@@ -245,35 +269,36 @@ namespace AnalysisControls
 
                     if (d.Project.Project.SupportsCompilation)
                     {
-                        compilation = await doc.Project.GetCompilationAsync();
-                        var errs = compilation.GetDiagnostics()
-                            .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error);
-                        foreach (var diagnostic in errs)
+                        if (doc != null) compilation = await doc.Project.GetCompilationAsync();
+                        if (compilation != null)
                         {
-                            d.Project.Diag.Add(new DiagnosticNodeModel(PathModelKind.Diagnostic)
-                                {Diagnostic = diagnostic});
-                        }
+                            var errs = compilation.GetDiagnostics()
+                                .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error);
+                            var diagnostics = errs.ToList();
+                            foreach (var diagnostic in diagnostics)
+                                d.Project.Diag.Add(new DiagnosticNodeModel(PathModelKind.Diagnostic)
+                                    {Diagnostic = diagnostic});
 
-                        DebugUtils.WriteLine(String.Join("\n", errs));
-                        if (errs.Any())
-                        {
-                            compilation = null;
-                        }
-                        else
-                        {
-
+                            DebugUtils.WriteLine(string.Join("\n", diagnostics));
+                            if (diagnostics.Any())
+                            {
+                                compilation = null;
+                            }
+                            else
+                            {
+                            }
                         }
                     }
 
                     model = await doc.GetSemanticModelAsync();
-                
+
 
                     var tree = await doc.GetSyntaxTreeAsync();
-            
 
-            p0.Documents.Add(d);
-                    DocumentAddedEvent?.Invoke(this, new DocumentAddedventArgs(){Document =d});
-                    
+
+                    p0.Documents.Add(d);
+                    DocumentAddedEvent?.Invoke(this, new DocumentAddedEventArgs() {Document = d});
+
                     break;
                 case WorkspaceChangeKind.DocumentRemoved:
                     break;
@@ -282,25 +307,18 @@ namespace AnalysisControls
                 case WorkspaceChangeKind.DocumentChanged:
                     var ch = e.NewSolution.GetChanges(e.OldSolution);
                     foreach (var addedProject in ch.GetAddedProjects())
-                    {
                         DebugUtils.WriteLine(addedProject.Id.Id.ToString());
-                    }
-                    foreach (var projectChangese in ch.GetProjectChanges())
+                    foreach (var projectChanges in ch.GetProjectChanges())
                     {
-                        foreach (var addedAdditionalDocument in projectChangese.GetAddedAdditionalDocuments())
-                        {
+                        foreach (var addedAdditionalDocument in projectChanges.GetAddedAdditionalDocuments())
                             DebugUtils.WriteLine(addedAdditionalDocument.Id.ToString());
-                        }
 
-                        foreach (var addedDocument in projectChangese.GetAddedDocuments())
-                        {
+                        foreach (var addedDocument in projectChanges.GetAddedDocuments())
                             DebugUtils.WriteLine(addedDocument.Id.ToString());
-                        }
-                        foreach (var changedDocument in projectChangese.GetChangedDocuments())
-                        {
+                        foreach (var changedDocument in projectChanges.GetChangedDocuments())
                             DebugUtils.WriteLine(changedDocument.Id.ToString());
-                        }
                     }
+
                     break;
                 case WorkspaceChangeKind.AdditionalDocumentAdded:
                     break;
@@ -327,22 +345,17 @@ namespace AnalysisControls
 
         private SolutionModel GetSolution(SolutionId newSolutionId = null)
         {
-            if (newSolutionId == null)
-            {
-                newSolutionId = _workspace.CurrentSolution.Id;
-            }
-            var m = HierRoot.FirstOrDefault(m1 =>
-            {
-                return m1.Id == newSolutionId;
-            });
+            if (newSolutionId == null) newSolutionId = _workspace.CurrentSolution.Id;
+            var m = HierRoot.FirstOrDefault(m1 => m1.Id == newSolutionId);
             return m;
         }
 
         private ProjectModel GetProjectModel(ProjectId id)
         {
-            return HierRoot.SelectMany(s => s.Projects).Where(p => p.Id == id).First();
+            return HierRoot.SelectMany(s => s.Projects).First(p => p.Id == id);
         }
 
+        // ReSharper disable once UnusedMember.Local
         private DocumentModel GetDocumentModel(DocumentId id)
         {
             return GetProjectModel(id.ProjectId).Documents.FirstOrDefault(z => z.Id == id.Id);
@@ -350,21 +363,18 @@ namespace AnalysisControls
 
         private static SolutionModel SolutionModelFromSolution(Solution s)
         {
-            var m = new SolutionModel(s.Workspace);
-            m.Id = s.Id;
-            m.FilePath = s.FilePath;
+            var m = new SolutionModel(s.Workspace) {Id = s.Id, FilePath = s.FilePath};
             foreach (var sProject in s.Projects) m.Projects.Add(ProjectFromModel(m, sProject));
             return m;
         }
 
         private static ProjectModel ProjectFromModel(SolutionModel s, Project sProject)
         {
-            var p = new ProjectModel(s.Workspace);
-            p.Name = sProject.Name;
-            p.Id = sProject.Id;
-            p.Solution = s;
+            var p = new ProjectModel(s.Workspace)
+            {
+                Name = sProject.Name, Id = sProject.Id, Solution = s, FilePath = sProject.FilePath
+            };
             //p.Project = sProject;
-            p.FilePath = sProject.FilePath;
             foreach (var sProjectDocument in sProject.Documents)
             {
                 var d = DocumentFromModel(p, sProjectDocument);
@@ -376,14 +386,21 @@ namespace AnalysisControls
 
         private static DocumentModel DocumentFromModel(ProjectModel project, Document sProjectDocument)
         {
-            var d = new DocumentModel(project, project.Workspace);
-            d.Name = sProjectDocument.Name;
-            d.FilePath = sProjectDocument.FilePath;
+            var d = new DocumentModel(project, project.Workspace)
+            {
+                Name = sProjectDocument.Name, FilePath = sProjectDocument.FilePath
+            };
             return d;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection<SolutionModel> HierRoot { get; set; } = new ObservableCollection<SolutionModel>();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Main1 View
         {
             get { return _view; }
@@ -395,13 +412,23 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ProjectModel SelectedProject
         {
             get { return _workspaceView?.SelectedProject; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -433,7 +460,6 @@ namespace AnalysisControls
 
             if (Workspace is AdhocWorkspace ww)
             {
-
                 var projectInfo = ProjectInfo.Create(ProjectId.CreateNewId(), VersionStamp.Create(), "unnamed project",
                     "unnamed assembly", LanguageNames.CSharp
                 ).WithMetadataReferences(new[]
@@ -441,12 +467,8 @@ namespace AnalysisControls
                     MetadataReference.CreateFromFile(typeof(object).Assembly.Location)
                 });
 
-            var news = ww.CurrentSolution.AddProject(projectInfo);
-                if (ww.TryApplyChanges(news))
-                {
-                    return projectInfo;
-                }
-                
+                var news = ww.CurrentSolution.AddProject(projectInfo);
+                if (ww.TryApplyChanges(news)) return projectInfo;
             }
 
             return null;
@@ -501,9 +523,12 @@ namespace AnalysisControls
             var r = await msBuildWorkspace.OpenSolutionAsync(file,
                 new ProgressWithCompletion<ProjectLoadProgress>(Handler));
             CurrentOperation = null;
-            DebugUtils.WriteLine(r);
+            DebugUtils.WriteLine(r.ToString());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public MessagesModel Messages { get; } = new MessagesModel();
 
         private void Handler(ProjectLoadProgress obj)
@@ -555,36 +580,33 @@ namespace AnalysisControls
             var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             DocumentModel doc = null;
             if (eParameter is PathModel p)
-            {
                 doc = p.Item as DocumentModel;
-            } else if (eParameter is DocumentModel dd)
-            {
-                doc = dd;
-            }
-            if (doc == null)
-            {
-                doc = _workspaceView.SelectedDocument;
-            }
+            else if (eParameter is DocumentModel dd) doc = dd;
+            if (doc == null) doc = _workspaceView.SelectedDocument;
             if (doc != null)
             {
                 CurrentOperation = new CurrentOperation() {Description = "Open document " + doc.Name};
 
-                Workspace.OpenDocument( doc.Document.Id, true);
+                Workspace.OpenDocument(doc.Document.Id, true);
                 Compilation compilation = null;
                 SemanticModel model = null;
-                
+
                 if (doc.Project.Project.SupportsCompilation)
                 {
                     compilation = await doc.Project.Project.GetCompilationAsync();
-                    var errs = compilation.GetDiagnostics().Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error);
-                    DebugUtils.WriteLine(String.Join("\n", errs));
-                    if (errs.Any())
+                    if (compilation != null)
                     {
-                        compilation = null;
-                    }
-                    else
-                    {
-
+                        var errs = compilation.GetDiagnostics()
+                            .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error);
+                        var diagnostics = errs.ToList();
+                        DebugUtils.WriteLine(string.Join("\n", diagnostics));
+                        if (diagnostics.Any())
+                        {
+                            compilation = null;
+                        }
+                        else
+                        {
+                        }
                     }
 
                     model = await doc.Document.GetSemanticModelAsync();
@@ -605,7 +627,7 @@ namespace AnalysisControls
             else if (SelectedProject != null)
             {
                 var semanticControl1 = new SemanticControl1();
-                SelectedProject.Project.GetCompilationAsync().ContinueWith(
+                var continueWith = SelectedProject.Project.GetCompilationAsync().ContinueWith(
                     task => { semanticControl1.Compilation = (CSharpCompilation) task.Result; }, taskScheduler);
 
                 var anchorableModel = new AnchorableModel {Content = semanticControl1};
@@ -622,22 +644,29 @@ namespace AnalysisControls
         {
             if (parameter is ProjectModel pm)
             {
-                var listBox = new ListBox();
-                listBox.ItemTemplate = (DataTemplate) View.TryFindResource(new DataTemplateKey(typeof(ISymbol)));
-                var comp = await pm.Project.GetCompilationAsync();
-                var errs = comp.GetDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error);
-                if (errs.Any())
+                var listBox = new ListBox
                 {
-                    DebugUtils.WriteLine("Errors");
-                    foreach (var diagnostic in errs)
+                    ItemTemplate = (DataTemplate) View.TryFindResource(new DataTemplateKey(typeof(ISymbol)))
+                };
+                var comp = await pm.Project.GetCompilationAsync();
+                if (comp != null)
+                {
+                    var errs = comp.GetDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error);
+                    var diagnostics = errs.ToList();
+                    if (diagnostics.Any())
                     {
-                        DebugUtils.WriteLine(diagnostic.ToString());
+                        DebugUtils.WriteLine("Errors");
+                        foreach (var diagnostic in diagnostics) DebugUtils.WriteLine(diagnostic.ToString());
                     }
                 }
 
-                var listBoxItemsSource = comp.GetSymbolsWithName(x => true).ToList();
-                DebugUtils.WriteLine($"{listBoxItemsSource.Count} symbols");
-                listBox.ItemsSource = listBoxItemsSource;
+                if (comp != null)
+                {
+                    var listBoxItemsSource = comp.GetSymbolsWithName(x => true).ToList();
+                    DebugUtils.WriteLine($"{listBoxItemsSource.Count} symbols");
+                    listBox.ItemsSource = listBoxItemsSource;
+                }
+
                 Documents.Add(new DocModel()
                 {
                     Title = "Symbols for " + pm.Name,
@@ -650,7 +679,8 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <param name="e"></param>
-        protected virtual void OnDocumentAddedEvent(DocumentAddedventArgs e)
+        // ReSharper disable once UnusedMember.Global
+        protected virtual void OnDocumentAddedEvent(DocumentAddedEventArgs e)
         {
             DocumentAddedEvent?.Invoke(this, e);
         }
@@ -692,13 +722,16 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Message { get; set; }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public class DocumentAddedventArgs
+    public class DocumentAddedEventArgs
     {
         /// <summary>
         /// 

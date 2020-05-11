@@ -8,6 +8,7 @@ namespace AnalysisControls
     {
         private object _currentItem;
 
+        /// <inheritdoc />
         protected override DependencyObject GetContainerForItemOverride()
         {
             var c = base.GetContainerForItemOverride();
@@ -19,6 +20,7 @@ namespace AnalysisControls
             return c;
         }
 
+        /// <inheritdoc />
         protected override bool IsItemItsOwnContainerOverride(object item)
         {
             var br = base.IsItemItsOwnContainerOverride(item);

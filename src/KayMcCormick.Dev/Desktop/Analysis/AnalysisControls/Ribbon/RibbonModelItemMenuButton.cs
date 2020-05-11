@@ -37,6 +37,12 @@ namespace AnalysisControls.RibbonM
             get;
             set;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsEnabled { get; set; }
+
         public RibbonModelMenuItem CreateMenuItem(string label)
         {
             var r = new RibbonModelMenuItem() { Header = label };

@@ -2026,7 +2026,7 @@ namespace ProjTests
         {
             Assert.True(MSBuildLocator.CanRegister);
             ProjectModel m = new ProjectModel(null);
-            m.Documents.Add(new DocumentModel(m){FilePath = "test\\one\\tewo"});
+            m.Documents.Add(new DocumentModel(m, null){FilePath = "test\\one\\tewo"});
             foreach (var kv in m.RootPathInfo.Entries)
             {
                 DebugUtils.WriteLine(kv.Value.ToString());
@@ -2168,6 +2168,46 @@ namespace ProjTests
 
                 DoTexts(null).ContinueWith(t => w.Close());
             };
+            w.ShowDialog();
+        }
+
+        public TypesViewModel model()
+        {
+            using (var stream = typeof(AnalysisControlsModule).Assembly
+                .GetManifestResourceStream(
+                    "AnalysisControls.TypesViewModel.xaml"
+                ))
+            {
+                if (stream == null)
+                {
+                    DebugUtils.WriteLine("no stream");
+                    return new TypesViewModel(
+                    );
+                }
+
+                try
+                {
+                    var v = (TypesViewModel) XamlReader
+                        .Load(stream);
+                    stream.Close();
+                    return v;
+                }
+                catch (Exception)
+                {
+                    return new TypesViewModel();
+                }
+            }
+        }
+        [WpfFact]
+        public void TestC1()
+        {
+            var model = this.model();
+            // model.BeginInit();
+            // model.EndInit();
+            Random r = new Random();
+            var tt=model.GetAppTypeInfos().Where(t=>t.Fields.Count>0).Skip(r.Next(100)).First();
+            var c = new SyntaxPanel(){SyntaxTypeInfo = tt};
+            Window w = new Window(){Content=c};
             w.ShowDialog();
         }
     }

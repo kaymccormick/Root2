@@ -181,6 +181,41 @@ namespace AnalysisControls.ViewModel
             throw new InvalidOperationException ( "No such type" ) ;
         }
 
+
+        [CanBeNull]
+        public bool TryGetAppTypeInfo([NotNull] object identifier, out AppTypeInfo appTypeInfo)
+        {
+            AppTypeInfoKey key = null;
+            string unqualifiedTypeName = null;
+            switch (identifier)
+            {
+                case Type type:
+                    unqualifiedTypeName = type.Name;
+                    break;
+                case string s1:
+                    unqualifiedTypeName = s1;
+                    break;
+                case AppTypeInfoKey k1:
+                    key = k1;
+                    break;
+                default:
+                    appTypeInfo = null;
+                    return false;
+            }
+
+            if (unqualifiedTypeName != null)
+            {
+                key = new AppTypeInfoKey(unqualifiedTypeName);
+            }
+
+            if (Map.Dict.TryGetValue(key, out appTypeInfo))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// Discover information about the given Syntax Node class and all children recursively, depth-first.
         /// </summary>
@@ -188,7 +223,7 @@ namespace AnalysisControls.ViewModel
         /// <param name="parentTypeInfo"></param>
         /// <param name="level"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [NotNull ]
         public AppTypeInfo CollectTypeInfos (
             [ NotNull ] Type clrSyntaxNodeType
           , AppTypeInfo      parentTypeInfo = null
@@ -294,7 +329,20 @@ namespace AnalysisControls.ViewModel
                 }
             }
 
-            var mapCount = Map.Count ;
+                foreach ( var keyValuePair in Map2.Dict )
+                {
+                    var appTypeInfo = keyValuePair.Value;
+                    foreach (var kind in appTypeInfo.Kinds)
+                    {
+                        var v = (SyntaxKind)Enum.Parse(typeof(SyntaxKind), kind);
+                        appTypeInfo.SyntaxKinds.Add(v);
+                    }
+                    foreach(SyntaxFieldInfo f in appTypeInfo.Fields) {
+		    f.Model = this;
+		    }
+                }
+
+var mapCount = Map.Count ;
             Logger.Info ( $"Map Count {mapCount}" ) ;
             if ( mapCount != 0 )
             {
@@ -364,7 +412,11 @@ namespace AnalysisControls.ViewModel
             }
         }
 
-        private void CreateSubtypeLinkages ( )
+    
+    
+
+
+    private void CreateSubtypeLinkages ( )
         {
             DebugUtils.WriteLine ( $"Performing {nameof ( CreateSubtypeLinkages )}" ) ;
             var rootR = typeof ( CSharpSyntaxNode ) ;
@@ -398,6 +450,8 @@ namespace AnalysisControls.ViewModel
 
             DebugUtils.WriteLine ( $"{curTypeInfo}" ) ;
             var r = Map.Dict[ new AppTypeInfoKey ( rootR ) ] ;
+            r.AllTypes = GetAppTypeInfos();
+            r.Model = this;
             r.ParentInfo     = parentTypeInfo ;
             r.HierarchyLevel = level ;
             r.ColorValue     = HierarchyColors[ level ] ;

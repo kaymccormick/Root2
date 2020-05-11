@@ -1,12 +1,17 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 
 namespace AnalysisControls.RibbonM
 {
     /// <summary>
     /// 
     /// </summary>
-    public class RibbonModelItemComboBox : RibbonModelItem
+    public class RibbonModelItemComboBox : RibbonModelItem, INotifyPropertyChanged
     {
+        private object _selectionBoxItem;
+
         public RibbonModelItemComboBox()
         {
         }
@@ -15,6 +20,17 @@ namespace AnalysisControls.RibbonM
         /// 
         /// </summary>
         public ObservableCollection<object> Items { get; } = new ObservableCollection<object>();
+
+        public object SelectionBoxItem
+        {
+            get { return _selectionBoxItem; }
+            set
+            {
+                if (Equals(value, _selectionBoxItem)) return;
+                _selectionBoxItem = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 
@@ -26,6 +42,14 @@ namespace AnalysisControls.RibbonM
             var g = RibbonModel.CreateGallery();
             Items.Add(g);
             return g;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
