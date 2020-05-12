@@ -6,7 +6,7 @@ using KayMcCormick.Dev;
 
 namespace KayMcCormick.Lib.Wpf
 {
-    public class TableRow : Panel
+    public class TableRow0 : Panel
     {
         protected override Visual GetVisualChild(int index)
         {

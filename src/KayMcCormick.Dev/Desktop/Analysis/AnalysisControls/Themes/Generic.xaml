@@ -2194,10 +2194,10 @@
               <ItemsControl ItemsSource="{Binding Parameters}">
                 <ItemsControl.ItemTemplate>
                   <DataTemplate DataType="{x:Type syntax:AppParameterInfo}">
-                    <kmWpf:TableRow>
-                      <TextBlock Text="{Binding Name}"/>
+                    <WrapPanel>
+                    <TextBlock Text="{Binding Name}"/>
                       <TextBlock Text="{Binding ParameterType}"/>
-                    </kmWpf:TableRow>
+                    </WrapPanel>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>

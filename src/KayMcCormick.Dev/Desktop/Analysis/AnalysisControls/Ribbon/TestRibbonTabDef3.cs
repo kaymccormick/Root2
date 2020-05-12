@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using AnalysisAppLib;
@@ -15,10 +16,11 @@ namespace AnalysisControls.RibbonM
 {
     public class TestRibbonTabDef3 : RibbonModelTab
     {
-
+        
         public TestRibbonTabDef3(IEnumerable<Meta<RibbonModelGroup>> groups)
         {
-            //ContextualTabGroupHeader = "Assemblies";
+            Visibility = Visibility.Visible;
+            ContextualTabGroupHeader = "Assemblies";
             Header = "Assemblies";
             foreach (var ribbonModelGroup in groups)
             {

@@ -160,5 +160,12 @@ namespace KayMcCormick.Lib.Wpf
                 , nameof(ViewNestedHierarchy)
                 , typeof(WpfAppCommands)
             );
+        public static readonly RoutedUICommand ViewResources =
+            new RoutedUICommand(
+                "View resources"
+                , nameof(ViewResources)
+                , typeof(WpfAppCommands)
+            );
+
     }
 }

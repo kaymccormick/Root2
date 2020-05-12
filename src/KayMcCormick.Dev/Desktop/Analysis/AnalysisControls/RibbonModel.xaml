@@ -2,6 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:AnalysisControls"
                     xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonM">
+		    <local:TestConverter2 x:Key="TestConverter2"/>
   <Style TargetType="{x:Type RibbonContextualTabGroup}">
 		    <Setter Property="Header" Value="{Binding Header}"/>
         <Setter Property="Visibility" Value="{Binding Visibility}"/>
@@ -10,7 +11,9 @@
 <Setter Property="ItemsSource" Value="{Binding Items}"/>
 </Style>
   <Style TargetType="{x:Type RibbonTab}">
-  <Setter Property="ContextualTabGroupHeader" Value="{Binding ContextualTabGroupHeader}"/>
+    <Setter Property="ContextualTabGroupHeader" Value="{Binding ContextualTabGroupHeader,Converter={StaticResource TestConverter2},ConverterParameter=CTXT}"/>
+    <Setter Property="Visibility" Value="{Binding Visibility,Converter={StaticResource TestConverter2},ConverterParameter=CTXT1}"/>
+
   </Style>
   <Style TargetType="{x:Type RibbonMenuItem}">
         <Setter Property="Header" Value="{Binding Header}" />
@@ -120,7 +123,7 @@
   </HierarchicalDataTemplate>
 
 <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelTab}" ItemsSource="{Binding Items}">
-    <StackPanel Orientation="Horizontal ">
+  <StackPanel Orientation="Horizontal ">
       <TextBlock Background="Black" Text="{Binding Header}"></TextBlock>
     </StackPanel>
   </HierarchicalDataTemplate>

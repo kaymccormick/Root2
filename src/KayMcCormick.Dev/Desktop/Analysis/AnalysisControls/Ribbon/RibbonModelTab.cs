@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows;
 using AnalysisAppLib;
 using Autofac.Features.AttributeFilters;
 using Autofac.Features.Metadata;
@@ -15,6 +16,7 @@ namespace AnalysisControls.RibbonM
     /// </summary>
     public class RibbonModelTab
     {
+        public Visibility Visibility { get; set; } = Visibility.Visible;
         public object ContextualTabGroupHeader { get; set; }
         /// <summary>
         /// 

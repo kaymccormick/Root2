@@ -9,7 +9,7 @@ namespace AnalysisControls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            DebugUtils.WriteLine($"{value} - {targetType.FullName}");
+            DebugUtils.WriteLine($"{parameter} - {value} - {targetType.FullName}");
             return value;
 
         }

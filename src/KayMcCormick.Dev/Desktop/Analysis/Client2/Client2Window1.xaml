@@ -45,6 +45,11 @@
         <Style TargetType="{x:Type RibbonContextualTabGroup}">
         </Style>
       </Ribbon.ContextualTabGroupStyle>
+      <Ribbon.ItemContainerStyle>
+        <Style TargetType="RibbonTab">
+            <Setter Property="Visibility" Value="{Binding Visibility}"></Setter>
+          </Style>
+      </Ribbon.ItemContainerStyle>
       <Ribbon.TabHeaderTemplate><DataTemplate DataType="{x:Type ribbon:RibbonModelTab}">
         <TextBlock Background="Aquamarine"  FontSize="18"  Foreground="Green" Text="{Binding Header}"></TextBlock>
       </DataTemplate></Ribbon.TabHeaderTemplate>
