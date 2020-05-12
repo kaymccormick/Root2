@@ -9,6 +9,8 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Ribbon;
+using System.Windows.Data;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using Microsoft.Build.Locator;
@@ -122,6 +124,13 @@ namespace AnalysisControls
                 Title = "Assemblies",
                 Content = new AssembliesControl {AssemblySource = AppDomain.CurrentDomain.GetAssemblies()}
             });
+            TreeView tv = new TreeView()
+            {
+                DisplayMemberPath = "Header",
+                
+            };
+            tv.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("ViewModel.Ribbon.RibbonItems") { RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(RibbonWindow), 1)});
+            Anchorables.Add(new AnchorableModel() {Content = tv});
         }
 
         /// <summary>

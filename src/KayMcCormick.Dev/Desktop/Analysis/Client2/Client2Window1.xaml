@@ -35,24 +35,45 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <Ribbon ContextualTabGroupsSource="{Binding ContextualTabGroups}"  ItemTemplateSelector="{StaticResource TabItemTemplateSelector}"  x:Name="_ribbon" DataContext="{Binding ViewModel.Ribbon}" ItemsSource="{Binding RibbonItems}">
+    <Ribbon  ContextualTabGroupsSource="{Binding ContextualTabGroups}"  ItemTemplateSelector="{StaticResource TabItemTemplateSelector}"  x:Name="_ribbon" DataContext="{Binding ViewModel.Ribbon}" ItemsSource="{Binding RibbonItems}">
+      <Ribbon.TabHeaderStyle>
+        <Style TargetType="RibbonTabHeader">
+          <Setter Property="Content" Value="xx"/>
+          <Setter Property="Background" Value="BlueViolet"/>
+        </Style>
+      </Ribbon.TabHeaderStyle>
+      <Ribbon.TabHeaderTemplate>
+        <DataTemplate DataType="{x:Type ribbon:RibbonModelTab}">
+          <WrapPanel>
+            <TextBlock Text="{Binding Header}"/>
+          </WrapPanel>
+        </DataTemplate>
+        </Ribbon.TabHeaderTemplate>
       <Ribbon.ContextualTabGroupHeaderTemplate>
         <DataTemplate>
-          <TextBlock Text="{Binding Header}"/>
+          <TextBlock Foreground="Aquamarine" Text="{Binding Header}"/>
         </DataTemplate>
       </Ribbon.ContextualTabGroupHeaderTemplate>
       <Ribbon.ContextualTabGroupStyle>
-        <Style TargetType="{x:Type RibbonContextualTabGroup}">
+        <Style TargetType="RibbonContextualTabGroup">
+          <Setter Property="TextElement.FontFamily" Value="Lucida Sans"/>
+          <Setter Property="Visibility" Value="{Binding Visibility}"/>
         </Style>
       </Ribbon.ContextualTabGroupStyle>
       <Ribbon.ItemContainerStyle>
         <Style TargetType="RibbonTab">
-            <Setter Property="Visibility" Value="{Binding Visibility}"></Setter>
-          </Style>
+          <Style.Triggers>
+            <Trigger Property="ContextualTabGroup" Value="{x:Null}">
+              <Setter Property="TextElement.FontFamily" Value="Calibri"/>
+            </Trigger>
+            </Style.Triggers>
+          <Setter Property="Visibility" Value="{Binding Visibility}"></Setter>
+          <Setter Property="ContextualTabGroupHeader" Value="{Binding ContextualTabGroupHeader}"></Setter>
+          <Setter Property="TextElement.FontFamily" Value="Showcard Gothic"/>
+          <Setter Property="ItemsSource" Value="{Binding Items}"/>
+        </Style>
       </Ribbon.ItemContainerStyle>
-      <Ribbon.TabHeaderTemplate><DataTemplate DataType="{x:Type ribbon:RibbonModelTab}">
-        <TextBlock Background="Aquamarine"  FontSize="18"  Foreground="Green" Text="{Binding Header}"></TextBlock>
-      </DataTemplate></Ribbon.TabHeaderTemplate>
+      <Ribbon.ItemsPanel><ItemsPanelTemplate><primitives:RibbonTabsPanel Opacity="0.5"/></ItemsPanelTemplate></Ribbon.ItemsPanel>
       <Ribbon.ApplicationMenu>
         <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" />
       </Ribbon.ApplicationMenu>

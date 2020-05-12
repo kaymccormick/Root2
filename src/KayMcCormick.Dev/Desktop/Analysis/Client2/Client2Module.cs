@@ -208,6 +208,7 @@ namespace Client2
             builder.RegisterType<TestRibbonTabDef>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
             builder.RegisterType<TestRibbonTabDef2>().As<RibbonModelTab>().SingleInstance();
             builder.RegisterType<TestRibbonTabDef3>().As<RibbonModelTab>().SingleInstance();
+            builder.RegisterType<TestRibbonTabDef4>().As<RibbonModelTab>().SingleInstance();
             builder.RegisterType<RibbonModelGroup1>().As<RibbonModelGroup>().SingleInstance();
             builder.RegisterType<RibbonModelGroupTest1>().As<RibbonModelGroup>().SingleInstance();
             builder.RegisterType<RibbonModelGroupTest2>().As<RibbonModelGroup>().SingleInstance();

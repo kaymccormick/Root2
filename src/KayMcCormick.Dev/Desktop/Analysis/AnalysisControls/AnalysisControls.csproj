@@ -215,6 +215,7 @@
     <Compile Include="Ribbon\RibbonModelGroup.cs" />
     <Compile Include="Ribbon\TestRibbonTabDef2.cs" />
     <Compile Include="Ribbon\TestRibbonTabDef3.cs" />
+    <Compile Include="Ribbon\TestRibbonTabDef4.cs" />
     <Compile Include="RWindow.xaml.cs">
       <DependentUpon>RWindow.xaml</DependentUpon>
     </Compile>
