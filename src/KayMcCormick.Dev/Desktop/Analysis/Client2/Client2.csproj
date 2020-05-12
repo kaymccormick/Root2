@@ -117,9 +117,6 @@
     <Compile Include="Explorer\ShellExplorerItemProvider.cs" />
     <Compile Include="MyInfo.cs" />
     <Compile Include="ProjInterfaceOptions.cs" />
-    <Compile Include="RandoWindow.xaml.cs">
-      <DependentUpon>RandoWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="RibbonModelItemSplitButton.cs" />
     <Compile Include="RibbonViewGroupProvider.cs" />
     <Compile Include="TabItemTemplateSelector.cs" />
@@ -277,10 +274,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Client2Window1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="RandoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

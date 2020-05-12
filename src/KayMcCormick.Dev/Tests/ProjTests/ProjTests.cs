@@ -100,6 +100,7 @@ using Process = System.Diagnostics.Process;
 using RegionInfo = AnalysisControls.RegionInfo;
 using TableRow = KayMcCormick.Lib.Wpf.TableRow;
 using TextBlock = System.Windows.Controls.TextBlock;
+using Window = System.Windows.Window;
 using XamlReader = System.Windows.Markup.XamlReader;
 using XamlWriter = System.Windows.Markup.XamlWriter;
 
@@ -2270,6 +2271,27 @@ Assembly.Load(name);
             }
 
             Window w = new Window { Content = c };
+            w.ShowDialog();
+        }
+        [WpfFact]
+        public void TestPanel3()
+        {
+            var c = new WrapPanel();
+            TablePanel panel = new TablePanel() { RowSpacing = 3, ColumnSpacing = 10, NumColumns = 2 };
+            var x = VisualTreeHelper.GetChildrenCount(panel);
+            DebugUtils.WriteLine(x.ToString());
+            panel.Children.Add(new TextBlock { Text = "foo" });
+            panel.Children.Add(new TextBlock { Text = "foo2" });
+            var uiElement = new TableRow();
+            uiElement.Children.Add(new TextBlock { Text = "bar" });
+            var textBlock = new TextBlock { Text = "bar2" };
+            uiElement.Children.Add(textBlock);
+
+            DebugUtils.WriteLine(VisualTreeHelper.GetParent(textBlock));
+            panel.Children.Add(uiElement);
+            c.Children.Add(panel);
+            Window w = new Window { Content = c };
+            w.Loaded += (sender, args) => DebugUtils.WriteLine(VisualTreeHelper.GetChildrenCount(panel).ToString());
             w.ShowDialog();
         }
 

@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
 using System.Windows.Media;
+using JetBrains.Annotations;
 using KayMcCormick.Dev;
 
 namespace KayMcCormick.Lib.Wpf
@@ -15,6 +18,12 @@ namespace KayMcCormick.Lib.Wpf
         public static readonly DependencyProperty ColumnSpacingProperty = DependencyProperty.Register(
             "ColumnSpacing", typeof(double), typeof(TablePanel), new PropertyMetadata(default(double), OnColumnSpacingUpdated));
 
+        protected override UIElementCollection CreateUIElementCollection(FrameworkElement logicalParent)
+        {
+            return new TableElementCollection(this, logicalParent);
+        }
+
+        public IEnumerable<UIElement> TableContents { get; } = new List<UIElement>();
         private static void OnColumnSpacingUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             TablePanel t = (TablePanel)d;
@@ -73,14 +82,12 @@ namespace KayMcCormick.Lib.Wpf
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            var internalChildren = InternalChildren.Cast<UIElement>()
-                .SelectMany(x => x is TableRow rowz ? (rowz.Children.Cast<UIElement>()) : Enumerable.Repeat(x, 1)).ToArray();
-
-            if (_rects.Count < internalChildren.Length)
+            var length = VisualChildrenCount;
+            if (_rects.Count < length)
             {
-                _rects.AddRange(Enumerable.Repeat(new Rect(), internalChildren.Length - _rects.Count));
+                _rects.AddRange(Enumerable.Repeat(new Rect(), length - _rects.Count));
             }
-            var rows = internalChildren.Length / NumColumns + (internalChildren.Length % NumColumns == 0 ? 0 : 1);
+            var rows = length / NumColumns + (length % NumColumns == 0 ? 0 : 1);
             var rowHeightsCount = rows - rowHeights.Count;
             if(rowHeightsCount>0)
             rowHeights.AddRange(Enumerable.Repeat(0.0, rowHeightsCount));
@@ -97,10 +104,12 @@ namespace KayMcCormick.Lib.Wpf
             var i = 0;
             var avail = new Size(availableSize.Width - ColumnSpacing * NumColumns, availableSize.Height - RowSpacing * rows);
             _cellAvailableSize = new Size(avail.Width / NumColumns, avail.Height / rows);
-            foreach (UIElement internalChild in internalChildren)
+            for(i = 0; i < length; i++)
             {
+                UIElement internalChild = (UIElement) GetVisualChild(i);
                 internalChild.Measure(new Size(_cellAvailableSize.Width, Double.MaxValue));
                 var d1 = internalChild.DesiredSize;
+                DebugUtils.WriteLine($"[{i}] {d1}");
                 internalChild.Measure(_cellAvailableSize);
 
                 rowHeight = Math.Max(Math.Max(rowHeight, internalChild.DesiredSize.Height), d1.Height);
@@ -119,7 +128,7 @@ namespace KayMcCormick.Lib.Wpf
                     row++;
                 }
 
-                i++;
+                
             }
 
             if (col != 0)
@@ -136,9 +145,9 @@ namespace KayMcCormick.Lib.Wpf
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            var internalChildren = InternalChildren.Cast<UIElement>()
-                .SelectMany(xx => xx is TableRow rowz ? (rowz.Children.Cast<UIElement>()) : Enumerable.Repeat(xx, 1)).ToArray();
-            var rows = internalChildren.Length / NumColumns + (internalChildren.Length % NumColumns == 0 ? 0 : 1);
+            var length = VisualChildrenCount;
+            
+            var rows = length / NumColumns + (length % NumColumns == 0 ? 0 : 1);
             
             int col = 0;
             int row = 0;
@@ -163,8 +172,9 @@ namespace KayMcCormick.Lib.Wpf
             double Ypos = 0.0;
             var i = 0;
             var x = excessWidthPerCol.ToArray();
-            foreach (UIElement internalChild in internalChildren)
+            for(i = 0; i < length; i++)
             {
+                var internalChild =(UIElement) GetVisualChild(i);
                 double width = columnWidths[col] + x[col] ;
                 double height = rowHeights[row] + excessPerRow;
                 var finalRect = new Rect(Xpos, Ypos, width, height);
@@ -183,7 +193,6 @@ namespace KayMcCormick.Lib.Wpf
                     Xpos += width + ColumnSpacing;
                 }
 
-                i++;
             }
             if (col != 0)
             {
@@ -198,14 +207,215 @@ namespace KayMcCormick.Lib.Wpf
 
         protected override Visual GetVisualChild(int index)
         {
-            return InternalChildren.Cast<UIElement>()
-                .SelectMany(xx => xx is TableRow rowz ? (rowz.Children.Cast<UIElement>()) : Enumerable.Repeat(xx, 1)).ElementAt(index);
+            DebugUtils.WriteLine($"{nameof(GetVisualChild)} {index}");
+            int num = 0;
+            foreach (var c in InternalChildren)
+            {
+                if (c is TableRow r)
+                {
+                    foreach (var d in r.Children)
+                    {
+                        if (index == num)
+                        {
+                            return (Visual)d;
+                        }
+                        num++;
+                    }
+                }
+                else
+                {
+                    if (index == num)
+                    {
+                        return (Visual)c;
+                    }
+                    num++;
+                }
+            }
+
+            return null;
 
         }
 
-        protected override int VisualChildrenCount => InternalChildren.Cast<UIElement>()
-            .SelectMany(xx => xx is TableRow rowz ? (rowz.Children.Cast<UIElement>()) : Enumerable.Repeat(xx, 1))
-            .Count();
+        protected override int VisualChildrenCount
+        {
+            get
+            {
+                int num = 0;
+                foreach (var c in InternalChildren)
+                {
+                    if (c is TableRow r)
+                    {
+                        foreach (var d in r.Children)
+                        {
+                            num++;
+                        }
+                    }
+                    else
+                    {
+                        num++;
+                    }
+                }
 
+                DebugUtils.WriteLine($"{nameof(VisualChildrenCount)} {num}");
+                return num;
+            
+        }
+        }
+
+        protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
+        {
+            base.OnVisualChildrenChanged(visualAdded, visualRemoved);
+            DebugUtils.WriteLine($"{visualAdded} {visualRemoved}");
+        }
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            DebugUtils.WriteLine($"{e.Property.Name} {e.NewValue} {e.OldValue}");
+        }
+
+        protected override void OnVisualParentChanged(DependencyObject oldParent)
+        {
+            base.OnVisualParentChanged(oldParent);
+            DebugUtils.WriteLine($"{oldParent}");
+        }
+
+        protected override DependencyObject GetUIParentCore()
+        {
+            DebugUtils.WriteLine($"GetUIParentcore");
+            return base.GetUIParentCore();
+        }
+
+        protected override IEnumerator LogicalChildren
+        {
+            get
+            {
+                var r = base.LogicalChildren;
+                while(r.MoveNext())
+                    DebugUtils.WriteLine(r.Current.ToString());
+                r.Reset();
+                return r;
+            }
+        }
+    }
+
+    public class TableElementCollection : UIElementCollection
+    {
+        private VisualCollection _visualCollection;
+        public TableElementCollection([NotNull] UIElement visualParent, FrameworkElement logicalParent) : base(visualParent, logicalParent)
+        {
+            _visualCollection = new VisualCollection(visualParent);
+        }
+
+        public override void CopyTo(Array array, int index)
+        {
+            _visualCollection.CopyTo(array, index);
+        }
+
+        public override void CopyTo(UIElement[] array, int index)
+        {
+            _visualCollection.CopyTo(array, index);
+        }
+
+        public override int Add(UIElement element)
+        {
+            if (element is TableRow tr)
+            {
+                foreach (UIElement trChild in tr.Children)
+                {
+                    _visualCollection.Add(element);
+                }
+            } else
+            {
+                return _visualCollection.Add(element);
+            }
+
+            return 0;
+        }
+
+        public override int IndexOf(UIElement element)
+        {
+            return _visualCollection.IndexOf(element);
+        }
+
+        public override void Remove(UIElement element)
+        {
+            _visualCollection.Remove(element);
+        }
+
+        public override bool Contains(UIElement element)
+        {
+            return _visualCollection.Contains(element);
+        }
+
+        public override void Clear()
+        {
+            _visualCollection.Clear();
+        }
+
+        public override void Insert(int index, UIElement element)
+        {
+            throw new NotImplementedException();
+            _visualCollection.Insert(index, element);
+            
+        }
+
+        public override void RemoveAt(int index)
+        {
+            throw new NotImplementedException();
+            _visualCollection.RemoveAt(index);
+        }
+
+        public override void RemoveRange(int index, int count)
+        {
+            throw new NotImplementedException();
+            _visualCollection.RemoveRange(index, count);
+        }
+
+        public override IEnumerator GetEnumerator()
+        {
+            return _visualCollection.GetEnumerator();
+        }
+
+        public override int Count
+        {
+            get { return _visualCollection.Count; }
+        }
+
+        public override bool IsSynchronized
+        {
+            get { return _visualCollection.IsSynchronized; }
+        }
+
+        public override object SyncRoot
+        {
+            get { return _visualCollection.SyncRoot; }
+        }
+
+        public override int Capacity
+        {
+            get { return _visualCollection.Capacity; }
+            set { _visualCollection.Capacity = value; }
+        }
+
+        public override UIElement this[int index]
+        {
+            get { return (UIElement) _visualCollection[index]; }
+            set { _visualCollection[index] = value; }
+        }
+
+        public override string ToString()
+        {
+            return _visualCollection.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return _visualCollection.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return _visualCollection.GetHashCode();
+        }
     }
 }

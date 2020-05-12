@@ -186,6 +186,9 @@
     <Compile Include="CodeGenCommand.cs" />
     <Compile Include="PathModel.cs" />
     <Compile Include="ProjectModel.cs" />
+    <Compile Include="RandoWindow.xaml.cs">
+      <DependentUpon>RandoWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RectConverter.cs" />
     <Compile Include="RegionInfo.cs" />
     <Compile Include="RibbonBuilder.cs" />
@@ -316,6 +319,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Page Include="RandoWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Ribbon1Dict.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

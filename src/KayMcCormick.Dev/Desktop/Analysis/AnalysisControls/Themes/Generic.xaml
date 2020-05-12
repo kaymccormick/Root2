@@ -2202,7 +2202,7 @@
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>
                   <ItemsPanelTemplate>
-                    <kmWpf:TablePanel/>
+<WrapPanel/>
                   </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
               </ItemsControl>
