@@ -198,6 +198,7 @@ namespace Client2
 
                 return r;
             });
+            builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
             builder.RegisterType<ClientModel>().AsSelf();
             builder.RegisterType<RibbonModelApplicationMenu>();
             builder.RegisterType<RibbonTabProvider1>().As<IRibbonModelProvider<RibbonModelTab>>().SingleInstance();
@@ -216,5 +217,13 @@ namespace Client2
         }
 
 #pragma warning disable 1998
+    }
+
+    public class DummyResourceAdder : IAddRuntimeResource
+    {
+        public void AddResource(ResourceNodeInfo node)
+        {
+            
+        }
     }
 }

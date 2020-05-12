@@ -4,7 +4,9 @@
     xmlns:local="clr-namespace:WpfLib"
     xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf"
     xmlns:anal="http://kaymccormick.com/xaml/analysis"
-    xmlns:analysisControls="http://kaymccormick.com/xaml/analysis">
+    xmlns:analysisControls="http://kaymccormick.com/xaml/analysis"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System">
     <Style TargetType="{x:Type local:CustomControl1}">
         <Setter Property="Template">
             <Setter.Value>
@@ -13,11 +15,158 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
 
-                    </Border>
+
+          </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
 
    
+
+    <Style TargetType="{x:Type wpf:GradientEditorControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+        <ControlTemplate TargetType="{x:Type wpf:GradientEditorControl}">
+          <ControlTemplate.Resources>
+            <CollectionViewSource Source="{Binding ElementName=StopCol}" x:Key="ViewSource"/>
+            <local:DecimalConverter x:Key="DecimalConverter"/>
+          </ControlTemplate.Resources>
+          <Border Background="{TemplateBinding Background}"
+                          BorderBrush="{TemplateBinding BorderBrush}"
+                          BorderThickness="{TemplateBinding BorderThickness}">
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+              </Grid.ColumnDefinitions>
+              <StackPanel Orientation="Horizontal">
+                <Button Content="Add" Command="New" CommandTarget="{x:Reference ListView}"/>
+              </StackPanel>
+              <ListView Grid.Column="0" Grid.RowSpan="4" x:Name="ListView"  Grid.Row="1" ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=LinearGradientBrush.GradientStops}">
+                <ListView.View>
+                  <GridView>
+                    <GridViewColumn Header="Color">
+                      <GridViewColumn.CellTemplate>
+                        <DataTemplate DataType="GradientStop">
+                          <StackPanel Orientation="Horizontal">
+                            <xctk:ColorPicker  Grid.Column="1" x:Name="StartColor" SelectedColor="{Binding Color}"></xctk:ColorPicker>
+                          </StackPanel>
+                        </DataTemplate>
+                      </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Offset">
+                      <GridViewColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type GradientStop}">
+                          <TextBox Text="{Binding Offset,StringFormat=N2}"></TextBox>
+                        </DataTemplate>
+                      </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Offset">
+                      <GridViewColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type GradientStop}">
+                          <Slider Value="{Binding Offset}" Maximum="1" Minimum="0" SmallChange="0.05" LargeChange="0.1" Width="100"/>
+                        </DataTemplate>
+                      </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                  </GridView>
+                </ListView.View>
+              </ListView>
+              <TextBlock Grid.Row="0" Grid.Column="1"  Text="Start Point (X)"/>
+              <TextBox Grid.Row="0" Grid.Column="2"  Text="{Binding ElementName=StartXSlider,Path=Value,StringFormat=N2}"></TextBox>
+              <Slider Grid.Row="0" Grid.Column="3" x:Name="StartXSlider" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1" 
+                      Value="{Binding RelativeSource={RelativeSource TemplatedParent},Path=StartPointX,Mode=TwoWay}"
+                      Width="80"/>
+              <TextBlock Grid.Row="1" Grid.Column="1"  Text="Start Point (Y)"/>
+              <TextBox Grid.Row="1" Grid.Column="2"  Text="{Binding ElementName=StartYSlider,Path=Value,StringFormat=N2}"></TextBox>
+              <Slider Grid.Row="1" Grid.Column="3"
+                                x:Name="StartYSlider" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1"
+                                Value="{Binding RelativeSource={RelativeSource TemplatedParent},Path=StartPointY,Mode=TwoWay}"
+                                Width="80"
+                        />
+              <TextBlock Grid.Row="2" Grid.Column="1"  Text="End Point (X)"/>
+              <TextBox Grid.Row="2" Grid.Column="2"  Text="{Binding ElementName=EndXSlider,Path=Value,StringFormat=N2}"></TextBox>
+              <Slider Grid.Row="2" Grid.Column="3" x:Name="EndXSlider" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1"
+                                Value="{Binding RelativeSource={RelativeSource TemplatedParent},Path=EndPointX,Mode=TwoWay}" Width="80"/>
+              <TextBlock Grid.Row="3" Grid.Column="1"  Text="End Point (Y)"/>
+              <TextBox Grid.Row="3" Grid.Column="2"  Text="{Binding ElementName=EndYSlider,Path=Value,StringFormat=N2}"></TextBox>
+              <Slider Grid.Row="3" Grid.Column="3"
+                                Width="80"
+                                x:Name="EndYSlider" Minimum="0" Maximum="1" SmallChange="0.05" LargeChange="0.1"
+                                Value="{Binding RelativeSource={RelativeSource TemplatedParent},Path=EndPointY,Mode=TwoWay}"
+                        />
+              <StackPanel Grid.Column="4" Grid.Row="0" Grid.RowSpan="4" Visibility="Collapsed" x:Name="DebugPanel" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                         TextElement.FontSize="20">
+                <WrapPanel>
+                <TextBlock Text="Mouse In Rect: "/>
+                <TextBlock Text="{Binding MouseInRectX,StringFormat=N2}"/>
+                <TextBlock Text=","/>
+                <TextBlock Text="{Binding MouseInRectY,StringFormat=N2}"/>
+                </WrapPanel>
+              <WrapPanel>
+                <TextBlock Text="Mouse Down: "/>
+                <TextBlock Text="{Binding IsMouseDown}"/>
+                </WrapPanel>
+              </StackPanel>
+              <Border Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="3" Grid.RowSpan="2" Padding="25" >
+                <Grid>
+                  <Grid.RowDefinitions><RowDefinition Height="200"></RowDefinition></Grid.RowDefinitions>
+                  <Grid.ColumnDefinitions><ColumnDefinition Width="200"></ColumnDefinition></Grid.ColumnDefinitions>
+                  <Rectangle VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="Rectangle">
+                    <Rectangle.Fill>
+                      <DrawingBrush  AlignmentX="Left" AlignmentY="Top" Stretch="Uniform" TileMode="None" Viewbox="0,0,1.0,1.0" Viewport="0,0,1.0,1.0">
+                        <DrawingBrush.Drawing>
+                  <DrawingGroup x:Name="DrawingGroup">
+                    <DrawingGroup.ClipGeometry>
+                      <RectangleGeometry Rect="0,0,1,1"></RectangleGeometry>
+                    </DrawingGroup.ClipGeometry>
+                    <GeometryDrawing Brush="{Binding RelativeSource={RelativeSource TemplatedParent},Path=LinearGradientBrush}">
+                      <GeometryDrawing.Geometry>
+                      <RectangleGeometry Rect="0,0,1,1"></RectangleGeometry>
+                      </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <GeometryDrawing x:Name="StartPointGeometryDrawing">
+                      <GeometryDrawing.Pen>
+                        <Pen Brush="Brown" Thickness="0.02"></Pen>
+                      </GeometryDrawing.Pen>
+                      <GeometryDrawing.Geometry>
+                        
+                        <EllipseGeometry RadiusX="0.02" RadiusY="0.02" Center="{Binding RelativeSource={RelativeSource TemplatedParent},Path=StartPoint,Mode=TwoWay}">
+                        </EllipseGeometry>
+                      </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                            <GeometryDrawing x:Name="EndPointGeometryDrawing">
+                      <GeometryDrawing.Pen>
+                        <Pen Brush="Green" Thickness="0.02"></Pen>
+                      </GeometryDrawing.Pen>
+                      <GeometryDrawing.Geometry>
+
+                        <EllipseGeometry RadiusX="0.02" RadiusY="0.02" Center="{Binding RelativeSource={RelativeSource TemplatedParent},Path=EndPoint,Mode=TwoWay}">
+                        </EllipseGeometry>
+                      </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                          </DrawingGroup>
+                          </DrawingBrush.Drawing>
+                        </DrawingBrush>
+                      </Rectangle.Fill>
+                    </Rectangle>
+                </Grid>
+              </Border>
+          </Grid>
+          </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

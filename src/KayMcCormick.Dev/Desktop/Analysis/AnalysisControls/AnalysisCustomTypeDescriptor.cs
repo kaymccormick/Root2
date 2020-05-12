@@ -105,14 +105,14 @@ namespace AnalysisControls
         /// <param name="type"></param>
         /// <param name="context"></param>
         public AnalysisCustomTypeDescriptor (
-            Func < Type , TypeConverter > funcConverter
-          , UiElementTypeConverter        uiElementTypeConverter
+            //Func < Type , TypeConverter > funcConverter,
+           UiElementTypeConverter        uiElementTypeConverter
           , Type                          type, IEnumerable<IPropertiesAdapter> propsAdapters
 	  , IComponentContext context
         ) : base()
         {
             DebugUtils.WriteLine("Constructor " + GetType().FullName + " " + type.FullName);
-            _funcConverter          = funcConverter ;
+           // _funcConverter          = funcConverter ;
             _uiElementTypeConverter = uiElementTypeConverter ;
             Type                    = type ;
             _props = propsAdapters.Where(p => p.HandleType(type)).ToList();

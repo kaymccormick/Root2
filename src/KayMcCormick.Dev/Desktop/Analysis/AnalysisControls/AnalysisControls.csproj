@@ -138,6 +138,7 @@
     <Compile Include="CustomTypes.cs" />
     <Compile Include="DevTypeControl.cs" />
     <Compile Include="DiagnosticError.cs" />
+    <Compile Include="DisplayModeConverter.cs" />
     <Compile Include="DocContent.cs" />
     <Compile Include="DocElements.cs" />
     <Compile Include="DocInfo.cs" />
@@ -221,6 +222,7 @@
     <Compile Include="StringObservableCollection - Copy.cs" />
     <Compile Include="SymbolTextControl.cs" />
     <Compile Include="SymbolTextSource.cs" />
+    <Compile Include="SyntaxFactoryPanel.cs" />
     <Compile Include="SyntaxNodeControl.cs" />
     <Compile Include="SyntaxNodeCustomTextSource.cs" />
     <Compile Include="SyntaxNodeDepth.cs" />
@@ -239,6 +241,7 @@
     <Compile Include="TestConverter1.cs" />
     <Compile Include="TestConverter2.cs" />
     <Compile Include="TextCaret.cs" />
+    <Compile Include="TypesViewModelFactory.cs" />
     <Compile Include="UiConverter.cs" />
     <Compile Include="ViewModel\ComponentTypesViewModel.cs" />
     <Compile Include="WorkspaceControl.xaml.cs">
@@ -247,6 +250,7 @@
     <Compile Include="WorkspaceMessage.cs" />
     <Compile Include="WorkspaceMessageSeverity.cs" />
     <Compile Include="WorkspaceView.cs" />
+    <Compile Include="XamlFuncs.cs" />
     <Compile Include="XmlDocElements.cs" />
     <EmbeddedResource Include="Program-Parse.cs" />
     <Compile Include="JsonSimpleFrameworkElementConverter.cs" />

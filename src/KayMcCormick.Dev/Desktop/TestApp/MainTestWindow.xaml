@@ -19,7 +19,7 @@
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
         <ResourceDictionary>
-          <local:DisplayModeConverter x:Key="DisplayModeConverter"/>
+          <anal:DisplayModeConverter x:Key="DisplayModeConverter"/>
           <CollectionViewSource Source="{Binding AppTypeInfos}" x:Key="AppTypeInfoSource" />
           <!--Control colors.-->
           <Color x:Key="WindowColor">#FFE8EDF9</Color>
@@ -385,11 +385,19 @@
 
     </Border>
     <Button FontSize="32" Grid.Row="1" Grid.Column="2" Content="&gt;" Command="MoveDown" />
-    <ScrollViewer Grid.Column="0"  Grid.Row="2" Grid.ColumnSpan="3">
+    <TabPanel Grid.Column="0"  Grid.Row="2" Grid.ColumnSpan="3">
+      <TabItem Header="Deets">
+    <ScrollViewer >
       <anal:SyntaxPanel x:Name="SyntaxPanel"  Margin="100,0,0,0" MaxWidth="1200" 
+                        SyntaxTypeInfo="{Binding SyntaxTypesModel.SelectedTypeInfo}"
                       HorizontalAlignment="Stretch"
                       VerticalAlignment="Stretch" 
                       />
     </ScrollViewer>
+      </TabItem>
+      <TabItem Header="Test">
+     
+      </TabItem>
+      </TabPanel>
   </Grid>
 </Window>

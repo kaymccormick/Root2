@@ -90,6 +90,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\..\..\..\..\..\..\.nuget\packages\extended.wpf.toolkit\3.8.1\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AllResourcesTree.xaml.cs">
@@ -116,6 +119,7 @@
     <Compile Include="ControlWrap.cs" />
     <Compile Include="CustomDataTemplateSelector.cs" />
     <Compile Include="DataTemplateKeyConverter.cs" />
+    <Compile Include="DecimalConverter.cs" />
     <Compile Include="DictionaryConverter.cs" />
     <Compile Include="ExceptionContentTemplateSelector.cs" />
     <Compile Include="ExceptionConverter.cs" />
@@ -126,6 +130,7 @@
       <DependentUpon>ExceptionUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GetTypeConverter.cs" />
+    <Compile Include="GradientEditorControl.cs" />
     <Compile Include="HandleExceptionImpl.cs" />
     <Compile Include="HierarchicalTemplateSelector.cs" />
     <Compile Include="IControlsProvider.cs" />
@@ -144,6 +149,7 @@
     <Compile Include="NavState.cs" />
     <Compile Include="PaneService.cs" />
     <Compile Include="ParameterInfoConverter.cs" />
+    <Compile Include="PointConverter.cs" />
     <Compile Include="ProxyUtils.cs" />
     <Compile Include="ResolveEnumerableExtension.cs" />
     <Compile Include="ResolveExtension.cs" />
@@ -164,6 +170,7 @@
     <Compile Include="SystemParametersControl.xaml.cs">
       <DependentUpon>SystemParametersControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TablePanel.cs" />
     <Compile Include="TemplateSelectorHelper.cs" />
     <Compile Include="TypeControl.xaml.cs">
       <DependentUpon>TypeControl.xaml</DependentUpon>
@@ -739,6 +746,9 @@
     <PackageReference Include="System.Text.Json">
       <Version>4.7.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="WpfLib\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

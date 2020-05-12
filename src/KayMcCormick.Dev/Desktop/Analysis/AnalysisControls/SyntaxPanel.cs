@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AnalysisAppLib;
 using AnalysisAppLib.Syntax;
+using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
 
 namespace AnalysisControls
@@ -49,6 +51,14 @@ namespace AnalysisControls
     /// </summary>
     public class SyntaxPanel : Control, IControlView
     {
+        public static readonly DependencyProperty ControlDepthProperty = DependencyProperty.Register(
+            "ControlDepth", typeof(int), typeof(SyntaxPanel), new PropertyMetadata(default(int)));
+
+        public int ControlDepth
+        {
+            get { return (int) GetValue(ControlDepthProperty); }
+            set { SetValue(ControlDepthProperty, value); }
+        }
         public SyntaxPanel(ITypesViewModel viewModel)
         {
         }
@@ -68,15 +78,15 @@ namespace AnalysisControls
 
         private void OnSyntaxTypeInfoUpdated(AppTypeInfo eNewValue)
         {
-            DataContext = eNewValue;
+            if (eNewValue != null) DebugUtils.WriteLine(eNewValue.ToString());
+            //SetCurrentValue(SyntaxTypeInfoProperty, eNewValue);
+            //DataContext = eNewValue;
             // _grid?.Children.Clear();
             // foreach (var kind in eNewValue.Kinds)
             // {
             //     
             // }
             //
-
-
         }
 
 
@@ -87,6 +97,9 @@ namespace AnalysisControls
             get { return (AppTypeInfo) GetValue(SyntaxTypeInfoProperty); }
             set { SetValue(SyntaxTypeInfoProperty, value); }
         }
+
+        public int NextDepth => ControlDepth + 1;
+
         static SyntaxPanel()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SyntaxPanel), new FrameworkPropertyMetadata(typeof(SyntaxPanel)));
@@ -95,6 +108,9 @@ namespace AnalysisControls
         public override void OnApplyTemplate()
         {
             _grid = (Grid) GetTemplateChild("Grid");
+            var colors = TryFindResource("Brushes");
+            if (colors is Brush[] iee)
+                Background = iee.Skip(ControlDepth).FirstOrDefault();
         }
     }
 

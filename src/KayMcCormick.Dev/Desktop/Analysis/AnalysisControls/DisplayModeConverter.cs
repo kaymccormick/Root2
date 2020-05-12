@@ -1,9 +1,8 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
-using AnalysisControls;
 
-namespace TestApp
+namespace AnalysisControls
 {
     public class DisplayModeConverter : IValueConverter
     {

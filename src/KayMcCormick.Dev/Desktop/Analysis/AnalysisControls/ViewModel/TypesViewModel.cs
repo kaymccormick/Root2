@@ -1,8 +1,10 @@
 ﻿using System ;
+using System.Collections;
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.IO ;
 using System.Linq ;
+using System.Reflection;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Text.Json ;
@@ -66,6 +68,7 @@ namespace AnalysisControls.ViewModel
 
         private readonly DocumentCollection _documentCollection = new DocumentCollection ( ) ;
         [ CanBeNull ] private readonly object _docInfo = null ;
+        private Dictionary<Type, AppTypeInfo> otherTyps = new Dictionary<Type, AppTypeInfo>();
 
         /// <summary>
         /// 
@@ -360,11 +363,151 @@ var mapCount = Map.Count ;
 
             DetailFields ( ) ;
 
-            //LoadSyntaxFactoryDocs ( _docs ) ;
+            LoadSyntaxFactoryDocs ( _docs ) ;
 //            StructureRoot = new AppTypeInfoCollection { Map[ typeof ( CompilationUnitSyntax ) ] } ;
             IsInitialized          = true ;
             InitializationDateTime = DateTime.Now ;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="docs"></param>
+        /// 
+        public void LoadSyntaxFactoryDocs(Dictionary<Type, TypeDocInfo> docs)
+        {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            _docs.TryGetValue(typeof(SyntaxFactory), out var si);
+            var methodInfos = typeof(SyntaxFactory)
+                             .GetMethods(BindingFlags.Static | BindingFlags.Public)
+                             .ToList();
+
+            foreach (var methodInfo in methodInfos.Where(
+                                                           info => typeof(SyntaxNode)
+                                                              .IsAssignableFrom(info.ReturnType)
+                                                          ))
+            {
+                var info = (AppTypeInfo)Map.Dict[new AppTypeInfoKey(methodInfo.ReturnType)];
+                var appMethodInfo = new AppMethodInfo { MethodInfo = methodInfo };
+                if (si != null
+                     && si.MethodDocumentation.TryGetValue(methodInfo.Name, out var mdoc))
+                {
+                    var p = string.Join(
+                                         ","
+                                       , methodInfo
+                                        .GetParameters()
+                                        .Select(
+                                                 parameterInfo
+                                                     => parameterInfo.ParameterType.FullName
+                                                )
+                                        );
+                    //Debug.WriteLine ( $"xx: {p}" ) ;
+                    foreach (var methodDocumentation in mdoc)
+                    {
+                        //  Debug.WriteLine ( methodDocumentation.Parameters ) ;
+                        if (methodDocumentation.Parameters == p)
+                        {
+                            //    Debug.WriteLine ( $"Docs for {methodInfo}" ) ;
+                            appMethodInfo.XmlDoc = methodDocumentation;
+                            CollectDoc(methodDocumentation);
+                        }
+                    }
+                }
+
+                info.FactoryMethods.Add(appMethodInfo);
+                //Logger.Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
+            }
+
+            foreach (var pair in Map.Dict.Where(pair => !pair.Key.Equals( new AppTypeInfoKey(typeof(CSharpSyntaxNode))))
+            )
+            {
+                //}.Where ( pair => pair.Key.IsAbstract == false ) )
+                {
+                    foreach (var propertyInfo in pair.Value.Type.GetProperties(
+                                                                          BindingFlags.DeclaredOnly
+                                                                          | BindingFlags.Instance
+                                                                          | BindingFlags.Public
+                                                                         ))
+                    {
+                        if (propertyInfo.DeclaringType != pair.Value.Type)
+                        {
+                            continue;
+                        }
+
+                        var t = propertyInfo.PropertyType;
+                        // if ( t == typeof ( SyntaxToken ) )
+                        // {
+                        // continue ;
+                        // }
+
+                        var isList = false;
+                        AppTypeInfo typeInfo = null;
+                        AppTypeInfo otherTypeInfo = null;
+                        if (t.IsGenericType)
+                        {
+                            var targ = t.GenericTypeArguments[0];
+                            if (typeof(SyntaxNode).IsAssignableFrom(targ)
+                                 && typeof(IEnumerable).IsAssignableFrom(t))
+                            {
+                                // Debug.WriteLine (
+                                // $"{pair.Key.Name} {propertyInfo.Name} list of {targ.Name}"
+                                // ) ;
+                                isList = true;
+                                typeInfo = (AppTypeInfo)Map[targ];
+                            }
+                        }
+                        else
+                        {
+                            if (!Map.Dict.TryGetValue(new AppTypeInfoKey(t), out typeInfo))
+                            {
+                                if (!otherTyps.TryGetValue(t, out otherTypeInfo))
+                                {
+                                    otherTypeInfo = otherTyps[t] = new AppTypeInfo { Type = t };
+                                }
+                            }
+                        }
+
+                        if (typeInfo == null
+                             && otherTypeInfo == null)
+                        {
+                            continue;
+                        }
+
+                        PropertyDocumentation propDoc = null;
+                        if (pair.Value.Type != null
+                             && _docs.TryGetValue(pair.Value.Type, out var info))
+                        {
+                            if (info.PropertyDocumentation.TryGetValue(
+                                                                         propertyInfo.Name
+                                                                       , out propDoc
+                                                                        ))
+                            {
+                            }
+                        }
+
+                        CollectDoc(propDoc);
+                        // pair.Value.Components.Add(
+                        //                            new ComponentInfo
+                        //                            {
+                        //                                XmlDoc = propDoc
+                        //                              ,
+                        //                                IsSelfOwned = true
+                        //                              ,
+                        //                                OwningTypeInfo = pair.Value
+                        //                              ,
+                        //                                IsList = isList
+                        //                              ,
+                        //                                TypeInfo = typeInfo ?? otherTypeInfo
+                        //                              ,
+                        //                                PropertyName = propertyInfo.Name
+                        //                            }
+                        //                           );
+                        //Logger.Info ( t.ToString ( ) ) ;
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// </summary>

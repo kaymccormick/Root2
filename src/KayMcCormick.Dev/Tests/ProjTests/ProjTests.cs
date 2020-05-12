@@ -2210,5 +2210,49 @@ namespace ProjTests
             Window w = new Window(){Content=c};
             w.ShowDialog();
         }
+        [WpfFact]
+        public void TestGradient()
+        {
+            var model = this.model();
+            // model.BeginInit();
+            // model.EndInit();
+            Random r = new Random();
+            var tt = model.GetAppTypeInfos().Where(t => t.Fields.Count > 0).Skip(r.Next(100)).First();
+            var c = new GradientEditorControl();
+            Window w = new Window() { Content = c };
+            w.ShowDialog();
+        }
+
+        [WpfFact]
+        void TestParseXaml()
+        {
+            var DESKTOPdIR = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\Desktop";
+            var analysisDir = $@"{DESKTOPdIR}\Analysis\";
+            var s = $@"{analysisDir}AnalysisControls\Themes\Generic.xaml";
+            var s2 = $@"{analysisDir}AnalysisControls\EnhancedCodeWindow.xaml";
+            var s1 = $@"{DESKTOPdIR}\TestApp\MainTestWindow.xaml";
+            foreach(var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+{
+Assembly.Load(name);
+}
+            XamlFuncs.ParseXaml(
+                s);
+        }
+
+        [WpfFact]
+        public void TestPanel()
+        {
+            var c = new WrapPanel();
+            TablePanel panel = new TablePanel() {RowSpacing = 10, ColumnSpacing = 10};
+            c.Children.Add(panel);
+            foreach (DictionaryEntry environmentVariable in Environment.GetEnvironmentVariables())
+            {
+                panel.Children.Add(new TextBlock {Text = environmentVariable.Key.ToString()});
+                panel.Children.Add(new TextBlock {Text = environmentVariable.Value.ToString()});
+            }
+
+            Window w = new Window {Content = c};
+            w.ShowDialog();
+        }
     }
 }

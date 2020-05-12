@@ -1,0 +1,95 @@
+﻿<Window x:Class="TestApp.BrushWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestApp"
+        xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+        mc:Ignorable="d"
+        x:Name="brushWin"
+        Title="BrushWindow" Height="450" Width="800">
+  <Window.Resources>
+    <kmWpf:PointConverter x:Key="PointConverter"/>
+  </Window.Resources>
+  <Window.CommandBindings>
+    <CommandBinding Command="Save" Executed="CommandBinding_OnExecuted2"></CommandBinding>
+    <CommandBinding Command="Open" Executed="OpenExecuted"></CommandBinding>
+    <CommandBinding Command="Paste" Executed="PasteExecuted" CanExecute="PasteCanExecute"/>
+  </Window.CommandBindings>
+  <Grid Margin="10">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="100" />
+      <ColumnDefinition Width="20" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <ToolBarTray>
+      <ToolBar Band="1" BandIndex="1">
+        <Button Content="Open" Command="Open" CommandParameter="Dialog"/>
+        <Button Content="Paste" Command="Paste"/>
+      </ToolBar>
+    </ToolBarTray>
+    <Border BorderBrush="BurlyWood" BorderThickness="1" Grid.ColumnSpan="3" Grid.Row="1" >
+      <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
+                TextElement.FontSize="16">
+        <StackPanel.Resources>
+          <Style TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+          </Style>
+          <Style x:Key="PointLabelStyle" TargetType="TextBlock" >
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+          </Style>
+        </StackPanel.Resources>
+        <Button Margin="10" Content="Save" Command="Save" />
+        <Button Margin="10" Content="Load" Command="Open" />
+        <Button Margin="10" Content="Test" Click="ButtonBase_OnClick" />
+        <Button Margin="10" Content="Test2" Click="ButtonBase_OnClick2" />
+        <TextBox Margin="10" x:Name="text1" />
+        <TextBlock Text="Start Point:"/>
+        <TextBlock Style="{StaticResource PointLabelStyle}" Margin="10" x:Name="text2"
+                 Text="{Binding ElementName=editor,Path=StartPoint,Converter={StaticResource PointConverter}}" />
+        <TextBlock Text="End Point:" VerticalAlignment="Center"/>
+        <TextBlock Style="{StaticResource PointLabelStyle}" Margin="10" x:Name="text3"
+               Text="{Binding ElementName=editor,Path=EndPoint,Converter={StaticResource PointConverter}}" />
+        <TextBox Margin="10" x:Name="text4" />
+      </StackPanel>
+    </Border>
+    <StackPanel Grid.Row="2" Grid.Column="0" >
+      <StackPanel Orientation="Horizontal">
+        <Button Content="Add New" Command="New" CommandTarget="{x:Reference BrushListView}"/>
+      </StackPanel>
+      <ListView SelectedIndex="0" ItemsSource="{Binding ElementName=brushWin,Path=BrushEditorState.BrushCollection}"
+                x:Name="BrushListView">
+        <ListView.CommandBindings>
+          <CommandBinding Command="New" Executed="CommandBinding_OnExecuted"/>
+          <CommandBinding Command="Delete" Executed="DeleteBrush"/>
+        </ListView.CommandBindings>
+        <ListView.View>
+          <GridView>
+            <GridViewColumn Header="Fill">
+              <GridViewColumn.CellTemplate>
+                <DataTemplate DataType="{x:Type LinearGradientBrush}">
+                  <Rectangle Width="25" Height="25" Fill="{Binding}"/>
+                </DataTemplate>
+              </GridViewColumn.CellTemplate>
+            </GridViewColumn>
+            <GridViewColumn Header="Brush">
+              <GridViewColumn.CellTemplate>
+                <DataTemplate DataType="{x:Type LinearGradientBrush}">
+                  <TextBlock Text="{Binding}"/>
+                </DataTemplate>
+              </GridViewColumn.CellTemplate>
+            </GridViewColumn>
+
+          </GridView>
+        </ListView.View>
+      </ListView>
+    </StackPanel>
+    <kmWpf:GradientEditorControl Background="Cornsilk" Grid.Row="2" Grid.Column="2" x:Name="editor" LinearGradientBrush="{Binding ElementName=BrushListView,Path=SelectedItem}" />
+  </Grid>
+</Window>

@@ -23,7 +23,7 @@
   <DataTemplate DataType="{x:Type system:DateTime}">
     <TextBlock Text="{Binding}"/>
   </DataTemplate>
-  <analysisControls:TestConverter2 x:Key="TestConverter1" />
+  <analysisControls:TestConverter2 x:Key="TestConverter2" />
   <DataTemplate x:Key="ActivationInfo.Context" DataType="{x:Type analysisAppLib:ActivationInfo}">
     <WrapPanel><ContentControl Content="{Binding Context.Tag}"/>
       <ContentControl Content="{Binding Context.NewInstanceActivated}"/>

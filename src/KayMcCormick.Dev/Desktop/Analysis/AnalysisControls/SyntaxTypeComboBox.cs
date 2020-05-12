@@ -117,14 +117,6 @@ namespace AnalysisControls
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SyntaxTypeComboBox), new FrameworkPropertyMetadata(typeof(SyntaxTypeComboBox)));
 
-            ComboBox.SelectionBoxItemProperty.OverrideMetadata(typeof(SyntaxTypeComboBox),
-                (PropertyMetadata) new FrameworkPropertyMetadata(
-                    new PropertyChangedCallback(OnSelectionBoxItemUpdated)));
-        }
-
-        private static void OnSelectionBoxItemUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            
         }
 
         public static readonly DependencyProperty SyntaxTypesModelProperty = DependencyProperty.Register(
@@ -151,6 +143,10 @@ namespace AnalysisControls
             _dropDownBorder = Template.FindName("DropDownBorder", this);
             _itemsHost = (Panel)Template.FindName("ItemsHost", this);
             _treeView = (TreeView) Template.FindName("TreeView", this);
+            
+               _editableTextBox = Template.FindName("PART_EditableTextBox", this);
+               _contentHost = ((Control) _editableTextBox).Template.FindName("PART_ContentHost", (FrameworkElement) _editableTextBox);
+               
             #if false
             if (_dropDownBorder is Border b)
             {
@@ -236,7 +232,8 @@ namespace AnalysisControls
             IsDropDownOpen = false;
             var appTypeInfo = (AppTypeInfo)e.NewValue;
             SyntaxTypesModel.SelectedTypeInfo = appTypeInfo;
-            SetValue(ComboBox.SelectionBoxItemProperty, appTypeInfo);
+            SetCurrentValue(SelectedItemProperty, appTypeInfo);
+            //SetValue(ComboBox.SelectionBoxItemProperty, appTypeInfo);
         }
 
         private ComboBox _ComboBox;
@@ -244,6 +241,8 @@ namespace AnalysisControls
         private object _dropDown;
         private object _dropDownBorder;
         private Panel _itemsHost;
+        private object _editableTextBox;
+        private object _contentHost;
 
         private void ComboBoxOnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -264,7 +263,23 @@ namespace AnalysisControls
     public class SyntaxTypesModel : DependencyObject
     {
         public static readonly DependencyProperty SelectedTypeInfoProperty = DependencyProperty.Register(
-            "SelectedTypeInfo", typeof(AppTypeInfo), typeof(SyntaxTypesModel), new PropertyMetadata(default(AppTypeInfo)));
+            "SelectedTypeInfo", typeof(AppTypeInfo), typeof(SyntaxTypesModel), new PropertyMetadata(default(AppTypeInfo), OnSelectedTypeInfoUpdated));
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            DebugUtils.WriteLine($"{e.Property.Name} {e.OldValue} {e.NewValue}");
+        }
+
+        private static void OnSelectedTypeInfoUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            SyntaxTypesModel s = (SyntaxTypesModel) d;
+            s.OnSelectedTypeInfoUpdated((AppTypeInfo)e.OldValue, (AppTypeInfo)e.NewValue);
+        }
+
+        private void OnSelectedTypeInfoUpdated(AppTypeInfo oldValue, AppTypeInfo newValue) 
+        {
+            DebugUtils.WriteLine(newValue.Title);
+        }
 
         public AppTypeInfo SelectedTypeInfo
         {

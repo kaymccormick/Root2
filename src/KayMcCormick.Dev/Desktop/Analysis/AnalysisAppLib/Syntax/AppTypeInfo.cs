@@ -121,6 +121,11 @@ namespace AnalysisAppLib.Syntax
             set { _subTypeInfos = value; }
         }
 
+        public override string ToString()
+        {
+            return $"AppTypeInfo[{Title}]";
+        }
+
         /// <summary>
         /// 
         /// </summary>
