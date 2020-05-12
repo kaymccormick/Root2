@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using KayMcCormick.Dev;
 
 namespace KayMcCormick.Lib.Wpf
@@ -12,7 +13,13 @@ namespace KayMcCormick.Lib.Wpf
     public class TablePanel : Panel
     {
         public static readonly DependencyProperty ColumnSpacingProperty = DependencyProperty.Register(
-            "ColumnSpacing", typeof(double), typeof(TablePanel), new PropertyMetadata(default(double)));
+            "ColumnSpacing", typeof(double), typeof(TablePanel), new PropertyMetadata(default(double), OnColumnSpacingUpdated));
+
+        private static void OnColumnSpacingUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            TablePanel t = (TablePanel)d;
+            t.InvalidateMeasure();
+        }
 
         public double ColumnSpacing
         {
@@ -21,7 +28,13 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         public static readonly DependencyProperty RowSpacingProperty = DependencyProperty.Register(
-            "RowSpacing", typeof(double), typeof(TablePanel), new PropertyMetadata(default(double)));
+            "RowSpacing", typeof(double), typeof(TablePanel), new PropertyMetadata(default(double), InRowSpacingUpdated));
+
+        private static void InRowSpacingUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            TablePanel t = (TablePanel)d;
+            t.InvalidateMeasure();
+        }
 
         public double RowSpacing
         {
@@ -31,6 +44,20 @@ namespace KayMcCormick.Lib.Wpf
         private List<Rect> _rects = new List<Rect>(20);
         private Size _cellAvailableSize;
 
+        public static readonly DependencyProperty NumColumnsProperty = DependencyProperty.Register(
+            "NumColumns", typeof(int), typeof(TablePanel), new PropertyMetadata(2, OnNumColumnsUpdated));
+
+        private static void OnNumColumnsUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            TablePanel t = (TablePanel)d;
+            t.InvalidateMeasure();
+        }
+
+        public int NumColumns
+        {
+            get { return (int) GetValue(NumColumnsProperty); }
+            set { SetValue(NumColumnsProperty, value); }
+        }
         public TablePanel()
         {
             
@@ -46,16 +73,20 @@ namespace KayMcCormick.Lib.Wpf
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            var internalChildren = InternalChildren;
-            if (_rects.Count < internalChildren.Count)
-            {
-                _rects.AddRange(Enumerable.Repeat(new Rect(), internalChildren.Count - _rects.Count));
-            }
-            var rows = internalChildren.Count / 2;
-            rowHeights.AddRange(Enumerable.Repeat(0.0, rows - rowHeights.Count));
-            
+            var internalChildren = InternalChildren.Cast<UIElement>()
+                .SelectMany(x => x is TableRow rowz ? (rowz.Children.Cast<UIElement>()) : Enumerable.Repeat(x, 1)).ToArray();
 
-            var X = new[] {0.0, 0.0};
+            if (_rects.Count < internalChildren.Length)
+            {
+                _rects.AddRange(Enumerable.Repeat(new Rect(), internalChildren.Length - _rects.Count));
+            }
+            var rows = internalChildren.Length / NumColumns + (internalChildren.Length % NumColumns == 0 ? 0 : 1);
+            var rowHeightsCount = rows - rowHeights.Count;
+            if(rowHeightsCount>0)
+            rowHeights.AddRange(Enumerable.Repeat(0.0, rowHeightsCount));
+            var columnWidthsCount = NumColumns - columnWidths.Count;
+            if(columnWidthsCount > 0)
+            columnWidths.AddRange(Enumerable.Repeat(0.0, columnWidthsCount));
             int col = 0;
             int row = 0;
             double rowHeight = 0.0;
@@ -64,8 +95,8 @@ namespace KayMcCormick.Lib.Wpf
             double Xpos = 0.0;
             double Ypos = 0.0;
             var i = 0;
-            var avail = new Size(availableSize.Width - ColumnSpacing * 2, availableSize.Height - RowSpacing * rows);
-            _cellAvailableSize = new Size(avail.Width / 2, avail.Height / rows);
+            var avail = new Size(availableSize.Width - ColumnSpacing * NumColumns, availableSize.Height - RowSpacing * rows);
+            _cellAvailableSize = new Size(avail.Width / NumColumns, avail.Height / rows);
             foreach (UIElement internalChild in internalChildren)
             {
                 internalChild.Measure(new Size(_cellAvailableSize.Width, Double.MaxValue));
@@ -73,16 +104,15 @@ namespace KayMcCormick.Lib.Wpf
                 internalChild.Measure(_cellAvailableSize);
 
                 rowHeight = Math.Max(Math.Max(rowHeight, internalChild.DesiredSize.Height), d1.Height);
-                if (internalChild.DesiredSize.Width > X[col])
+                if (internalChild.DesiredSize.Width > columnWidths[col])
                 {
-                    X[col] = internalChild.DesiredSize.Width;
+                    columnWidths[col] = internalChild.DesiredSize.Width;
                 }
 
-                _rects[i] = new Rect(col == 0? 0:X[0], Ypos, X[col], rowHeight);
-                col = (col + 1) % 2;
+                // _rects[i] = new Rect(col == 0? 0:columnWidths[col - 1], Ypos, columnWidths[col], rowHeight);
+                col = (col + 1) % NumColumns;
                 if (col == 0)
                 {
-                    
                     totalHeight += rowHeight;
                     Ypos += rowHeight + RowSpacing;
                     rowHeights[row] = rowHeight;
@@ -91,18 +121,25 @@ namespace KayMcCormick.Lib.Wpf
 
                 i++;
             }
-            columnWidths.Clear();
-            columnWidths.AddRange(X);
 
-            return new Size(X[0] + X[1] +ColumnSpacing * 2, Ypos);
+            if (col != 0)
+            {
+                totalHeight += rowHeight;
+                Ypos += rowHeight + RowSpacing;
+                rowHeights[row] = rowHeight;
+                row++;
+            }
+
+            var width = columnWidths.Sum() + NumColumns * ColumnSpacing;
+            return new Size(width, Ypos);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            var internalChildren = InternalChildren;
-            var rows = internalChildren.Count / 2;
+            var internalChildren = InternalChildren.Cast<UIElement>()
+                .SelectMany(xx => xx is TableRow rowz ? (rowz.Children.Cast<UIElement>()) : Enumerable.Repeat(xx, 1)).ToArray();
+            var rows = internalChildren.Length / NumColumns + (internalChildren.Length % NumColumns == 0 ? 0 : 1);
             
-            var X = new[] { 0.0, 0.0 };
             int col = 0;
             int row = 0;
             double rowHeight = 0.0;
@@ -111,14 +148,16 @@ namespace KayMcCormick.Lib.Wpf
             if (totalHEight < finalSize.Height)
             {
                 excessPerRow = (finalSize.Height - totalHEight) / rows;
+                totalHEight = finalSize.Height;
             }
 
             double totalWidth = columnWidths.Sum() + ColumnSpacing * 2;
             IEnumerable<double> excessWidthPerCol = Enumerable.Repeat(0.0, columnWidths.Count);
-            if(totalWidth < finalSize.Height)
+            if(totalWidth < finalSize.Width)
             {
                 var excessWidth = finalSize.Width - totalWidth;
                 excessWidthPerCol = columnWidths.Select(c => c / totalWidth * excessWidth);
+                totalWidth = finalSize.Width;
             }
             double Xpos = 0.0;
             double Ypos = 0.0;
@@ -127,11 +166,12 @@ namespace KayMcCormick.Lib.Wpf
             foreach (UIElement internalChild in internalChildren)
             {
                 double width = columnWidths[col] + x[col] ;
-                double height = rowHeights[row] + excessPerRow;  
-                internalChild.Arrange(new Rect(Xpos, Ypos, width, height));
+                double height = rowHeights[row] + excessPerRow;
+                var finalRect = new Rect(Xpos, Ypos, width, height);
+                internalChild.Arrange(finalRect);
+                DebugUtils.WriteLine(finalRect.ToString());
 
-                //_rects[i] = new Rect(col == 0 ? 0 : X[0], Ypos, X[col], rowHeight);
-                col = (col + 1) % 2;
+                col = (col + 1) % NumColumns;
                 if (col == 0)
                 {
                     row++;
@@ -145,10 +185,27 @@ namespace KayMcCormick.Lib.Wpf
 
                 i++;
             }
-
+            if (col != 0)
+            {
+                
+                Ypos += rowHeights[row] + excessPerRow + RowSpacing;
+                row++;
+                Xpos = 0;
+            }
 
             return new Size(totalWidth, Ypos);
         }
+
+        protected override Visual GetVisualChild(int index)
+        {
+            return InternalChildren.Cast<UIElement>()
+                .SelectMany(xx => xx is TableRow rowz ? (rowz.Children.Cast<UIElement>()) : Enumerable.Repeat(xx, 1)).ElementAt(index);
+
+        }
+
+        protected override int VisualChildrenCount => InternalChildren.Cast<UIElement>()
+            .SelectMany(xx => xx is TableRow rowz ? (rowz.Children.Cast<UIElement>()) : Enumerable.Repeat(xx, 1))
+            .Count();
 
     }
 }

@@ -2190,7 +2190,24 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                    </Border>
+                      <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent},Path=AppMethodInfo}">
+              <ItemsControl ItemsSource="{Binding Parameters}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate DataType="{x:Type syntax:AppParameterInfo}">
+                    <kmWpf:TableRow>
+                      <TextBlock Text="{Binding Name}"/>
+                      <TextBlock Text="{Binding ParameterType}"/>
+                    </kmWpf:TableRow>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <kmWpf:TablePanel/>
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+              </ItemsControl>
+                      </Grid>
+          </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

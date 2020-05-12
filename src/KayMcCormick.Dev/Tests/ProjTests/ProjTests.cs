@@ -98,6 +98,7 @@ using File = System.IO.File;
 using MethodInfo = System.Reflection.MethodInfo;
 using Process = System.Diagnostics.Process;
 using RegionInfo = AnalysisControls.RegionInfo;
+using TableRow = KayMcCormick.Lib.Wpf.TableRow;
 using TextBlock = System.Windows.Controls.TextBlock;
 using XamlReader = System.Windows.Markup.XamlReader;
 using XamlWriter = System.Windows.Markup.XamlWriter;
@@ -2243,7 +2244,7 @@ Assembly.Load(name);
         public void TestPanel()
         {
             var c = new WrapPanel();
-            TablePanel panel = new TablePanel() {RowSpacing = 10, ColumnSpacing = 10};
+            TablePanel panel = new TablePanel() {RowSpacing = 3, ColumnSpacing = 10, NumColumns = 3};
             c.Children.Add(panel);
             foreach (DictionaryEntry environmentVariable in Environment.GetEnvironmentVariables())
             {
@@ -2254,5 +2255,46 @@ Assembly.Load(name);
             Window w = new Window {Content = c};
             w.ShowDialog();
         }
+
+        [WpfFact]
+        public void TestPanel2()
+        {
+            var c = new WrapPanel();
+            TablePanel panel = new TablePanel() { RowSpacing = 3, ColumnSpacing = 10, NumColumns = 3 };
+            c.Children.Add(panel);
+            foreach (DictionaryEntry environmentVariable in Environment.GetEnvironmentVariables())
+            {
+                var row = new TableRow();
+                row.Children.Add(new TextBlock { Text = environmentVariable.Key.ToString() });
+                row.Children.Add(new TextBlock { Text = environmentVariable.Value.ToString() });
+            }
+
+            Window w = new Window { Content = c };
+            w.ShowDialog();
+        }
+
+        [WpfFact]
+        public void TestAssembliesControl()
+        {
+            var c = new WrapPanel();
+            var panel = new AssembliesControl();
+panel.AssemblySource = AppDomain.CurrentDomain.GetAssemblies();
+            c.Children.Add(panel);
+
+            Window w = new Window {Content = c};
+            w.ShowDialog();
+        }
+       [WpfFact]
+        public void TestMethod1()
+        {
+            var c = new WrapPanel();
+            var model = TypesViewModelFactory.CreateModel();
+            var panel = new SyntaxFactoryPanel() { AppMethodInfo = model.GetAppTypeInfos().SelectMany(x=>x.FactoryMethods).First() };
+            c.Children.Add(panel);
+
+            Window w = new Window {Content = c};
+            w.ShowDialog();
+        }
+ 
     }
 }

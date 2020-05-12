@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AnalysisAppLib.Syntax;
 using AnalysisControls;
 using KayMcCormick.Dev;
 using Xunit;
@@ -21,7 +22,7 @@ namespace ProjTests
                 {
                     DebugUtils.WriteLine(appMethodInfo.MethodName);
                     if (appMethodInfo.XmlDoc != null) DebugUtils.WriteLine(appMethodInfo.XmlDoc.ToString());
-                    foreach (var appParameterInfo in appMethodInfo.Parameters)
+                    foreach (AppParameterInfo appParameterInfo in appMethodInfo.Parameters)
                     {
                         DebugUtils.WriteLine(appParameterInfo.Name);
                         DebugUtils.WriteLine(appParameterInfo.ParameterType.Name);

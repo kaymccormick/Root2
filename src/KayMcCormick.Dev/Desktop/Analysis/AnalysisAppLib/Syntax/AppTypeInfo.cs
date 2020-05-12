@@ -850,37 +850,9 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         [JsonIgnore]
         [NotMapped]
-        public System.Reflection.MethodInfo MethodInfo { get { return _methodInfo; } set { _methodInfo = value; } }
-
-        /// <summary>
-        /// </summary>
-        /// 
-        [NotMapped]
-        [CanBeNull] [ UsedImplicitly ] public Type ReflectedType { get { return MethodInfo.ReflectedType; } }
-
-        /// <summary>
-        /// </summary>
-        // ReSharper disable once UnusedMember.Global
-        [NotMapped]
-        [ CanBeNull ] public Type DeclaringType { get { return MethodInfo.DeclaringType; } }
-
-        /// <summary>
-        /// </summary>
-        [ NotNull ] [ UsedImplicitly ] public string MethodName { get { return MethodInfo.Name; } }
-
-        /// <summary>
-        /// </summary>
-        // ReSharper disable once UnusedMember.Global
-        [ NotNull ] public Type ReturnType { get { return MethodInfo.ReturnType; } }
-
-        /// <summary>
-        /// </summary>
-        // ReSharper disable once UnusedMember.Global
-        [ NotNull ] public IEnumerable<AppParameterInfo> Parameters
-        {
-            get
-            {
-                return MethodInfo.GetParameters()
+        public System.Reflection.MethodInfo MethodInfo { get { return _methodInfo; } set { _methodInfo = value;
+	MethodName = value.Name;
+	foreach(var p in MethodInfo.GetParameters()
                                  .Select(
                                          (info, i) => new AppParameterInfo
                                                       {
@@ -892,9 +864,49 @@ namespace AnalysisAppLib.Syntax
                                                          ,
                                                           IsOptional = info.IsOptional
                                                       }
-                                        );
-            }
-        }
+                                        ))
+					{
+
+Parameters.Add(p);
+}
+ReturnType = value.ReturnType;
+DeclaringType = value.DeclaringType;
+                
+} }
+
+        /// <summary>
+        /// </summary>
+        /// 
+        [NotMapped]
+        [CanBeNull] [ UsedImplicitly ] public Type ReflectedType { get; set; }
+
+        /// <summary>
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        [NotMapped]
+        [CanBeNull]
+        public Type DeclaringType { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [NotNull]
+        [UsedImplicitly]
+        public string MethodName { get; set; }
+
+        /// <summary>
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        [NotNull]
+        public Type ReturnType { get; set; }
+
+        /// <summary>
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        [ NotNull ] public AppParameterCollection Parameters
+        {
+            get;
+        }  = new AppParameterCollection();
 
         /// <summary>
         /// </summary>
@@ -906,6 +918,86 @@ namespace AnalysisAppLib.Syntax
         /// Primary key
         /// </summary>
         public int Id { get { return _id ; } set { _id = value ; } }
+    }
+
+    public class AppParameterCollection : IList, ICollection, IEnumerable
+    {
+        private IList _listImplementation = new List<AppParameterInfo>();
+        public IEnumerator GetEnumerator()
+        {
+            return _listImplementation.GetEnumerator();
+        }
+
+        public void CopyTo(Array array, int index)
+        {
+            _listImplementation.CopyTo(array, index);
+        }
+
+        public int Count
+        {
+            get { return _listImplementation.Count; }
+        }
+
+        public object SyncRoot
+        {
+            get { return _listImplementation.SyncRoot; }
+        }
+
+        public bool IsSynchronized
+        {
+            get { return _listImplementation.IsSynchronized; }
+        }
+
+        public int Add(object value)
+        {
+            return _listImplementation.Add(value);
+        }
+
+        public bool Contains(object value)
+        {
+            return _listImplementation.Contains(value);
+        }
+
+        public void Clear()
+        {
+            _listImplementation.Clear();
+        }
+
+        public int IndexOf(object value)
+        {
+            return _listImplementation.IndexOf(value);
+        }
+
+        public void Insert(int index, object value)
+        {
+            _listImplementation.Insert(index, value);
+        }
+
+        public void Remove(object value)
+        {
+            _listImplementation.Remove(value);
+        }
+
+        public void RemoveAt(int index)
+        {
+            _listImplementation.RemoveAt(index);
+        }
+
+        public object this[int index]
+        {
+            get { return _listImplementation[index]; }
+            set { _listImplementation[index] = value; }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return _listImplementation.IsReadOnly; }
+        }
+
+        public bool IsFixedSize
+        {
+            get { return _listImplementation.IsFixedSize; }
+        }
     }
 
     /// <summary>
