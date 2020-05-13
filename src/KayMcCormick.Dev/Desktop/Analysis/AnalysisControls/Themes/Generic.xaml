@@ -105,7 +105,6 @@
             <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
             <local:TestConverter2 x:Key="TestConverter2" />
 
-            <local:AConverter x:Key="AConverter" />
             <kmWpf:MethodInfoConverter x:Key="MethodInfoConverter" />
 
             <kmWpf:ParameterInfoConverter x:Key="ParameterInfoConverter" />
@@ -293,7 +292,7 @@
                           <WrapPanel Grid.Row="2" Grid.Column="1" Margin="10,5,0,0">
                             <TextBlock TextWrapping="Wrap">
                               <Run
-                                Text="{Binding Path=AssemblyQualifiedName,Mode=OneTime,Converter={StaticResource AConverter}}" />
+                                Text="{Binding Path=AssemblyQualifiedName,Mode=OneTime}" />
                             </TextBlock>
                           </WrapPanel>
 

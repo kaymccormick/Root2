@@ -31,7 +31,6 @@ using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
 using Autofac.Extras.AttributeMetadata;
 using Autofac.Features.AttributeFilters;
-using Autofac.Features.Metadata;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Container;
@@ -101,7 +100,7 @@ namespace Client2
                 registration.Metadata["GuidFrom"] = guidFrom;
             }
 
-            registration.Preparing += (sender, args) => {DebugUtils.WriteLine($"{args.Component.Activator.LimitType.ToString()}"); };
+            registration.Preparing += (sender, args) => {DebugUtils.WriteLine($"{args.Component.Activator.LimitType}"); };
             registration.Activating += (sender, args) => { };
             registration.Activated += (sender, args) => { };
             var registrationActivator = registration.Activator;
@@ -123,7 +122,7 @@ namespace Client2
         #endregion
 
 
-        private Subject<IComponentRegistration>
+        private readonly Subject<IComponentRegistration>
             regs = new Subject<IComponentRegistration>();
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -148,7 +147,6 @@ namespace Client2
                     )
                 )
                 .WithMetadata("Ribbon", true);
-            ;
             if (RegisterPython)
             {
                 builder.RegisterType<PythonViewModel>()

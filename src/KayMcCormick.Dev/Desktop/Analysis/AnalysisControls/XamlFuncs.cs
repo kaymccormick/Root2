@@ -10,6 +10,9 @@ using XamlReader = System.Windows.Markup.XamlReader;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class XamlFuncs
     {
         public static void ParseXaml(string f, string s = null)

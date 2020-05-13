@@ -9,12 +9,14 @@
 // 
 // ---
 #endregion
-using System.Runtime.Serialization ;
-using AnalysisAppLib ;
-using KayMcCormick.Dev ;
+
+using System.Runtime.Serialization;
+using AnalysisAppLib;
+using KayMcCormick.Dev;
+
 // ReSharper disable UnassignedGetOnlyAutoProperty
 
-namespace ProjInterface.ViewModel
+namespace Client2.ViewModel
 {
     public class AnalyzeResultsViewModel : IViewModel
     {

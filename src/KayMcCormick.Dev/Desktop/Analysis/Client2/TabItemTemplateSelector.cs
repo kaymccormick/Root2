@@ -10,7 +10,7 @@ namespace Client2
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             DebugUtils.WriteLine($"{item} {container}");
-            if (item is RibbonModelTab tab)
+            if (item is RibbonModelTab)
             {
                 DebugUtils.WriteLine($"{item} {container}");
                 FrameworkElement c = (FrameworkElement) container;

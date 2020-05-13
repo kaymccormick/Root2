@@ -6,18 +6,20 @@ using KayMcCormick.Lib.Wpf;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class UiConverter  : IValueConverter
     {
-        UiElementTypeConverter typeConverter = new UiElementTypeConverter(null);
-        public UiConverter()
-        {
-        }
+        readonly UiElementTypeConverter _typeConverter = new UiElementTypeConverter(null);
 
+        /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return typeConverter.ConvertTo(value, typeof(UIElement));
+            return _typeConverter.ConvertTo(value, typeof(UIElement));
         }
 
+        /// <inheritdoc />
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

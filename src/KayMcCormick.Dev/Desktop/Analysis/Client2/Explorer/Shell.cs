@@ -9,18 +9,20 @@
 // 
 // ---
 #endregion
-using System ;
-using System.Diagnostics ;
-using System.Runtime.InteropServices ;
-using System.Threading.Tasks ;
-using System.Windows.Interop ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
-using KayMcCormick.Lib.Wpf ;
+
+using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Windows.Interop;
+using JetBrains.Annotations;
+using KayMcCormick.Dev;
+using KayMcCormick.Lib.Wpf;
+
 // ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
 
-namespace ProjInterface.Explorer
+namespace Client2.Explorer
 {
     /// <summary>
     ///     Interaction logic for Window1.xaml

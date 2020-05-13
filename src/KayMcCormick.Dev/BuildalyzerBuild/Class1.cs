@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using AnalysisAppLib;
 using AnalysisAppLib.Dataflow;
@@ -9,7 +7,6 @@ using Buildalyzer;
 using Buildalyzer.Workspaces;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
-using Microsoft.Extensions.Logging;
 
 namespace BuildalyzerBuild
 {

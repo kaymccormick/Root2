@@ -92,7 +92,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AConverter.cs" />
     <Compile Include="AllCommands.cs" />
     <Compile Include="AnalysisCustomTypeDescriptor.cs" />
     <Compile Include="AnalysisCommands.cs" />

@@ -5,7 +5,7 @@ namespace Client2
     internal class ProjInterfaceOptions
     {
         [Option('w', "window", Default = "Client2Window1")]
-        public string window { get; set; }
+        public string Window { get; set; }
         [Option('c', "command")]
         public string Command { get; set; }
         [Option('a', "arg")]

@@ -2,7 +2,7 @@
 
 namespace ConsoleApp1.Migrations
 {
-    public partial class projectinfo : Migration
+    public partial class Projectinfo : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

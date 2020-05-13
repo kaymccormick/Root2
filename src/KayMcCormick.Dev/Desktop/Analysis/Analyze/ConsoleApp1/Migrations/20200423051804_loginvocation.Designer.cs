@@ -11,7 +11,7 @@ namespace ConsoleApp1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20200423051804_loginvocation")]
-    partial class loginvocation
+    partial class LogInvocation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

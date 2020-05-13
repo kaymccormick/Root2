@@ -210,7 +210,7 @@ namespace AnalysisControls.ViewModel
 
             foreach ( var pythonVariable in vars.Where ( pythonVariable => ! string.IsNullOrEmpty ( pythonVariable.VariableName ) && ! _pyScope.TryGetVariable ( pythonVariable.VariableName , out _ ) ) )
             {
-                DebugUtils.WriteLine ( $"populating variale {pythonVariable.VariableName}" ) ;
+                DebugUtils.WriteLine ( $"populating variable {pythonVariable.VariableName}" ) ;
                 _pyScope.SetVariable (
                                       pythonVariable.VariableName
                                     , pythonVariable.GetVariableValue ( )
@@ -249,19 +249,19 @@ namespace AnalysisControls.ViewModel
             var old = ( StringObservableCollection ) e.OldValue ;
             if ( old != null )
             {
-                old.CollectionChanged -= x.OnLinesCOllectionChanged ;
+                old.CollectionChanged -= x.OnLinesCollectionChanged ;
             }
 
             var @new = ( StringObservableCollection ) e.NewValue ;
-            if ( @new != null ) { @new.CollectionChanged += x.OnLinesCOllectionChanged ; }
+            if ( @new != null ) { @new.CollectionChanged += x.OnLinesCollectionChanged ; }
         }
 
-        private void OnLinesCOllectionChanged (
+        private void OnLinesCollectionChanged (
             object                                       sender
           , [ NotNull ] NotifyCollectionChangedEventArgs e
         )
         {
-            DebugUtils.WriteLine ( $"In {nameof ( OnLinesCOllectionChanged )}" ) ;
+            DebugUtils.WriteLine ( $"In {nameof ( OnLinesCollectionChanged )}" ) ;
             if ( e.Action != NotifyCollectionChangedAction.Add )
             {
                 return ;
@@ -387,89 +387,148 @@ namespace AnalysisControls.ViewModel
         #endregion
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class MyEvtArgs<T> : EventArgs
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public T Value
         {
             get;
-            private set;
         }
 
-        public MyEvtArgs(T value)
-        {
-            this.Value = value;
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        public MyEvtArgs(T value) => this.Value = value;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class NullStream : Stream
     {
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override bool CanRead
         {
             get { return true; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override bool CanSeek
         {
             get { return true; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override bool CanWrite
         {
             get { return true; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Flush()
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override long Length
         {
             get { return 0; }
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override long Position
         {
             get { return 0; }
             set { }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
             for (int i = 0; i < buffer.Length; i++) buffer[i] = 0;
             return count;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="origin"></param>
+        /// <returns></returns>
         public override long Seek(long offset, SeekOrigin origin)
         {
             return 0;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
         public override void SetLength(long value)
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
         public override void Write(byte[] buffer, int offset, int count)
         {
         }
     }
 
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class EventRaisingStreamWriter : StreamWriter
     {
         public event EventHandler<MyEvtArgs<string>> StringWritten;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
         public EventRaisingStreamWriter(Stream s) : base(s) { }
 
         private void LaunchEvent(string txtWritten)
         {
-            if (StringWritten != null)
-            {
-                StringWritten(this, new MyEvtArgs<string>(txtWritten));
-            }
+            StringWritten?.Invoke(this, new MyEvtArgs<string>(txtWritten));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
         public override void Write(string value)
         {
             LaunchEvent(value);

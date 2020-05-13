@@ -12,17 +12,17 @@ namespace Client2
         {
             base.OnStartup(e);
             bool select = false;
-            var keyb = InputManager.Current.PrimaryKeyboardDevice;
-            if (keyb.Modifiers == ModifierKeys.Control)
+            var keyboard = InputManager.Current.PrimaryKeyboardDevice;
+            if (keyboard.Modifiers == ModifierKeys.Control)
             {
                 select = true;
-            } else if (keyb.Modifiers == ModifierKeys.Shift)
+            } else if (keyboard.Modifiers == ModifierKeys.Shift)
             {
                 TetExit = true;
                 StartupCommand = new TestAndExitCommand();
             }
 
-            if (keyb.IsKeyToggled(Key.LeftCtrl))
+            if (keyboard.IsKeyToggled(Key.LeftCtrl))
             {
                 select = true;
             }
@@ -38,7 +38,6 @@ namespace Client2
                     {
                         Window w = (Window) Activator.CreateInstance(t);
                         RunWindow(w);
-                        return;
                     }
                 });
             }
@@ -49,9 +48,9 @@ namespace Client2
             }
         }
 
-        public ICommand StartupCommand { get; set; }
+        protected ICommand StartupCommand { get; set; }
 
-        public bool TetExit { get; set; }
+        private bool TetExit { get; set; }
 
         private void RunWindow(Window window)
         {
@@ -96,8 +95,6 @@ namespace Client2
             {typeof(Client2Window1), typeof(TestRibbonWindow), WpfAppCommands.QuitApplication};
 
         public object SelectedItem { get; set; }
-        public TimeSpan Timeout { get; }
-
-        private object _selected;
+        public TimeSpan Timeout { get; } = new TimeSpan(0, 0, 3);
     }
 }

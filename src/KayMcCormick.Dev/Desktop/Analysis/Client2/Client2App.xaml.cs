@@ -17,7 +17,6 @@ using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
 using NLog;
 using NLog.Targets;
-using ProjInterface;
 using static NLog.LogManager ;
 
 namespace Client2
@@ -86,7 +85,7 @@ namespace Client2
             // w.Show();
             // return;
             
-            var result = CommandLine.Parser.Default.ParseArguments<ProjInterfaceOptions>(e.Args)
+            var result = Parser.Default.ParseArguments<ProjInterfaceOptions>(e.Args)
                 .WithNotParsed(errors => MessageBox.Show(String.Join("", errors), "error"));
 
             result.WithParsed(options =>
@@ -105,25 +104,23 @@ namespace Client2
                 }
             }
 
-            string cmdStr = null;
             if (e.Args.Any())
             {
-                cmdStr = e.Args.First();
             }
             Logger.Trace("{methodName}", nameof(OnStartup));
-            var lifetimeScope = Scope;
             var wins = Scope.Resolve<IEnumerable<Meta<Lazy<Window>>>>();
 
 
 
-            var winChose = wins.Where(z => z.Metadata.ContainsKey("ShortKey") && (string)z.Metadata["ShortKey"] == Options.window);
-            if (!winChose.Any())
+            var winChose = wins.Where(z => z.Metadata.ContainsKey("ShortKey") && (string)z.Metadata["ShortKey"] == Options.Window);
+            var enumerable = winChose as Meta<Lazy<Window>>[] ?? winChose.ToArray();
+            if (!enumerable.Any())
             {
-                MessageBox.Show("Unknown window " + Options.window, "error");
+                MessageBox.Show("Unknown window " + Options.Window, "error");
                 Current.Shutdown(1);
             }
 
-            var win = winChose.First().Value.Value;
+            var win = enumerable.First().Value.Value;
 
 
             if (selCmd != null)
@@ -183,6 +180,7 @@ namespace Client2
         public static string DefaultWindow = "window2";
 
 
+        // ReSharper disable once UnusedMember.Local
         private void ShowErrorDialog ( string applicationError , string messageText )
         {
             MessageBox.Show (

@@ -9,9 +9,12 @@ namespace AnalysisControls
     /// </summary>
     public class WorkspaceView : Control
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty SelectedDocumentProperty = DependencyProperty.Register(
             "SelectedDocument", typeof(DocumentModel), typeof(WorkspaceView),
-            new PropertyMetadata(default(DocumentModel), new PropertyChangedCallback(OnSelectedDocumentChanged)));
+            new PropertyMetadata(default(DocumentModel), OnSelectedDocumentChanged));
 
         private static void OnSelectedDocumentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -45,18 +48,28 @@ namespace AnalysisControls
             set { SetValue(SelectedDocumentProperty, value); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event RoutedPropertyChangedEventHandler<DocumentModel> SelectedDocumentChanged
         {
             add { AddHandler(SelectedDocumentChangedEvent, value); }
             remove { RemoveHandler(SelectedDocumentChangedEvent, value); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public event RoutedPropertyChangedEventHandler<ProjectModel> SelectedProjectChanged
         {
             add { AddHandler(SelectedProjectChangedEvent, value); }
             remove { RemoveHandler(SelectedProjectChangedEvent, value); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnSelectedDocumentChanged(RoutedPropertyChangedEventArgs<DocumentModel> args)
         {
             RaiseEvent(args);
@@ -84,9 +97,12 @@ namespace AnalysisControls
         public override void OnApplyTemplate()
         {
             _treeView = (TreeView) GetTemplateChild("TreeView");
-            _treeView.SelectedItemChanged += TreeViewOnSelectedItemChanged;
+            if (_treeView != null) _treeView.SelectedItemChanged += TreeViewOnSelectedItemChanged;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty SelectedSolutionProperty = DependencyProperty.Register(
             "SelectedSolution", typeof(SolutionModel), typeof(WorkspaceView),
             new PropertyMetadata(default(SolutionModel)));
@@ -105,7 +121,7 @@ namespace AnalysisControls
         /// </summary>
         public static readonly DependencyProperty SelectedProjectProperty = DependencyProperty.Register(
             "SelectedProject", typeof(ProjectModel), typeof(WorkspaceView),
-            new PropertyMetadata(default(ProjectModel), new PropertyChangedCallback(OnSelectedProjectChanged)));
+            new PropertyMetadata(default(ProjectModel), OnSelectedProjectChanged));
 
         private static void OnSelectedProjectChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -117,11 +133,18 @@ namespace AnalysisControls
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e2"></param>
         protected virtual void OnSelectedProjectChanged(RoutedPropertyChangedEventArgs<ProjectModel> e2)
         {
             RaiseEvent(e2);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ProjectModel SelectedProject
         {
             get { return (ProjectModel) GetValue(SelectedProjectProperty); }

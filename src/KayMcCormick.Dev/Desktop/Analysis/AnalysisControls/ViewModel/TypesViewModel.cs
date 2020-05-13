@@ -14,7 +14,6 @@ using AnalysisAppLib ;
 using AnalysisAppLib.Properties ;
 using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.Xaml ;
-using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Serialization ;
@@ -73,7 +72,6 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="options"></param>
         public TypesViewModel ( List < AppTypeInfo > typeInfos =null) { _typeInfos = typeInfos ; }
 
         /// <summary>
@@ -387,7 +385,7 @@ var mapCount = Map.Count ;
                                                               .IsAssignableFrom(info.ReturnType)
                                                           ))
             {
-                var info = (AppTypeInfo)Map.Dict[new AppTypeInfoKey(methodInfo.ReturnType)];
+                var info = Map.Dict[new AppTypeInfoKey(methodInfo.ReturnType)];
                 var appMethodInfo = new AppMethodInfo { MethodInfo = methodInfo };
                 if (si != null
                      && si.MethodDocumentation.TryGetValue(methodInfo.Name, out var mdoc))
@@ -440,7 +438,6 @@ var mapCount = Map.Count ;
                         // continue ;
                         // }
 
-                        var isList = false;
                         AppTypeInfo typeInfo = null;
                         AppTypeInfo otherTypeInfo = null;
                         if (t.IsGenericType)
@@ -452,7 +449,6 @@ var mapCount = Map.Count ;
                                 // Debug.WriteLine (
                                 // $"{pair.Key.Name} {propertyInfo.Name} list of {targ.Name}"
                                 // ) ;
-                                isList = true;
                                 typeInfo = (AppTypeInfo)Map[targ];
                             }
                         }

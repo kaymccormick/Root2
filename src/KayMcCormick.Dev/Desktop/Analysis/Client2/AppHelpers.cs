@@ -2,17 +2,16 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using KayMcCormick.Lib.Wpf;
-using Microsoft.VisualStudio.Threading;
 
 namespace Client2
 {
-    static internal class AppHelpers
+    internal static class AppHelpers
     {
-        public static void SelectAppAction(ISelectAppModel mode, Action<ISelectAppModel> handlel)
+        public static void SelectAppAction(ISelectAppModel mode, Action<ISelectAppModel> handle)
         {
             var selectWindow = new ListBox();
+            // ReSharper disable once UnusedVariable
             object[] winTypes = new object[] {typeof(Client2Window1), typeof(TestRibbonWindow), WpfAppCommands.QuitApplication};
             selectWindow.ItemsSource = mode.Items;
 
@@ -33,13 +32,11 @@ namespace Client2
                 else
                 {
                     //var dispatcherOperation = ;////client2App2.Dispatcher.InvokeAsync(() =>
-                    handlel(mode);
-                    return;
+                    handle(mode);
                 }
 
             };
-            TaskScheduler ctx;
-                ctx = TaskScheduler.Current;
+            var ctx = TaskScheduler.Current;
 
             Task.Delay(mode.Timeout).ContinueWith(task =>
             {

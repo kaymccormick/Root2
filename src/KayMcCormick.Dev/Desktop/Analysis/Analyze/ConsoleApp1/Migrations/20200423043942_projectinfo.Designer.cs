@@ -11,7 +11,7 @@ namespace ConsoleApp1.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20200423043942_projectinfo")]
-    partial class projectinfo
+    partial class Projectinfo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

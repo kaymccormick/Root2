@@ -120,7 +120,6 @@
     <Compile Include="MyInfo.cs" />
     <Compile Include="ProjInterfaceOptions.cs" />
     <Compile Include="RibbonModelItemSplitButton.cs" />
-    <Compile Include="RibbonViewGroupProvider.cs" />
     <Compile Include="TabItemTemplateSelector.cs" />
     <Compile Include="TestAndExitCommand.cs" />
     <Compile Include="TestRibbonWindow.xaml.cs">

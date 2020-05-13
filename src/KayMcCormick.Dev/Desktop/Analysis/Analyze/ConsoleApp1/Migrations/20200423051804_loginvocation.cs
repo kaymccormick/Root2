@@ -2,7 +2,7 @@
 
 namespace ConsoleApp1.Migrations
 {
-    public partial class loginvocation : Migration
+    public partial class LogInvocation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -1,26 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using AnalysisAppLib;
 using AnalysisControls;
 using AnalysisControls.RibbonM;
 using Autofac;
@@ -30,7 +21,6 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
-using Microsoft.Graph;
 using NLog;
 
 namespace Client2
@@ -39,21 +29,15 @@ namespace Client2
     /// Interaction logic for Client2Window1.xaml
     /// </summary>
     [ShortKeyMetadata("Client2Window1")]
-    public partial class Client2Window1 : RibbonWindow, IView<ClientModel>, INotifyPropertyChanged
+    public sealed partial class Client2Window1 : RibbonWindow, IView<ClientModel>, INotifyPropertyChanged
     {
         private ClientModel _viewModel;
-        private static Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public Client2Window1()
         {
             InitializeComponent();
-            throw new InvalidOperationException();
             ViewModel = new ClientModel(new RibbonModel(), new ReplaySubject<IControlView>());
-        }
-
-        public override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
         }
 
         public Client2Window1(ILifetimeScope scope, ClientModel viewModel, MyCacheTarget2 myCacheTarget)
@@ -85,15 +69,6 @@ namespace Client2
             var logControl = new LogEventInstancesControl();
             logControl.SetBinding(LogEventInstancesControl.EventsSourceProperty,
                 new Binding("ViewModel.LogEntries") {Source = this});
-        }
-
-        private void Action()
-        {
-            for (;;)
-            {
-                LogManager.GetCurrentClassLogger().Info("My event");
-                Thread.Sleep(30000);
-            }
         }
 
         public ClientModel ViewModel
@@ -132,7 +107,7 @@ namespace Client2
                         foreach (var ribbonModelAppMenuElement in _viewModel.Ribbon.AppMenu.Items)
                             Logger.Info($"{ribbonModelAppMenuElement}");
 
-                        Logger.Info($"No app menu Items source");
+                        Logger.Info("No app menu Items source");
                     }
 
                     //_viewModel.Documents.Add(new DocModel { Title = "Log", Content = logControl });
@@ -142,8 +117,7 @@ namespace Client2
 
         private static void DumpRibbon(Ribbon ribbon)
         {
-            var Ribbon = ribbon;
-            foreach (var ribbonItem in Ribbon.Items)
+            foreach (var ribbonItem in ribbon.Items)
             {
                 if (ribbonItem is RibbonTab tab)
                 {
@@ -252,8 +226,8 @@ namespace Client2
                 }
             }
 
-            DumpLogicalChildren(Ribbon);
-            DumpVisualChildren(Ribbon);
+            DumpLogicalChildren(ribbon);
+            DumpVisualChildren(ribbon);
         }
 
         private static void DumpRibbonGallery(RibbonGallery g)
@@ -275,7 +249,7 @@ namespace Client2
         {
             foreach (var ccItem in cc.Items)
             {
-                if (ccItem is RibbonGalleryItem item)
+                if (ccItem is RibbonGalleryItem)
                 {
                     DebugUtils.WriteLine(ccItem.ToString());
                 }
@@ -288,11 +262,11 @@ namespace Client2
 
         private static void DumpLogicalChildren(DependencyObject node, int depth = 0)
         {
-            DebugUtils.WriteLine(String.Join("", Enumerable.Repeat("  ", depth)) + node.ToString());
+            DebugUtils.WriteLine(String.Join("", Enumerable.Repeat("  ", depth)) + node);
             foreach (var child in LogicalTreeHelper.GetChildren(node))
-        {
-            DumpLogicalChildren((DependencyObject) child, depth + 1);
-        }
+            {
+                DumpLogicalChildren((DependencyObject) child, depth + 1);
+            }
         }
         private static void DumpVisualChildren(DependencyObject node, int depth = 0)
         {
@@ -300,7 +274,7 @@ namespace Client2
             for (int i = 0; i < childrenCount; i++)
             {
                 var child = VisualTreeHelper.GetChild(node, i);
-                DebugUtils.WriteLine(String.Join("", Enumerable.Repeat("  ", depth)) + child.ToString());
+                DebugUtils.WriteLine(String.Join("", Enumerable.Repeat("  ", depth)) + child);
                 DumpVisualChildren(child, depth  + 1);
             }
         }
@@ -308,7 +282,7 @@ namespace Client2
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
