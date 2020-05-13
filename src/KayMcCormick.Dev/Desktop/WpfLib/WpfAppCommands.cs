@@ -166,6 +166,12 @@ namespace KayMcCormick.Lib.Wpf
                 , nameof(ViewResources)
                 , typeof(WpfAppCommands)
             );
+        public static readonly RoutedUICommand ExpandNode =
+            new RoutedUICommand(
+                "expandnode"
+                , nameof(ExpandNode)
+                , typeof(WpfAppCommands)
+            );
 
     }
 }

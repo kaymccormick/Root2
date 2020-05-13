@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Resources;
 using System.Windows;
 using System.Windows.Baml2006;
@@ -9,6 +10,11 @@ using AnalysisControls;
 using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.VisualBasic;
+using Remotion.FunctionalProgramming;
+using CSharpExtensions = Microsoft.CodeAnalysis.CSharp.CSharpExtensions;
+using SyntaxFactory = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using XamlReader = System.Windows.Markup.XamlReader;
 
 namespace ProjTests
@@ -26,12 +32,12 @@ namespace ProjTests
             chrow.RegionOffset = regionInfo.Offset;
             if (regionInfo.SyntaxNode != null)
             {
-                chrow.SyntaxNodeKind = regionInfo.SyntaxNode.Kind().ToString();
+                chrow.SyntaxNodeKind = CSharpExtensions.Kind(regionInfo.SyntaxNode).ToString();
                 chrow.SyntaxNodeType = regionInfo.SyntaxNode.GetType().Name;
             } else if (regionInfo.SyntaxToken.HasValue)
             {
                 var token = regionInfo.SyntaxToken.Value;
-                chrow.SyntaxTokenKind = token.Kind().ToString();
+                chrow.SyntaxTokenKind = CSharpExtensions.Kind(token).ToString();
                 chrow.SyntaxTokenText = token.Text;
                 chrow.SyntaxTokenValueText = token.ValueText;
                 chrow.SyntaxTokenValue = token.Value;
@@ -76,12 +82,22 @@ namespace ProjTests
             {
                 code = Resources.Program_Parse;
             }
-            var unitSyntax = SyntaxFactory.ParseCompilationUnit(code)
-                .NormalizeWhitespace("    ");
+            var unitSyntax = SyntaxNodeExtensions.NormalizeWhitespace<CompilationUnitSyntax>(SyntaxFactory.ParseCompilationUnit(code), "    ");
             var tree = SyntaxFactory.SyntaxTree(unitSyntax);
 
             compilation = AnalysisService.CreateCompilation("x", tree);
             return tree;
+        }
+
+        public static SyntaxTree SetupSyntaxParamsVb(out Compilation compilation, string code = null)
+        {
+            if (code == null)
+            {
+                code = "Console.Write(\"Press any key to continue...\")\r\nConsole.ReadKey(true)\r\n";
+            }
+
+            compilation = VisualBasicCompilation.Create("x", new[] {VisualBasicSyntaxTree.ParseText(code)});
+            return compilation.SyntaxTrees.First();
         }
 
         public static ResourceDictionary ControlsResources()
@@ -98,6 +114,25 @@ namespace ProjTests
 
             var oo = (ResourceDictionary) XamlReader.Load(b);
             return oo;
+        }
+
+        public static void TestSyntaxControlVb(FormattedTextControl control)
+        {
+            var tree = SetupSyntaxParamsVb(out var Compilation);
+
+            var resources = ProjTestsHelper.ControlsResources();
+            control.BorderThickness = new Thickness(3);
+            control.BorderBrush = Brushes.Pink;
+            control.VerticalAlignment = VerticalAlignment.Stretch;
+            control.HorizontalAlignment = HorizontalAlignment.Stretch;
+
+            control.SyntaxTree = tree;
+            control.Compilation = Compilation;
+            control.Model = Compilation.GetSemanticModel(tree);
+            var r = new MyResourceDictionary();
+            r.MergedDictionaries.Add(resources);
+            var w = new Window { Content = control, ShowActivated = true, Resources = r };
+            w.ShowDialog();
         }
     }
 

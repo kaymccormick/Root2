@@ -15,6 +15,18 @@ namespace AnalysisControls
             get { return (IEnumerable<Assembly>) GetValue(AssemblySourceProperty); }
             set { SetValue(AssemblySourceProperty, value); }
         }
+
+        public static readonly DependencyProperty SelectedAssemblyProperty = DependencyProperty.Register(
+            "SelectedAssembly", typeof(Assembly), typeof(AssembliesControl), new PropertyMetadata(default(Assembly)));
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Assembly SelectedAssembly
+        {
+            get { return (Assembly) GetValue(SelectedAssemblyProperty); }
+            set { SetValue(SelectedAssemblyProperty, value); }
+        }
         static AssembliesControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AssembliesControl), new FrameworkPropertyMetadata(typeof(AssembliesControl)));

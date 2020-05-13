@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,8 @@ using AnalysisAppLib;
 using AnalysisControls;
 using AnalysisControls.RibbonM;
 using Autofac;
+using Autofac.Core;
+using Autofac.Features.Metadata;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Logging;
@@ -44,6 +47,7 @@ namespace Client2
         public Client2Window1()
         {
             InitializeComponent();
+            throw new InvalidOperationException();
             ViewModel = new ClientModel(new RibbonModel(), new ReplaySubject<IControlView>());
         }
 
@@ -103,7 +107,7 @@ namespace Client2
                 if (_viewModel != null)
                 {
                     _viewModel.Main1Model = Main1.ViewModel;
-
+                    Main1.ViewModel.ClientViewModel = _viewModel;
                     DumpRibbon(_ribbon);
                 
 
@@ -284,7 +288,7 @@ namespace Client2
 
         private static void DumpLogicalChildren(DependencyObject node, int depth = 0)
         {
-            DebugUtils.WriteLine(string.Join("", Enumerable.Repeat("  ", depth)) + node.ToString());
+            DebugUtils.WriteLine(String.Join("", Enumerable.Repeat("  ", depth)) + node.ToString());
             foreach (var child in LogicalTreeHelper.GetChildren(node))
         {
             DumpLogicalChildren((DependencyObject) child, depth + 1);
@@ -296,7 +300,7 @@ namespace Client2
             for (int i = 0; i < childrenCount; i++)
             {
                 var child = VisualTreeHelper.GetChild(node, i);
-                DebugUtils.WriteLine(string.Join("", Enumerable.Repeat("  ", depth)) + child.ToString());
+                DebugUtils.WriteLine(String.Join("", Enumerable.Repeat("  ", depth)) + child.ToString());
                 DumpVisualChildren(child, depth  + 1);
             }
         }
@@ -308,52 +312,32 @@ namespace Client2
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
 
-    public class ClientModel : INotifyPropertyChanged
-    {
-        private readonly ReplaySubject<IControlView> _replay;
-        private RibbonModel _ribbon;
-
-        public ClientModel(RibbonModel model, ReplaySubject<IControlView> replay)
+        public static RibbonModel RibbonModelBuilder(IComponentContext c, IEnumerable<Parameter> o)
         {
-            _replay = replay;
-            _replay.SubscribeOn(Scheduler.Default)
-                .ObserveOnDispatcher(DispatcherPriority.Send)
-                .Subscribe(
-                    infos =>
-                    {
-                        DocModel doc = new DocModel();
-                        doc.Content = infos;
-                        Main1Model.Documents.Add(doc);
-                        Main1Model.ActiveContent = doc;
-                    }
-                );
-            Ribbon = model;
-        }
-
-        public LogEventInstanceObservableCollection LogEntries { get; set; } =
-            new LogEventInstanceObservableCollection();
-
-        public RibbonModel Ribbon
-        {
-            get { return _ribbon; }
-            set
+            var r = new RibbonModel {AppMenu = c.Resolve<RibbonModelApplicationMenu>()};
+            foreach (var tg in c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>())
             {
-                if (Equals(value, _ribbon)) return;
-                _ribbon = value;
-                OnPropertyChanged();
+                DebugUtils.WriteLine("Adding contextual tab group " + tg);
+                r.ContextualTabGroups.Add(tg);
             }
-        }
 
-        public Main1Model Main1Model { get; set; }
+            r.AppMenu.Items.Add(new RibbonModelAppMenuItem {Header = "test"});
+            var tabs = c.Resolve<IEnumerable<Meta<Lazy<RibbonModelTab>>>>();
+            foreach (var meta in tabs)
+            {
+                var ribbonModelTab = meta.Value.Value;
+                r.RibbonItems.Add(ribbonModelTab);
+            }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+            var tabProviders = c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>();
+            foreach (var ribbonModelProvider in tabProviders)
+            {
+                var item = ribbonModelProvider.ProvideModelItem(c);
+                r.RibbonItems.Add(item);
+            }
 
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            return r;
         }
     }
 }

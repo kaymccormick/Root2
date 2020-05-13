@@ -13,41 +13,31 @@
 #endregion
 
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using AnalysisAppLib;
-using AnalysisAppLib.Syntax;
 using AnalysisControls;
 using AnalysisControls.Commands;
 using AnalysisControls.RibbonM;
-using AnalysisControls.Scripting;
 using AnalysisControls.ViewModel;
 using Autofac;
 using Autofac.Core;
+using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
+using Autofac.Extras.AttributeMetadata;
 using Autofac.Features.AttributeFilters;
 using Autofac.Features.Metadata;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
-using KayMcCormick.Dev.Command;
 using KayMcCormick.Dev.Container;
-using KayMcCormick.Dev.Metadata;
+using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
-using KayMcCormick.Lib.Wpf.Command;
-using KayMcCormick.Lib.Wpf.View;
-using KayMcCormick.Lib.Wpf.ViewModel;
-using Microsoft.Extensions.Logging;
 using NLog;
-using ProjInterface;
 
 #if EXPLORER
 using ExplorerCtrl ;
@@ -83,7 +73,7 @@ namespace Client2
             , IRegistrationSource registrationSource
         )
         {
-            DebugUtils.WriteLine($"{componentRegistry}:{registrationSource}");
+            DebugUtils.WriteLine($"!! {componentRegistry}:{registrationSource}");
         }
 
         private ConcurrentDictionary<Guid, MyInfo> _regs =
@@ -111,7 +101,7 @@ namespace Client2
                 registration.Metadata["GuidFrom"] = guidFrom;
             }
 
-            registration.Preparing += (sender, args) => { };
+            registration.Preparing += (sender, args) => {DebugUtils.WriteLine($"{args.Component.Activator.LimitType.ToString()}"); };
             registration.Activating += (sender, args) => { };
             registration.Activated += (sender, args) => { };
             var registrationActivator = registration.Activator;
@@ -140,7 +130,7 @@ namespace Client2
 
         public override void DoLoad([NotNull] ContainerBuilder builder)
         {
-            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AssignableTo<IControlView>().AsSelf()
+            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AssignableTo<IControlView>().WithAttributedMetadata().AsSelf()
                 .AsImplementedInterfaces().WithCallerMetadata();
 
             builder.RegisterInstance(regs)
@@ -159,45 +149,32 @@ namespace Client2
                 )
                 .WithMetadata("Ribbon", true);
             ;
-            builder.RegisterType<PythonViewModel>()
-                .AsSelf()
-                .SingleInstance(); //.AutoActivate();
-            builder.RegisterBuildCallback(
-                scope =>
-                {
-                    var py = scope.Resolve<PythonViewModel>();
-                    if (!(py is ISupportInitialize init)) return;
+            if (RegisterPython)
+            {
+                builder.RegisterType<PythonViewModel>()
+                    .AsSelf()
+                    .SingleInstance(); //.AutoActivate();
+                builder.RegisterBuildCallback(
+                    scope =>
+                    {
+                        var py = scope.Resolve<PythonViewModel>();
+                        if (!(py is ISupportInitialize init)) return;
 
-                    init.BeginInit();
-                    init.EndInit();
-                }
-            );
+                        init.BeginInit();
+                        init.EndInit();
+                    }
+                );
+            }
 #endif
             builder.RegisterModule<AnalysisAppLibModule>();
 
 
-            builder.RegisterType<Client2Window1>().AsSelf().As<Window>();
-            builder.Register((c, o) =>
-            {
-                var r = new RibbonModel();
-                r.AppMenu = c.Resolve<RibbonModelApplicationMenu>();
-                r.ContextualTabGroups.Add(new RibbonModelContextualTabGroup() { Header = "Assemblies" });
-		r.AppMenu.Items.Add(new RibbonModelAppMenuItem{Header="test"});
-                var tabs = c.Resolve<IEnumerable<Meta<Lazy<RibbonModelTab>>>>();
-                foreach (var meta in tabs)
-                {
-                    var ribbonModelTab = meta.Value.Value;
-                    r.RibbonItems.Add(ribbonModelTab);
-                }
-                var tabProviders = c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>();
-                foreach (var ribbonModelProvider in tabProviders)
-                {
-                    var item = ribbonModelProvider.ProvideModelItem(c);
-                    r.RibbonItems.Add(item);
-                }
-
-                return r;
-            });
+            builder.Register((c) =>
+                    new Client2Window1(c.Resolve<ILifetimeScope>(), c.Resolve<ClientModel>(),
+                        c.ResolveOptional<MyCacheTarget2>()))
+                .As<Window>().WithCallerMetadata();
+            
+            builder.Register(Client2Window1.RibbonModelBuilder);
             builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
             builder.RegisterType<ClientModel>().AsSelf();
             builder.RegisterType<RibbonModelApplicationMenu>();
@@ -212,12 +189,27 @@ namespace Client2
             builder.RegisterType<RibbonModelGroup1>().As<RibbonModelGroup>().SingleInstance();
             builder.RegisterType<RibbonModelGroupTest1>().As<RibbonModelGroup>().SingleInstance();
             builder.RegisterType<RibbonModelGroupTest2>().As<RibbonModelGroup>().SingleInstance();
+            builder.RegisterType<ContextualTabGroup1>().As<RibbonModelContextualTabGroup>().SingleInstance();
             builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces();
             builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces();
             builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces();
         }
 
+        public bool RegisterPython { get; set; }
+
 #pragma warning disable 1998
+    }
+
+    public class x : IConstructorSelector
+    {
+        public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings,
+            IEnumerable<Parameter> parameters)
+        {
+            return constructorBindings
+                .Where(x => x.TargetConstructor.GetParameters().Any(info => info.ParameterType == typeof(ClientModel)))
+                .OrderByDescending(x => x.TargetConstructor.GetParameters().Length).FirstOrDefault();
+        }
+
     }
 
     public class DummyResourceAdder : IAddRuntimeResource

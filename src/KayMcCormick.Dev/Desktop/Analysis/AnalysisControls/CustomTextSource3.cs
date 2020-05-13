@@ -8,9 +8,13 @@ using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.VisualBasic;
+using CSharpExtensions = Microsoft.CodeAnalysis.CSharp.CSharpExtensions;
+using SyntaxFactory = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using SyntaxFacts = Microsoft.CodeAnalysis.CSharp.SyntaxFacts;
+using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 
 namespace AnalysisControls
 {
@@ -38,7 +42,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public CSharpCompilation Compilation { get; set; }
+        public Compilation Compilation { get; set; }
 
         public override int Length { get; protected set; }
 
@@ -146,8 +150,8 @@ namespace AnalysisControls
         public TextRunProperties PropsFor(in SyntaxTrivia trivia, string text)
         {
             var r = BasicProps();
-            DebugUtils.WriteLine($"{trivia.Kind()}");
-            if(trivia.Kind() == SyntaxKind.SingleLineCommentTrivia)
+            DebugUtils.WriteLine($"{CSharpExtensions.Kind(trivia)}");
+            if(CSharpExtensions.Kind(trivia) == SyntaxKind.SingleLineCommentTrivia)
             {
                 r.SetForegroundBrush(Brushes.YellowGreen);
             }
@@ -177,9 +181,17 @@ namespace AnalysisControls
 
         private void GenerateText()
         {
-            var f = new SyntaxWalkerF(col, this, TakeTextRun, MakeProperties);
+            if (this.Tree is VisualBasicSyntaxTree tree1)
+            {
+                var f1 = new SyntaxTalkVb(col, this, TakeTextRun, MakeProperties);
+                if (Node != null) f1.DefaultVisit(Node);
+            }
+            else
+            {
+                var f = new SyntaxWalkerF(col, this, TakeTextRun, MakeProperties);
+                if (Node != null) f.DefaultVisit(Node);
+            }
 
-            if (Node != null) f.DefaultVisit(Node);
             var i = 0;
             chars.Clear();
             //var model =  Compilation?.GetSemanticModel(Tree);
@@ -242,11 +254,11 @@ namespace AnalysisControls
         public TextRunProperties PropsFor(SyntaxToken token, string text)
         {
             var pp = BasicProps();
-            var kind = token.Kind();
+            var kind = CSharpExtensions.Kind(token);
 
             if (token.Parent != null)
             {
-                var syntaxKind = token.Parent.Kind();
+                var syntaxKind = CSharpExtensions.Kind(token.Parent);
 
                 DebugUtils.WriteLine(syntaxKind.ToString());
                 if(SyntaxFacts.IsName(syntaxKind))

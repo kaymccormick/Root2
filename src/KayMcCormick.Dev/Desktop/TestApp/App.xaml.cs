@@ -9,6 +9,8 @@ using System.Resources;
 using System.Runtime.ExceptionServices ;
 using System.Windows;
 using System.Windows.Baml2006;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Threading ;
 using System.Xaml;
@@ -100,6 +102,28 @@ namespace TestApp
             }
             
             base.OnStartup(e);
+
+            {
+                var c = new StackPanel() { Orientation = Orientation.Horizontal };
+                foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+                {
+                    Assembly.Load(name);
+                }
+
+                var left = new AssembliesControl { AssemblySource = AppDomain.CurrentDomain.GetAssemblies(), MaxWidth = 400 };
+                var panel = new AssemblyResourceTree();
+                panel.SetBinding(AssemblyResourceTree.AssemblyProperty, new Binding("SelectedAssembly") { Source = left });
+                c.Children.Add(left);
+                c.Children.Add(panel);
+                using (var hexa = new WpfHexaEditor.HexEditor())
+                {
+                    c.Children.Add(hexa);
+
+                    //panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
+                    Window w = new Window { Content = c };
+                    w.ShowDialog();
+                }
+            }
 
             var cTempProgramCs = e.Args.FirstOrDefault();
             if (cTempProgramCs != null)

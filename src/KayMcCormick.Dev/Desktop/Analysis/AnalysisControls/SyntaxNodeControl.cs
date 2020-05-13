@@ -15,14 +15,14 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public static readonly DependencyProperty CompilationProperty = DependencyProperty.RegisterAttached(
-            "Compilation", typeof(CSharpCompilation), typeof(SyntaxNodeControl), new FrameworkPropertyMetadata(default(CSharpCompilation), FrameworkPropertyMetadataOptions.Inherits));
+            "Compilation", typeof(Compilation), typeof(SyntaxNodeControl), new FrameworkPropertyMetadata(default(Compilation), FrameworkPropertyMetadataOptions.Inherits));
 
         /// <summary>
         /// 
         /// </summary>
-        public CSharpCompilation Compilation
+        public Compilation Compilation
         {
-            get { return (CSharpCompilation)GetValue(CompilationProperty); }
+            get { return (Compilation)GetValue(CompilationProperty); }
             set { SetValue(CompilationProperty, value); }
         }
 

@@ -11,8 +11,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
+using AnalysisControls.RibbonM;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
+using KayMcCormick.Lib.Wpf;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -39,9 +41,34 @@ namespace AnalysisControls
             {
                 if (Equals(value, _activeContent)) return;
                 _activeContent = value;
+                if (value is DocModel d)
+                {
+                    ContextualTabGroups.Clear();
+                    foreach (var header in d.ContextualTabGroupHeaders)
+                    {
+                        DebugUtils.WriteLine("Adding group " + header);
+                        ContextualTabGroups.Add(header);
+                    }
+                }
+
                 OnPropertyChanged();
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ObservableCollection<object> ContextualTabGroups
+        {
+            get { return _contextualTabGroups; }
+            set
+            {
+                if (Equals(value, _contextualTabGroups)) return;
+                _contextualTabGroups = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         private readonly ReplaySubject<Workspace> _replay;
         private Workspace _workspace;
@@ -50,6 +77,7 @@ namespace AnalysisControls
         private object _activeContent;
         private ProjectLoadProgress _projectLoadProgress;
         private CurrentOperation _currentOperation = new CurrentOperation();
+        private ObservableCollection<object> _contextualTabGroups = new ObservableCollection<object>();
 
         /// <summary>
         /// 
@@ -92,8 +120,11 @@ namespace AnalysisControls
                 .OrderByDescending(instance => instance.Version).FirstOrDefault();
             DebugUtils.WriteLine($"Registering {visualStudioInstance}");
             MSBuildLocator.RegisterInstance(visualStudioInstance);
+            VisualStudioInstance = visualStudioInstance;
             return true;
         }
+
+        public static VisualStudioInstance VisualStudioInstance { get; set; }
 
         /// <summary>
         /// 
@@ -119,18 +150,46 @@ namespace AnalysisControls
         /// </summary>
         public Main1Model()
         {
+            TablePanel t1 = new TablePanel();
+            TypeControl dev = new TypeControl();
+            dev.SetBinding(AttachedProperties.RenderedTypeProperty, new Binding("ActiveContent.Content") {Source = this, Converter = new GetTypeConverter()});
+            TextBlock h1 = new TextBlock {Text = "Active Document"};
+            t1.Children.Add(h1);
+            t1.Children.Add(dev);
+            TextBlock h2 = new TextBlock {Text = "Contextual Tab Group Headers"};
+            var lv1 = new ListBox();
+            lv1.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(ContextualTabGroups)) {Source = this});
+            t1.Children.Add(h2);
+            t1.Children.Add(lv1);
+
+            //b.SetBinding(TextBlock.TextProperty, new Binding("ActiveDocument.Content") {Source = this});
+
+            Documents.Add(new DocModel { Title = "Model", Content = t1});
             Documents.Add(new DocModel
             {
                 Title = "Assemblies",
                 Content = new AssembliesControl {AssemblySource = AppDomain.CurrentDomain.GetAssemblies()}
             });
-            TreeView tv = new TreeView()
+
+            var tv = new TreeView()
             {
-                DisplayMemberPath = "Header",
+                DisplayMemberPath = "Header"
+            };
+            tv.SetBinding(ItemsControl.ItemsSourceProperty,
+                new Binding("ViewModel.Ribbon.RibbonItems")
+                    {RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(RibbonWindow), 1)});
+            Anchorables.Add(new AnchorableModel() {Title = "Ribbon Tabs", Content = tv});
+
+            var lv = new ListBox()
+            {
                 
             };
-            tv.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("ViewModel.Ribbon.RibbonItems") { RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(RibbonWindow), 1)});
-            Anchorables.Add(new AnchorableModel() {Content = tv});
+            lv.SetBinding(ItemsControl.ItemsSourceProperty,
+                new Binding($"ClientModel.Ribbon.ContextualTabGroups")
+                {
+                    Source = this
+                });
+            Anchorables.Add(new AnchorableModel() {Title = "Contextual Tab Groups", Content = lv});
         }
 
         /// <summary>
@@ -209,7 +268,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public event EventHandler<ProjectAddedventArgs> ProjectedAddedEvent;
+        public event EventHandler<ProjectAddedEventArgs> ProjectedAddedEvent;
 
         /// <summary>
         /// 
@@ -254,7 +313,7 @@ namespace AnalysisControls
 
                     var projectModel = ProjectFromModel(m, e.NewSolution.GetProject(e.ProjectId));
                     m.Projects.Add(projectModel);
-                    ProjectedAddedEvent?.Invoke(this, new ProjectAddedventArgs() {Model = projectModel});
+                    ProjectedAddedEvent?.Invoke(this, new ProjectAddedEventArgs() {Model = projectModel});
                     break;
                 case WorkspaceChangeKind.ProjectRemoved:
                     break;
@@ -285,8 +344,11 @@ namespace AnalysisControls
                                 .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error);
                             var diagnostics = errs.ToList();
                             foreach (var diagnostic in diagnostics)
-                                d.Project.Diag.Add(new DiagnosticNodeModel(PathModelKind.Diagnostic)
-                                    {Diagnostic = diagnostic});
+                            {
+                                var docs = DiagnosticNodeModel.CreateInstance(PathModelKind.Diagnostic);
+                                docs.Diagnostic = diagnostic;
+                                d.Project.Diag.Add(docs);
+                            }
 
                             DebugUtils.WriteLine(string.Join("\n", diagnostics));
                             if (diagnostics.Any())
@@ -399,6 +461,8 @@ namespace AnalysisControls
             {
                 Name = sProjectDocument.Name, FilePath = sProjectDocument.FilePath
             };
+            d.Id = sProjectDocument.Id.Id;
+            d.DocumentId= sProjectDocument.Id;
             return d;
         }
 
@@ -579,6 +643,8 @@ namespace AnalysisControls
             }
         }
 
+        public IClientModel ClientViewModel { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -596,7 +662,7 @@ namespace AnalysisControls
             {
                 CurrentOperation = new CurrentOperation() {Description = "Open document " + doc.Name};
 
-                Workspace.OpenDocument(doc.Document.Id, true);
+                //Workspace.OpenDocument(doc.Document.Id, true);
                 Compilation compilation = null;
                 SemanticModel model = null;
 
@@ -629,6 +695,7 @@ namespace AnalysisControls
                     Model = model
                 };
                 var doc2 = new DocModel {Title = doc.Name, Content = c};
+                doc2.ContextualTabGroupHeaders.Add("Code Analysis");
                 Documents.Add(doc2);
                 ActiveContent = doc2;
                 CurrentOperation = null;
@@ -698,15 +765,36 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
+    public interface IClientModel
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        RibbonModel Ribbon { get; set; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class DiagnosticNodeModel : PathModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="kind"></param>
+        /// <returns></returns>
+        public static DiagnosticNodeModel CreateInstance(PathModelKind kind)
+        {
+            return new DiagnosticNodeModel(kind);
+        }
+
         private Diagnostic _diagnostic;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="kind"></param>
-        public DiagnosticNodeModel(PathModelKind kind) : base(kind)
+        private DiagnosticNodeModel(PathModelKind kind) : base(kind)
         {
         }
 
@@ -735,33 +823,5 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public string Message { get; set; }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class DocumentAddedEventArgs
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public DocumentModel Document { get; set; }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class ProjectAddedventArgs
-    {
-        private ProjectModel projectModel;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ProjectModel Model
-        {
-            get { return projectModel; }
-            set { projectModel = value; }
-        }
     }
 }

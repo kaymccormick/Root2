@@ -106,11 +106,13 @@
     </ApplicationDefinition>
     <Compile Include="AppAction.cs" />
     <Compile Include="AppHelpers.cs" />
+    <Compile Include="Client1W.cs" />
     <Compile Include="Client2App2.cs" />
     <Compile Include="Client2Window1.xaml.cs">
       <DependentUpon>Client2Window1.xaml</DependentUpon>
     </Compile>
     <Compile Include="Client2Module.cs" />
+    <Compile Include="ClientModel.cs" />
     <Compile Include="CustomAppEntry.cs" />
     <Compile Include="Explorer\Shell.cs" />
     <Compile Include="Explorer\ShellExplorerItem.cs" />
@@ -276,10 +278,6 @@
     <Page Include="Client2Window1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="RibbonResources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="TestRibbonWindow.xaml">
       <SubType>Designer</SubType>

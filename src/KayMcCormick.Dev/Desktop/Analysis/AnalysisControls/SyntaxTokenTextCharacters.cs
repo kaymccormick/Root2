@@ -2,6 +2,7 @@
 using System.Windows.Media.TextFormatting;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using VisualBasicExtensions = Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions;
 
 namespace AnalysisControls
 {
@@ -31,12 +32,24 @@ namespace AnalysisControls
             TextRunProperties textRunProperties, SyntaxToken token, SyntaxNode node) : base(characterString, 0, length, textRunProperties, token.Span)
         {
             Token = token;
-            if (Token.Kind() == SyntaxKind.None)
+            Microsoft.CodeAnalysis.VisualBasic.SyntaxKind kind;
+            SyntaxKind csKind;
+            switch (token.Language)
             {
-                throw new InvalidOperationException(token.Span.ToString());
-                
+                case LanguageNames.VisualBasic:
+                    kind = VisualBasicExtensions.Kind(token);
+                    if (kind == Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.None)
+                    {
+                        throw new InvalidOperationException(token.Span.ToString());
+                    }
+                    break;
+                case LanguageNames.CSharp:
+                    csKind = Token.Kind();
+                    if(csKind == SyntaxKind.None)
+                        throw new InvalidOperationException(token.Span.ToString());
+                    break;
             }
-            
+
             Node = node;
         }
     }

@@ -30,7 +30,14 @@
       <local:TabItemTemplateSelector x:Key="TabItemTemplateSelector"></local:TabItemTemplateSelector>
     </ResourceDictionary>
   </RibbonWindow.Resources>
-  <Grid VerticalAlignment="Stretch">
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="7*"></ColumnDefinition>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="7*"></RowDefinition>
+    </Grid.RowDefinitions>
+  <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
@@ -57,7 +64,7 @@
       <Ribbon.ContextualTabGroupStyle>
         <Style TargetType="RibbonContextualTabGroup">
           <Setter Property="TextElement.FontFamily" Value="Lucida Sans"/>
-          <Setter Property="Visibility" Value="{Binding Visibility}"/>
+          <Setter Property="Visibility" Value="{Binding ElementName=Main1.ViewItem,Path=ViewModel. Visibility}"/>
         </Style>
       </Ribbon.ContextualTabGroupStyle>
       <Ribbon.ItemContainerStyle>
@@ -80,4 +87,6 @@
     </Ribbon>
     <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1" ViewModel="{kmWpf:Resolve anal:Main1Model,Throw=false}" />
   </Grid>
+    </Grid>
+
 </RibbonWindow>

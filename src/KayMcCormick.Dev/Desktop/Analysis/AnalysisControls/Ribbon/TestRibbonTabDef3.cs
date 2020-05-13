@@ -192,4 +192,12 @@ namespace AnalysisControls.RibbonM
             get { return _tabHeader; }
         }
     }
+
+    public class ContextualTabGroup1 : RibbonModelContextualTabGroup
+    {
+        public ContextualTabGroup1()
+        {
+            Header = "Code Analysis";
+        }
+    }
 }

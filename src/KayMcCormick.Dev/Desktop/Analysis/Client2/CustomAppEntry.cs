@@ -15,7 +15,7 @@ namespace Client2
         [ STAThread ]
         public static void Main ( )
         {
-            
+            Environment.SetEnvironmentVariable("DISABLE_LOGGING", "Yes");
             var loggingConfiguration = AppLoggingConfiguration.Default ;
             loggingConfiguration.IsEnabledCacheTarget = true ;
             loggingConfiguration.MinLogLevel          = LogLevel.Trace ;

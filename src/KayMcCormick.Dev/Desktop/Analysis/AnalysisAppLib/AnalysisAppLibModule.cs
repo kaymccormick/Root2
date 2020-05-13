@@ -125,7 +125,11 @@ namespace AnalysisAppLib
                    .As < IDocInterface > ( )
                    .WithCallerMetadata ( ) ;
             builder.RegisterModule < LegacyAppBuildModule > ( ) ;
-            builder.RegisterType < ModelResources > ( ).WithCallerMetadata ( ).SingleInstance ( ) ;
+            if (RegisterModelResources)
+            {
+                builder.RegisterType<ModelResources>().WithCallerMetadata().SingleInstance();
+            }
+            
             builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly ( ) )
                    .Where (
                            type => {
@@ -224,6 +228,8 @@ namespace AnalysisAppLib
                    .WithCallerMetadata ( ) ;
             #endregion
         }
+
+        public bool RegisterModelResources { get; set; }
 
         [ NotNull ]
         private static DataTable DataAdapter (

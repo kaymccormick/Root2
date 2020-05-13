@@ -9,17 +9,4 @@
 // 
 // ---
 #endregion
-using System.Runtime.Serialization ;
 
-namespace KayMcCormick.Dev
-{
-
-    internal sealed class ModelResources2 : IViewModel
-    {
-        public ModelResources2 ( ) { }
-
-        #region Implementation of ISerializable
-        public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
-        #endregion
-    }
-}

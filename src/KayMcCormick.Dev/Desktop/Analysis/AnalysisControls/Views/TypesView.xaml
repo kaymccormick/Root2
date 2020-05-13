@@ -8,7 +8,7 @@
              xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
              xmlns:classLib="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
              xmlns:analysisAppLib="clr-namespace:AnalysisAppLib.XmlDoc;assembly=AnalysisAppLib"
-             xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
+             xmlns:analysisiAppLib1="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
              xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
              xmlns:analysisControls="clr-namespace:AnalysisControls"
              DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
@@ -220,6 +220,7 @@
                     </VisualStateManager.VisualStateGroups>
                     <ToggleButton x:Name="Expander"
                                   Style="{StaticResource ExpandCollapseToggleStyle}"
+                                  Command="kmWpf:WpfAppCommands.ExpandNode"
                                   ClickMode="Press"
                                   IsChecked="{Binding IsExpanded, 
             RelativeSource={RelativeSource TemplatedParent}}" />

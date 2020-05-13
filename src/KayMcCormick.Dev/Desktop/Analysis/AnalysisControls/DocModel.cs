@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 
 namespace AnalysisControls
 {
@@ -7,6 +8,9 @@ namespace AnalysisControls
     /// </summary>
     public class DocModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public DocModel()
         {
         }
@@ -35,5 +39,10 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public object Content { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ObservableCollection<object> ContextualTabGroupHeaders { get; set; } = new ObservableCollection<object>();
     }
 }

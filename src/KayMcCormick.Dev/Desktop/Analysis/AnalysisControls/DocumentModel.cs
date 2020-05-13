@@ -35,12 +35,16 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public Document Document =>
-            _workspace.CurrentSolution.GetDocument(DocumentId.CreateFromSerialized(Project.Id, Id));
-    
+            _workspace.CurrentSolution.GetDocument(DocumentId);
+
         /// <summary>
         /// 
         /// </summary>
         public Guid Id { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public DocumentId DocumentId { get; set; }
         /// <summary>
         /// 
         /// </summary>

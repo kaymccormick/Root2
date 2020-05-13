@@ -105,6 +105,7 @@
     <Compile Include="AppTextSource.cs" />
     <Compile Include="AppTypeInfoConvereter.cs" />
     <Compile Include="AssembliesControl.cs" />
+    <Compile Include="AssemblyResourceTree.cs" />
     <Compile Include="CategoryInfo.cs" />
     <Compile Include="CharacterCell.cs" />
     <Compile Include="CodeControl1.xaml.cs">
@@ -141,7 +142,8 @@
     <Compile Include="DisplayModeConverter.cs" />
     <Compile Include="DocContent.cs" />
     <Compile Include="DocElements.cs" />
-    <Compile Include="DocInfo.cs" />
+    <Compile Include="DocModel.cs" />
+    <Compile Include="DocumentAddedEventArgs.cs" />
     <Compile Include="DocumentModel.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
     <Compile Include="EnhancedCodeControl.cs" />
@@ -185,6 +187,7 @@
     </Compile>
     <Compile Include="CodeGenCommand.cs" />
     <Compile Include="PathModel.cs" />
+    <Compile Include="ProjectAddedEventArgs.cs" />
     <Compile Include="ProjectModel.cs" />
     <Compile Include="RandoWindow.xaml.cs">
       <DependentUpon>RandoWindow.xaml</DependentUpon>
@@ -487,6 +490,9 @@
     <PackageReference Include="ReactiveUI.WPF">
       <Version>11.3.7</Version>
     </PackageReference>
+    <PackageReference Include="System.Composition.AttributedModel">
+      <Version>1.0.31</Version>
+    </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
       <Version>4.7.1</Version>
     </PackageReference>
@@ -495,6 +501,9 @@
     </PackageReference>
     <PackageReference Include="System.Threading.Tasks.Extensions">
       <Version>4.5.4</Version>
+    </PackageReference>
+    <PackageReference Include="WPFHexaEditor">
+      <Version>2.0.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

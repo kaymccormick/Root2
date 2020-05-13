@@ -42,6 +42,7 @@ namespace AnalysisControls
         /// <param name="span"></param>
         public CustomTextCharacters([NotNull] string characterString, int offsetToFirstChar, int length, [NotNull] TextRunProperties textRunProperties, TextSpan span) : base(characterString, offsetToFirstChar, length, textRunProperties)
         {
+            if (offsetToFirstChar != 0) throw new ArgumentOutOfRangeException(nameof(offsetToFirstChar));
             _text = characterString;
             Span = span;
         }

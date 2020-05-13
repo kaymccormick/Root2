@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -12,11 +13,22 @@ using AvalonDock;
 using AvalonDock.Layout;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.VisualBasic;
+using SyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Main1 : Control, IView<Main1Model>
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="constraint"></param>
+        /// <returns></returns>
         protected override Size MeasureOverride(Size constraint)
         {
             var size = base.MeasureOverride(constraint);
@@ -25,6 +37,7 @@ namespace AnalysisControls
             return size;
         }
 
+        /// <inheritdoc />
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
             var outv = base.ArrangeOverride(arrangeBounds);
@@ -36,11 +49,12 @@ namespace AnalysisControls
         {
             base.OnPropertyChanged(e);
             if (e.Property.Name == "ActualWidth" || e.Property.Name == "ActualHeight")
-            {
                 DebugUtils.WriteLine($"Property update {e.Property.Name} from {e.OldValue} to {e.NewValue}");
-            }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty AnchorablesProperty = DependencyProperty.Register(
             "Anchorables", typeof(IEnumerable), typeof(Main1),
             new PropertyMetadata(default(IEnumerable)));
@@ -48,13 +62,14 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once MemberCanBePrivate.Global
         public IEnumerable Anchorables
         {
             get { return (IEnumerable) GetValue(AnchorablesProperty); }
             set { SetValue(AnchorablesProperty, value); }
         }
 
-        private ObservableCollection<object> _anchorables = new ObservableCollection<object>();
+        private readonly ObservableCollection<object> _anchorables = new ObservableCollection<object>();
 
         /// <summary>
         /// 
@@ -65,19 +80,13 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public IEnumerable Documents
         {
             get { return (IEnumerable) GetValue(DocumentsProperty); }
             set { SetValue(DocumentsProperty, value); }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        // public static readonly DependencyProperty RibbonBuilderProperty = DependencyProperty.Register(
-            // "RibbonBuilder", typeof(RibbonBuilder), typeof(Main1), new PropertyMetadata(default(RibbonBuilder)));
-
-        private Grid _grid;
         private Main1Model _viewModel;
         private LayoutDocumentPaneGroup _layoutDocumentPaneGroup;
         private DockingManager _dockingManager;
@@ -87,10 +96,9 @@ namespace AnalysisControls
         /// </summary>
         // public RibbonBuilder RibbonBuilder
         // {
-            // get { return (RibbonBuilder) GetValue(RibbonBuilderProperty); }
-            // set { SetValue(RibbonBuilderProperty, value); }
+        // get { return (RibbonBuilder) GetValue(RibbonBuilderProperty); }
+        // set { SetValue(RibbonBuilderProperty, value); }
         // }
-
         static Main1()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(Main1), new FrameworkPropertyMetadata(typeof(Main1)));
@@ -105,62 +113,69 @@ namespace AnalysisControls
             SetBinding(DocumentsProperty, new Binding("ViewModel.Documents") {Source = this});
             SetBinding(AnchorablesProperty, new Binding("ViewModel.Anchorables") {Source = this});
 
-            var b = new CommandBinding(WpfAppCommands.CreateWorkspace, OncreateWorkSpaceExecuted, CanExecute);
-            CommandBindings.Add(b);
-            var b2 = new CommandBinding(WpfAppCommands.CreateSolution, OnCreateSolutionExecuted);
-            CommandBindings.Add(b2);
-            var b3 = new CommandBinding(WpfAppCommands.CreateProject, OnCreateProjectExecuted);
-            CommandBindings.Add(b3);
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateWorkspace, OnCreateWorkSpaceExecuted,
+                CanExecute));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateSolution, OnCreateSolutionExecuted));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateProject, OnCreateProjectExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.OpenSolutionItem, OnSolutionItemExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.LoadSolution, LoadSolutionExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.BrowseSymbols, OnBrowseSymbolsExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewDetails, OnViewDetailsExecutedAsync));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewResources, OnViewResourcesExecuted));
 
             //Documents.Add(new DocInfo { Description = "test", Content = Properties.Resources.Program_Parse});
         }
 
+        private void OnViewResourcesExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            var a = (Assembly) e.Parameter;
+            var doc = new DocModel() {Title = "Resources", Content = new AssemblyResourceTree() {Assembly = a}};
+            doc.ContextualTabGroupHeaders.Add("Resources");
+            ViewModel.Documents.Add(doc);
+            ViewModel.ActiveContent = doc;
+        }
+
         private async void OnViewDetailsExecutedAsync(object sender, ExecutedRoutedEventArgs e)
         {
-
-            DataGrid dg = new DataGrid();
+            var dg = new DataGrid();
             var desc = e.Parameter?.ToString() ?? "";
             if (e.Parameter is PathModel pm)
             {
                 if (pm.Item is DocumentModel dm)
-                {
                     try
                     {
                         var root = await dm.Document.GetSyntaxRootAsync();
-                        var c = root.DescendantNodesAndTokensAndSelf().ToList();
-                        dg.ItemsSource = c;
+                        if (root != null)
+                        {
+                            var c = root.DescendantNodesAndTokensAndSelf().ToList();
+                            dg.ItemsSource = c;
+                        }
+
                         desc = dm.Document.Name;
                     }
                     catch (Exception ex)
                     {
                         DebugUtils.WriteLine(ex.ToString());
                     }
-                }
                 else
-                {
                     dg.ItemsSource = pm.Children;
-                }
-            } else if (e.Parameter is ProjectModel pm2)
+            }
+            else if (e.Parameter is ProjectModel pm2)
             {
                 var project = ViewModel.Workspace.CurrentSolution.GetProject(pm2.Id);
                 if (project == null)
-                {
                     return;
-                }
                 else
                     dg.ItemsSource = project.Documents;
-            } else if (e.Parameter is Assembly a)
+            }
+            else if (e.Parameter is Assembly a)
             {
                 dg.ItemsSource = a.GetExportedTypes().ToList();
             }
 
             else
             {
-                dg.ItemsSource = new[]{e.Parameter};
+                dg.ItemsSource = new[] {e.Parameter};
             }
 
             var detailsTitle = "Details for " + desc;
@@ -175,10 +190,10 @@ namespace AnalysisControls
         public override void OnApplyTemplate()
         {
             CommandManager.AddPreviewCanExecuteHandler(this, PreviewCanExecute);
-            CommandManager.AddPreviewExecutedHandler(this, PrepviewExecuted);
-            _dockingManager = (DockingManager)GetTemplateChild("DockingManager");
-            _dockingManager.ActiveContentChanged += DockingManagerOnActiveContentChanged;
-            _grid = (Grid) GetTemplateChild("Grid");
+            CommandManager.AddPreviewExecutedHandler(this, PreviewExecuted);
+            _dockingManager = (DockingManager) GetTemplateChild("DockingManager");
+            if (_dockingManager != null) _dockingManager.ActiveContentChanged += DockingManagerOnActiveContentChanged;
+            
             AllowDrop = true;
             DragOver += OnDragOver;
             _layoutDocumentPaneGroup =
@@ -188,44 +203,34 @@ namespace AnalysisControls
             listBox.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("ViewModel.Messages") {Source = this});
             var listBoxView = new GridView();
             listBox.View = listBoxView;
-            listBoxView.Columns.Add(new GridViewColumn() { DisplayMemberBinding = new Binding("Project")});
-            
-            
+            listBoxView.Columns.Add(new GridViewColumn() {DisplayMemberBinding = new Binding("Project")});
+
+
             if (ViewModel == null)
             {
-                
                 //.Add(anchorableModel);
             }
             else
             {
-                var anchorableModel = new DocModel() { Content = ViewModel?.Messages, Title = "Messages" };
+                var anchorableModel = new DocModel() {Content = ViewModel?.Messages, Title = "Messages"};
                 ViewModel.Documents.Add(anchorableModel);
             }
         }
 
-        private void PrepviewExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void PreviewExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            string cmd = e.Command.ToString();
-            if (e.Command is RoutedUICommand rui)
-            {
-                cmd = rui.Text;
-            }
+            var cmd = e.Command.ToString();
+            if (e.Command is RoutedUICommand rui) cmd = rui.Text;
 
             DebugUtils.WriteLine($"{cmd} {e.Handled} {e.Handled}");
-
         }
 
         private void PreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            string cmd = e.Command.ToString();
-            if (e.Command is RoutedUICommand rui)
-            {
-                cmd = rui.Text;
-            }
+            var cmd = e.Command.ToString();
+            if (e.Command is RoutedUICommand rui) cmd = rui.Text;
 
             DebugUtils.WriteLine($"{cmd} {e.CanExecute} {e.Handled}");
-        
-
         }
 
         private async void OnBrowseSymbolsExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -270,11 +275,11 @@ namespace AnalysisControls
             if (ViewModel?.Workspace == null)
             {
                 e.CanExecute = true;
-                    e.ContinueRouting = false;
+                e.ContinueRouting = false;
             }
         }
 
-        private void OncreateWorkSpaceExecuted(object sender, ExecutedRoutedEventArgs e)
+        private void OnCreateWorkSpaceExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             DebugUtils.WriteLine(nameof(OnCreateProjectExecuted));
             ViewModel.CreateWorkspace();
@@ -282,46 +287,74 @@ namespace AnalysisControls
 
         private void OnDragOver(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                e.Effects = DragDropEffects.All;
-            else
-                e.Effects = DragDropEffects.None;
+            e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.All : DragDropEffects.None;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         protected override async void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 var docPath = (string[]) e.Data.GetData(DataFormats.FileDrop);
-                var file = docPath[0];
-                if (file.EndsWith(".cs"))
+                if (docPath != null)
                 {
-                    if (ViewModel.SelectedProject != null)
+                    var file = docPath[0];
+                    if (file.EndsWith(".cs") || file.EndsWith(".vb"))
                     {
-                        ViewModel.AddDocument(ViewModel.SelectedProject, file);
-                        return;
-                    }
-
-                    var context = AnalysisService.Load(file, "x", false);
-                    DebugUtils.WriteLine(string.Join("\n", context.Compilation.GetDiagnostics()));
-                    var doc = new DocModel()
-                    {
-                        // Content = "Beep",
-                        Content = new FormattedTextControl()
+                        if (ViewModel.SelectedProject != null)
                         {
-                            SyntaxTree = context.SyntaxTree,
-                            Compilation = context.Compilation
-                        },
-                        Title = System.IO.Path.GetFileNameWithoutExtension(file)
-                    };
-                    ViewModel.Documents.Add(doc);
-                }
-                else if (file.EndsWith(".sln"))
-                {
-                    await ViewModel.LoadSolution(file);
+                            ViewModel.AddDocument(ViewModel.SelectedProject, file);
+                            return;
+                        }
+
+                        Compilation compilation = null;
+                        SyntaxTree tree;
+                        if (file.EndsWith(".vb"))
+                        {
+                            tree = SyntaxFactory.ParseSyntaxTree(File.ReadAllText(docPath[0]),
+                                new VisualBasicParseOptions(),
+                                docPath[0]);
+
+                            compilation = VisualBasicCompilation.Create("x", new[] {tree});
+                        }
+                        else
+                        {
+                            var context = AnalysisService.Load(file, "x", false);
+                            var cSharpCompilation = context.Compilation;
+                            compilation = cSharpCompilation;
+                            DebugUtils.WriteLine(string.Join("\n", cSharpCompilation.GetDiagnostics()));
+
+                            tree = context.SyntaxTree;
+                        }
+
+                        var doc = CodeDoc(tree, compilation, file);
+                        ViewModel.Documents.Add(doc);
+                    }
+                    else if (file.EndsWith(".sln"))
+                    {
+                        await ViewModel.LoadSolution(file);
+                    }
                 }
             }
+        }
+
+        private static DocModel CodeDoc(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)
+        {
+            var doc = new DocModel()
+            {
+                // Content = "Beep",
+                Content = new FormattedTextControl()
+                {
+                    SyntaxTree = contextSyntaxTree,
+                    Compilation = cSharpCompilation
+                },
+                Title = Path.GetFileNameWithoutExtension(file)
+            };
+            return doc;
         }
 
         /// <inheritdoc />
@@ -334,23 +367,11 @@ namespace AnalysisControls
                 DataContext = _viewModel;
                 if (_viewModel != null)
                 {
-                    foreach (var anchorable in _anchorables)
-                    {
-                        _viewModel.Anchorables.Add(anchorable);
-                    }
+                    foreach (var anchorable in _anchorables) _viewModel.Anchorables.Add(anchorable);
 
                     _viewModel.View = this;
                 }
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public LayoutDocumentPaneGroup LayoutDocumentPaneGroup
-        {
-            get { return _layoutDocumentPaneGroup; }
-            set { _layoutDocumentPaneGroup = value; }
         }
     }
 }

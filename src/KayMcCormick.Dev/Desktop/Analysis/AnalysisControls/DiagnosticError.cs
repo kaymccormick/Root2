@@ -10,6 +10,10 @@ namespace AnalysisControls
     {
         private readonly Diagnostic _diagnostic;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="diagnostic"></param>
         public DiagnosticError(Diagnostic diagnostic)
         {
             _diagnostic = diagnostic;

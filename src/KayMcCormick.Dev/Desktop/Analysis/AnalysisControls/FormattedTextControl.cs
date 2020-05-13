@@ -16,7 +16,6 @@ using AnalysisAppLib;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Border = System.Windows.Controls.Border;
 using FontFamily = System.Windows.Media.FontFamily;
 using TextAlignment = System.Windows.TextAlignment;
@@ -310,7 +309,7 @@ c.Compilation = ctx.Compilation;
 
 
         // ReSharper disable once UnusedMember.Local
-        private void UpdateCompilation(CSharpCompilation compilation)
+        private void UpdateCompilation(Compilation compilation)
         {
             HandleDiagnostics(compilation.GetDiagnostics());
         }

@@ -21,6 +21,7 @@ using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using Microsoft.CodeAnalysis.Operations;
+using Microsoft.CodeAnalysis.VisualBasic;
 using NLog ;
 
 namespace AnalysisControls.Converters
@@ -75,7 +76,12 @@ namespace AnalysisControls.Converters
                         case SyntaxNodeInfo.ToFullString :     return s.ToFullString ( ) ;
                         case SyntaxNodeInfo.ToString :         return s.ToString ( ) ;
                         case SyntaxNodeInfo.Kind :
-                            return ( ( CSharpSyntaxNode ) s ).Kind ( ) ;
+                            if (s is CSharpSyntaxNode csn)
+                            {
+                                return csn.Kind();
+                            } else if (s is VisualBasicSyntaxNode vbn)
+                                return vbn.Kind();
+                            return null;
                         case SyntaxNodeInfo.ChildNodesAndTokens : return s.ChildNodesAndTokens ( ) ;
                         case SyntaxNodeInfo.ChildNodes :          return s.ChildNodes ( ) ;
                         case SyntaxNodeInfo.ChildTokens :         return s.ChildTokens ( ) ;

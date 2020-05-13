@@ -24,13 +24,13 @@ using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.IO.Packaging;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
 using System.Resources;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
@@ -45,7 +45,6 @@ using System.Windows.Baml2006;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -57,14 +56,12 @@ using System.Xml.Linq;
 using AnalysisAppLib;
 using AnalysisAppLib.Serialization;
 using AnalysisAppLib.Syntax;
-using AnalysisAppLib.XmlDoc;
 using AnalysisControls;
 using AnalysisControls.Properties;
 using AnalysisControls.RibbonM;
 using AnalysisControls.ViewModel;
 using Autofac;
 using AvalonDock;
-using AvalonDock.Controls;
 using AvalonDock.Layout;
 using Castle.DynamicProxy;
 using CsvHelper;
@@ -73,7 +70,6 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Application;
 using KayMcCormick.Dev.Command;
-using KayMcCormick.Dev.Interfaces;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Dev.TestLib;
 using KayMcCormick.Dev.TestLib.Fixtures;
@@ -87,10 +83,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Moq;
 using NLog;
-using NLog.Targets;
 using Xunit;
 using Xunit.Abstractions;
-using Application = KayMcCormick.Dev.Logging.Application;
 using Binding = System.Windows.Data.Binding;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using Condition = System.Windows.Automation.Condition;
@@ -1809,7 +1803,11 @@ namespace ProjTests
         {
             ProjTestsHelper.TestSyntaxControl(new FormattedTextControl());
         }
-
+        [WpfFact]
+        public void TestFormattedControlVb()
+        {
+            ProjTestsHelper.TestSyntaxControlVb(new FormattedTextControl());
+        }
         [WpfFact]
         public void TestSymbolControl()
         {
@@ -2317,6 +2315,140 @@ panel.AssemblySource = AppDomain.CurrentDomain.GetAssemblies();
             Window w = new Window {Content = c};
             w.ShowDialog();
         }
- 
+        [WpfFact]
+        public void TestAR1()
+        {
+            var c = new WrapPanel();
+            
+            var panel = new AssemblyResourceTree() { Assembly = typeof(AssemblyResourceTree).Assembly };
+            c.Children.Add(panel);
+
+            Window w = new Window { Content = c };
+            w.ShowDialog();
+        }
+        [WpfFact]
+        public void TestAR2()
+        {
+            var c = new StackPanel() {Orientation = Orientation.Horizontal};
+            foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+            {
+                Assembly.Load(name);
+            }
+
+            var left = new AssembliesControl {AssemblySource = AppDomain.CurrentDomain.GetAssemblies(), MaxWidth = 400};
+            var panel = new AssemblyResourceTree();
+            panel.SetBinding(AssemblyResourceTree.AssemblyProperty, new Binding("SelectedAssembly") {Source = left});
+            c.Children.Add(left);
+            c.Children.Add(panel);
+            using (var hexa = new WpfHexaEditor.HexEditor())
+            {
+                c.Children.Add(hexa);
+
+                panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
+                Window w = new Window {Content = c};
+                w.ShowDialog();
+            }
+        }
+
+
+        [WpfFact]
+        public void TestAR3()
+        {
+            var c = new StackPanel() { Orientation = Orientation.Horizontal };
+            foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
+            {
+                Assembly.Load(name);
+            }
+
+            var assemblySource = AppDomain.CurrentDomain.GetAssemblies();
+            var model = new AssemblyResourceModel();
+            foreach (var assembly in assemblySource)
+            {
+                model.Assemblies.Add(assembly);
+            }
+
+            var left = new AssembliesControl();
+            left.SetBinding(AssembliesControl.AssemblySourceProperty, new Binding("Assemblies") { Source = model });
+            left.SetBinding(AssembliesControl.SelectedAssemblyProperty, new Binding("SelectedAssembly") { Source = model, Mode=BindingMode.TwoWay });
+            left.MaxWidth = 400;
+            var panel = new AssemblyResourceTree();
+            panel.SetBinding(AssemblyResourceTree.AssemblyProperty, new Binding("SelectedAssembly") { Source = model, Mode=BindingMode.OneWay});
+            c.Children.Add(left);
+            c.Children.Add(panel);
+            using (var hexa = new WpfHexaEditor.HexEditor())
+            {
+                c.Children.Add(hexa);
+
+                panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
+                
+                var w = new Window { Content = c };
+                w.Loaded += (sender, args) =>
+                {
+                    model.SelectedAssembly = typeof(AnalysisControlsModule).Assembly;
+                };
+                w.ShowDialog();
+            }
+        }
+
+        private static async void OnPanelOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> args)
+        {
+            // var node = args.NewValue;
+            // var subnodeData = ((NodeBase) node);
+            // var result = subnodeData.CheckLoadItems(out var state);
+            // if (state == NodeDataLoadState.RequiresAsync)
+            // {
+                // var data = await subnodeData.CheckLoadItemsAsync();
+            // }
+
+            
+        }
+    }
+
+    public class AssemblyResourceModel : INotifyPropertyChanged
+    {
+        private INodeData _selectedNode;
+        private Assembly _selectedAssembly;
+        private ObservableCollection<Assembly> _assemblies = new ObservableCollection<Assembly>();
+
+        public ObservableCollection<Assembly> Assemblies
+        {
+            get { return _assemblies; }
+            set
+            {
+                if (Equals(value, _assemblies)) return;
+                _assemblies = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Assembly SelectedAssembly
+        {
+            get { return _selectedAssembly; }
+            set
+            {
+                if (Equals(value, _selectedAssembly)) return;
+                _selectedAssembly = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public INodeData SelectedNode
+        {
+            get { return _selectedNode; }
+            set
+            {
+                if (Equals(value, _selectedNode)) return;
+                _selectedNode = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

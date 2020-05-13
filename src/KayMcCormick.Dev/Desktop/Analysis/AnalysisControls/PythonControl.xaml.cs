@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls ;
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Windows.Controls ;
 using System.Windows.Input ;
 using AnalysisAppLib;
 using AnalysisControls.ViewModel ;
@@ -15,6 +17,7 @@ namespace AnalysisControls
     /// </summary>
     [ TitleMetadata ( "Python" ) ]
     [ GroupMetadata ( "Views" ) ]
+    [RequireOptionMetadata("Python")]
     public sealed partial class PythonControl : UserControl
       , IView < PythonViewModel >
       , IView1
@@ -86,6 +89,17 @@ namespace AnalysisControls
                     e.Handled = true ;
                     break ;
             }
+        }
+    }
+
+    [MetadataAttribute]
+    public class RequireOptionMetadataAttribute : Attribute
+    {
+        public string OptionName { get; }
+
+        public RequireOptionMetadataAttribute(string optionName)
+        {
+            OptionName = optionName;
         }
     }
 }

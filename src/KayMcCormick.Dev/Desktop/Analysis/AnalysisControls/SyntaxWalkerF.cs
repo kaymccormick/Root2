@@ -10,7 +10,11 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.VisualBasic;
 using NLog;
+using CSharpExtensions = Microsoft.CodeAnalysis.CSharp.CSharpExtensions;
+using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
+using VisualBasicExtensions = Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions;
 
 namespace AnalysisControls
 {
@@ -64,7 +68,7 @@ namespace AnalysisControls
 
         private void DoTrivia(SyntaxTrivia syntaxTrivia)
         {
-            DebugUtils.WriteLine("At " + syntaxTrivia.Kind().ToString());
+            DebugUtils.WriteLine("At " + CSharpExtensions.Kind(syntaxTrivia).ToString());
             if (syntaxTrivia.HasStructure)
             {
                 var w = new TriviaWalker(_lrun, _source3, _takeTextRun, _propertiesFunc,
@@ -83,7 +87,7 @@ namespace AnalysisControls
                 }
                 //throw new InvalidOperationException($"{syntaxTrivia.Span.Start} != {_curPos}");
             }
-            if (syntaxTrivia.Kind() == SyntaxKind.EndOfLineTrivia)
+            if (CSharpExtensions.Kind(syntaxTrivia) == SyntaxKind.EndOfLineTrivia)
             {
                 Take(new CustomTextEndOfLine(2, syntaxTrivia.Span));
                 return;
@@ -100,7 +104,7 @@ namespace AnalysisControls
             {
                 return;
             }
-            if (syntaxTrivia.Kind() == SyntaxKind.WhitespaceTrivia)
+            if (CSharpExtensions.Kind(syntaxTrivia) == SyntaxKind.WhitespaceTrivia)
             {
                 // if (text.Contains("\r"))
                 // {
@@ -154,7 +158,7 @@ namespace AnalysisControls
             // {
                 // DoTrivia(syntaxTrivia);
             // }
-            DebugUtils.WriteLine($"At {node.Kind()}");
+            DebugUtils.WriteLine($"At {CSharpExtensions.Kind(node)}");
             var l = node.GetLocation();
             var s1 = l.SourceSpan.Start;
             var pos = CurPos;
@@ -284,6 +288,12 @@ namespace AnalysisControls
         {
         }
     }
+    internal class TriviaWalkerVb : SyntaxTalkVb
+    {
+        public TriviaWalkerVb(IList<TextRun> lrun, CustomTextSource3 source3, Action<TextRun> takeTextRun, Func<object, string, TextRunProperties> propertiesFunc, SyntaxWalkerDepth depth = SyntaxWalkerDepth.StructuredTrivia) : base(lrun, source3, takeTextRun, propertiesFunc, depth)
+        {
+        }
+    }
 
     internal class NodeRuns
     {
@@ -293,5 +303,265 @@ namespace AnalysisControls
         {
             _list.Add(run);
         }
+    }
+
+    public class SyntaxTalkVb : VisualBasicSyntaxWalker
+    {
+        private readonly IList<TextRun> _lrun;
+        private readonly CustomTextSource3 _source3;
+        private readonly Action<TextRun> _takeTextRun;
+
+        private readonly CustomTextSource3 s3;
+        private Func<object, string, TextRunProperties> _propertiesFunc;
+        public int CurPos { get; set; }
+        private Stack<SyntaxNode> nodes = new Stack<SyntaxNode>();
+        private List<NodeRuns> runs = new List<NodeRuns>();
+        private Stack<List<NodeRuns>> _nodeStack = new Stack<List<NodeRuns>>();
+        private List<TextRun> _textRuns = new List<TextRun>();
+        private TextRun _prevTextRun;
+
+        public SyntaxTalkVb(IList<TextRun> lrun,
+
+            CustomTextSource3 source3,
+            Action<TextRun> takeTextRun,
+            Func<object, string, TextRunProperties> propertiesFunc,
+            SyntaxWalkerDepth depth = SyntaxWalkerDepth.StructuredTrivia) : base(depth)
+        {
+            _lrun = lrun;
+            _source3 = source3;
+            _takeTextRun = takeTextRun;
+            _propertiesFunc = propertiesFunc;
+        }
+
+
+        public override void VisitToken(SyntaxToken token)
+        {
+            VisitLeadingTrivia(token);
+            DoToken(token);
+            VisitTrailingTrivia(token);
+        }
+
+        public override void VisitLeadingTrivia(SyntaxToken token)
+        {
+            foreach (var syntaxTrivia in token.LeadingTrivia)
+            {
+                DoTrivia(syntaxTrivia);
+            }
+        }
+
+        private void DoTrivia(SyntaxTrivia syntaxTrivia)
+        {
+            DebugUtils.WriteLine("At " + CSharpExtensions.Kind(syntaxTrivia).ToString());
+            if (syntaxTrivia.HasStructure)
+            {
+                var w = new TriviaWalkerVb(_lrun, _source3, _takeTextRun, _propertiesFunc,
+                    SyntaxWalkerDepth.StructuredTrivia);
+                w.CurPos = CurPos;
+                w.Visit(syntaxTrivia.GetStructure());
+                CurPos = w.CurPos;
+                return;
+            }
+
+            if (syntaxTrivia.Span.Start != CurPos)
+            {
+                if (CurPos < syntaxTrivia.Span.Start)
+                {
+
+                }
+                //throw new InvalidOperationException($"{syntaxTrivia.Span.Start} != {_curPos}");
+            }
+            if (VisualBasicExtensions.Kind(syntaxTrivia) == Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.EndOfLineTrivia)
+            {
+                Take(new CustomTextEndOfLine(2, syntaxTrivia.Span));
+                return;
+            }
+
+            if (syntaxTrivia.HasStructure)
+            {
+                //syntaxTrivia.GetStructure()
+            }
+            //   RecordLocation(syntaxTrivia.GetLocation());
+
+            var text = syntaxTrivia.ToFullString();
+            if (string.IsNullOrEmpty(text))
+            {
+                return;
+            }
+            if (CSharpExtensions.Kind(syntaxTrivia) == SyntaxKind.WhitespaceTrivia)
+            {
+                // if (text.Contains("\r"))
+                // {
+                // return;
+                // }
+            }
+
+            while (text.EndsWith("\r\n"))
+            {
+                text = text.Substring(0, text.Length - 2);
+            }
+            Insert(syntaxTrivia, text);
+
+        }
+
+        private void Take(TextRun run)
+        {
+            if (run is CustomTextCharacters cc)
+            {
+                cc.PrevTextRun = _prevTextRun;
+            }
+            if (_prevTextRun is CustomTextCharacters cc1)
+            {
+                cc1.NextTextRun = run;
+            }
+            _textRuns.Add(run);
+            //_nodeStack.Peek().TakeTextRun(run);
+            var l = run.Length;
+            CurPos += l;
+            _takeTextRun(run);
+            _prevTextRun = run;
+        }
+
+        private void Insert(SyntaxTrivia syntaxTrivia, string text)
+        {
+            var textRunProperties = _propertiesFunc(syntaxTrivia, text);
+            var syn = new SyntaxTriviaTextCharacters(text, 0, syntaxTrivia.Span.Length,
+                textRunProperties, syntaxTrivia.FullSpan, syntaxTrivia)
+            {
+                Index = syntaxTrivia.SpanStart
+            };
+            Take(syn);
+        }
+
+        public override void DefaultVisit(SyntaxNode node)
+        {
+            nodes.Push(node);
+            _nodeStack.Push(new List<NodeRuns>());
+            //runs.Add(new NodeRuns());
+            // foreach (var syntaxTrivia in node.GetLeadingTrivia())
+            // {
+            // DoTrivia(syntaxTrivia);
+            // }
+            DebugUtils.WriteLine($"At {CSharpExtensions.Kind(node)}");
+            var l = node.GetLocation();
+            var s1 = l.SourceSpan.Start;
+            var pos = CurPos;
+
+            if (s1 < CurPos)
+            {
+                DebugUtils.WriteLine($"Skipping {CurPos - s1} characters");
+            }
+            if (CurPos > s1)
+            {
+                DebugUtils.WriteLine("Position mismatch");
+                int end = 0;
+                for (int i = 0; i < _lrun.Count; i++)
+                {
+                    var index = i;
+                    var textRun = _lrun[index];
+
+                    TextSpan span = default;
+                    if (textRun is ICustomSpan ctc)
+                    {
+                        span = ctc.Span;
+                        if (end != span.Start)
+                        {
+                            DebugUtils.WriteLine($"{end} !- {span.Start}");
+                            throw new InvalidOperationException();
+                        }
+
+                        end = span.End;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    DebugUtils.WriteLine($"{index} [{span}] " + textRun.Length.ToString() + $" {textRun}");
+                }
+
+                throw new InvalidOperationException($"{CurPos} is not {s1}");
+            }
+            base.DefaultVisit(node);
+            var n = nodes.Pop();
+            var lastnr = _nodeStack.Pop();
+
+            seen.Push(n);
+            if (object.ReferenceEquals(n, node) == false)
+            {
+                throw new InvalidOperationException();
+            }
+
+        }
+
+        public Stack<SyntaxNode> seen { get; set; } = new Stack<SyntaxNode>();
+
+        public override void VisitTrailingTrivia(SyntaxToken token)
+        {
+            foreach (var syntaxTrivia in token.TrailingTrivia)
+            {
+                DoTrivia(syntaxTrivia);
+            }
+            base.VisitTrailingTrivia(token);
+        }
+
+        public void DoToken(SyntaxToken token)
+        {
+            var text = token.Text;
+            var c = token.Span.Length;
+
+            // if (c != text.Length)
+            // {
+            // throw new InvalidOperationException($"{text} != {c}");
+            // }
+            if (text.Length == 0)
+            {
+                //_lrun.Add(new CustomRun2(token, _source3.PropsFor(token, text)));
+            }
+            else
+            {
+                text = ProcessText(text);
+                var textRunProperties = _propertiesFunc(token, text);
+
+                var syn = new SyntaxTokenTextCharacters(text, token.Span.Length, textRunProperties, token, nodes.Peek())
+                {
+                    Index = token.SpanStart
+                };
+                Take(syn);
+            }
+        }
+
+        private static string ProcessText(string text)
+        {
+            if (StripEol)
+            {
+                while (text.EndsWith("\r\n"))
+                {
+                    text = text.Substring(0, text.Length - 2);
+                }
+            }
+
+            return text;
+        }
+
+        public static bool StripEol { get; set; }
+
+
+        // public override void Visit(SyntaxNode node)
+        // {
+        // base.Visit(node);
+        // foreach (var syntaxToken in node.ChildTokens())
+        // {
+        // if (syntaxToken.ToFullString().Length == 0)
+        // {
+
+        // }
+        // else
+        // {
+        // _lrun.Add(new CustomTextCharacters(syntaxToken.ToFullString(), _source3.PropsFor(syntaxToken)));
+        // }
+        // }
+
+        // }
+
     }
 }
