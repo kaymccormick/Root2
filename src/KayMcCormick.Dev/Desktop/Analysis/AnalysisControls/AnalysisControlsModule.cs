@@ -23,12 +23,10 @@ using System.Text.Json ;
 using System.Threading.Tasks;
 using System.Windows ;
 using System.Windows.Controls ;
-using System.Windows.Controls.Primitives;
 using System.Windows.Data ;
 using System.Windows.Markup ;
 using System.Windows.Threading;
 using AnalysisAppLib;
-using AnalysisAppLib.Syntax ;
 using AnalysisAppLib.ViewModel ;
 using AnalysisControls.ViewModel ;
 using AnalysisControls.Views ;
@@ -36,7 +34,6 @@ using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
-using Autofac.Extras.AttributeMetadata;
 using Autofac.Features.AttributeFilters ;
 using Autofac.Features.Metadata ;
 using AvalonDock.Layout;
@@ -46,9 +43,7 @@ using KayMcCormick.Dev.Command;
 using KayMcCormick.Dev.Container ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
-using KayMcCormick.Lib.Wpf.ViewModel;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using Container = Autofac.Core.Container;
 using MethodInfo = AnalysisAppLib.MethodInfo;
 using Module = Autofac.Module ;
@@ -165,11 +160,11 @@ namespace AnalysisControls
                         Category cat = Category.None;
                         try
                         {
-                            cat = (Category)cv;
+                            if (cv != null) cat = (Category) cv;
                         }
                         catch (Exception ex)
                         {
-
+                            // ignored
                         }
 
                         c1.Metadata.TryGetValue("Group", out var group);
@@ -376,7 +371,6 @@ namespace AnalysisControls
 
         private IDisplayableAppCommand ControlViewCommandAdapter2(IComponentContext arg1, IEnumerable<Parameter> arg2, Meta<Lazy<IControlView>> arg3)
         {
-            LayoutDocumentPane pane = null;
             arg3.Metadata.TryGetValue("Title", out var titleo);
             arg3.Metadata.TryGetValue("ImageSource", out var imageSource);
             // object res = r.ResolveResource ( imageSource ) ;
@@ -384,7 +378,7 @@ namespace AnalysisControls
 
             var title = (string)titleo ?? "no title";
 
-            return (IDisplayableAppCommand)new LambdaAppCommand(
+            return new LambdaAppCommand(
                 title
                 , CommandFuncAsync2
                 , Tuple.Create(arg3, arg1.Resolve<ILifetimeScope>())
@@ -395,7 +389,9 @@ namespace AnalysisControls
             };
         }
 
+#pragma warning disable 1998
         private async Task<IAppCommandResult> CommandFuncAsync2(LambdaAppCommand command)
+#pragma warning restore 1998
         {
             var x = (Tuple<Meta<Lazy<IControlView>>, ILifetimeScope>)command.Argument;
             var view = x.Item1.Value;
@@ -410,6 +406,9 @@ namespace AnalysisControls
             return AppCommandResult.Success;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool RegisterControlViewCommandAdapters { get; set; } = true;
 
         [ NotNull ]
@@ -453,6 +452,13 @@ namespace AnalysisControls
                 return listView ;
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="c"></param>
+            /// <param name="p"></param>
+            /// <param name="metaFunc"></param>
+            /// <returns></returns>
             [NotNull]
             public static Func<LayoutDocumentPane, IDisplayableAppCommand> ControlViewCommandAdapter(
                     [NotNull] IComponentContext c
@@ -480,17 +486,23 @@ namespace AnalysisControls
                     LargeImageSourceKey = imageSource
                 };
             }
+#pragma warning disable 1998
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="command"></param>
+            /// <returns></returns>
             public static async Task<IAppCommandResult> CommandFuncAsync(
+#pragma warning restore 1998
 #pragma warning restore 1998
                 [NotNull] LambdaAppCommand command
             )
             {
-                //await JoinableTaskFactory.SwitchToMainThreadAsync (  ) ;
                 var (viewFunc1, pane1) =
                     (Tuple<Func<LayoutDocumentPane, IControlView>, LayoutDocumentPane>)
                     command.Argument;
 
-                DebugUtils.WriteLine($"Calling viewfunc ({command})");
+                DebugUtils.WriteLine($"Calling view func ({command})");
                 var n = DateTime.Now;
                 var view = viewFunc1(pane1);
                 DebugUtils.WriteLine((DateTime.Now - n).ToString());
@@ -501,6 +513,14 @@ namespace AnalysisControls
                 return AppCommandResult.Success;
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="collection"></param>
+            /// <param name="observable"></param>
+            /// <param name="resources"></param>
+            /// <typeparam name="T"></typeparam>
+            /// <returns></returns>
             public static ListView ReplayListView<T>(ObservableCollection<T> collection, ReplaySubject<T> observable,
                 ResourceDictionary resources)
             {
@@ -517,17 +537,15 @@ namespace AnalysisControls
                         continue;
                     }
                     DebugUtils.WriteLine(prop.Name);
-                    var gridViewColumn = new GridViewColumn();
-                    gridViewColumn.Header = prop.DisplayName;
-                    gridViewColumn.CellTemplateSelector = new ListViewTestSel(prop);
+                    var gridViewColumn = new GridViewColumn
+                    {
+                        Header = prop.DisplayName, CellTemplateSelector = new ListViewTestSel(prop)
+                    };
                     gv.Columns.Add(gridViewColumn);
                 }
 
                 observable.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send).Subscribe(
-                    item =>
-                    {
-                        collection.Add(item);
-                    });
+                    collection.Add);
                 return lv;
             }
 
@@ -542,8 +560,7 @@ namespace AnalysisControls
             public static ItemsControl ReplayItemsControl<T>(ObservableCollection<T> collection, ReplaySubject<T> observable,
                 ResourceDictionary resources)
             {
-                ItemsControl itemsControl = new ItemsControl() {Resources = resources};
-                itemsControl.ItemsSource = collection;
+                ItemsControl itemsControl = new ItemsControl {Resources = resources, ItemsSource = collection};
                 var props = TypeDescriptor.GetProperties(typeof(T));
                 // foreach (PropertyDescriptor prop in props)
                 // {
@@ -555,92 +572,51 @@ namespace AnalysisControls
                 // }
 
                 observable.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send).Subscribe(
-                    item =>
-                    {
-                        collection.Add(item);
-                    });
+                    collection.Add);
                 return itemsControl;
             }
 
-        private static ListBox ReplayListBox<T>(ObservableCollection<T> collection, ReplaySubject<T> observable)
+            // ReSharper disable once UnusedMember.Local
+            private static ListBox ReplayListBox<T>(ObservableCollection<T> collection, ReplaySubject<T> observable)
             {
-                ListBox lb = new ListBox();
-                lb.ItemsSource = collection;
+                ListBox lb = new ListBox {ItemsSource = collection};
 
                 observable.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send).Subscribe(
                     item =>
                     {
-                        collection.Add(item);
+                        collection?.Add(item);
                     });
                 return lb;
             }
     }
 
-    public class MyItemContainerGenerator : IItemContainerGenerator
-    {
-        public ItemContainerGenerator GetItemContainerGeneratorForPanel(Panel panel)
-        {
-            return null;
-            ;
-        }
-
-        public IDisposable StartAt(GeneratorPosition position, GeneratorDirection direction)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IDisposable StartAt(GeneratorPosition position, GeneratorDirection direction, bool allowStartAtRealizedItem)
-        {
-            throw new NotImplementedException();
-        }
-
-        public DependencyObject GenerateNext()
-        {
-            throw new NotImplementedException();
-        }
-
-        public DependencyObject GenerateNext(out bool isNewlyRealized)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PrepareItemContainer(DependencyObject container)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Remove(GeneratorPosition position, int count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public GeneratorPosition GeneratorPositionFromIndex(int itemIndex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int IndexFromGeneratorPosition(GeneratorPosition position)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
+    /// <summary>
+    /// 
+    /// </summary>
     [ApplyTypes(typeof(CSharpSyntaxNode))]
 public class SyntaxNodeProperties : IPropertiesAdapter {
+    /// <summary>
+    /// 
+    /// </summary>
     public SyntaxNodeProperties()
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="t"></param>
+    /// <returns></returns>
     public PropertyDescriptorCollection GetProperties(Type t)
     {
             return null;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public bool HandleType(Type type)
     {
         if(typeof(CSharpSyntaxNode).IsAssignableFrom(type))

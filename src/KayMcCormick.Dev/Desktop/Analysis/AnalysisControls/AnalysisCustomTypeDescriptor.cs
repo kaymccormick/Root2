@@ -7,6 +7,7 @@ using System.Threading;
 using Autofac;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf ;
+// ReSharper disable RedundantOverriddenMember
 
 namespace AnalysisControls
 {
@@ -15,11 +16,8 @@ namespace AnalysisControls
     /// </summary>
     public class AnalysisCustomTypeDescriptor : CustomTypeDescriptor
     {
-
-        private readonly Func < Type , TypeConverter > _funcConverter ;
         private readonly UiElementTypeConverter        _uiElementTypeConverter ;
-        private IPropertiesAdapter _propsAdapter;
-        private List<IPropertiesAdapter> _props;
+        private readonly List<IPropertiesAdapter> _props;
 
         public override AttributeCollection GetAttributes()
         {
@@ -82,11 +80,13 @@ namespace AnalysisControls
             return coll;
         }
 
+        /// <inheritdoc />
         public override PropertyDescriptorCollection GetProperties(Attribute[] attributes)
         {
             return this.GetProperties();
         }
 
+        /// <inheritdoc />
         public override object GetPropertyOwner(PropertyDescriptor pd)
         {
             return base.GetPropertyOwner(pd);
@@ -103,13 +103,14 @@ namespace AnalysisControls
         /// <param name="funcConverter"></param>
         /// <param name="uiElementTypeConverter"></param>
         /// <param name="type"></param>
+        /// <param name="propsAdapters"></param>
         /// <param name="context"></param>
         public AnalysisCustomTypeDescriptor (
             //Func < Type , TypeConverter > funcConverter,
            UiElementTypeConverter        uiElementTypeConverter
           , Type                          type, IEnumerable<IPropertiesAdapter> propsAdapters
 	  , IComponentContext context
-        ) : base()
+        )
         {
             DebugUtils.WriteLine("Constructor " + GetType().FullName + " " + type.FullName);
            // _funcConverter          = funcConverter ;
@@ -147,7 +148,16 @@ namespace AnalysisControls
         /// <returns></returns>
         PropertyDescriptorCollection GetProperties(Type t);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         bool HandleType(Type type);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyDescriptor"></param>
         void UpdateProperty(IUpdatableProperty propertyDescriptor);
     }
 }

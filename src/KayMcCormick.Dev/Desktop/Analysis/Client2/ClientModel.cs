@@ -13,21 +13,18 @@ using KayMcCormick.Lib.Wpf;
 
 namespace Client2
 {
-    public class ClientModel : INotifyPropertyChanged, IClientModel
+    public sealed class ClientModel : INotifyPropertyChanged, IClientModel
     {
-        private readonly ReplaySubject<IControlView> _replay;
         private RibbonModel _ribbon;
 
         public ClientModel(RibbonModel model, ReplaySubject<IControlView> replay)
         {
-            _replay = replay;
-            _replay.SubscribeOn(Scheduler.Default)
+            replay.SubscribeOn(Scheduler.Default)
                 .ObserveOnDispatcher(DispatcherPriority.Send)
                 .Subscribe(
                     infos =>
                     {
-                        var doc = new DocModel();
-                        doc.Content = infos;
+                        var doc = new DocModel {Content = infos};
                         Main1Model.Documents.Add(doc);
                         Main1Model.ActiveContent = doc;
                     }
@@ -54,7 +51,7 @@ namespace Client2
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

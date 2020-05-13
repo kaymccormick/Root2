@@ -37,7 +37,7 @@ namespace AnalysisAppLib
         private readonly IAddRuntimeResource           _add ;
         private          ITargetBlock < RejectedItem > _rejectDestination ;
         private          ResourceNodeInfo              _resultsNode ;
-        private Lazy<Pipeline> _lazyPipeline;
+        private readonly Lazy<Pipeline> _lazyPipeline;
 
         /// <summary>
         /// Constructor. Takes pipeline instance.
@@ -107,7 +107,7 @@ namespace AnalysisAppLib
                                  ) ;
                 var tcs = new CancellationTokenSource ( ) ;
                 var cancellationToken = tcs.Token ;
-                var t = Task.Run ( ( ) => Function ( ) , cancellationToken ) ;
+                var t = Task.Run ( Function , cancellationToken ) ;
                 var instance = ResourceNodeInfo.CreateInstance ( ) ;
                 instance.Key  = "Task " + t.Id ;
                 instance.Data = t ;
@@ -144,7 +144,7 @@ namespace AnalysisAppLib
 
                 Logger.Info ( $"{Pipeline.Input.Completion.IsCompleted}" ) ;
 
-                var dataflowBlocks = Pipeline.Blocks.Where ( x => ! x.Completion.IsCompleted ) ;
+                var dataflowBlocks = Pipeline.Blocks.Where ( x => ! x.Completion.IsCompleted ).ToList() ;
                 if ( dataflowBlocks.Any ( ) == false )
                 {
                     return 1 ;
@@ -153,15 +153,6 @@ namespace AnalysisAppLib
                 foreach ( var dataflowBlock in dataflowBlocks )
                 {
                     Logger.Info ( dataflowBlock.ToString ) ;
-
-                    continue ;
-                    var gt = dataflowBlock.GetType ( ).GetGenericTypeDefinition ( ) ;
-                    if ( gt == typeof ( TransformBlock < , > ) )
-                    {
-                        var ic = dataflowBlock.GetType ( ).GetProperty ( "InputCount" ) ;
-                        var input = ( int ) ic.GetValue ( dataflowBlock ) ;
-                        Logger.Info ( "input count is {input}" , input ) ;
-                    }
                 }
 
                 Thread.Sleep ( 100 ) ;
@@ -187,25 +178,29 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
-        public LogInvocationCollection LogInvocations { get ; } = new LogInvocationCollection ( ) ;
+        private LogInvocationCollection LogInvocations { get ; } = new LogInvocationCollection ( ) ;
 
         /// <summary>
         /// 
         /// </summary>
-        public ITargetBlock < RejectedItem > RejectDestination
+        private ITargetBlock < RejectedItem > RejectDestination
         {
             get { return _rejectDestination ; }
             set { _rejectDestination = value ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Pipeline Pipeline
         {
             get
             {
-                if (_pipeline == null)
+                _pipeline = _pipeline switch
                 {
-                    _pipeline = _lazyPipeline.Value;
-                }
+                    null => _lazyPipeline.Value,
+                    _ => _pipeline
+                };
                 return _pipeline;
             }
         }

@@ -21,7 +21,7 @@ namespace AnalysisAppLib
         readonly AnalyzeCommand _cmd;
         private ITargetBlock<RejectedItem> _rejectTarget;
         private object _argument;
-        private readonly IProjectBrowserNode projectNode;
+        private readonly IProjectBrowserNode _projectNode;
 
         /// <summary>
         /// 
@@ -31,7 +31,7 @@ namespace AnalysisAppLib
         public AnalyzeCommandWrap(AnalyzeCommand cmd, IProjectBrowserNode projectNode = null)
         {
             _cmd = cmd;
-            this.projectNode = projectNode;
+            this._projectNode = projectNode;
         }
 
         /// <inheritdoc />
@@ -44,7 +44,7 @@ namespace AnalysisAppLib
         /// <inheritdoc />
         public Task<IAppCommandResult> ExecuteAsync()
         {
-            return _cmd.AnalyzeCommandAsync(projectNode, _rejectTarget).ContinueWith(task => AppCommandResult.Success);
+            return _cmd.AnalyzeCommandAsync(_projectNode, _rejectTarget).ContinueWith(task => AppCommandResult.Success);
         }
 
         /// <inheritdoc />

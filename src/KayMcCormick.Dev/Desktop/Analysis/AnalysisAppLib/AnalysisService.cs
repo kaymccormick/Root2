@@ -13,8 +13,6 @@
 using System ;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 using AnalysisAppLib.Properties ;
 using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
@@ -116,7 +114,7 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="code"></param>
         /// <param name="assemblyName"></param>
-        /// <param name="b"></param>
+        /// <param name="extraRefs"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
@@ -143,6 +141,14 @@ namespace AnalysisAppLib
             var compilation = CreateCompilation ( assemblyName , syntaxTree, extraRefs) ;
             return CreateFromCompilation ( syntaxTree , compilation ) ;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="assemblyName"></param>
+        /// <param name="extraRefs"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static ICodeAnalyseContext Load([NotNull] string filename
             , [NotNull] string assemblyName, bool extraRefs = true)
         {

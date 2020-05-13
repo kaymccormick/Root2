@@ -14,6 +14,7 @@ using System.Windows.Data;
 using AnalysisControls.RibbonM;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
+using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
@@ -28,7 +29,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class Main1Model : INotifyPropertyChanged
+    public sealed class Main1Model : INotifyPropertyChanged
     {
         /// <summary>
         /// 
@@ -36,6 +37,7 @@ namespace AnalysisControls
         public object ActiveContent
 
         {
+            // ReSharper disable once UnusedMember.Global
             get { return _activeContent; }
             set
             {
@@ -124,7 +126,8 @@ namespace AnalysisControls
             return true;
         }
 
-        public static VisualStudioInstance VisualStudioInstance { get; set; }
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
+        private static VisualStudioInstance VisualStudioInstance { get; set; }
 
         /// <summary>
         /// 
@@ -165,27 +168,26 @@ namespace AnalysisControls
             //b.SetBinding(TextBlock.TextProperty, new Binding("ActiveDocument.Content") {Source = this});
 
             Documents.Add(new DocModel { Title = "Model", Content = t1});
-            Documents.Add(new DocModel
+            var assembliesDoc = new DocModel
             {
                 Title = "Assemblies",
                 Content = new AssembliesControl {AssemblySource = AppDomain.CurrentDomain.GetAssemblies()}
-            });
+            };
+            assembliesDoc.ContextualTabGroupHeaders.Add("Assemblies");
+            Documents.Add(assembliesDoc);
 
             var tv = new TreeView()
             {
                 DisplayMemberPath = "Header"
             };
             tv.SetBinding(ItemsControl.ItemsSourceProperty,
-                new Binding("ViewModel.Ribbon.RibbonItems")
-                    {RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(RibbonWindow), 1)});
+                new Binding("ClientViewModel.Ribbon.RibbonItems")
+                    {Source = this });
             Anchorables.Add(new AnchorableModel() {Title = "Ribbon Tabs", Content = tv});
 
-            var lv = new ListBox()
-            {
-                
-            };
+            var lv = new ListBox();
             lv.SetBinding(ItemsControl.ItemsSourceProperty,
-                new Binding($"ClientModel.Ribbon.ContextualTabGroups")
+                new Binding("ClientViewModel.Ribbon.ContextualTabGroups")
                 {
                     Source = this
                 });
@@ -207,11 +209,12 @@ namespace AnalysisControls
         public Workspace Workspace
         {
             get { return _workspace; }
+            // ReSharper disable once MemberCanBePrivate.Global
             set
             {
                 if (Equals(value, _workspace)) return;
                 _workspace = value;
-                _workspaceView = new WorkspaceView() {Solutions = HierRoot};
+                _workspaceView = new WorkspaceView() {Solutions = HierarchyRoot};
                 Anchorables.Add(new AnchorableModel()
                 {
                     Content =
@@ -229,6 +232,7 @@ namespace AnalysisControls
                     model.Diagnostics.Add(e.Diagnostic);
                     if (View != null)
                     {
+                        // ReSharper disable once UnusedVariable
                         var dispatcherOperation = View.Dispatcher.InvokeAsync(() =>
                             Messages.Messages.Add(new WorkspaceMessage
                             {
@@ -263,6 +267,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once CollectionNeverQueried.Global
         public List<WorkspaceDiagnostic> Diagnostics { get; set; } = new List<WorkspaceDiagnostic>();
 
         /// <summary>
@@ -287,7 +292,7 @@ namespace AnalysisControls
             switch (e.Kind)
             {
                 case WorkspaceChangeKind.SolutionRemoved:
-                    HierRoot.Remove(HierRoot.First(s => s.Id == e.OldSolution.Id));
+                    HierarchyRoot.Remove(HierarchyRoot.First(s => s.Id == e.OldSolution.Id));
                     break;
                 case WorkspaceChangeKind.SolutionChanged:
                     e.NewSolution.GetChanges(e.OldSolution);
@@ -295,7 +300,7 @@ namespace AnalysisControls
                     break;
                 case WorkspaceChangeKind.SolutionAdded:
                     var solutionModel = SolutionModelFromSolution(e.NewSolution);
-                    HierRoot.Add(solutionModel);
+                    HierarchyRoot.Add(solutionModel);
                     break;
                 case WorkspaceChangeKind.SolutionCleared:
                     break;
@@ -307,7 +312,7 @@ namespace AnalysisControls
                     if (m == default(SolutionModel))
                     {
                         var solutionModel1 = SolutionModelFromSolution(e.NewSolution);
-                        HierRoot.Add(solutionModel1);
+                        HierarchyRoot.Add(solutionModel1);
                         m = solutionModel1;
                     }
 
@@ -417,13 +422,13 @@ namespace AnalysisControls
         private SolutionModel GetSolution(SolutionId newSolutionId = null)
         {
             if (newSolutionId == null) newSolutionId = _workspace.CurrentSolution.Id;
-            var m = HierRoot.FirstOrDefault(m1 => m1.Id == newSolutionId);
+            var m = HierarchyRoot.FirstOrDefault(m1 => m1.Id == newSolutionId);
             return m;
         }
 
         private ProjectModel GetProjectModel(ProjectId id)
         {
-            return HierRoot.SelectMany(s => s.Projects).First(p => p.Id == id);
+            return HierarchyRoot.SelectMany(s => s.Projects).First(p => p.Id == id);
         }
 
         // ReSharper disable once UnusedMember.Local
@@ -459,17 +464,18 @@ namespace AnalysisControls
         {
             var d = new DocumentModel(project, project.Workspace)
             {
-                Name = sProjectDocument.Name, FilePath = sProjectDocument.FilePath
+                Name = sProjectDocument.Name,
+                FilePath = sProjectDocument.FilePath,
+                Id = sProjectDocument.Id.Id,
+                DocumentId = sProjectDocument.Id
             };
-            d.Id = sProjectDocument.Id.Id;
-            d.DocumentId= sProjectDocument.Id;
             return d;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public ObservableCollection<SolutionModel> HierRoot { get; set; } = new ObservableCollection<SolutionModel>();
+        public ObservableCollection<SolutionModel> HierarchyRoot { get; set; } = new ObservableCollection<SolutionModel>();
 
         /// <summary>
         /// 
@@ -503,7 +509,7 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="propertyName"></param>
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -517,6 +523,7 @@ namespace AnalysisControls
             string filePath = null;
             if (Workspace is AdhocWorkspace ww)
                 ww.AddSolution(SolutionInfo.Create(SolutionId.CreateNewId(debugName), VersionStamp.Create(),
+                    // ReSharper disable once ExpressionIsAlwaysNull
                     filePath));
         }
 
@@ -617,6 +624,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once MemberCanBePrivate.Global
         public ProjectLoadProgress ProjectLoadProgress
         {
             get { return _projectLoadProgress; }
@@ -634,6 +642,7 @@ namespace AnalysisControls
         public WorkspaceView WorkspaceView
         {
             get { return _workspaceView; }
+            // ReSharper disable once UnusedMember.Global
             set
             {
                 if (Equals(value, _workspaceView)) return;
@@ -643,6 +652,9 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IClientModel ClientViewModel { get; set; }
 
         /// <summary>
@@ -756,7 +768,7 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="e"></param>
         // ReSharper disable once UnusedMember.Global
-        protected virtual void OnDocumentAddedEvent(DocumentAddedEventArgs e)
+        private void OnDocumentAddedEvent(DocumentAddedEventArgs e)
         {
             DocumentAddedEvent?.Invoke(this, e);
         }
@@ -771,6 +783,8 @@ namespace AnalysisControls
         /// 
         /// </summary>
         RibbonModel Ribbon { get; set; }
+
+        LogEventInstanceObservableCollection LogEntries { get; set; }
     }
 
     /// <summary>

@@ -19,6 +19,7 @@ using System.Windows.Threading;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
+// ReSharper disable RedundantOverriddenMember
 
 namespace AnalysisControls
 {
@@ -162,7 +163,7 @@ namespace AnalysisControls
         
         private async void OnExpandNodeExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            DebugUtils.WriteLine("Receieved expand node command with param " + e.Parameter ?? "");
+            DebugUtils.WriteLine("Received expand node command with param " + e.Parameter);
             try
             {
                 if (!(e.Parameter is CustomTreeViewItem cc))
@@ -292,6 +293,9 @@ namespace AnalysisControls
         /// <param name="value"></param>
         void SetIsExpanded(bool value);
 
+        /// <summary>
+        /// 
+        /// </summary>
         void Expand();
         /// <summary>
         /// 
@@ -304,6 +308,11 @@ namespace AnalysisControls
     /// </summary>
     public abstract class NodeBase : INotifyPropertyChanged, INodeData
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="d"></param>
+        /// <returns></returns>
         public static Task<TaskScheduler> GetScheduler(Dispatcher d)
         {
             var schedulerResult = new TaskCompletionSource<TaskScheduler>();
@@ -325,7 +334,7 @@ namespace AnalysisControls
         /// </summary>
         protected NodeBase()
         {
-            if (_items != null) _items.Add(new NodesPlaceHolder());
+            _items?.Add(new NodesPlaceHolder());
             Dispatcher = Dispatcher.CurrentDispatcher;
                 _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         }
@@ -915,6 +924,9 @@ namespace AnalysisControls
         
         LoadAsync,
         
+        /// <summary>
+        /// 
+        /// </summary>
         LoadSync,
     }
 
@@ -961,6 +973,9 @@ namespace AnalysisControls
      /// 
      /// </summary>
      public class CustomTreeViewItem : TreeViewItem {
+         /// <summary>
+         /// 
+         /// </summary>
          public static readonly RoutedEvent ExpandingEvent = EventManager.RegisterRoutedEvent("Expanded", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(CustomTreeViewItem));
          /// <summary>Identifies the <see cref="E:System.Windows.Controls.TreeViewItem.Collapsed" /> routed event. </summary>
          
@@ -1027,6 +1042,10 @@ namespace AnalysisControls
 
          }
 
+         /// <summary>
+         /// 
+         /// </summary>
+         /// <param name="e"></param>
          protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
          {
              if (!e.Handled && this.IsEnabled)
@@ -1067,7 +1086,10 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public bool CanExpandOnInput => HasItems && IsEnabled;
+        public bool CanExpandOnInput
+        {
+            get { return HasItems && IsEnabled; }
+        }
 
         /// <summary>
         /// 
@@ -1091,10 +1113,14 @@ namespace AnalysisControls
         {
             get
             {
-                return ItemsControl.ItemsControlFromItemContainer((DependencyObject)this);
+                return ItemsControl.ItemsControlFromItemContainer(this);
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         protected override DependencyObject GetContainerForItemOverride()
         {
             return new CustomTreeViewItem();

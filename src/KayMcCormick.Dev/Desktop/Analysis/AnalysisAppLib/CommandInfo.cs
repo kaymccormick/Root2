@@ -12,14 +12,19 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    [TypeConverter(typeof(CommandInfoTypeConverter))]
     public class CommandInfo : INotifyPropertyChanged
     {
-        Meta<Lazy<IBaseLibCommand>> command;
+        Meta<Lazy<IBaseLibCommand>> _command;
         private string _title;
         private IBaseLibCommand _theCommand;
 
-        public IDictionary<string, object?> Metadata => command.Metadata;
+        /// <summary>
+        /// 
+        /// </summary>
+        public IDictionary<string, object> Metadata => _command.Metadata;
+        /// <summary>
+        /// 
+        /// </summary>
         public string Title
         {
             get => _title;
@@ -38,22 +43,21 @@ namespace AnalysisAppLib
         {
             get
             {
-                if (command.Value.IsValueCreated)
+                if (_command.Value.IsValueCreated)
                 {
-                    return command.Value.Value;
+                    return _command.Value.Value;
                 }
 
                 try
                 {
-                    _theCommand = command.Value.Value;
+                    _theCommand = _command.Value.Value;
                     return _theCommand;
                 }
                 catch (Exception ex)
                 {
+                    DebugUtils.WriteLine(ex.ToString());
                     return null;
                 }
-
-                return null;
             }
         }
         /// <summary>
@@ -61,16 +65,16 @@ namespace AnalysisAppLib
         /// </summary>
         public Meta<Lazy<IBaseLibCommand>> Command
         {
-            get => command; set
+            get => _command; set
             {
-                command = value;
+                _command = value;
                 OnPropertyChanged();
-                _theCommand = command.Value.Value;
+                _theCommand = _command.Value.Value;
                 if (_theCommand is IDisplayable cmd)
                 {
                     Title = cmd.DisplayName;
                 } else
-                if(command.Metadata.TryGetValue("Title", out var title))
+                if(_command.Metadata.TryGetValue("Title", out var title))
                 {
                     Title = (string)title;
                 }
@@ -93,6 +97,10 @@ namespace AnalysisAppLib
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return

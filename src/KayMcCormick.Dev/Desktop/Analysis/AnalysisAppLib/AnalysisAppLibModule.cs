@@ -9,7 +9,6 @@ using System.Net.Http.Headers ;
 using System.Reactive.Subjects;
 using System.Reflection ;
 using System.Threading.Tasks ;
-using AnalysisAppLib.Command ;
 using AnalysisAppLib.Dataflow ;
 using Autofac ;
 using Autofac.Core ;
@@ -21,7 +20,6 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Logging ;
-using Microsoft.EntityFrameworkCore ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
 using Document = Microsoft.CodeAnalysis.Document;
@@ -38,7 +36,7 @@ namespace AnalysisAppLib
         private readonly ReplaySubject<ActivationInfo> _activations = new ReplaySubject<ActivationInfo>();
 
         /// <summary>
-        ///     Parameterless constructor.
+        ///     Parameter-less constructor.
         /// </summary>
         public AnalysisAppLibModule ( ) { DebugUtils.WriteLine ( "here" ) ; }
 
@@ -197,7 +195,7 @@ namespace AnalysisAppLib
                        .WithMetadata ( "Purpose" , "Analysis" ) ;
             }
 
-            if ( false )
+            if ( RegisterConcreteBlockProviders )
             {
                 builder.RegisterGeneric ( typeof ( ConcreteAnalysisBlockProvider<,,>) )
                        .As ( typeof ( IAnalysisBlockProvider<,,>) )
@@ -229,9 +227,16 @@ namespace AnalysisAppLib
             #endregion
         }
 
-        public bool RegisterModelResources { get; set; }
+        public bool RegisterConcreteBlockProviders
+        {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        private bool RegisterModelResources { get; set; }
 
         [ NotNull ]
+        // ReSharper disable once UnusedMember.Local
         private static DataTable DataAdapter (
             IComponentContext         c
           , IEnumerable<Parameter> p
@@ -264,6 +269,7 @@ namespace AnalysisAppLib
         }
 
         [ NotNull ]
+        // ReSharper disable once UnusedMember.Local
         private Dictionary<string, object> DictAdapter (
             IComponentContext         c
           , IEnumerable<Parameter> p

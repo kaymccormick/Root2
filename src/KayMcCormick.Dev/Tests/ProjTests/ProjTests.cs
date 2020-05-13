@@ -1975,9 +1975,9 @@ namespace ProjTests
             System.Reactive.Subjects.ReplaySubject<Workspace> replay= new ReplaySubject<Workspace>();
             Main1Model model = new Main1Model(replay);
             model.CreateWorkspace();
-            c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierRoot") {Source = model});
+            c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierarchyRoot") {Source = model});
             model.CreateProject();
-            model.AddDocument(model.HierRoot[0].Projects[0], @"C:\temp\program.cs");
+            model.AddDocument(model.HierarchyRoot[0].Projects[0], @"C:\temp\program.cs");
             
 //            model.Workspace.AddProject("test", LanguageNames.CSharp);
             Window w = new Window() {Content = c};
@@ -1994,7 +1994,7 @@ namespace ProjTests
             Main1Model model = new Main1Model(replay);
             model.LoadSolution(
                 solutionPath);
-            c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierRoot") { Source = model });
+            c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierarchyRoot") { Source = model });
             Window w = new Window() { Content = c };
             w.ShowDialog();
         }
@@ -2009,7 +2009,7 @@ namespace ProjTests
                 solutionPath).ContinueWith(
                 task =>
                 {
-                    var sol = model.HierRoot.FirstOrDefault();
+                    var sol = model.HierarchyRoot.FirstOrDefault();
                     foreach (var projectModel in sol.Projects)
                     {
                         foreach (var projectModelDocument in projectModel.Documents)

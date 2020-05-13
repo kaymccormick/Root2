@@ -126,9 +126,6 @@
     <Compile Include="TestRibbonWindow.xaml.cs">
       <DependentUpon>TestRibbonWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TestRibbonWindow2.xaml.cs">
-      <DependentUpon>TestRibbonWindow2.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ViewModel\AnalyzeResultsViewModel.cs" />
     <Compile Include="Client2App.xaml.cs">
       <DependentUpon>Client2App.xaml</DependentUpon>
@@ -282,10 +279,6 @@
     <Page Include="TestRibbonWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="TestRibbonWindow2.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

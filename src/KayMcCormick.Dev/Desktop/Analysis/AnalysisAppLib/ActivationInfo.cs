@@ -22,6 +22,9 @@ namespace AnalysisAppLib
         /// </summary>
         public int ManagedThreadId { get; set; } = Thread.CurrentThread.ManagedThreadId;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IDictionary<string, object> Metadata => Component.Metadata;
 
         /// <summary>
@@ -37,6 +40,9 @@ namespace AnalysisAppLib
         /// </summary>
         [Browsable(false)]
         public IComponentRegistration Component { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public IEnumerable<Parameter> Parameters { get; set; }
         /// <summary>
         /// 

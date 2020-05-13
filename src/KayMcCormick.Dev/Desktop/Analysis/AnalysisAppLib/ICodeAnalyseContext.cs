@@ -9,8 +9,14 @@ namespace AnalysisAppLib
     {
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ICompilationContext
     {
+        /// <summary>
+        /// 
+        /// </summary>
         CSharpCompilation Compilation { get; }
     }
 }

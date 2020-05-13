@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using KayMcCormick.Lib.Wpf;
 
@@ -94,7 +93,7 @@ namespace Client2
         }
 
         public IEnumerable Items { get; }=new object[] 
-            {typeof(Client2Window1), typeof(TestRibbonWindow),typeof(TestRibbonWindow2), WpfAppCommands.QuitApplication};
+            {typeof(Client2Window1), typeof(TestRibbonWindow), WpfAppCommands.QuitApplication};
 
         public object SelectedItem { get; set; }
         public TimeSpan Timeout { get; }

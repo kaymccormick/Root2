@@ -46,6 +46,9 @@ namespace AnalysisAppLib
 
         //public IEnumerable < Meta < Lazy < IAnalyzeCommand2 > > > AnalyzeCommands { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ILifetimeScope Scope { get ; }
 
         public IProjectBrowserViewModel BrowserViewModel

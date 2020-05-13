@@ -9,8 +9,6 @@ namespace AnalysisAppLib
     [MetadataAttribute]
     public class CategoryMetadataAttribute : Attribute
     {
-        private Category category;
-
         /// <summary>
         /// 
         /// </summary>
@@ -23,7 +21,8 @@ namespace AnalysisAppLib
         /// <summary>
         /// 
         /// </summary>
-        public Category Category { get => category; set => category = value; }
+        // ReSharper disable once MemberCanBePrivate.Global
+        public Category Category { get; set; }
     }
     /// <summary>
     /// 
@@ -31,7 +30,7 @@ namespace AnalysisAppLib
     [MetadataAttribute]
     public class GroupMetadataAttribute : Attribute
     {
-        private string group;
+        private string _group;
 
         /// <summary>
         /// 
@@ -39,12 +38,13 @@ namespace AnalysisAppLib
         /// <param name="group"></param>
         public GroupMetadataAttribute(string  @group)
         {
-            this.Group = @group;
+            this.Group = group;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public string Group { get => group; set => group = value; }
+        // ReSharper disable once MemberCanBePrivate.Global
+        public string Group { get => _group; set => _group = value; }
     }
 }

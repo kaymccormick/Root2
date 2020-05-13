@@ -16,13 +16,20 @@ using System.Collections.Generic;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class ExampleTokens : IList , ICollection , IEnumerable
     {
         private readonly IList _listImplementation = new List < SToken > ( ) ;
         #region Implementation of IEnumerable
+
+        /// <inheritdoc />
         public IEnumerator GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
         #endregion
         #region Implementation of ICollection
+
+        /// <inheritdoc />
         public void CopyTo ( Array array , int index )
         {
             _listImplementation.CopyTo ( array , index ) ;

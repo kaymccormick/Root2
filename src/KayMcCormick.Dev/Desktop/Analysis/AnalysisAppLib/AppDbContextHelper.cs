@@ -16,7 +16,6 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="db"></param>
         /// <param name="type"></param>
-        /// <param name="inst"></param>
         /// <returns></returns>
         [NotNull]
         public AppClrType FindOrAddClrType(IAppDbContext1 db, Type type)

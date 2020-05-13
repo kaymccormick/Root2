@@ -11,12 +11,26 @@
 #endregion
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class CustomModifierInfo
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsOptional { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string DisplayString { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isOptional"></param>
+        /// <param name="displayString"></param>
         public CustomModifierInfo ( bool isOptional , string displayString )
         {
             IsOptional    = isOptional ;

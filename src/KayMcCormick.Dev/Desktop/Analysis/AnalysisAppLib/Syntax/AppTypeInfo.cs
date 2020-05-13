@@ -1,19 +1,18 @@
-﻿using System ;
-using System.Collections ;
-using System.Collections.Generic ;
-using System.Collections.ObjectModel ;
-using System.ComponentModel ;
-using System.ComponentModel.DataAnnotations.Schema ;
-using System.Globalization ;
-using System.Linq ;
-using System.Reflection ;
-using System.Runtime.CompilerServices ;
-using System.Text.Json.Serialization ;
-using System.Text.RegularExpressions ;
-using System.Windows.Markup ;
-using AnalysisAppLib.XmlDoc ;
-using JetBrains.Annotations ;
-using Microsoft.CodeAnalysis.CSharp ;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
+using System.Windows.Markup;
+using AnalysisAppLib.XmlDoc;
+using JetBrains.Annotations;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace AnalysisAppLib.Syntax
 {
@@ -26,8 +25,8 @@ namespace AnalysisAppLib.Syntax
     public sealed class AppTypeInfo : INotifyPropertyChanged
 
     {
-        private int _id ;
-        private DateTime _createdDateTime= DateTime.Now;
+        private int _id;
+        private DateTime _createdDateTime = DateTime.Now;
         private DateTime _updatedDateTime;
         private string _elementName;
         private SyntaxFieldCollection _fields = new SyntaxFieldCollection();
@@ -41,20 +40,17 @@ namespace AnalysisAppLib.Syntax
         private AppTypeInfo _parentInfo;
         private string _title;
         private Type _type;
-        private readonly List<string> _kinds= new List < string > ();
-        private object _keyValue ;
-        private int _version ;
+        private readonly List<string> _kinds = new List<string>();
+        private object _keyValue;
+        private int _version;
 
 
         /// <summary>
         /// </summary>
         /// <param name="subTypeInfos"></param>
-        public AppTypeInfo(  AppTypeInfoCollection subTypeInfos = null)
+        public AppTypeInfo(AppTypeInfoCollection subTypeInfos = null)
         {
-            if (subTypeInfos == null)
-            {
-                subTypeInfos = new AppTypeInfoCollection();
-            }
+            if (subTypeInfos == null) subTypeInfos = new AppTypeInfoCollection();
 
             _factoryMethods.CollectionChanged += (sender, args)
                 => OnPropertyChanged(nameof(FactoryMethods));
@@ -63,14 +59,16 @@ namespace AnalysisAppLib.Syntax
 
         /// <summary>
         /// </summary>
-        public AppTypeInfo( ) : this(null) { }
+        public AppTypeInfo() : this(null)
+        {
+        }
 
         /// <summary>
         /// CLR Type
         /// </summary>
         [JsonIgnore]
-        [DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden)]
-        public AppClrType AppClrType { get ; set ; }
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public AppClrType AppClrType { get; set; }
 
         /// <summary>
         /// </summary>
@@ -93,9 +91,12 @@ namespace AnalysisAppLib.Syntax
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public List<string> Kinds
         {
-            get { return _kinds ; }
+            get { return _kinds; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxKindCollection SyntaxKinds { get; } = new SyntaxKindCollection();
 
         /// <summary>
@@ -121,6 +122,10 @@ namespace AnalysisAppLib.Syntax
             set { _subTypeInfos = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             return $"AppTypeInfo[{Title}]";
@@ -130,13 +135,14 @@ namespace AnalysisAppLib.Syntax
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        [ NotNull ] public List<string> SubTypeNames
+        [NotNull]
+        public List<string> SubTypeNames
         {
             get
             {
                 return SubTypeInfos
-                                   .Select ( st => st.Type.Name )
-                                   .ToList ( ) ;
+                    .Select(st => st.Type.Name)
+                    .ToList();
             }
         }
 
@@ -179,7 +185,11 @@ namespace AnalysisAppLib.Syntax
 
         /// <summary>
         /// </summary>
-        public uint? ColorValue { get { return _colorValue; } set { _colorValue = value; } }
+        public uint? ColorValue
+        {
+            get { return _colorValue; }
+            set { _colorValue = value; }
+        }
 
         /// <summary>
         /// </summary>
@@ -190,7 +200,11 @@ namespace AnalysisAppLib.Syntax
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        public string ElementName { get { return _elementName; } set { _elementName = value; } }
+        public string ElementName
+        {
+            get { return _elementName; }
+            set { _elementName = value; }
+        }
 
 
         /// <summary>
@@ -200,7 +214,7 @@ namespace AnalysisAppLib.Syntax
         public SyntaxFieldCollection Fields
         {
             get { return _fields; }
-            set { _fields = value ; }
+            set { _fields = value; }
         }
 
         /// <summary>
@@ -209,8 +223,8 @@ namespace AnalysisAppLib.Syntax
         public DateTime UpdatedDateTime
         {
             // ReSharper disable once UnusedMember.Global
-            get { return _updatedDateTime ; }
-            set { _updatedDateTime = value ; }
+            get { return _updatedDateTime; }
+            set { _updatedDateTime = value; }
         }
 
         /// <summary>
@@ -219,27 +233,46 @@ namespace AnalysisAppLib.Syntax
         // ReSharper disable once UnusedMember.Global
         public DateTime CreatedDateTime
         {
-            get { return _createdDateTime ; }
-            set { _createdDateTime = value ; }
+            get { return _createdDateTime; }
+            set { _createdDateTime = value; }
         }
 
         /// <summary>
         /// Key for the Type that isn't the object itself.
         /// </summary>
         [NotMapped]
-        public object KeyValue { get { return _keyValue ; } set { _keyValue = value ; } }
+        public object KeyValue
+        {
+            get { return _keyValue; }
+            set { _keyValue = value; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public int Version { get { return _version ; } set { _version = value ; } }
+        public int Version
+        {
+            get { return _version; }
+            set { _version = value; }
+        }
 
         /// <summary>
         /// Primary key
         /// </summary>
-        public int Id { get { return _id ; } set { _id = value ; } }
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IEnumerable<AppTypeInfo> AllTypes { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public ITypesViewModel Model { get; set; }
 
         /// <summary>
@@ -259,47 +292,57 @@ namespace AnalysisAppLib.Syntax
     /// </summary>
     public class AppClrType
     {
-        private int _id ;
+        private int _id;
 
         /// <summary>
         /// Primary key
         /// </summary>
-        public int Id { get { return _id ; } set { _id = value ; } }
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
 
         /// <summary>
         /// Type full name
         /// </summary>
-        public string FullName { get ; set ; }
+        public string FullName { get; set; }
+
         /// <summary>
         /// Assembly qualified name
         /// </summary>
-        public string AssemblyQualifiedName { get ; set ; }
+        public string AssemblyQualifiedName { get; set; }
 
         /// <summary>
         /// Assembly
         /// </summary>
-        public AppAssembly Assembly { get ; set ; }
+        public AppAssembly Assembly { get; set; }
+
         /// <summary>
         /// Base type
         /// </summary>
-        public AppClrType BaseType { get ; set ; }
+        public AppClrType BaseType { get; set; }
 
         /// <summary>
         /// Is Abstract
         /// </summary>
-        public bool IsAbstract { get ; set ; }
+        public bool IsAbstract { get; set; }
+
         /// <summary>
         /// Is Class
         /// </summary>
-        public bool IsClass { get ; set ; }
+        public bool IsClass { get; set; }
+
         /// <summary>
         /// Is constructed generic type
         /// </summary>
         public bool IsConstructedGenericType { get; set; }
+
         /// <summary>
         /// Is generic type definition
         /// </summary>
         public bool IsGenericTypeDefinition { get; set; }
+
         /// <summary>
         /// Is generic type
         /// </summary>
@@ -311,57 +354,79 @@ namespace AnalysisAppLib.Syntax
     /// </summary>
     public class AppAssembly
     {
-        private int _id ;
+        private int _id;
 
 
         /// <summary>
         /// Primary key
         /// </summary>
-        public int Id { get { return _id ; } set { _id = value ; } }
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SyntaxFieldCollection : IList , ICollection, IEnumerable, IList<SyntaxFieldInfo>, ICollection<SyntaxFieldInfo>, IEnumerable<SyntaxFieldInfo>
+    public sealed class SyntaxFieldCollection : IList, ICollection, IEnumerable, IList<SyntaxFieldInfo>,
+        ICollection<SyntaxFieldInfo>, IEnumerable<SyntaxFieldInfo>
     {
-        private readonly IList _listImplementation ;
+        private readonly IList _listImplementation;
 
         /// <summary>
         /// 
         /// </summary>
-        public SyntaxFieldCollection ( )
+        public SyntaxFieldCollection()
         {
-            _listImplementation = ( IList ) _generic ;
+            _listImplementation = (IList) _generic;
         }
 
         private readonly IList<SyntaxFieldInfo> _generic = new List<SyntaxFieldInfo>();
+
         #region Implementation of IEnumerable
-        IEnumerator < SyntaxFieldInfo > IEnumerable < SyntaxFieldInfo >.GetEnumerator ( ) { yield break ; }
+
+        IEnumerator<SyntaxFieldInfo> IEnumerable<SyntaxFieldInfo>.GetEnumerator()
+        {
+            yield break;
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public IEnumerator GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
+        public IEnumerator GetEnumerator()
+        {
+            return _listImplementation.GetEnumerator();
+        }
+
         #endregion
+
         #region Implementation of ICollection
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="array"></param>
         /// <param name="index"></param>
-        void ICollection.CopyTo ( Array array , int index ) { _listImplementation.CopyTo ( array , index ) ; }
+        void ICollection.CopyTo(Array array, int index)
+        {
+            _listImplementation.CopyTo(array, index);
+        }
 
         /// <inheritdoc />
-        public bool Remove ( SyntaxFieldInfo item ) { return _generic.Remove ( item ) ; }
+        public bool Remove(SyntaxFieldInfo item)
+        {
+            return _generic.Remove(item);
+        }
 
         /// <summary>
         /// 
         /// </summary>
         public int Count
         {
-            get { return _listImplementation.Count ; }
+            get { return _listImplementation.Count; }
         }
 
         /// <summary>
@@ -369,7 +434,7 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         public object SyncRoot
         {
-            get { return _listImplementation.SyncRoot ; }
+            get { return _listImplementation.SyncRoot; }
         }
 
         /// <summary>
@@ -377,86 +442,123 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         public bool IsSynchronized
         {
-            get { return _listImplementation.IsSynchronized ; }
+            get { return _listImplementation.IsSynchronized; }
         }
+
         #endregion
+
         #region Implementation of IList
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public int Add ( object value ) { return _listImplementation.Add ( value ) ; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public bool Contains ( object value ) { return _listImplementation.Contains ( value ) ; }
-
-        /// <inheritdoc />
-        public void Add ( SyntaxFieldInfo item ) { _generic.Add ( item ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Clear ( ) { _listImplementation.Clear ( ) ; }
-
-        /// <inheritdoc />
-        public bool Contains ( SyntaxFieldInfo item ) { return _generic.Contains ( item ) ; }
-
-        /// <inheritdoc />
-        public void CopyTo ( SyntaxFieldInfo[] array , int arrayIndex )
+        public int Add(object value)
         {
-            _generic.CopyTo ( array , arrayIndex ) ; }
+            return _listImplementation.Add(value);
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public int IndexOf ( object value ) { return _listImplementation.IndexOf ( value ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
-        /// <param name="value"></param>
-        public void Insert ( int index , object value ) { _listImplementation.Insert ( index , value ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        public void Remove ( object value ) { _listImplementation.Remove ( value ) ; }
-
-        /// <inheritdoc />
-        public int IndexOf ( SyntaxFieldInfo item ) { return _generic.IndexOf (item  ); }
-
-        /// <inheritdoc />
-        public void Insert ( int index , SyntaxFieldInfo item ) { _generic.Insert ( index , item ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="index"></param>
-        public void RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
-
-        SyntaxFieldInfo IList < SyntaxFieldInfo >.this [ int index ]
+        public bool Contains(object value)
         {
-            get { return _generic[ index ] ; }
-            set { _generic[ index ] = value ; }
+            return _listImplementation.Contains(value);
+        }
+
+        /// <inheritdoc />
+        public void Add(SyntaxFieldInfo item)
+        {
+            _generic.Add(item);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Clear()
+        {
+            _listImplementation.Clear();
+        }
+
+        /// <inheritdoc />
+        public bool Contains(SyntaxFieldInfo item)
+        {
+            return _generic.Contains(item);
+        }
+
+        /// <inheritdoc />
+        public void CopyTo(SyntaxFieldInfo[] array, int arrayIndex)
+        {
+            _generic.CopyTo(array, arrayIndex);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public int IndexOf(object value)
+        {
+            return _listImplementation.IndexOf(value);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="index"></param>
-        public object this [ int index ]
+        /// <param name="value"></param>
+        public void Insert(int index, object value)
         {
-            get { return _listImplementation[ index ] ; }
-            set { _listImplementation[ index ] = value ; }
+            _listImplementation.Insert(index, value);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        public void Remove(object value)
+        {
+            _listImplementation.Remove(value);
+        }
+
+        /// <inheritdoc />
+        public int IndexOf(SyntaxFieldInfo item)
+        {
+            return _generic.IndexOf(item);
+        }
+
+        /// <inheritdoc />
+        public void Insert(int index, SyntaxFieldInfo item)
+        {
+            _generic.Insert(index, item);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        public void RemoveAt(int index)
+        {
+            _listImplementation.RemoveAt(index);
+        }
+
+        SyntaxFieldInfo IList<SyntaxFieldInfo>.this[int index]
+        {
+            get { return _generic[index]; }
+            set { _generic[index] = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        public object this[int index]
+        {
+            get { return _listImplementation[index]; }
+            set { _listImplementation[index] = value; }
         }
 
         /// <summary>
@@ -464,7 +566,7 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         public bool IsReadOnly
         {
-            get { return _listImplementation.IsReadOnly ; }
+            get { return _listImplementation.IsReadOnly; }
         }
 
         /// <summary>
@@ -472,8 +574,9 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         public bool IsFixedSize
         {
-            get { return _listImplementation.IsFixedSize ; }
+            get { return _listImplementation.IsFixedSize; }
         }
+
         #endregion
     }
 
@@ -485,9 +588,10 @@ namespace AnalysisAppLib.Syntax
     [TypeConverter(typeof(SyntaxFieldInfoTypeConverter))]
     public sealed class SyntaxFieldInfo
     {
-        private int _id ;
+        private int _id;
         private string _clrTypeName;
         private bool _override;
+
         /// <summary>
         /// 
         /// </summary>
@@ -501,16 +605,12 @@ namespace AnalysisAppLib.Syntax
         /// <param name="name"></param>
         /// <param name="typeName"></param>
         /// <param name="kinds"></param>
-        public SyntaxFieldInfo(string name, string typeName, [ NotNull ] params string[] kinds)
+        public SyntaxFieldInfo(string name, string typeName, [NotNull] params string[] kinds)
         {
             _name = name;
             _typeName = typeName;
 
-            foreach ( var k in kinds.Select ( kind => (SyntaxKind)Enum.Parse(typeof(SyntaxKind), kind) ) )
-            {
-                _kinds.Add(k);
-            }
-
+            foreach (var k in kinds.Select(kind => (SyntaxKind) Enum.Parse(typeof(SyntaxKind), kind))) _kinds.Add(k);
         }
 
         private string _name;
@@ -518,20 +618,28 @@ namespace AnalysisAppLib.Syntax
         private readonly SyntaxKindCollection _kinds = new SyntaxKindCollection();
         private bool _optional;
         private Type _type;
-        private string _elementTypeMetadataName ;
-        private bool _isCollection ;
-        private AppTypeInfo _appTypeInfo ;
+        private string _elementTypeMetadataName;
+        private bool _isCollection;
+        private AppTypeInfo _appTypeInfo;
 
         /// <summary>
         /// 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public string TypeName { get { return _typeName; } set { _typeName = value; } }
+        public string TypeName
+        {
+            get { return _typeName; }
+            set { _typeName = value; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public string Name { get { return _name; } set { _name = value; } }
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
 
         /// <summary>
         /// 
@@ -551,11 +659,11 @@ namespace AnalysisAppLib.Syntax
         [NotMapped]
         public Type Type
         {
-            get { return _type ; }
+            get { return _type; }
             set
             {
-                _type = value ;
-                _clrTypeName = _type?.AssemblyQualifiedName ;
+                _type = value;
+                _clrTypeName = _type?.AssemblyQualifiedName;
             }
         }
 
@@ -580,48 +688,80 @@ namespace AnalysisAppLib.Syntax
         /// <summary>
         /// 
         /// </summary>
-        public bool Override { get { return _override; } set { _override = value; } }
+        public bool Override
+        {
+            get { return _override; }
+            set { _override = value; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        public bool Optional { get { return _optional; } set { _optional = value; } }
+        public bool Optional
+        {
+            get { return _optional; }
+            set { _optional = value; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        public string ClrTypeName { get { return _clrTypeName; } set { _clrTypeName = value; } }
+        public string ClrTypeName
+        {
+            get { return _clrTypeName; }
+            set { _clrTypeName = value; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public string ElementTypeMetadataName { get { return _elementTypeMetadataName ; } set { _elementTypeMetadataName = value ; } }
+        public string ElementTypeMetadataName
+        {
+            get { return _elementTypeMetadataName; }
+            set { _elementTypeMetadataName = value; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public bool IsCollection { get { return _isCollection ; } set { _isCollection = value ; } }
+        public bool IsCollection
+        {
+            get { return _isCollection; }
+            set { _isCollection = value; }
+        }
 
         /// <summary>
         /// Primary key
         /// </summary>
-        public int Id { get { return _id ; } set { _id = value ; } }
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [JsonIgnore]
-        public AppTypeInfo AppTypeInfo { get { return _appTypeInfo ; } set { _appTypeInfo = value ; } }
+        public AppTypeInfo AppTypeInfo
+        {
+            get { return _appTypeInfo; }
+            set { _appTypeInfo = value; }
+        }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ITypesViewModel Model { get; set; }
 
         /// <inheritdoc />
         public override string ToString()
         {
-            return $"TypeName: {TypeName}, Name: {Name}, Kinds: {Kinds}, Type: {Type}, Types: {Types}, ClrTypes: {ClrTypes}, Override: {Override}, Optional: {Optional}";
+            return
+                $"TypeName: {TypeName}, Name: {Name}, Kinds: {Kinds}, Type: {Type}, Types: {Types}, ClrTypes: {ClrTypes}, Override: {Override}, Optional: {Optional}";
         }
     }
 
@@ -629,31 +769,27 @@ namespace AnalysisAppLib.Syntax
     public sealed class SyntaxFieldTypeTypeConverter : TypeConverter
     {
         #region Overrides of TypeConverter
+
         /// <inheritdoc />
-        public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType )
+        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            if(destinationType == typeof(string))
-            {
-                return true ;
-            }
-            return base.CanConvertTo ( context , destinationType ) ;
+            if (destinationType == typeof(string)) return true;
+            return base.CanConvertTo(context, destinationType);
         }
 
         /// <inheritdoc />
-        public override object ConvertTo (
+        public override object ConvertTo(
             ITypeDescriptorContext context
-          , CultureInfo            culture
-          , object                 value
-          , Type                   destinationType
+            , CultureInfo culture
+            , object value
+            , Type destinationType
         )
         {
             // ReSharper disable once UnusedVariable
-            if ( value is Type t )
-            {
-                return "boo" ;
-            }
-            return base.ConvertTo ( context , culture , value , destinationType ) ;
+            if (value is Type t) return "boo";
+            return base.ConvertTo(context, culture, value, destinationType);
         }
+
         #endregion
     }
 
@@ -661,36 +797,28 @@ namespace AnalysisAppLib.Syntax
     public sealed class SyntaxFieldTypeValueSerializer : ValueSerializer
     {
         #region Overrides of ValueSerializer
+
         /// <inheritdoc />
-        public override bool CanConvertToString ( object value , IValueSerializerContext context )
+        public override bool CanConvertToString(object value, IValueSerializerContext context)
         {
-            if ( value is Type )
-            {
-                return true ;
-            }
-            return base.CanConvertToString ( value , context ) ;
+            if (value is Type) return true;
+            return base.CanConvertToString(value, context);
         }
 
         /// <inheritdoc />
-        public override string ConvertToString ( object value , IValueSerializerContext context )
+        public override string ConvertToString(object value, IValueSerializerContext context)
         {
-            if ( ! ( value is Type t ) )
-            {
-                return base.ConvertToString ( value , context ) ;
-            }
+            if (!(value is Type t)) return base.ConvertToString(value, context);
 
-            if ( ! t.IsGenericType )
-            {
-                return t.FullName ;
-            }
+            if (!t.IsGenericType) return t.FullName;
 
-            var t2 = t.GetGenericTypeDefinition ( ) ;
+            var t2 = t.GetGenericTypeDefinition();
             // ReSharper disable once PossibleNullReferenceException
-            var nt = t2.FullName.Replace ( "`1" , "" ) ;
-            var x = t.GetGenericArguments ( )[ 0 ].FullName ;
-            return $"{nt}<{x}>" ;
-
+            var nt = t2.FullName.Replace("`1", "");
+            var x = t.GetGenericArguments()[0].FullName;
+            return $"{nt}<{x}>";
         }
+
         #endregion
     }
 
@@ -699,142 +827,223 @@ namespace AnalysisAppLib.Syntax
     /// </summary>
     public sealed class SyntaxKindCollection : IList, ICollection, IEnumerable
     {
-        private readonly IList _list = new List < SyntaxKind > ( ) ;
+        private readonly IList _list = new List<SyntaxKind>();
 
         /// <inheritdoc />
-        public IEnumerator GetEnumerator ( ) => _list.GetEnumerator ( ) ;
+        public IEnumerator GetEnumerator()
+        {
+            return _list.GetEnumerator();
+        }
+
         /// <inheritdoc />
-        public void CopyTo ( Array array , int index ) => _list.CopyTo ( array , index ) ;
+        public void CopyTo(Array array, int index)
+        {
+            _list.CopyTo(array, index);
+        }
 
         /// <inheritdoc />
         public int Count
         {
-            get { return _list.Count ; }
+            get { return _list.Count; }
         }
 
         /// <inheritdoc />
         public object SyncRoot
         {
-            get { return _list.SyncRoot ; }
+            get { return _list.SyncRoot; }
         }
 
         /// <inheritdoc />
         public bool IsSynchronized
         {
-            get { return _list.IsSynchronized ; }
+            get { return _list.IsSynchronized; }
         }
 
         /// <inheritdoc />
-        public int Add ( object value ) => _list.Add ( value ) ;
-        /// <inheritdoc />
-        public bool Contains ( object value ) => _list.Contains ( value ) ;
-        /// <inheritdoc />
-        public void Clear ( ) => _list.Clear ( ) ;
-        /// <inheritdoc />
-        public int IndexOf ( object value ) => _list.IndexOf ( value ) ;
-        /// <inheritdoc />
-        public void Insert ( int index , object value ) => _list.Insert ( index , value ) ;
-        /// <inheritdoc />
-        public void Remove ( object value ) => _list.Remove ( value ) ;
-        /// <inheritdoc />
-        public void RemoveAt ( int index ) => _list.RemoveAt ( index ) ;
+        public int Add(object value)
+        {
+            return _list.Add(value);
+        }
 
         /// <inheritdoc />
-        public object this [ int index ]
+        public bool Contains(object value)
         {
-            get { return _list[ index ] ; }
-            set { _list[ index ] = value ; }
+            return _list.Contains(value);
+        }
+
+        /// <inheritdoc />
+        public void Clear()
+        {
+            _list.Clear();
+        }
+
+        /// <inheritdoc />
+        public int IndexOf(object value)
+        {
+            return _list.IndexOf(value);
+        }
+
+        /// <inheritdoc />
+        public void Insert(int index, object value)
+        {
+            _list.Insert(index, value);
+        }
+
+        /// <inheritdoc />
+        public void Remove(object value)
+        {
+            _list.Remove(value);
+        }
+
+        /// <inheritdoc />
+        public void RemoveAt(int index)
+        {
+            _list.RemoveAt(index);
+        }
+
+        /// <inheritdoc />
+        public object this[int index]
+        {
+            get { return _list[index]; }
+            set { _list[index] = value; }
         }
 
 
         /// <inheritdoc />
         public bool IsReadOnly
         {
-            get { return false ; }
+            get { return false; }
         }
 
         /// <inheritdoc />
         public bool IsFixedSize
         {
-            get { return _list.IsFixedSize ; }
+            get { return _list.IsFixedSize; }
         }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class AppTypeInfoCollection : IList < AppTypeInfo >
-      , ICollection < AppTypeInfo >
-      , IEnumerable < AppTypeInfo >, ICollection
+    public sealed class AppTypeInfoCollection : IList<AppTypeInfo>
+        , ICollection<AppTypeInfo>
+        , IEnumerable<AppTypeInfo>, ICollection
     {
-        private readonly IList < AppTypeInfo > _listImplementation = new List < AppTypeInfo > ();
+        private readonly IList<AppTypeInfo> _listImplementation = new List<AppTypeInfo>();
 #pragma warning disable 649
-        private object _syncRoot ;
+        private object _syncRoot;
 #pragma warning restore 649
 #pragma warning disable 649
-        private bool _isSynchronized ;
+        private bool _isSynchronized;
 #pragma warning restore 649
+
         #region Implementation of IEnumerable
-        /// <inheritdoc />
-        public IEnumerator < AppTypeInfo > GetEnumerator ( ) { return _listImplementation.GetEnumerator ( ) ; }
 
-        IEnumerator IEnumerable.GetEnumerator ( ) { return ( ( IEnumerable ) _listImplementation ).GetEnumerator ( ) ; }
+        /// <inheritdoc />
+        public IEnumerator<AppTypeInfo> GetEnumerator()
+        {
+            return _listImplementation.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable) _listImplementation).GetEnumerator();
+        }
+
         #endregion
+
         #region Implementation of ICollection<AppTypeInfo>
-        /// <inheritdoc />
-        public void Add ( AppTypeInfo item ) { _listImplementation.Add ( item ) ; }
 
         /// <inheritdoc />
-        public void Clear ( ) { _listImplementation.Clear ( ) ; }
+        public void Add(AppTypeInfo item)
+        {
+            _listImplementation.Add(item);
+        }
 
         /// <inheritdoc />
-        public bool Contains ( AppTypeInfo item ) { return _listImplementation.Contains ( item ) ; }
+        public void Clear()
+        {
+            _listImplementation.Clear();
+        }
 
         /// <inheritdoc />
-        public void CopyTo ( AppTypeInfo[] array , int arrayIndex ) { _listImplementation.CopyTo ( array , arrayIndex ) ; }
+        public bool Contains(AppTypeInfo item)
+        {
+            return _listImplementation.Contains(item);
+        }
 
         /// <inheritdoc />
-        public bool Remove ( AppTypeInfo item ) { return _listImplementation.Remove ( item ) ; }
+        public void CopyTo(AppTypeInfo[] array, int arrayIndex)
+        {
+            _listImplementation.CopyTo(array, arrayIndex);
+        }
 
         /// <inheritdoc />
-        public void CopyTo ( Array array , int index ) { }
+        public bool Remove(AppTypeInfo item)
+        {
+            return _listImplementation.Remove(item);
+        }
+
+        /// <inheritdoc />
+        public void CopyTo(Array array, int index)
+        {
+        }
 
         /// <summary>
         /// 
         /// </summary>
         public int Count
         {
-            get { return _listImplementation.Count ; }
+            get { return _listImplementation.Count; }
         }
 
         /// <inheritdoc />
-        public object SyncRoot { get { return _syncRoot ; } }
+        public object SyncRoot
+        {
+            get { return _syncRoot; }
+        }
 
         /// <inheritdoc />
-        public bool IsSynchronized { get { return _isSynchronized ; } }
+        public bool IsSynchronized
+        {
+            get { return _isSynchronized; }
+        }
 
         /// <inheritdoc />
         public bool IsReadOnly
         {
-            get { return _listImplementation.IsReadOnly ; }
+            get { return _listImplementation.IsReadOnly; }
         }
+
         #endregion
+
         #region Implementation of IList<AppTypeInfo>
-        /// <inheritdoc />
-        public int IndexOf ( AppTypeInfo item ) { return _listImplementation.IndexOf ( item ) ; }
 
         /// <inheritdoc />
-        public void Insert ( int index , AppTypeInfo item ) { _listImplementation.Insert ( index , item ) ; }
-
-        /// <inheritdoc />
-        public void RemoveAt ( int index ) { _listImplementation.RemoveAt ( index ) ; }
-
-        /// <inheritdoc />
-        public AppTypeInfo this [ int index ]
+        public int IndexOf(AppTypeInfo item)
         {
-            get { return _listImplementation[ index ] ; }
-            set { _listImplementation[ index ] = value ; }
+            return _listImplementation.IndexOf(item);
         }
+
+        /// <inheritdoc />
+        public void Insert(int index, AppTypeInfo item)
+        {
+            _listImplementation.Insert(index, item);
+        }
+
+        /// <inheritdoc />
+        public void RemoveAt(int index)
+        {
+            _listImplementation.RemoveAt(index);
+        }
+
+        /// <inheritdoc />
+        public AppTypeInfo this[int index]
+        {
+            get { return _listImplementation[index]; }
+            set { _listImplementation[index] = value; }
+        }
+
         #endregion
     }
 
@@ -845,40 +1054,42 @@ namespace AnalysisAppLib.Syntax
     public sealed class AppMethodInfo
     {
         private System.Reflection.MethodInfo _methodInfo;
-        private int _id ;
+        private int _id;
+
         /// <summary>
         /// </summary>
         [JsonIgnore]
         [NotMapped]
-        public System.Reflection.MethodInfo MethodInfo { get { return _methodInfo; } set { _methodInfo = value;
-	MethodName = value.Name;
-	foreach(var p in MethodInfo.GetParameters()
-                                 .Select(
-                                         (info, i) => new AppParameterInfo
-                                                      {
-                                                          Index = i
-                                                         ,
-                                                          ParameterType = info.ParameterType
-                                                         ,
-                                                          Name = info.Name
-                                                         ,
-                                                          IsOptional = info.IsOptional
-                                                      }
-                                        ))
-					{
-
-Parameters.Add(p);
-}
-ReturnType = value.ReturnType;
-DeclaringType = value.DeclaringType;
-                
-} }
+        public System.Reflection.MethodInfo MethodInfo
+        {
+            get { return _methodInfo; }
+            set
+            {
+                _methodInfo = value;
+                MethodName = value.Name;
+                foreach (var p in MethodInfo.GetParameters()
+                    .Select(
+                        (info, i) => new AppParameterInfo
+                        {
+                            Index = i,
+                            ParameterType = info.ParameterType,
+                            Name = info.Name,
+                            IsOptional = info.IsOptional
+                        }
+                    ))
+                    Parameters.Add(p);
+                ReturnType = value.ReturnType;
+                DeclaringType = value.DeclaringType;
+            }
+        }
 
         /// <summary>
         /// </summary>
         /// 
         [NotMapped]
-        [CanBeNull] [ UsedImplicitly ] public Type ReflectedType { get; set; }
+        [CanBeNull]
+        [UsedImplicitly]
+        public Type ReflectedType { get; set; }
 
         /// <summary>
         /// </summary>
@@ -889,24 +1100,22 @@ DeclaringType = value.DeclaringType;
 
         /// <summary>
         /// </summary>
-        [NotNull]
+        [CanBeNull]
         [UsedImplicitly]
         public string MethodName { get; set; }
 
         /// <summary>
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        [NotNull]
+        [CanBeNull]
         public Type ReturnType { get; set; }
 
         /// <summary>
         /// </summary>
         // ReSharper disable once UnusedMember.Global
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        [ NotNull ] public AppParameterCollection Parameters
-        {
-            get;
-        }  = new AppParameterCollection();
+        [NotNull]
+        public AppParameterCollection Parameters { get; } = new AppParameterCollection();
 
         /// <summary>
         /// </summary>
@@ -917,83 +1126,106 @@ DeclaringType = value.DeclaringType;
         /// <summary>
         /// Primary key
         /// </summary>
-        public int Id { get { return _id ; } set { _id = value ; } }
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class AppParameterCollection : IList, ICollection, IEnumerable
     {
-        private IList _listImplementation = new List<AppParameterInfo>();
+        private readonly IList _listImplementation = new List<AppParameterInfo>();
+
+        /// <inheritdoc />
         public IEnumerator GetEnumerator()
         {
             return _listImplementation.GetEnumerator();
         }
 
+        /// <inheritdoc />
         public void CopyTo(Array array, int index)
         {
             _listImplementation.CopyTo(array, index);
         }
 
+        /// <inheritdoc />
         public int Count
         {
             get { return _listImplementation.Count; }
         }
 
+        /// <inheritdoc />
         public object SyncRoot
         {
             get { return _listImplementation.SyncRoot; }
         }
 
+        /// <inheritdoc />
         public bool IsSynchronized
         {
             get { return _listImplementation.IsSynchronized; }
         }
 
+        /// <inheritdoc />
         public int Add(object value)
         {
             return _listImplementation.Add(value);
         }
 
+        /// <inheritdoc />
         public bool Contains(object value)
         {
             return _listImplementation.Contains(value);
         }
 
+        /// <inheritdoc />
         public void Clear()
         {
             _listImplementation.Clear();
         }
 
+        /// <inheritdoc />
         public int IndexOf(object value)
         {
             return _listImplementation.IndexOf(value);
         }
 
+        /// <inheritdoc />
         public void Insert(int index, object value)
         {
             _listImplementation.Insert(index, value);
         }
 
+        /// <inheritdoc />
         public void Remove(object value)
         {
             _listImplementation.Remove(value);
         }
 
+        /// <inheritdoc />
         public void RemoveAt(int index)
         {
             _listImplementation.RemoveAt(index);
         }
 
+        /// <inheritdoc />
         public object this[int index]
         {
             get { return _listImplementation[index]; }
             set { _listImplementation[index] = value; }
         }
 
+        /// <inheritdoc />
         public bool IsReadOnly
         {
             get { return _listImplementation.IsReadOnly; }
         }
 
+        /// <inheritdoc />
         public bool IsFixedSize
         {
             get { return _listImplementation.IsFixedSize; }
@@ -1005,11 +1237,11 @@ DeclaringType = value.DeclaringType;
     /// </summary>
     public sealed class AppParameterInfo
     {
-        private int _id ;
-        private int    _index;
-        private bool   _isOptional;
+        private int _id;
+        private int _index;
+        private bool _isOptional;
         private string _name;
-        private Type   _parameterType;
+        private Type _parameterType;
 
         /// <summary>
         /// Type of parameter.
@@ -1017,7 +1249,7 @@ DeclaringType = value.DeclaringType;
         [NotMapped]
         public Type ParameterType
         {
-            [ UsedImplicitly ] get { return _parameterType; }
+            [UsedImplicitly] get { return _parameterType; }
             set { _parameterType = value; }
         }
 
@@ -1025,90 +1257,102 @@ DeclaringType = value.DeclaringType;
         /// Is parameter optional?
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        public bool IsOptional { get { return _isOptional; } set { _isOptional = value; } }
+        public bool IsOptional
+        {
+            get { return _isOptional; }
+            set { _isOptional = value; }
+        }
 
         /// <summary>
         /// Name of parameter
         /// </summary>
-        public string Name { [ UsedImplicitly ] get { return _name; } set { _name = value; } }
+        public string Name
+        {
+            [UsedImplicitly] get { return _name; }
+            set { _name = value; }
+        }
 
         /// <summary>
         /// Zero-based index of parameter.
         /// </summary>
-        public int Index { [ UsedImplicitly ] get { return _index; } set { _index = value; } }
+        public int Index
+        {
+            [UsedImplicitly] get { return _index; }
+            set { _index = value; }
+        }
 
         /// <summary>
         /// Public key
         /// </summary>
-        public int Id { get { return _id ; } set { _id = value ; } }
+        public int Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed class AppTypeInfoKey : IComparable < AppTypeInfoKey >
+    public sealed class AppTypeInfoKey : IComparable<AppTypeInfoKey>
     {
-        private string _unqualifiedTypeName ;
+        private string _unqualifiedTypeName;
 
         /// <summary>
         /// 
         /// </summary>
         public string StringValue
         {
-            get { return _unqualifiedTypeName ; }
-            set { _unqualifiedTypeName = value ; }
+            get { return _unqualifiedTypeName; }
+            set { _unqualifiedTypeName = value; }
         }
 
         #region Relational members
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public int CompareTo ( AppTypeInfoKey other )
+        public int CompareTo(AppTypeInfoKey other)
         {
-            if ( ReferenceEquals ( this , other ) )
-            {
-                return 0 ;
-            }
+            if (ReferenceEquals(this, other)) return 0;
 
-            if ( ReferenceEquals ( null , other ) )
-            {
-                return 1 ;
-            }
+            if (ReferenceEquals(null, other)) return 1;
 
-            return string.Compare ( StringValue , other.StringValue , StringComparison.Ordinal ) ;
+            return string.Compare(StringValue, other.StringValue, StringComparison.Ordinal);
         }
+
         #endregion
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="unqualifiedTypeName"></param>
-        public AppTypeInfoKey ( string unqualifiedTypeName )
+        public AppTypeInfoKey(string unqualifiedTypeName)
         {
-            StringValue = unqualifiedTypeName ;
+            StringValue = unqualifiedTypeName;
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="type"></param>
-        public AppTypeInfoKey ( [ NotNull ] Type type )
+        public AppTypeInfoKey([NotNull] Type type)
         {
-            StringValue = type.Name ;
-
+            StringValue = type.Name;
         }
 
         #region Equality members
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public bool Equals ( [ NotNull ] AppTypeInfoKey other )
+        public bool Equals([NotNull] AppTypeInfoKey other)
         {
-            return StringValue == other.StringValue ;
+            return StringValue == other.StringValue;
         }
 
         /// <summary>
@@ -1116,19 +1360,20 @@ DeclaringType = value.DeclaringType;
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals ( object obj )
+        public override bool Equals(object obj)
         {
-            return obj is AppTypeInfoKey other && Equals ( other ) ;
+            return obj is AppTypeInfoKey other && Equals(other);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public override int GetHashCode ( )
+        public override int GetHashCode()
         {
-            return StringValue != null ? StringValue.GetHashCode ( ) : 0 ;
+            return StringValue != null ? StringValue.GetHashCode() : 0;
         }
+
         #endregion
     }
 }
