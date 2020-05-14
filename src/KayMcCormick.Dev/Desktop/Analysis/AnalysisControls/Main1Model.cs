@@ -11,7 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
-using AnalysisControls.RibbonM;
+using AnalysisControls.RibbonModel;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Logging;
@@ -181,13 +181,13 @@ namespace AnalysisControls
                 DisplayMemberPath = "Header"
             };
             tv.SetBinding(ItemsControl.ItemsSourceProperty,
-                new Binding("ClientViewModel.Ribbon.RibbonItems")
+                new Binding("ClientViewModel.PrimaryRibbon.RibbonItems")
                     {Source = this });
-            Anchorables.Add(new AnchorableModel() {Title = "Ribbon Tabs", Content = tv});
+            Anchorables.Add(new AnchorableModel() {Title = "PrimaryRibbon Tabs", Content = tv});
 
             var lv = new ListBox();
             lv.SetBinding(ItemsControl.ItemsSourceProperty,
-                new Binding("ClientViewModel.Ribbon.ContextualTabGroups")
+                new Binding("ClientViewModel.PrimaryRibbon.ContextualTabGroups")
                 {
                     Source = this
                 });
@@ -782,7 +782,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        RibbonModel Ribbon { get; set; }
+        PrimaryRibbonModel PrimaryRibbon { get; set; }
 
         LogEventInstanceObservableCollection LogEntries { get; set; }
     }

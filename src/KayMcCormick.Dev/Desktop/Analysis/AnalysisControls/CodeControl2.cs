@@ -29,7 +29,7 @@ namespace AnalysisControls
             
             double pixelsPerDip = PixelsPerDip;
             FormattingHelper.UpdateFormattedText(OutputWidth, ref currentRendering, EmSize, Typeface, _textDest,
-                Store,
+                TextSource,
                 pixelsPerDip, LineInfos, Infos, ref maxX, out var maxY, null, new GenericTextParagraphProperties(currentRendering, pixelsPerDip));
             MaxX = maxX;
             MaxY = maxY;

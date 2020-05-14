@@ -119,19 +119,7 @@
     </StackPanel>
   </DataTemplate>
   <DataTemplate DataType="{x:Type analysisControls:DocModel}">
-    <Grid>
-      <Grid.RowDefinitions>
-        <RowDefinition Height="*"/>
-        <RowDefinition Height="Auto"/>
-      </Grid.RowDefinitions>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*"/>
-      </Grid.ColumnDefinitions>
-      <ContentControl Content="{Binding Content}"></ContentControl>
-      <StackPanel Orientation="Horizontal" Grid.Row="1">
-        <TextBlock Text="{Binding Title,FallbackValue=Untitled}"/>
-      </StackPanel>
-    </Grid>
+    <analysisControls:DocumentView Document="{Binding}"/>
   </DataTemplate>
   <DataTemplate DataType="{x:Type analysisControls:AnchorableModel}">
     <ContentControl Content="{Binding Content}"></ContentControl>

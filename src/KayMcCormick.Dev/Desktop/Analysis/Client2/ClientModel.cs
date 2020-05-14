@@ -6,7 +6,7 @@ using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 using AnalysisControls;
-using AnalysisControls.RibbonM;
+using AnalysisControls.RibbonModel;
 using JetBrains.Annotations;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
@@ -15,9 +15,10 @@ namespace Client2
 {
     public sealed class ClientModel : INotifyPropertyChanged, IClientModel
     {
-        private RibbonModel _ribbon;
+        private PrimaryRibbonModel _primaryRibbon;
+        private object _hoverElement;
 
-        public ClientModel(RibbonModel model, ReplaySubject<IControlView> replay)
+        public ClientModel(PrimaryRibbonModel model, ReplaySubject<IControlView> replay)
         {
             replay.SubscribeOn(Scheduler.Default)
                 .ObserveOnDispatcher(DispatcherPriority.Send)
@@ -29,24 +30,35 @@ namespace Client2
                         Main1Model.ActiveContent = doc;
                     }
                 );
-            Ribbon = model;
+            PrimaryRibbon = model;
         }
 
         public LogEventInstanceObservableCollection LogEntries { get; set; } =
             new LogEventInstanceObservableCollection();
 
-        public RibbonModel Ribbon
+        public PrimaryRibbonModel PrimaryRibbon
         {
-            get { return _ribbon; }
+            get { return _primaryRibbon; }
             set
             {
-                if (Equals(value, _ribbon)) return;
-                _ribbon = value;
+                if (Equals(value, _primaryRibbon)) return;
+                _primaryRibbon = value;
                 OnPropertyChanged();
             }
         }
 
         public Main1Model Main1Model { get; set; }
+
+        public object HoverElement
+        {
+            get { return _hoverElement; }
+            set
+            {
+                if (Equals(value, _hoverElement)) return;
+                _hoverElement = value;
+                OnPropertyChanged();
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using AnalysisControls.RibbonM;
+using AnalysisControls.RibbonModel;
 using Autofac;
 using Microsoft.Graph;
 using Image = System.Windows.Controls.Image;
@@ -24,7 +24,7 @@ namespace AnalysisControls
             cg2.Items.Add(datePicker);
 
             var mb = group.CreateRibbonMenuButton("Menu");
-            var gal = RibbonModel.CreateModelGallery();
+            var gal = PrimaryRibbonModel.CreateModelGallery();
             mb.Items.Add(gal);
             var cat = gal.CreateGalleryCategory("Cat1");
             cat.CreateGalleryItem(new Image {Source = new BitmapImage {UriSource = new Uri(@group.SmallImageSource.ToString())}});

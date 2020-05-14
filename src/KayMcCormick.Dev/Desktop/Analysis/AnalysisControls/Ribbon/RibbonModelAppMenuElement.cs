@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace AnalysisControls.RibbonM
+namespace AnalysisControls.RibbonModel
 {
     public class RibbonModelAppMenuElement
     {

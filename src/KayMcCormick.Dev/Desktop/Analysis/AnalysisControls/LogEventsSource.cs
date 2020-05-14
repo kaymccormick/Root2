@@ -102,7 +102,7 @@ namespace AnalysisControls
         public override GenericTextRunProperties BaseProps { get; }
         public IEnumerable<LogEventInstance> EventsSource { get; set; }
 
-        public override MyTextRunProperties BasicProps()
+        public override BasicTextRunProperties BasicProps()
         {
             throw new System.NotImplementedException();
         }
@@ -112,6 +112,15 @@ namespace AnalysisControls
             throw new System.NotImplementedException();
         }
 
+        public override void TextInput(int InsertionPoint, string text)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eNewItems"></param>
         public void AppendRange(IEnumerable eNewItems)
         {
             int colLength = col.Count;
@@ -133,16 +142,19 @@ namespace AnalysisControls
         private void Process(LogEventInstance logEventInstance)
         {
             col.Add(new CustomTextCharacters(NLog.LogLevel.FromOrdinal(logEventInstance.Level).ToString(),
-                new MyTextRunProperties(BaseProps).WithForegroundBrush(levelBrushes[logEventInstance.Level]), new TextSpan()));
-            col.Add(new TabTextRun("\t", new MyTextRunProperties(BaseProps)));
-            col.Add(new CustomTextCharacters(logEventInstance.LoggerName, new MyTextRunProperties(BaseProps), new TextSpan()));
-            col.Add(new TabTextRun("\t", new MyTextRunProperties(BaseProps)));
-            col.Add(new CustomTextCharacters(logEventInstance.TimeStamp.ToString(), new MyTextRunProperties(BaseProps), new TextSpan()));
-            col.Add(new TabTextRun("\t", new MyTextRunProperties(BaseProps)));
-            col.Add(new CustomTextCharacters(logEventInstance.FormattedMessage, new MyTextRunProperties(BaseProps), new TextSpan()));
+                new BasicTextRunProperties(BaseProps).WithForegroundBrush(levelBrushes[logEventInstance.Level]), new TextSpan()));
+            col.Add(new TabTextRun("\t", new BasicTextRunProperties(BaseProps)));
+            col.Add(new CustomTextCharacters(logEventInstance.LoggerName, new BasicTextRunProperties(BaseProps), new TextSpan()));
+            col.Add(new TabTextRun("\t", new BasicTextRunProperties(BaseProps)));
+            col.Add(new CustomTextCharacters(logEventInstance.TimeStamp.ToString(), new BasicTextRunProperties(BaseProps), new TextSpan()));
+            col.Add(new TabTextRun("\t", new BasicTextRunProperties(BaseProps)));
+            col.Add(new CustomTextCharacters(logEventInstance.FormattedMessage, new BasicTextRunProperties(BaseProps), new TextSpan()));
             col.Add(new TextEndOfLine(2));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Brush[] levelBrushes { get; set; } = new[]
         {
             Brushes.LightBlue, Brushes.GreenYellow, Brushes.Aquamarine, Brushes.DarkOrange, Brushes.Crimson,
@@ -152,7 +164,7 @@ namespace AnalysisControls
 
     internal class TabTextRun : TextCharacters
     {
-        public TabTextRun(string s, MyTextRunProperties myTextRunProperties) : base(s, myTextRunProperties)
+        public TabTextRun(string s, BasicTextRunProperties basicTextRunProperties) : base(s, basicTextRunProperties)
         {
         }
     }

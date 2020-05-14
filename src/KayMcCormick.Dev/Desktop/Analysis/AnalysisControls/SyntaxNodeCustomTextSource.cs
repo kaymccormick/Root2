@@ -2,7 +2,7 @@
 {
     public class SyntaxNodeCustomTextSource : CustomTextSource3
     {
-        public SyntaxNodeCustomTextSource(double pixelsPerDip) : base(pixelsPerDip)
+        public SyntaxNodeCustomTextSource(double pixelsPerDip, ITypefaceManager typefaceManager) : base(pixelsPerDip, typefaceManager)
         {
         }
     }

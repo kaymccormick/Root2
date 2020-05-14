@@ -73,6 +73,7 @@
   <ItemGroup>
     <Compile Include="AppContainerFixture.cs" />
     <Compile Include="AppProjTests.cs" />
+    <Compile Include="AssemblyResourceModel.cs" />
     <Compile Include="CharRow.cs" />
     <Compile Include="ContainerTests.cs" />
     <Compile Include="Generic1.cs" />

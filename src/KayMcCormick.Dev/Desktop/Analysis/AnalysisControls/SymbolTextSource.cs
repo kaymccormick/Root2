@@ -114,9 +114,9 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <returns></returns>
-        public override MyTextRunProperties BasicProps()
+        public override BasicTextRunProperties BasicProps()
         {
-            var xx = new MyTextRunProperties(BaseProps);
+            var xx = new BasicTextRunProperties(BaseProps);
             return xx;
         }
 
@@ -264,8 +264,16 @@ namespace AnalysisControls
 
                 return props;
             }
-        
 
+        public override void TextInput(int InsertionPoint, string text)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         public SymbolDisplayFormat SymbolDisplayFormat { get; set; } = SymbolDisplayFormat.MinimallyQualifiedFormat;
 
         private void TakeTextRun(TextRun obj)

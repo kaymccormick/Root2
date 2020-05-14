@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows.Shapes;
 
-namespace AnalysisControls.RibbonM
+namespace AnalysisControls.RibbonModel
 {
     /// <summary>
     /// 
@@ -37,5 +36,9 @@ namespace AnalysisControls.RibbonM
             Items.Add(r);
             return r;
         }
+
+        public override ControlKind Kind => ControlKind.RibbonGalleryCategory;
+        
+        
     }
 }

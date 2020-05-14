@@ -30,7 +30,6 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
 using System.Resources;
-using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
@@ -58,7 +57,7 @@ using AnalysisAppLib.Serialization;
 using AnalysisAppLib.Syntax;
 using AnalysisControls;
 using AnalysisControls.Properties;
-using AnalysisControls.RibbonM;
+using AnalysisControls.RibbonModel;
 using AnalysisControls.ViewModel;
 using Autofac;
 using AvalonDock;
@@ -1601,7 +1600,7 @@ namespace ProjTests
         [WpfFact]
         public void TestStore3()
         {
-            var x = new CustomTextSource3(1);
+            var x = new CustomTextSource3(100, new DefaultTypefaceManager());
             var comp = AnalysisService.Parse(Resources.Program_Parse, "test", false);
             x.Compilation = comp.Compilation;
             x.Tree = comp.SyntaxTree;
@@ -1721,8 +1720,9 @@ namespace ProjTests
             Visual h = new Border();
             var PixelsPerDip = VisualTreeHelper.GetDpi(h).PixelsPerDip;
             var syntaxTree = ProjTestsHelper.SetupSyntaxParams(out var compilation);
+            ITypefaceManager manager = new DefaultTypefaceManager();
             var Store = FormattingHelper.UpdateTextSource(syntaxTree.GetRoot(), compilation, syntaxTree, PixelsPerDip,
-                EmSize);
+                EmSize, manager);
             var formatter = TextFormatter.Create();
             var textStorePosition = 0;
             var OutputWidth = 800;
@@ -2114,7 +2114,7 @@ namespace ProjTests
         [WpfFact]
         public void TestRibbonModel()
         {
-            RibbonModel m = new RibbonModel();
+            PrimaryRibbonModel m = new PrimaryRibbonModel();
             RibbonTabProvider1 p = new RibbonTabProvider1();
             var t = p.ProvideModelItem(null);
             m.RibbonItems.Add(t);
@@ -2352,6 +2352,24 @@ panel.AssemblySource = AppDomain.CurrentDomain.GetAssemblies();
 
 
         [WpfFact]
+        public void TestDocumentView()
+        {
+            var c = new DocumentView
+            {
+                Document = new DocModel
+                {
+                    Title = "test",
+                    Content = new Frame {Content = new Page {Content = new TextBlock {Text = "Test", FontSize = 40.0}}}
+                }
+            };
+
+                Window w = new Window { Content = c };
+                w.ShowDialog();
+            
+        }
+
+
+        [WpfFact]
         public void TestAR3()
         {
             var c = new StackPanel() { Orientation = Orientation.Horizontal };
@@ -2401,54 +2419,6 @@ panel.AssemblySource = AppDomain.CurrentDomain.GetAssemblies();
             // }
 
             
-        }
-    }
-
-    public class AssemblyResourceModel : INotifyPropertyChanged
-    {
-        private INodeData _selectedNode;
-        private Assembly _selectedAssembly;
-        private ObservableCollection<Assembly> _assemblies = new ObservableCollection<Assembly>();
-
-        public ObservableCollection<Assembly> Assemblies
-        {
-            get { return _assemblies; }
-            set
-            {
-                if (Equals(value, _assemblies)) return;
-                _assemblies = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public Assembly SelectedAssembly
-        {
-            get { return _selectedAssembly; }
-            set
-            {
-                if (Equals(value, _selectedAssembly)) return;
-                _selectedAssembly = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public INodeData SelectedNode
-        {
-            get { return _selectedNode; }
-            set
-            {
-                if (Equals(value, _selectedNode)) return;
-                _selectedNode = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

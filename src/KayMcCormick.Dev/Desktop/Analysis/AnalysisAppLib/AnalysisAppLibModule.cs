@@ -227,11 +227,11 @@ namespace AnalysisAppLib
             #endregion
         }
 
-        public bool RegisterConcreteBlockProviders
-        {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        public bool RegisterConcreteBlockProviders { get; set; }
 
         private bool RegisterModelResources { get; set; }
 

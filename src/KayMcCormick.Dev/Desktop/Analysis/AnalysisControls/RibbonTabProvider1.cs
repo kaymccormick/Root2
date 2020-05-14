@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AnalysisControls.RibbonM;
+using AnalysisControls.RibbonModel;
 using Autofac;
 using KayMcCormick.Dev;
 

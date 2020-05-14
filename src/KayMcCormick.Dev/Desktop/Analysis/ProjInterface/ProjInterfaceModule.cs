@@ -240,7 +240,7 @@ namespace ProjInterface
                                                                                       "pack://application:,,,/WpfLib;component/Assets/python1.jpg"
                                                                                      )
                                                                              )
-                   .WithMetadata("Ribbon", true); ;
+                   .WithMetadata("PrimaryRibbon", true); ;
             builder.RegisterType < PythonViewModel > ( )
                    .AsSelf ( )
                    .SingleInstance ( ) ; //.AutoActivate();

@@ -4,12 +4,12 @@ using AnalysisAppLib;
 using Autofac.Features.Metadata;
 using KayMcCormick.Dev;
 
-namespace AnalysisControls.RibbonM
+namespace AnalysisControls.RibbonModel
 {
-    public class TestRibbonTabDef4 : RibbonModelTab
+    public class DerpTab : RibbonModelTab
     {
         
-        public TestRibbonTabDef4(IEnumerable<Meta<RibbonModelGroup>> groups)
+        public DerpTab(IEnumerable<Meta<RibbonModelGroup>> groups)
         {
             Visibility = Visibility.Visible;
             ContextualTabGroupHeader = "Assemblies";

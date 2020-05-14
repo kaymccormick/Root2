@@ -4,22 +4,34 @@ using AvalonDock.Layout;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class RibbonBuilder
     {
-        private IAppRibbon appRibbon;
+        private readonly IAppRibbon appRibbon;
         private readonly AllCommands _allCommands;
         private Ribbon _ribbon;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="appRibbon"></param>
+        /// <param name="allCommands"></param>
         public RibbonBuilder(IAppRibbon appRibbon, AllCommands allCommands)
         {
             this.appRibbon = appRibbon;
             _allCommands = allCommands;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Ribbon Ribbon
         {
             get
             {
+                // ReSharper disable once ConvertIfStatementToNullCoalescingExpression
                 if (_ribbon == null)
                 {
                     _ribbon = BuildRibbon();
@@ -30,13 +42,16 @@ namespace AnalysisControls
             set { _ribbon = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public LayoutDocumentPane DocPane { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public Ribbon BuildRibbon()
+        private Ribbon BuildRibbon()
         {
             Ribbon  r = new Ribbon ();
             _allCommands.DocPane = DocPane;
@@ -62,10 +77,4 @@ namespace AnalysisControls
             return r;
         }
     }
-
-    class MyRibbon : Ribbon
-    {
-
-    }
-
 }

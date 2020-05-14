@@ -10,10 +10,11 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using AnalysisControls;
-using AnalysisControls.RibbonM;
+using AnalysisControls.RibbonModel;
 using Autofac;
 using Autofac.Core;
 using Autofac.Features.Metadata;
@@ -22,6 +23,7 @@ using KayMcCormick.Dev;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
 using NLog;
+using NLog.Fluent;
 
 namespace Client2
 {
@@ -37,7 +39,7 @@ namespace Client2
         public Client2Window1()
         {
             InitializeComponent();
-            ViewModel = new ClientModel(new RibbonModel(), new ReplaySubject<IControlView>());
+            ViewModel = new ClientModel(new PrimaryRibbonModel(), new ReplaySubject<IControlView>());
         }
 
         public Client2Window1(ILifetimeScope scope, ClientModel viewModel, MyCacheTarget2 myCacheTarget)
@@ -104,7 +106,7 @@ namespace Client2
                     }
                     else
                     {
-                        foreach (var ribbonModelAppMenuElement in _viewModel.Ribbon.AppMenu.Items)
+                        foreach (var ribbonModelAppMenuElement in _viewModel.PrimaryRibbon.AppMenu.Items)
                             Logger.Info($"{ribbonModelAppMenuElement}");
 
                         Logger.Info("No app menu Items source");
@@ -287,9 +289,9 @@ namespace Client2
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public static RibbonModel RibbonModelBuilder(IComponentContext c, IEnumerable<Parameter> o)
+        public static PrimaryRibbonModel RibbonModelBuilder(IComponentContext c, IEnumerable<Parameter> o)
         {
-            var r = new RibbonModel {AppMenu = c.Resolve<RibbonModelApplicationMenu>()};
+            var r = new PrimaryRibbonModel {AppMenu = c.Resolve<RibbonModelApplicationMenu>()};
             foreach (var tg in c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>())
             {
                 DebugUtils.WriteLine("Adding contextual tab group " + tg);
@@ -312,6 +314,34 @@ namespace Client2
             }
 
             return r;
+        }
+        private LogBuilder CreateLogBuilder()
+        {
+            return new LogBuilder(Logger).Level(LogLevel);
+        }
+
+        public LogLevel LogLevel { get; set; } = LogLevel.Warn;
+
+        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        {
+            CreateLogBuilder().Message($"{e.RoutedEvent.Name} {e.Source} {e.OriginalSource} {e.GetPosition(this)}").Write();
+        }
+
+        protected override void OnContentChanged(object oldContent, object newContent)
+        {
+            base.OnContentChanged(oldContent, newContent);
+        }
+
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+        }
+
+        protected override void OnPreviewMouseMove(MouseEventArgs e)
+        {
+            CreateLogBuilder().Message("MouseMove: " + e.OriginalSource).Write();
+            ViewModel.HoverElement = e.OriginalSource;
+            base.OnPreviewMouseMove(e);
         }
     }
 }

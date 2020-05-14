@@ -1,4 +1,4 @@
-﻿namespace AnalysisControls.RibbonM
+﻿namespace AnalysisControls.RibbonModel
 {
     public class RibbonModelItemTextBox : RibbonModelItem
     {
@@ -7,5 +7,7 @@
             get;
             set;
         }
+
+        public override ControlKind Kind => ControlKind.RibbonTextBox;
     }
 }

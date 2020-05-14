@@ -1,48 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using AnalysisAppLib;
 using AnalysisAppLib.Syntax;
-using Autofac.Features.AttributeFilters;
-using Autofac.Features.Metadata;
 using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore.Internal;
 
-namespace AnalysisControls.RibbonM
+namespace AnalysisControls.RibbonModel.Definition
 {
-    public class TestRibbonTabDef3 : RibbonModelTab
-    {
-        
-        public TestRibbonTabDef3(IEnumerable<Meta<RibbonModelGroup>> groups)
-        {
-            Visibility = Visibility.Visible;
-            ContextualTabGroupHeader = "Assemblies";
-            Header = "Assemblies";
-            foreach (var ribbonModelGroup in groups)
-            {
-                var props = MetaHelper.GetMetadataProps(ribbonModelGroup.Metadata);
-                DebugUtils.WriteLine($"{props.TabHeader} {ContextualTabGroupHeader}");
-                if (props.TabHeader != null && props.TabHeader.Equals((string)Header))
-                {
-                    Items.Add(ribbonModelGroup.Value);
-                }
-            }
-        }
-    }
-
+    /// <summary>
+    /// 
+    /// </summary>
     [RibbonTabHeader("Assemblies")]
-    public class RibbonModelGroup1 : RibbonModelGroup
+    public class AssembliesTypesGroup : RibbonModelGroup
     {
-        public RibbonModelGroup1(ITypesViewModel model)
+        public AssembliesTypesGroup(ITypesViewModel model)
         {
             var combo = CreateRibbonComboBox("Types");
             var combo1 = CreateRibbonComboBox("Types");
 
-            var tgal = RibbonModel.CreateGallery() as RibbonGallery;
+            var tgal = PrimaryRibbonModel.CreateGallery() as RibbonGallery;
             tgal.SelectionChanged += (sender, args) =>
             {
                 DebugUtils.WriteLine(args.NewValue.ToString());
@@ -62,11 +39,11 @@ namespace AnalysisControls.RibbonM
 
             };
             combo.Items.Add(tgal);
-            var cat2 = RibbonModel.CreateGalleryCategory(tgal, "Type");
+            var cat2 = PrimaryRibbonModel.CreateGalleryCategory(tgal, "Type");
             foreach (var appTypeInfo in model.GetAppTypeInfos())
             {
                 var gal111 = TypeItems(appTypeInfo, model);
-                RibbonModel.CreateGalleryItem(cat2,
+                PrimaryRibbonModel.CreateGalleryItem(cat2,
                     new RibbonModelMenuItem() {Header = appTypeInfo.Title, CommandParameter = appTypeInfo, IsEnabled = gal111 != null});
             }
             combo1.PropertyChanged += (sender, args) =>
@@ -87,16 +64,16 @@ namespace AnalysisControls.RibbonM
             object gal = null;
             if (appTypeInfo.Fields.Any())
             {
-                gal = RibbonModel.CreateGallery();
+                gal = PrimaryRibbonModel.CreateGallery();
 
                 if (gal is RibbonGallery rg)
                 {
                 }
 
-                var kindcat = RibbonModel.CreateGalleryCategory(gal, "Kind");
+                var kindcat = PrimaryRibbonModel.CreateGalleryCategory(gal, "Kind");
                 foreach (var kind in appTypeInfo.Kinds)
                 {
-                    RibbonModel.CreateGalleryItem(kindcat, new RibbonModelMenuItem() {Header = kind.ToString()});
+                    PrimaryRibbonModel.CreateGalleryItem(kindcat, new RibbonModelMenuItem() {Header = kind.ToString()});
                 }
                 foreach (SyntaxFieldInfo field in appTypeInfo.Fields)
                 {
@@ -105,34 +82,34 @@ namespace AnalysisControls.RibbonM
                     {
 
                         case "SyntaxToken":
-                            var cat = RibbonModel.CreateGalleryCategory(gal, field.Name);
+                            var cat = PrimaryRibbonModel.CreateGalleryCategory(gal, field.Name);
                             foreach (var fieldKind in field.Kinds)
                             {
-                                RibbonModel.CreateGalleryItem(cat,
+                                PrimaryRibbonModel.CreateGalleryItem(cat,
                                     new TextBlock {Text = fieldKind.ToString(), Height = 25});
                             }
 
                             break;
                         case "IdentifierNameSyntax":
-                            var cat1 = RibbonModel.CreateGalleryCategory(gal, field.Name);
-                            RibbonModel.CreateGalleryItem(cat1,
+                            var cat1 = PrimaryRibbonModel.CreateGalleryCategory(gal, field.Name);
+                            PrimaryRibbonModel.CreateGalleryItem(cat1,
                                 new RibbonModelItemTextBox() {Label = "Identifier"});
                             break;
                         default:
-                            var cat3 = RibbonModel.CreateGalleryCategory(gal, field.Name);
+                            var cat3 = PrimaryRibbonModel.CreateGalleryCategory(gal, field.Name);
                             if (field.IsCollection)
                             {
                                 var element = field.ElementTypeMetadataName;
                                 var name = element.Substring(element.LastIndexOf('.') + 1);
                                 var ati = model.GetAppTypeInfo(name);
                                 DebugUtils.WriteLine($"{ati}");
-                                RibbonModel.CreateGalleryItem(cat3, new RibbonModelMenuItem {Header = ati.Title});
+                                PrimaryRibbonModel.CreateGalleryItem(cat3, new RibbonModelMenuItem {Header = ati.Title});
                             } else
                             {
                                 foreach (SyntaxKind fieldKind in field.Kinds)
                                 {
                                     
-                                    RibbonModel.CreateGalleryItem(cat3, new TextBlock { Text = fieldKind.ToString() });
+                                    PrimaryRibbonModel.CreateGalleryItem(cat3, new TextBlock { Text = fieldKind.ToString() });
                                 }
                             }
                             break;
@@ -147,7 +124,7 @@ namespace AnalysisControls.RibbonM
         {
             if (appTypeInfo.Fields.Any())
             {
-                var gal = RibbonModel.CreateGallery();
+                var gal = PrimaryRibbonModel.CreateGallery();
                 combo1.Items.Add(gal);
                 if (gal is RibbonGallery rg)
                 {
@@ -158,46 +135,22 @@ namespace AnalysisControls.RibbonM
                     switch (field.TypeName)
                     {
                         case "SyntaxToken":
-                            var cat = RibbonModel.CreateGalleryCategory(gal, field.Name);
+                            var cat = PrimaryRibbonModel.CreateGalleryCategory(gal, field.Name);
                             foreach (var fieldKind in field.Kinds)
                             {
-                                RibbonModel.CreateGalleryItem(cat,
+                                PrimaryRibbonModel.CreateGalleryItem(cat,
                                     new TextBlock {Text = fieldKind.ToString(), Height = 25});
                             }
 
                             break;
                         case "IdentifierNameSyntax":
-                            var cat1 = RibbonModel.CreateGalleryCategory(gal, field.Name);
-                            RibbonModel.CreateGalleryItem(cat1,
+                            var cat1 = PrimaryRibbonModel.CreateGalleryCategory(gal, field.Name);
+                            PrimaryRibbonModel.CreateGalleryItem(cat1,
                                 new RibbonModelItemTextBox() {Label = "Identifier"});
                             break;
                     }
                 }
             }
-        }
-    }
-
-    [MetadataAttribute]
-    public class RibbonTabHeaderAttribute : Attribute
-    {
-        private readonly string _tabHeader;
-
-        public RibbonTabHeaderAttribute(string tabHeader)
-        {
-            _tabHeader = tabHeader;
-        }
-
-        public string TabHeader
-        {
-            get { return _tabHeader; }
-        }
-    }
-
-    public class ContextualTabGroup1 : RibbonModelContextualTabGroup
-    {
-        public ContextualTabGroup1()
-        {
-            Header = "Code Analysis";
         }
     }
 }

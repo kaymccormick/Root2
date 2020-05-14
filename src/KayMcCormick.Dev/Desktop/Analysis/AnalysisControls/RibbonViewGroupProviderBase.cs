@@ -1,4 +1,4 @@
-﻿using AnalysisControls.RibbonM;
+﻿using AnalysisControls.RibbonModel;
 using Autofac;
 
 namespace AnalysisControls

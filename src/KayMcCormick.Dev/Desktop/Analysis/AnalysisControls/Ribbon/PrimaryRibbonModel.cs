@@ -1,18 +1,14 @@
 ﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Shapes;
-using JetBrains.Annotations;
-using KayMcCormick.Dev;
+using AnalysisControls.RibbonModel;
 
-namespace AnalysisControls.RibbonM
+namespace AnalysisControls.RibbonModel
 {
     /// <summary>
     /// 
     /// </summary>
-    public class RibbonModel
+    public class PrimaryRibbonModel
     {
         /// <summary>
         /// 
@@ -22,7 +18,7 @@ namespace AnalysisControls.RibbonM
         /// <summary>
         /// 
         /// </summary>
-        public RibbonModel()
+        public PrimaryRibbonModel()
         {
         }
 
@@ -73,7 +69,7 @@ namespace AnalysisControls.RibbonM
         /// <returns></returns>
         public static object CreateGalleryCategory(object gallery, string header)
         {
-            var cat = RibbonModel.CreateGalleryCategory(header);
+            var cat = PrimaryRibbonModel.CreateGalleryCategory(header);
             if (gallery is RibbonGallery g1)
             {
                 g1.Items.Add(cat);
@@ -113,37 +109,6 @@ namespace AnalysisControls.RibbonM
         public static RibbonModelGallery CreateModelGallery()
         {
             return new RibbonModelGallery();
-        }
-    }
-
-    public class RibbonModelContextualTabGroup : INotifyPropertyChanged
-    {
-        private Visibility _visibility = Visibility.Visible;
-        public string Header { get; set; }
-
-        public Visibility Visibility
-        {
-            get
-            {
-                DebugUtils.WriteLine("requested visiblity");
-                return _visibility;
-            }
-            set
-            {
-                if (value == _visibility) return;
-                DebugUtils.WriteLine($"Setting visibility to {value}");
-                _visibility = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            DebugUtils.WriteLine($"{propertyName}");
         }
     }
 }

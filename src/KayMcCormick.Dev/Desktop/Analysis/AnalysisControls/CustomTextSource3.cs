@@ -27,16 +27,15 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <param name="pixelsPerDip"></param>
-        public CustomTextSource3(double pixelsPerDip)
+        /// <param name="typefaceManager"></param>
+        public CustomTextSource3(double pixelsPerDip, ITypefaceManager typefaceManager)
         {
             PixelsPerDip = pixelsPerDip;
-            _typeface = new Typeface(Family, _fontStyle, _fontWeight,
-                _fontStretch);
-            _fontRendering = new FontRendering(EmSize, TextAlignment.Left, new TextDecorationCollection(), Brushes.Blue,
+            _typeface = typefaceManager.GetDefaultTypeface();
+
+            Rendering = typefaceManager.GetRendering(EmSize, TextAlignment.Left, new TextDecorationCollection(), Brushes.Black,
                 _typeface);
-            BaseProps = new GenericTextRunProperties(
-                _fontRendering,
-                PixelsPerDip);
+            BaseProps = TextPropertiesManager.GetBasicTextRunProperties(PixelsPerDip, Rendering);
         }
 
         /// <summary>
@@ -44,6 +43,9 @@ namespace AnalysisControls
         /// </summary>
         public Compilation Compilation { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override int Length { get; protected set; }
 
         // Used by the TextFormatter object to retrieve a run of text from the text source.
@@ -119,9 +121,9 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <returns></returns>
-        public override MyTextRunProperties BasicProps()
+        public override BasicTextRunProperties BasicProps()
         {
-            var xx = new MyTextRunProperties(BaseProps);
+            var xx = new BasicTextRunProperties(BaseProps);
             return xx;
         }
 
@@ -304,7 +306,6 @@ namespace AnalysisControls
         private List<int> chars2 = new List<int>();
         private SyntaxNode _node;
         private readonly Typeface _typeface;
-        private readonly FontRendering _fontRendering;
         public override GenericTextRunProperties BaseProps { get; }
 
         public List<CompilationError> Errors
@@ -326,6 +327,11 @@ namespace AnalysisControls
         private List<CompilationError> _errors1;
         public int EolLength { get; } = 2;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public FontRendering Rendering { get; set; }
+
         #endregion
 
         public override void Init()
@@ -333,7 +339,12 @@ namespace AnalysisControls
             GenerateText();
         }
 
-        public void TextInput(int InsertionPoint, string text)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="InsertionPoint"></param>
+        /// <param name="text"></param>
+        public override void TextInput(int InsertionPoint, string text)
         {
             if (chars.Count > InsertionPoint)
             {
@@ -363,9 +374,9 @@ namespace AnalysisControls
             }
             else
             {
-                var customTextCharacters = new CustomTextCharacters(text, BaseProps, new TextSpan());
+                var customTextCharacters =
+                    new CustomTextCharacters(text, BaseProps, new TextSpan()) {Index = InsertionPoint};
                 // customTextCharacters.PrevTextRun = ch.PrevTextRun;
-                customTextCharacters.Index = InsertionPoint;
                 col.Add(customTextCharacters);
 
                 UpdateCharMap();
@@ -383,7 +394,7 @@ namespace AnalysisControls
                 chars.AddRange(Enumerable.Repeat(i, textRun.Length));
                 i++;
 
-                if (textRun.Properties is GenericTextRunProperties gp)
+                if (textRun.Properties is GenericTextRunProperties)
                 {
                     //DebugUtils.WriteLine(gp.SyntaxToken.ToString());
                 }

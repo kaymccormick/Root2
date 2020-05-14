@@ -17,7 +17,7 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="pixelsPerDip"></param>
         /// <param name="errors"></param>
-        public ErrorsTextSource(double pixelsPerDip, IEnumerable<CompilationError> errors) : base(pixelsPerDip)
+        public ErrorsTextSource(double pixelsPerDip, IEnumerable<CompilationError> errors, ITypefaceManager typefaceManager) : base(pixelsPerDip, typefaceManager)
         {
             this._errors = errors;
         }

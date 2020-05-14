@@ -62,6 +62,7 @@ namespace AnalysisControls
         public override PropertyDescriptorCollection GetProperties()
         {
             var pp = base.GetProperties();
+            DebugUtils.WriteLine("GetProperties for " + Type);
             List<PropertyDescriptor> p = new List<PropertyDescriptor>();
             foreach (var propertyInfo in Type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {

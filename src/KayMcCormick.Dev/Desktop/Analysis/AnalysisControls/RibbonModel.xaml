@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:AnalysisControls"
-                    xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonM"
+                    xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonModel"
                     xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf">
   <local:TestConverter2 x:Key="TestConverter2"/>
   <kmWpf:GetTypeConverter x:Key="GetTypeConverter"/>

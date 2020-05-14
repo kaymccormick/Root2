@@ -7,13 +7,16 @@
               xmlns:anal="http://kaymccormick.com/xaml/analysis"
               xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
               xmlns:primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon"
-              xmlns:ribbon="clr-namespace:AnalysisControls.RibbonM;assembly=AnalysisControls"
+              xmlns:ribbon="clr-namespace:AnalysisControls.RibbonModel;assembly=AnalysisControls"
               mc:Ignorable="d"
               DataContext="{Binding RelativeSource={RelativeSource Self}}"
               Title="Client2Window1" Height="450" Width="800">
   <RibbonWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary
+          Source="Client2Global.xaml" />
+
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/RibbonModel.xaml" />
         
@@ -24,7 +27,6 @@
           Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
-        <ResourceDictionary Source="RibbonResources.xaml" />
         <ResourceDictionary />
       </ResourceDictionary.MergedDictionaries>
       <local:TabItemTemplateSelector x:Key="TabItemTemplateSelector"></local:TabItemTemplateSelector>
@@ -42,32 +44,32 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <Ribbon  ContextualTabGroupsSource="{Binding ContextualTabGroups}"  ItemTemplateSelector="{StaticResource TabItemTemplateSelector}"  x:Name="_ribbon" DataContext="{Binding ViewModel.Ribbon}" ItemsSource="{Binding RibbonItems}">
-      <Ribbon.TabHeaderStyle>
+    <anal:MyRibbon ContextualTabGroupsSource="{Binding ContextualTabGroups}"  ItemTemplateSelector="{StaticResource TabItemTemplateSelector}"  x:Name="_ribbon" DataContext="{Binding ViewModel.PrimaryRibbon}" ItemsSource="{Binding RibbonItems}">
+      <anal:MyRibbon.TabHeaderStyle>
         <Style TargetType="RibbonTabHeader">
           <Setter Property="Content" Value="xx"/>
           <Setter Property="Background" Value="BlueViolet"/>
         </Style>
-      </Ribbon.TabHeaderStyle>
-      <Ribbon.TabHeaderTemplate>
+      </anal:MyRibbon.TabHeaderStyle>
+      <anal:MyRibbon.TabHeaderTemplate>
         <DataTemplate DataType="{x:Type ribbon:RibbonModelTab}">
           <WrapPanel>
             <TextBlock Text="{Binding Header}"/>
           </WrapPanel>
         </DataTemplate>
-        </Ribbon.TabHeaderTemplate>
-      <Ribbon.ContextualTabGroupHeaderTemplate>
+        </anal:MyRibbon.TabHeaderTemplate>
+      <anal:MyRibbon.ContextualTabGroupHeaderTemplate>
         <DataTemplate>
           <TextBlock Foreground="Aquamarine" Text="{Binding Header}"/>
         </DataTemplate>
-      </Ribbon.ContextualTabGroupHeaderTemplate>
-      <Ribbon.ContextualTabGroupStyle>
+      </anal:MyRibbon.ContextualTabGroupHeaderTemplate>
+      <anal:MyRibbon.ContextualTabGroupStyle>
         <Style TargetType="RibbonContextualTabGroup">
           <Setter Property="TextElement.FontFamily" Value="Lucida Sans"/>
           <Setter Property="Visibility" Value="{Binding ElementName=Main1.ViewItem,Path=ViewModel. Visibility}"/>
         </Style>
-      </Ribbon.ContextualTabGroupStyle>
-      <Ribbon.ItemContainerStyle>
+      </anal:MyRibbon.ContextualTabGroupStyle>
+      <anal:MyRibbon.ItemContainerStyle>
         <Style TargetType="RibbonTab">
           <Style.Triggers>
             <Trigger Property="ContextualTabGroup" Value="{x:Null}">
@@ -79,12 +81,12 @@
           <Setter Property="TextElement.FontFamily" Value="Showcard Gothic"/>
           <Setter Property="ItemsSource" Value="{Binding Items}"/>
         </Style>
-      </Ribbon.ItemContainerStyle>
-      <Ribbon.ItemsPanel><ItemsPanelTemplate><primitives:RibbonTabsPanel Opacity="0.5"/></ItemsPanelTemplate></Ribbon.ItemsPanel>
-      <Ribbon.ApplicationMenu>
+      </anal:MyRibbon.ItemContainerStyle>
+      <anal:MyRibbon.ItemsPanel><ItemsPanelTemplate><primitives:RibbonTabsPanel Opacity="0.5"/></ItemsPanelTemplate></anal:MyRibbon.ItemsPanel>
+      <anal:MyRibbon.ApplicationMenu>
         <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" />
-      </Ribbon.ApplicationMenu>
-    </Ribbon>
+      </anal:MyRibbon.ApplicationMenu>
+    </anal:MyRibbon>
     <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1" ViewModel="{kmWpf:Resolve anal:Main1Model,Throw=false}" />
   </Grid>
     </Grid>

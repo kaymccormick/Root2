@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows.Controls;
 
-namespace AnalysisControls.RibbonM
+namespace AnalysisControls.RibbonModel
 {
     /// <summary>
     /// 
@@ -23,31 +24,7 @@ namespace AnalysisControls.RibbonM
             Items.Add(r);
             return r;
         }
-    }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public class RibbonModelMenuItem: RibbonModelItem
-    {
-        public ObservableCollection<object> Items { get; } = new ObservableCollection<object>();
-
-        public object Header
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool IsEnabled { get; set; }
-
-        public RibbonModelMenuItem CreateMenuItem(string label)
-        {
-            var r = new RibbonModelMenuItem() { Header = label };
-            Items.Add(r);
-            return r;
-        }
+        public override ControlKind Kind => ControlKind.RibbonMenuButton;
     }
 }

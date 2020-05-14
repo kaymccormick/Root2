@@ -23,8 +23,14 @@ namespace KayMcCormick.Lib.Wpf.Command
     public sealed class LambdaAppCommand : AppCommand
     {
         private object                                                 _argument ;
+        public override string ToString()
+        {
+            return "Lambda [ " + DisplayName + " ]";
+        }
+
         private readonly Func < LambdaAppCommand , Task < IAppCommandResult > > _commandFunc ;
         private readonly Action < AggregateException >                          _onFaultDelegate ;
+        private readonly Func<LambdaAppCommand, object, bool> _canExecuteFunc;
 
         /// <summary>
         /// </summary>
@@ -37,11 +43,13 @@ namespace KayMcCormick.Lib.Wpf.Command
           , Func < LambdaAppCommand , Task < IAppCommandResult > > commandFunc
           , object                                                 argument
           , Action < AggregateException >                          onFaultDelegate = null
+            , Func<LambdaAppCommand, object, bool> canExecuteFunc = null
         ) : base ( displayName )
         {
             _commandFunc     = commandFunc ;
             _argument        = argument ;
             _onFaultDelegate = onFaultDelegate ;
+            _canExecuteFunc = canExecuteFunc;
         }
 
         /// <summary>
@@ -83,7 +91,10 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        public override bool CanExecute ( object parameter ) { return true ; }
+        public override bool CanExecute(object parameter)
+        {
+            return _canExecuteFunc == null ? true : _canExecuteFunc(this, parameter);
+        }
 
         /// <summary>
         /// </summary>

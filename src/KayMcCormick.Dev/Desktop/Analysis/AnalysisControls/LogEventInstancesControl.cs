@@ -384,7 +384,7 @@ namespace AnalysisControls
         private void Handler(object sender, EventArgs e)
         {
             EmSize = (double) _rectangle.GetValue(TextElement.FontSizeProperty);
-            _baseProps.SetFondRenderingEmSize(EmSize);
+            _baseProps.SetFontRenderingEmSize(EmSize);
             UpdateFormattedText();
         }
 

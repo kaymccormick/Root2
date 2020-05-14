@@ -97,6 +97,7 @@
     <Compile Include="AnalysisCommands.cs" />
     <Compile Include="AnalysisControlsModule.cs" />
     <Compile Include="AnchorableModel.cs" />
+    <Compile Include="AppControl.cs" />
     <Compile Include="AppDoc.cs" />
     <Compile Include="AppRibbon.cs" />
     <Compile Include="AppRibbonTab.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="AppTypeInfoConvereter.cs" />
     <Compile Include="AssembliesControl.cs" />
     <Compile Include="AssemblyResourceTree.cs" />
+    <Compile Include="BasicTextRunProperties.cs" />
     <Compile Include="CategoryInfo.cs" />
     <Compile Include="CharacterCell.cs" />
     <Compile Include="CodeControl1.xaml.cs">
@@ -132,10 +134,10 @@
     <Compile Include="CustomControl2.cs" />
     <Compile Include="CustomTextCharacters.cs" />
     <Compile Include="CustomTextEndOfLine.cs" />
-    <Compile Include="CustomTextSource.cs" />
     <Compile Include="CustomTextSource2.cs" />
     <Compile Include="CustomTextSource3.cs" />
     <Compile Include="CustomTypes.cs" />
+    <Compile Include="DefaultTypefaceManager.cs" />
     <Compile Include="DevTypeControl.cs" />
     <Compile Include="DiagnosticError.cs" />
     <Compile Include="DisplayModeConverter.cs" />
@@ -144,6 +146,7 @@
     <Compile Include="DocModel.cs" />
     <Compile Include="DocumentAddedEventArgs.cs" />
     <Compile Include="DocumentModel.cs" />
+    <Compile Include="DocumentView.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
     <Compile Include="EnhancedCodeControl.cs" />
     <Compile Include="EnhancedCodeWindow.xaml.cs">
@@ -164,8 +167,11 @@
     <Compile Include="InputBindingsManager.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
+    <Compile Include="IReadWriteTextRunProperties.cs" />
     <Compile Include="IRibbonComponent.cs" />
     <Compile Include="IRibbonModelProvider.cs" />
+    <Compile Include="ITextPropertiesManager.cs" />
+    <Compile Include="ITypefaceManager.cs" />
     <Compile Include="JsonConverters.cs" />
     <Compile Include="JsonSyntaxTokenConverter.cs" />
     <Compile Include="KindsConverter.cs" />
@@ -178,8 +184,12 @@
     <Compile Include="MenuTemplateSelector.cs" />
     <Compile Include="MessagesModel.cs" />
     <Compile Include="MiscCommands.cs" />
+    <Compile Include="MyRibbon.cs" />
     <Compile Include="MyRibbonComboBox.cs" />
+    <Compile Include="MyRibbonControl.cs" />
+    <Compile Include="MyRibbonGroup.cs" />
     <Compile Include="MyRibbonMenuButton.cs" />
+    <Compile Include="MyRibbonTab.cs" />
     <Compile Include="MyXDescriptor.cs" />
     <Compile Include="PageFunction1.xaml.cs">
       <DependentUpon>PageFunction1.xaml</DependentUpon>
@@ -188,36 +198,52 @@
     <Compile Include="PathModel.cs" />
     <Compile Include="ProjectAddedEventArgs.cs" />
     <Compile Include="ProjectModel.cs" />
+    <Compile Include="Properties\RibbonResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>RibbonResources.resx</DependentUpon>
+    </Compile>
     <Compile Include="RandoWindow.xaml.cs">
       <DependentUpon>RandoWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="RectConverter.cs" />
     <Compile Include="RegionInfo.cs" />
     <Compile Include="RibbonBuilder.cs" />
+    <Compile Include="RibbonDebugUtils.cs" />
     <Compile Include="RibbonModelRadioButton.cs" />
+    <Compile Include="RibbonModel\ControlKind.cs" />
+    <Compile Include="RibbonModel\Definition\TestRibbonTabDef.cs" />
+    <Compile Include="RibbonModel\RibbonModelControlGroup.cs" />
     <Compile Include="RibbonTabProvider1.cs" />
     <Compile Include="RibbonViewGroupProviderBase.cs" />
     <Compile Include="RibbonViewGroupProviderBaseImpl.cs" />
     <Compile Include="RibbonViewGroupProviderBaseImpl2.cs" />
-    <Compile Include="Ribbon\RibbonModel.cs" />
+    <Compile Include="RibbonModel\ContextualTabGroups\CodeAnalysis.cs" />
+    <Compile Include="RibbonModel\Definition\AssembliesTypesGroup.cs" />
+    <Compile Include="Ribbon\PrimaryRibbonModel.cs" />
     <Compile Include="Ribbon\RibbonModelApplicationMenu.cs" />
     <Compile Include="Ribbon\RibbonModelAppMenuElement.cs" />
     <Compile Include="Ribbon\RibbonModelAppMenuItem.cs" />
     <Compile Include="Ribbon\RibbonModelAppSplitMenuItem.cs" />
+    <Compile Include="Ribbon\RibbonModelContextualTabGroup.cs" />
     <Compile Include="Ribbon\RibbonModelGallery.cs" />
-    <Compile Include="Ribbon\RibbonModelGalleryCategory.cs" />
+    <Compile Include="RibbonModel\RibbonModelGalleryCategory.cs" />
     <Compile Include="Ribbon\RibbonModelGalleryItem.cs" />
-    <Compile Include="Ribbon\RibbonModelItem.cs" />
-    <Compile Include="Ribbon\RibbonModelItemButton.cs" />
+    <Compile Include="RibbonModel\RibbonModelItem.cs" />
+    <Compile Include="RibbonModel\RibbonModelItemButton.cs" />
+    <Compile Include="Ribbon\RibbonModelGroupTest1.cs" />
+    <Compile Include="RibbonModel\RibbonModelGroupTest2.cs" />
     <Compile Include="Ribbon\RibbonModelItemComboBox.cs" />
     <Compile Include="Ribbon\RibbonModelItemMenuButton.cs" />
     <Compile Include="Ribbon\RibbonModelItemSplitButton.cs" />
     <Compile Include="Ribbon\RibbonModelItemTextBox.cs" />
-    <Compile Include="Ribbon\RibbonModelTab.cs" />
-    <Compile Include="Ribbon\RibbonModelGroup.cs" />
-    <Compile Include="Ribbon\TestRibbonTabDef2.cs" />
-    <Compile Include="Ribbon\TestRibbonTabDef3.cs" />
-    <Compile Include="Ribbon\TestRibbonTabDef4.cs" />
+    <Compile Include="Ribbon\RibbonModelMenuItem.cs" />
+    <Compile Include="RibbonModel\RibbonModelTab.cs" />
+    <Compile Include="RibbonModel\RibbonModelGroup.cs" />
+    <Compile Include="RibbonModel\RibbonTabHeaderAttribute.cs" />
+    <Compile Include="RibbonModel\Definition\ManagementTab.cs" />
+    <Compile Include="Ribbon\AssembliesRibbonTab.cs" />
+    <Compile Include="Ribbon\DerpTab.cs" />
     <Compile Include="RWindow.xaml.cs">
       <DependentUpon>RWindow.xaml</DependentUpon>
     </Compile>
@@ -247,6 +273,7 @@
     <Compile Include="TestConverter1.cs" />
     <Compile Include="TestConverter2.cs" />
     <Compile Include="TextCaret.cs" />
+    <Compile Include="TextPropertiesManager.cs" />
     <Compile Include="TypesViewModelFactory.cs" />
     <Compile Include="UiConverter.cs" />
     <Compile Include="ViewModel\ComponentTypesViewModel.cs" />
@@ -318,6 +345,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <EmbeddedResource Include="Properties\RibbonResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>RibbonResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="TypesViewModel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -95,11 +95,11 @@ namespace AnalysisControls
     [MetadataAttribute]
     public class RequireOptionMetadataAttribute : Attribute
     {
-        public string OptionName { get; }
+        public string RequiredOptionName { get; }
 
         public RequireOptionMetadataAttribute(string optionName)
         {
-            OptionName = optionName;
+            RequiredOptionName = optionName;
         }
     }
 }

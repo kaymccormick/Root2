@@ -19,7 +19,7 @@ namespace AnalysisAppLib.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -66,6 +66,15 @@ namespace AnalysisAppLib.Properties {
         public static string AnalysisService_Parse_Empty_code_supplied {
             get {
                 return ResourceManager.GetString("AnalysisService_Parse_Empty_code_supplied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Code Analysis.
+        /// </summary>
+        public static string ContextualTabGroup1_ContextualTabGroup1_Code_Analysis {
+            get {
+                return ResourceManager.GetString("ContextualTabGroup1_ContextualTabGroup1_Code_Analysis", resourceCulture);
             }
         }
         
@@ -164,7 +173,7 @@ namespace AnalysisAppLib.Properties {
         ///&lt;Tree Root=&quot;SyntaxNode&quot;&gt;
         ///  &lt;PredefinedNode Name=&quot;CSharpSyntaxNode&quot; Base=&quot;SyntaxNode&quot;/&gt;
         ///  &lt;PredefinedNode Name=&quot;SyntaxToken&quot; Base=&quot;CSharpSyntaxNode&quot;/&gt;
-        ///  &lt;PredefinedNode Name=&quot;Structured [rest of string was truncated]&quot;;.
+        ///  &lt;PredefinedNode Name=&quot; [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Syntax {
             get {

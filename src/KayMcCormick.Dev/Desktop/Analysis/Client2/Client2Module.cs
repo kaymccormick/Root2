@@ -23,7 +23,9 @@ using System.Windows;
 using AnalysisAppLib;
 using AnalysisControls;
 using AnalysisControls.Commands;
-using AnalysisControls.RibbonM;
+using AnalysisControls.RibbonModel;
+using AnalysisControls.RibbonModel.ContextualTabGroups;
+using AnalysisControls.RibbonModel.Definition;
 using AnalysisControls.ViewModel;
 using Autofac;
 using Autofac.Core;
@@ -146,7 +148,7 @@ namespace Client2
                         "pack://application:,,,/WpfLib;component/Assets/python1.jpg"
                     )
                 )
-                .WithMetadata("Ribbon", true);
+                .WithMetadata("PrimaryRibbon", true);
             if (RegisterPython)
             {
                 builder.RegisterType<PythonViewModel>()
@@ -174,20 +176,19 @@ namespace Client2
             
             builder.Register(Client2Window1.RibbonModelBuilder);
             builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
-            builder.RegisterType<ClientModel>().AsSelf();
+            builder.RegisterType<ClientModel>().AsSelf().SingleInstance();
             builder.RegisterType<RibbonModelApplicationMenu>();
             builder.RegisterType<RibbonTabProvider1>().As<IRibbonModelProvider<RibbonModelTab>>().SingleInstance();
-            builder.RegisterType<RibbonViewGroupProvider>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<RibbonViewGroupProviderBaseImpl>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance();
             builder.RegisterType<RibbonViewGroupProviderBaseImpl2>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance();
             builder.RegisterType<TestRibbonTabDef>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
-            builder.RegisterType<TestRibbonTabDef2>().As<RibbonModelTab>().SingleInstance();
-            builder.RegisterType<TestRibbonTabDef3>().As<RibbonModelTab>().SingleInstance();
-            builder.RegisterType<TestRibbonTabDef4>().As<RibbonModelTab>().SingleInstance();
-            builder.RegisterType<RibbonModelGroup1>().As<RibbonModelGroup>().SingleInstance();
+            builder.RegisterType<ManagementTab>().As<RibbonModelTab>().SingleInstance();
+            builder.RegisterType<AssembliesRibbonTab>().As<RibbonModelTab>().SingleInstance();
+            builder.RegisterType<DerpTab>().As<RibbonModelTab>().SingleInstance();
+            builder.RegisterType<AssembliesTypesGroup>().As<RibbonModelGroup>().SingleInstance();
             builder.RegisterType<RibbonModelGroupTest1>().As<RibbonModelGroup>().SingleInstance();
             builder.RegisterType<RibbonModelGroupTest2>().As<RibbonModelGroup>().SingleInstance();
-            builder.RegisterType<ContextualTabGroup1>().As<RibbonModelContextualTabGroup>().SingleInstance();
+            builder.RegisterType<CodeAnalysis>().As<RibbonModelContextualTabGroup>().SingleInstance();
             builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces();
             builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces();
             builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces();

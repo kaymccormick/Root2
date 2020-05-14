@@ -142,4 +142,7 @@
   <data name="Program_LoadSyntaxExamplesAsync__0_" xml:space="preserve">
     <value>{0}</value>
   </data>
+  <data name="ContextualTabGroup1_ContextualTabGroup1_Code_Analysis" xml:space="preserve">
+    <value>Code Analysis</value>
+  </data>
 </root>

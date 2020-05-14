@@ -1,16 +1,23 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using AnalysisAppLib;
 using Autofac.Features.AttributeFilters;
 using Autofac.Features.Metadata;
 
-namespace AnalysisControls.RibbonM
+namespace AnalysisControls.RibbonModel.Definition
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [CategoryMetadata(Category.Management)]
-    public class TestRibbonTabDef2 : RibbonModelTab
+    public class ManagementTab : RibbonModelTab
     {
 
-        public TestRibbonTabDef2([MetadataFilter("Category", Category.Management)]IEnumerable<Meta<RibbonModelGroup>> groups, ITypesViewModel typesViewModel)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groups"></param>
+        /// <param name="typesViewModel"></param>
+        public ManagementTab([MetadataFilter("Category", Category.Management)]IEnumerable<Meta<RibbonModelGroup>> groups, ITypesViewModel typesViewModel)
         {
             Header = Category.Management;
             foreach (var ribbonModelGroup in groups)

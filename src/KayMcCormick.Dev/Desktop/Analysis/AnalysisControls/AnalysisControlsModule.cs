@@ -88,7 +88,7 @@ namespace AnalysisControls
                     .WithMetadata("Category", Category.Management)
                     .WithMetadata("Group", "misc")
                     .WithCallerMetadata();
-                builder
+                var x = builder
                     .RegisterAdapter<Meta<Lazy<IControlView>>,
                         IDisplayableAppCommand>(ControlViewCommandAdapter2)
                     .As<IDisplayableAppCommand>()
@@ -296,7 +296,7 @@ namespace AnalysisControls
                                       "ImageSource"
                                     , "pack://application:,,,/WpfLib;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
                                      )
-                       .WithMetadata ( "Ribbon" , true )
+                       .WithMetadata ( "PrimaryRibbon" , true )
                        .WithCallerMetadata ( ) ;
                 builder.RegisterType<UiElementTypeConverter>().AsSelf();
                 
@@ -373,6 +373,7 @@ namespace AnalysisControls
         {
             arg3.Metadata.TryGetValue("Title", out var titleo);
             arg3.Metadata.TryGetValue("ImageSource", out var imageSource);
+            arg3.Metadata.TryGetValue("RequiredOptionName", out var requireoption);
             // object res = r.ResolveResource ( imageSource ) ;
             // var im = res as ImageSource ;
 
@@ -381,12 +382,15 @@ namespace AnalysisControls
             return new LambdaAppCommand(
                 title
                 , CommandFuncAsync2
-                , Tuple.Create(arg3, arg1.Resolve<ILifetimeScope>())
-                
-            )
-            {
-                LargeImageSourceKey = imageSource
-            };
+                , Tuple.Create(arg3, arg1.Resolve<ILifetimeScope>()), null, (command, o) =>
+                {
+                    if (requireoption != null)
+                    {
+                        return false;
+                    }
+
+                    return true;
+                }) { LargeImageSourceKey = imageSource };
         }
 
 #pragma warning disable 1998

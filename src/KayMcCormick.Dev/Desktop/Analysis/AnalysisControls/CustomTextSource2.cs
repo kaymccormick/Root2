@@ -380,9 +380,9 @@ namespace AnalysisControls
 
     internal class CustomRun
     {
-        public GenericTextRunProperties Prop { get; }
+        public TextRunProperties Prop { get; }
 
-        public CustomRun(int index, string text, GenericTextRunProperties prop)
+        public CustomRun(int index, string text, TextRunProperties prop)
         {
             Index = index;
             Text = text;

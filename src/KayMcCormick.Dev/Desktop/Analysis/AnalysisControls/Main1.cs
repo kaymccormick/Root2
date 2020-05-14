@@ -15,6 +15,7 @@ using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.VisualBasic;
+using NLog.Fluent;
 using SyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
 namespace AnalysisControls
@@ -22,7 +23,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class Main1 : Control, IView<Main1Model>
+    public class Main1 : AppControl, IView<Main1Model>
     {
         /// <summary>
         /// 
@@ -133,6 +134,13 @@ namespace AnalysisControls
             doc.ContextualTabGroupHeaders.Add("Resources");
             ViewModel.Documents.Add(doc);
             ViewModel.ActiveContent = doc;
+        }
+
+        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        {
+            var sourceName = (e.Source is IAppControl iap ? iap.ControlId.ToString( ): e.Source.ToString());
+            new LogBuilder(Logger).Message(nameof(OnPreviewMouseDown) + " " + e.ClickCount + sourceName).Write();
+            base.OnPreviewMouseDown(e);
         }
 
         private async void OnViewDetailsExecutedAsync(object sender, ExecutedRoutedEventArgs e)

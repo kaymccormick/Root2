@@ -2,17 +2,13 @@
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace AnalysisControls.RibbonM
+namespace AnalysisControls.RibbonModel
 {
     /// <summary>
     /// 
     /// </summary>
     public class RibbonModelGallery : RibbonModelItem
     {
-        public RibbonModelGallery()
-        {
-        }
-
         /// <summary>
         /// 
         /// </summary>
@@ -33,5 +29,8 @@ namespace AnalysisControls.RibbonM
             Items.Add(cat);
             return cat;
         }
+
+        public override ControlKind Kind => ControlKind.RibbonGallery;
+
     }
 }

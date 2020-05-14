@@ -362,7 +362,7 @@ namespace KayMcCormick.Dev.Application
                 Container1 = BuildContainer ( ) ;
             }
 
-            _lifetimeScope = Container1.BeginLifetimeScope () ;
+            _lifetimeScope = Container1.BeginLifetimeScope ("Primary") ;
             return _lifetimeScope ;
         }
 
@@ -465,6 +465,16 @@ namespace KayMcCormick.Dev.Application
                 LogDebug ( $"Registering module {module}" ) ;
                 builder.RegisterModule ( module ) ;
             }
+
+            builder.RegisterBuildCallback(scope => scope.ChildLifetimeScopeBeginning += (sender, args) =>
+            {
+
+                if (args.LifetimeScope.Tag.GetType() == typeof(object))
+                {
+                    throw new InvalidOperationException();
+                }
+
+            });
 
             try
             {

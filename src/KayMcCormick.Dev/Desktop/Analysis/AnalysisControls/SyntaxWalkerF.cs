@@ -21,10 +21,10 @@ namespace AnalysisControls
     internal class SyntaxWalkerF : CSharpSyntaxWalker
     {
         private readonly IList<TextRun> _lrun;
-        private readonly CustomTextSource3 _source3;
+        private readonly Object _source3;
         private readonly Action<TextRun> _takeTextRun;
         
-        private readonly CustomTextSource3 s3;
+        private readonly Object s3;
         private Func<object, string, TextRunProperties> _propertiesFunc;
         public int CurPos { get; set; }
         private Stack<SyntaxNode> nodes=new Stack<SyntaxNode>();
@@ -35,7 +35,7 @@ namespace AnalysisControls
 
         public SyntaxWalkerF( IList<TextRun> lrun, 
             
-            CustomTextSource3 source3, 
+            Object source3, 
             Action<TextRun> takeTextRun,
             Func<object, string, TextRunProperties> propertiesFunc,
             SyntaxWalkerDepth depth = SyntaxWalkerDepth.StructuredTrivia) : base(depth)
@@ -284,13 +284,13 @@ namespace AnalysisControls
 
     internal class TriviaWalker : SyntaxWalkerF
     {
-        public TriviaWalker(IList<TextRun> lrun, CustomTextSource3 source3, Action<TextRun> takeTextRun, Func<object, string, TextRunProperties> propertiesFunc, SyntaxWalkerDepth depth = SyntaxWalkerDepth.StructuredTrivia) : base(lrun, source3, takeTextRun, propertiesFunc, depth)
+        public TriviaWalker(IList<TextRun> lrun, Object source3, Action<TextRun> takeTextRun, Func<object, string, TextRunProperties> propertiesFunc, SyntaxWalkerDepth depth = SyntaxWalkerDepth.StructuredTrivia) : base(lrun, source3, takeTextRun, propertiesFunc, depth)
         {
         }
     }
     internal class TriviaWalkerVb : SyntaxTalkVb
     {
-        public TriviaWalkerVb(IList<TextRun> lrun, CustomTextSource3 source3, Action<TextRun> takeTextRun, Func<object, string, TextRunProperties> propertiesFunc, SyntaxWalkerDepth depth = SyntaxWalkerDepth.StructuredTrivia) : base(lrun, source3, takeTextRun, propertiesFunc, depth)
+        public TriviaWalkerVb(IList<TextRun> lrun, Object source3, Action<TextRun> takeTextRun, Func<object, string, TextRunProperties> propertiesFunc, SyntaxWalkerDepth depth = SyntaxWalkerDepth.StructuredTrivia) : base(lrun, source3, takeTextRun, propertiesFunc, depth)
         {
         }
     }
@@ -308,10 +308,10 @@ namespace AnalysisControls
     public class SyntaxTalkVb : VisualBasicSyntaxWalker
     {
         private readonly IList<TextRun> _lrun;
-        private readonly CustomTextSource3 _source3;
+        private readonly Object _source3;
         private readonly Action<TextRun> _takeTextRun;
 
-        private readonly CustomTextSource3 s3;
+        private readonly Object s3;
         private Func<object, string, TextRunProperties> _propertiesFunc;
         public int CurPos { get; set; }
         private Stack<SyntaxNode> nodes = new Stack<SyntaxNode>();
@@ -322,7 +322,7 @@ namespace AnalysisControls
 
         public SyntaxTalkVb(IList<TextRun> lrun,
 
-            CustomTextSource3 source3,
+            Object source3,
             Action<TextRun> takeTextRun,
             Func<object, string, TextRunProperties> propertiesFunc,
             SyntaxWalkerDepth depth = SyntaxWalkerDepth.StructuredTrivia) : base(depth)

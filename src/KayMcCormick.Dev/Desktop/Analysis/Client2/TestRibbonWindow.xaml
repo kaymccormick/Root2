@@ -7,7 +7,7 @@
         xmlns:anal="http://kaymccormick.com/xaml/analysis"
         xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
         mc:Ignorable="d"
-        Title="TestRibbonWindow" Height="450" Width="800">
+        Title="TestPrimaryRibbonWindow" Height="450" Width="800">
     <Grid>
     <Grid>
       <Grid.RowDefinitions>

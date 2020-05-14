@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using AnalysisControls.RibbonM;
+using AnalysisControls.RibbonModel;
 using Autofac;
 
 namespace AnalysisControls
@@ -26,10 +26,10 @@ namespace AnalysisControls
             cg2.Items.Add(datePicker);
 
             var m = group.CreateRibbonMenuButton("Menu 1");
-            var gal = RibbonModel.CreateGallery();
+            var gal = PrimaryRibbonModel.CreateGallery();
             m.Items.Add(gal);
-            var cat0 = RibbonModel.CreateGalleryCategory(gal, "Cat0");
-            var item0 = RibbonModel.CreateGalleryItem(cat0, new TextBlock() {Text = typeof(Type).FullName});
+            var cat0 = PrimaryRibbonModel.CreateGalleryCategory(gal, "Cat0");
+            var item0 = PrimaryRibbonModel.CreateGalleryItem(cat0, new TextBlock() {Text = typeof(Type).FullName});
             var m2 = group.CreateRibbonMenuButton("Menu 2");
             var m3 = m2.CreateMenuItem("label");
             m3.CreateMenuItem("label");
@@ -45,19 +45,19 @@ namespace AnalysisControls
             {
 
 
-                var cat1 = RibbonModel.CreateGalleryCategory(gallery, "Cat 1");
+                var cat1 = PrimaryRibbonModel.CreateGalleryCategory(gallery, "Cat 1");
                 Brush[] colors = new[] {Brushes.Pink, Brushes.Green, Brushes.Aqua};
                 foreach (var color in colors)
                 {
-                    RibbonModel.CreateGalleryItem(cat1, new Rectangle() {Width = 25, Height = 25, Fill = color});
+                    PrimaryRibbonModel.CreateGalleryItem(cat1, new Rectangle() {Width = 25, Height = 25, Fill = color});
                 }
             }
             {
-                var cat1 = RibbonModel.CreateGalleryCategory(gallery, "Cat 2");
+                var cat1 = PrimaryRibbonModel.CreateGalleryCategory(gallery, "Cat 2");
                 Brush[] colors = new[] { Brushes.Pink, Brushes.Green, Brushes.Aqua };
                 foreach (var color in colors)
                 {
-                    RibbonModel.CreateGalleryItem(cat1, new Rectangle() { Width = 25, Height = 25, Stroke = color });
+                    PrimaryRibbonModel.CreateGalleryItem(cat1, new Rectangle() { Width = 25, Height = 25, Stroke = color });
                 }
             }
             return group;

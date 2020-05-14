@@ -1,9 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using AnalysisControls.RibbonModel;
 using JetBrains.Annotations;
 
-namespace AnalysisControls.RibbonM
+namespace AnalysisControls.RibbonModel
 {
     /// <summary>
     /// 
@@ -39,7 +40,7 @@ namespace AnalysisControls.RibbonM
         /// <returns></returns>
         public object CreateGallery()
         {
-            var g = RibbonModel.CreateGallery();
+            var g = PrimaryRibbonModel.CreateGallery();
             Items.Add(g);
             return g;
         }
@@ -50,6 +51,11 @@ namespace AnalysisControls.RibbonM
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public override ControlKind Kind
+        {
+            get { throw new System.NotImplementedException(); }
         }
     }
 }
