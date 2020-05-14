@@ -11,13 +11,13 @@ namespace AnalysisControls.RibbonModel
     /// 
     /// </summary>
     [CategoryMetadata(Category.Infrastructure)]
-    public class RibbonModelGroupTest2 : RibbonModelGroup
+    public class BaseLibCommandGroup : RibbonModelGroup
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="commands"></param>
-        public RibbonModelGroupTest2(IEnumerable<Meta<Lazy<IBaseLibCommand>>> commands)
+        public BaseLibCommandGroup(IEnumerable<Meta<Lazy<IBaseLibCommand>>> commands)
         {
             Header = Category.Infrastructure;
             foreach (var cmd in commands)

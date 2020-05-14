@@ -9,7 +9,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class RibbonTabProvider1 : IRibbonModelProvider<RibbonModelTab>
+    public class FunTabProvider : IRibbonModelProvider<RibbonModelTab>
     {
         /// <inheritdoc />
         public RibbonModelTab ProvideModelItem(IComponentContext context)

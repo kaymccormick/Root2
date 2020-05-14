@@ -8,13 +8,13 @@ namespace AnalysisControls.RibbonModel
     /// 
     /// </summary>
     [CategoryMetadata(Category.Infrastructure)]
-    public class RibbonModelGroupTest1 : RibbonModelGroup
+    public class DisplayableAppCommandGroup : RibbonModelGroup
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="commands"></param>
-        public RibbonModelGroupTest1(IEnumerable<IDisplayableAppCommand> commands)
+        public DisplayableAppCommandGroup(IEnumerable<IDisplayableAppCommand> commands)
         {
             Header = Category.Infrastructure;
             foreach (var cmd in commands)

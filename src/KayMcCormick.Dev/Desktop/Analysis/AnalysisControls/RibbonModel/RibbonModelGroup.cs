@@ -185,10 +185,7 @@ namespace AnalysisControls.RibbonModel
             set;
         }
 
-        public override ControlKind Kind
-        {
-            get { throw new System.NotImplementedException(); }
-        }
+        public override ControlKind Kind => ControlKind.RibbonToggleButton;
     }
 
     /// <summary>

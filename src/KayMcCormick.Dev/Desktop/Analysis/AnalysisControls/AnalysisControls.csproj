@@ -212,12 +212,13 @@
     <Compile Include="RibbonDebugUtils.cs" />
     <Compile Include="RibbonModelRadioButton.cs" />
     <Compile Include="RibbonModel\ControlKind.cs" />
-    <Compile Include="RibbonModel\Definition\TestRibbonTabDef.cs" />
+    <Compile Include="RibbonModel\Definition\InfrastructureTab.cs" />
     <Compile Include="RibbonModel\RibbonModelControlGroup.cs" />
-    <Compile Include="RibbonTabProvider1.cs" />
+    <Compile Include="FunTabProvider.cs" />
     <Compile Include="RibbonViewGroupProviderBase.cs" />
     <Compile Include="RibbonViewGroupProviderBaseImpl.cs" />
-    <Compile Include="RibbonViewGroupProviderBaseImpl2.cs" />
+    <Compile Include="Ribb\Definition\SuperGRoup.cs" />
+    <Compile Include="SuperGRoup.cs" />
     <Compile Include="RibbonModel\ContextualTabGroups\CodeAnalysis.cs" />
     <Compile Include="RibbonModel\Definition\AssembliesTypesGroup.cs" />
     <Compile Include="Ribbon\PrimaryRibbonModel.cs" />
@@ -231,8 +232,8 @@
     <Compile Include="Ribbon\RibbonModelGalleryItem.cs" />
     <Compile Include="RibbonModel\RibbonModelItem.cs" />
     <Compile Include="RibbonModel\RibbonModelItemButton.cs" />
-    <Compile Include="Ribbon\RibbonModelGroupTest1.cs" />
-    <Compile Include="RibbonModel\RibbonModelGroupTest2.cs" />
+    <Compile Include="Ribbon\DisplayableAppCommandGroup.cs" />
+    <Compile Include="RibbonModel\BaseLibCommandGroup.cs" />
     <Compile Include="Ribbon\RibbonModelItemComboBox.cs" />
     <Compile Include="Ribbon\RibbonModelItemMenuButton.cs" />
     <Compile Include="Ribbon\RibbonModelItemSplitButton.cs" />

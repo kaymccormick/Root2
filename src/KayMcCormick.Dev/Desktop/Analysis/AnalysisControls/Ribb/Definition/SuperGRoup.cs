@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using AnalysisControls.RibbonModel;
 using Autofac;
-using Microsoft.Graph;
-using Image = System.Windows.Controls.Image;
 
-namespace AnalysisControls
+namespace AnalysisControls.Ribb.Definition
 {
-    public class RibbonViewGroupProviderBaseImpl2 : RibbonViewGroupProviderBase
+    public class SuperGRoup : RibbonViewGroupProviderBase
     {
         public override RibbonModelGroup ProvideModelItem(IComponentContext context)
         {
@@ -31,10 +26,5 @@ namespace AnalysisControls
             group.CreateTextBox("Test");
             return @group;
         }
-    }
-
-    public class ModelCalendar
-    {
-        public DateTime SelectedDate { get; set; }
     }
 }

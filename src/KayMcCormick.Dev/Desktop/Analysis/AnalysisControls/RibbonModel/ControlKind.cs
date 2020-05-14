@@ -49,6 +49,7 @@
         /// 
         /// </summary>
         RibbonGroup,
-        RibbonButton
+        RibbonButton,
+        RibbonToggleButton
     }
 }
