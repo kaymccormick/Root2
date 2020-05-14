@@ -28,7 +28,7 @@ namespace AnalysisControls.RibbonModel
         /// <returns></returns>
         public static object CreateGallery()
         {
-            return new RibbonGallery();
+            return new MyRibbonGallery();
         }
 
         private RibbonModelTab CreateTab(string header
@@ -58,7 +58,7 @@ namespace AnalysisControls.RibbonModel
         /// <returns></returns>
         public static object CreateGalleryCategory(string header)
         {
-            return new RibbonGalleryCategory() {Header = header};
+            return new MyRibbonGalleryCategory() {Header = header};
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace AnalysisControls.RibbonModel
         /// <returns></returns>
         public static object CreateGalleryItem(object cat1, object content)
         {
-            var ribbonGalleryItem = new RibbonGalleryItem() { Content = content };
+            var ribbonGalleryItem = new MyRibbonGalleryItem() { Content = content };
             if (cat1 is RibbonModelGalleryCategory c)
             {
                 c.Items.Add(ribbonGalleryItem);

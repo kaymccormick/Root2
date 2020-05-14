@@ -57,7 +57,7 @@ namespace AnalysisControls.Commands
         /// <inheritdoc />
         public override void OnFault(AggregateException exception)
         {
-            throw new NotImplementedException();
+            throw exception.Flatten().GetBaseException();
         }
 
         /// <inheritdoc />

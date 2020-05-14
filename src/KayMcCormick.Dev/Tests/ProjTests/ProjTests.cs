@@ -2115,7 +2115,7 @@ namespace ProjTests
         public void TestRibbonModel()
         {
             PrimaryRibbonModel m = new PrimaryRibbonModel();
-            RibbonTabProvider1 p = new RibbonTabProvider1();
+            FunTabProvider p = new FunTabProvider();
             var t = p.ProvideModelItem(null);
             m.RibbonItems.Add(t);
             RibbonViewGroupProviderBaseImpl x = new RibbonViewGroupProviderBaseImpl();

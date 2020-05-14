@@ -71,6 +71,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\ironpython2\bin\Debug\net45\Microsoft.Scripting.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework.Classic" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
@@ -147,6 +148,7 @@
     <Compile Include="DocumentAddedEventArgs.cs" />
     <Compile Include="DocumentModel.cs" />
     <Compile Include="DocumentView.cs" />
+    <Compile Include="DragItemAdorner.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
     <Compile Include="EnhancedCodeControl.cs" />
     <Compile Include="EnhancedCodeWindow.xaml.cs">
@@ -160,6 +162,7 @@
     <Compile Include="FormattingHelper.cs" />
     <Compile Include="GenericTextParagraphProperties.cs" />
     <Compile Include="GenericTextRunProperties.cs" />
+    <Compile Include="GuidConverter.cs" />
     <Compile Include="IAppRibbon.cs" />
     <Compile Include="IAppRibbonTab.cs" />
     <Compile Include="ICodeGenCommand.cs" />
@@ -187,6 +190,7 @@
     <Compile Include="MyRibbon.cs" />
     <Compile Include="MyRibbonComboBox.cs" />
     <Compile Include="MyRibbonControl.cs" />
+    <Compile Include="MyRibbonGallery.cs" />
     <Compile Include="MyRibbonGroup.cs" />
     <Compile Include="MyRibbonMenuButton.cs" />
     <Compile Include="MyRibbonTab.cs" />
@@ -359,6 +363,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Ribbon1Dict.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RibbonControlTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

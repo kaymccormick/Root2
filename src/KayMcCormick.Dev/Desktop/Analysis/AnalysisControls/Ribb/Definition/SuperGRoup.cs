@@ -18,7 +18,7 @@ namespace AnalysisControls.Ribb.Definition
             cg2.Items.Add(calendar);
             cg2.Items.Add(datePicker);
 
-            var mb = group.CreateRibbonMenuButton("Menu");
+            var mb = group.CreateRibbonMenuButton("Menu XX");
             var gal = PrimaryRibbonModel.CreateModelGallery();
             mb.Items.Add(gal);
             var cat = gal.CreateGalleryCategory("Cat1");

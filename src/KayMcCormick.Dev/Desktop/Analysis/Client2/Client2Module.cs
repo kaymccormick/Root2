@@ -177,12 +177,14 @@ namespace Client2
             
             builder.Register(Client2Window1.RibbonModelBuilder);
             builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
-            builder.RegisterType<ClientModel>().AsSelf().SingleInstance();
+            builder.RegisterType<ClientModel>().AsSelf().SingleInstance().AsImplementedInterfaces().WithCallerMetadata();
             builder.RegisterType<RibbonModelApplicationMenu>();
             builder.RegisterType<FunTabProvider>().As<IRibbonModelProvider<RibbonModelTab>>().SingleInstance().WithAttributeFiltering(); ;
             builder.RegisterType<RibbonViewGroupProviderBaseImpl>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance().WithAttributeFiltering(); ;
-            builder.RegisterType<SuperGRoup>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance(.WithAttributeFiltering(););
-            builder.RegisterType<InfrastructureTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
+            builder.RegisterType<SuperGRoup>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance().WithAttributeFiltering();;
+            builder.RegisterType<InfrastructureTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering()
+                // .OnActivated(args => args.Instance.ClientModel = args.Context.Resolve<IClientModel>())
+                ;
             builder.RegisterType<ManagementTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
             builder.RegisterType<AssembliesRibbonTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering(); ;
             builder.RegisterType<DerpTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering(); ;

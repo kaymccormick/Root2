@@ -21,7 +21,7 @@
 		    <Style TargetType="{x:Type RibbonGroup}">
 <Setter Property="ItemsSource" Value="{Binding Items}"/>
 </Style>
-  <Style TargetType="{x:Type RibbonTab}">
+  <Style TargetType="{x:Type local:MyRibbonTab}">
     <Setter Property="ContextualTabGroupHeader" Value="{Binding ContextualTabGroupHeader,Converter={StaticResource TestConverter2},ConverterParameter=CTXT}"/>
     <Setter Property="Visibility" Value="{Binding Visibility,Converter={StaticResource TestConverter2},ConverterParameter=CTXT1}"/>
 
@@ -105,9 +105,18 @@
     <Calendar SelectedDate="{Binding SelectedDate}"></Calendar>
   </DataTemplate>
   <local:MenuTemplateSelector x:Key="MenuTemplateSelector" />
+  <local:GuidConverter x:Key="GuidConverter"/>
   <DataTemplate DataType="{x:Type ribbonModel:RibbonModelItemMenuButton}">
     <local:MyRibbonMenuButton ItemContainerTemplateSelector="{StaticResource MenuTemplateSelector}" Foreground="Crimson" Label="{Binding Label}" ItemsSource="{Binding Items}"
-            ></local:MyRibbonMenuButton>
+            >
+      <local:MyRibbonMenuButton.ToolTip>
+        <StackPanel>
+          <TextBlock Text="**"/>
+          <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource GuidConverter}}"/>
+
+        </StackPanel>
+      </local:MyRibbonMenuButton.ToolTip>
+    </local:MyRibbonMenuButton>
   </DataTemplate>
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelControlGroup}">
     <RibbonControlGroup BorderBrush="BlueViolet" Padding="10" Margin="5" BorderThickness="4" ItemsSource="{Binding Items}"/>

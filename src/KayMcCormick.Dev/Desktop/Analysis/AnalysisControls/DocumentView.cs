@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using JetBrains.Annotations;
 
 namespace AnalysisControls
 {
@@ -69,27 +68,6 @@ namespace AnalysisControls
         {
             get { return (DocModel) GetValue(DocumentProperty); }
             set { SetValue(DocumentProperty, value); }
-        }
-    }
-
-    public class DragItemAdorner : Adorner
-    {
-        public DragItemAdorner([NotNull] UIElement adornedElement) : base(adornedElement)
-        {
-        }
-
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            var layer = (AdornerLayer)VisualTreeHelper.GetParent(this);
-
-            Rect adornedElementRect = new Rect(0, 0, layer.ActualWidth, layer.ActualHeight);
-            SolidColorBrush renderBrush = new SolidColorBrush(Colors.Green);
-            renderBrush.Opacity = 0.2;
-            Pen renderPen = new Pen(new SolidColorBrush(Colors.Navy), 1.5);
-            double renderRadius = 5.0;
-            drawingContext.DrawEllipse(renderBrush, renderPen,
-                new Point(adornedElementRect.Width - 20, adornedElementRect.Height - 20), 10, 10);
-
         }
     }
 }

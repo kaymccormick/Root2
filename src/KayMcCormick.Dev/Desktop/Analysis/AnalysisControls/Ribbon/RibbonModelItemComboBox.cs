@@ -53,9 +53,6 @@ namespace AnalysisControls.RibbonModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public override ControlKind Kind
-        {
-            get { throw new System.NotImplementedException(); }
-        }
+        public override ControlKind Kind => ControlKind.RibbonComboBox;
     }
 }

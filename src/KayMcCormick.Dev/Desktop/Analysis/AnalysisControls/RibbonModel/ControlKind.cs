@@ -50,6 +50,8 @@
         /// </summary>
         RibbonGroup,
         RibbonButton,
-        RibbonToggleButton
+        RibbonToggleButton,
+        RibbonTwoLine,
+        RibbonComboBox
     }
 }

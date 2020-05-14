@@ -1,11 +1,21 @@
+using System;
 using System.Windows;
 using System.Windows.Controls.Ribbon;
 using KayMcCormick.Dev;
 
 namespace AnalysisControls
 {
-    public class MyRibbonMenuButton : RibbonMenuButton
+    /// <summary>
+    /// 
+    /// </summary>
+    public class MyRibbonMenuButton : RibbonMenuButton, IAppControl
     {
+        static MyRibbonMenuButton()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbonMenuButton),
+                new FrameworkPropertyMetadata(typeof(MyRibbonMenuButton)));
+
+        }
         private object _currentItem;
 
         /// <inheritdoc />
@@ -15,7 +25,7 @@ namespace AnalysisControls
             var currentItem = _currentItem;
             _currentItem = null;
 
-            DebugUtils.WriteLine($"container is {c}");
+            DebugUtils.WriteLine($"container is {c} for {_currentItem}");
 
             return c;
         }
@@ -23,13 +33,15 @@ namespace AnalysisControls
         /// <inheritdoc />
         protected override bool IsItemItsOwnContainerOverride(object item)
         {
+            _currentItem = item;
             var br = base.IsItemItsOwnContainerOverride(item);
             if (br == true)
             {
                 return true;
             }
-            _currentItem = item;
             return br;
         }
+
+        public Guid ControlId { get; } = Guid.NewGuid();
     }
 }
