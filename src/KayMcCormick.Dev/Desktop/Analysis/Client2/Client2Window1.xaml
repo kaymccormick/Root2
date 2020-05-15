@@ -44,7 +44,7 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <anal:MyRibbon ContextualTabGroupsSource="{Binding ContextualTabGroups}"  ItemTemplateSelector="{StaticResource TabItemTemplateSelector}"  x:Name="_ribbon" DataContext="{Binding ViewModel.PrimaryRibbon}" ItemsSource="{Binding RibbonItems}">
+    <anal:MyRibbon x:Name="myRibbon" ContextualTabGroupsSource="{Binding ContextualTabGroups}"  ItemTemplateSelector="{StaticResource TabItemTemplateSelector}" DataContext="{Binding ViewModel.PrimaryRibbon}" ItemsSource="{Binding RibbonItems}">
       <anal:MyRibbon.TabHeaderStyle>
         <Style TargetType="RibbonTabHeader">
           <Setter Property="Content" Value="xx"/>

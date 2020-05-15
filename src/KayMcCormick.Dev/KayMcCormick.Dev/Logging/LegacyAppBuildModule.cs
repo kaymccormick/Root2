@@ -104,31 +104,39 @@ namespace KayMcCormick.Dev.Logging
             #region Logging
 
             if (RegisterLoggerTracker)
+            {
                 builder.RegisterType<LoggerTracker>()
                     .As<ILoggerTracker>()
                     .WithCallerMetadata();
 
-            builder.Register(
-                    (c, p) =>
-                    {
-                        var loggerName = "unset";
-                        try
-                        {
-                            loggerName = p.TypedAs<Type>().FullName;
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine(ex.ToString());
-                        }
 
-                        var tracker = c.Resolve<ILoggerTracker>();
-                        Logger.Trace($"creating logger loggerName = {loggerName}");
-                        var logger = LogManager.GetLogger(loggerName);
-                        tracker.TrackLogger(loggerName, logger);
-                        return logger;
-                    }
-                )
-                .As<ILogger>().WithCallerMetadata();
+                builder.Register(
+                        (c, p) =>
+                        {
+                            var loggerName = "unset";
+                            try
+                            {
+                                loggerName = p.TypedAs<Type>().FullName;
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine(ex.ToString());
+                            }
+
+                            var tracker = c.Resolve<ILoggerTracker>();
+                            Logger.Trace($"creating logger loggerName = {loggerName}");
+                            var logger = LogManager.GetLogger(loggerName);
+                            tracker.TrackLogger(loggerName, logger);
+                            return logger;
+                        }
+                    )
+                    .As<ILogger>().WithCallerMetadata();
+            }
+            else
+            {
+                builder.RegisterInstance(LogManager.GetLogger("")).As<ILogger>();
+            }
+
 
             #endregion
 

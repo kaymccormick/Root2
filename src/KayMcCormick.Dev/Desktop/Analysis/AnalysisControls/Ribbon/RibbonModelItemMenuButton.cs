@@ -6,6 +6,7 @@ namespace AnalysisControls.RibbonModel
     /// <summary>
     /// 
     /// </summary>
+    /// 
     public class RibbonModelItemMenuButton : RibbonModelItem
     {
         /// <summary>

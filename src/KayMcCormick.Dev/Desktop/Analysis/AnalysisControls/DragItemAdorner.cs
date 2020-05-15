@@ -11,12 +11,16 @@ namespace AnalysisControls
     /// </summary>
     public class DragItemAdorner : Adorner
     {
+        public DocModel Document { get; }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="adornedElement"></param>
-        public DragItemAdorner([NotNull] UIElement adornedElement) : base(adornedElement)
+        /// <param name="document"></param>
+        public DragItemAdorner([NotNull] UIElement adornedElement, DocModel document) : base(adornedElement)
         {
+            Document = document;
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -24,7 +28,8 @@ namespace AnalysisControls
             base.OnMouseMove(e);
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                DragDrop.DoDragDrop(this, AdornedElement, DragDropEffects.All);
+                DataObject data = new DataObject(typeof(DocModel), Document);
+                DragDrop.DoDragDrop(this, data, DragDropEffects.All);
             }
         }
 

@@ -1,17 +1,32 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
+using JetBrains.Annotations;
 
 namespace AnalysisControls.RibbonModel
 {
     /// <summary>
     /// 
     /// </summary>
-    public class RibbonModelTab
+    public class RibbonModelTab : INotifyPropertyChanged
     {
+        private Visibility _visibility = Visibility.Visible;
+
         /// <summary>
         /// 
         /// </summary>
-        public Visibility Visibility { get; set; } = Visibility.Visible;
+        public Visibility Visibility
+        {
+            get { return _visibility; }
+            set
+            {
+                if (value == _visibility) return;
+                _visibility = value;
+                OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -44,6 +59,14 @@ namespace AnalysisControls.RibbonModel
         public override string ToString()
         {
             return $"RibbonModelTab[{Header}]";
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

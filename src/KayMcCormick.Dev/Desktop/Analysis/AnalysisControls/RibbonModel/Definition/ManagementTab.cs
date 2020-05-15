@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Media;
 using AnalysisAppLib;
 using Autofac.Features.AttributeFilters;
 using Autofac.Features.Metadata;
@@ -38,8 +39,10 @@ namespace AnalysisControls.RibbonModel.Definition
             foreach (var appTypeInfo in typesViewModel.Root.SubTypeInfos) {
                 
                     menu.CreateMenuItem(appTypeInfo.Title);
-                
             }
+
+            var g2 = CreateGroup("Dropone");
+            g2.Items.Add(new RibbonModelDropZoneImpl(){Fill = Brushes.Red,MaxWidth = 80, MaxHeight = 80, MinWidth = 40, MinHeight = 40});
         }
     }
 }

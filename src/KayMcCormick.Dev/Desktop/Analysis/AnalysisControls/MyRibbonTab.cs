@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
+using System.Windows.Input;
 using AnalysisControls.RibbonModel;
 using Autofac;
 using KayMcCormick.Dev;
@@ -21,6 +22,44 @@ namespace AnalysisControls
         protected readonly Logger Logger;
         private Regex _r = new Regex(@"[\. ;'""]");
         private string _loggerName;
+
+        static MyRibbonTab()
+        {
+            // UIElement.VisibilityProperty.OverrideMetadata(typeof(MyRibbonTab), (PropertyMetadata)new FrameworkPropertyMetadata((object)Visibility.Visible, new PropertyChangedCallback(MyRibbonTab.OnVisibilityChanged), new CoerceValueCallback(MyRibbonTab.CoerceVisibility)));
+        }
+
+        private static object CoerceVisibility(DependencyObject d, object value)
+        {
+            Visibility visibility1 = (Visibility)value;
+            Visibility visibility2 = Visibility.Visible;
+            RibbonTab ribbonTab = (RibbonTab)d;
+            bool flag = ribbonTab.ContextualTabGroupHeader != null;
+            // if (ribbonTab.ContextualTabGroup == null & flag && ribbonTab.Ribbon != null && ribbonTab.Ribbon.ContextualTabGroupItemsControl != null)
+                // ribbonTab.ContextualTabGroup = ribbonTab.Ribbon.ContextualTabGroupItemsControl.FindHeader(ribbonTab.ContextualTabGroupHeader);
+            if (ribbonTab.ContextualTabGroup != null)
+                visibility2 = ribbonTab.ContextualTabGroup.Visibility;
+            else if (flag)
+                visibility2 = Visibility.Collapsed;
+            return visibility1 != Visibility.Visible || visibility2 != Visibility.Visible ? (object)Visibility.Collapsed : (object)Visibility.Visible;
+
+        }
+
+        private static void OnVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            
+        }
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (!e.Handled)
+            {
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    DragDrop.DoDragDrop(this, ParentItemsControl.ItemContainerGenerator.ItemFromContainer(this),
+                        DragDropEffects.Copy);
+                }
+            }
+        }
 
         /// <summary>
         /// 

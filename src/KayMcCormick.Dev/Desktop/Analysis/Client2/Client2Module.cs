@@ -195,6 +195,8 @@ namespace Client2
             builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering(); ;
             builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering(); ;
             builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces().WithAttributeFiltering(); ;
+            builder.RegisterType<AppCommandTypeConverter>().AsSelf();
+            builder.RegisterType<ObjectStringTypeConverter>().AsSelf();
         }
 
         public bool RegisterPython { get; set; }

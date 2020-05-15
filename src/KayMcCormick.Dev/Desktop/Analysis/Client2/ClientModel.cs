@@ -17,6 +17,7 @@ namespace Client2
     {
         private PrimaryRibbonModel _primaryRibbon;
         private object _hoverElement;
+        private MyRibbon _ribbon;
 
         public ClientModel(PrimaryRibbonModel model, ReplaySubject<IControlView> replay)
         {
@@ -58,6 +59,12 @@ namespace Client2
                 _hoverElement = value;
                 OnPropertyChanged();
             }
+        }
+
+        public MyRibbon Ribbon
+        {
+            get { return _ribbon; }
+            set { _ribbon = value; }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

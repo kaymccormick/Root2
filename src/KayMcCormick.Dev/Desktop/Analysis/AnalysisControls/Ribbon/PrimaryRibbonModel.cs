@@ -45,6 +45,9 @@ namespace AnalysisControls.RibbonModel
         /// </summary>
         public ObservableCollection<RibbonModelTab> RibbonItems { get; } = new ObservableCollection<RibbonModelTab>();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection<RibbonModelContextualTabGroup> ContextualTabGroups
         {
             get;

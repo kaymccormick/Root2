@@ -15,6 +15,19 @@ namespace Client2
         [ STAThread ]
         public static void Main ( )
         {
+            void RunApp()
+            {
+                try
+                {
+                    var app = new Client2App();
+                    app.Run();
+                }
+                catch (Exception ex)
+                {
+                    DebugUtils.WriteLine(ex.ToString());
+                }
+            }
+
             // Environment.SetEnvironmentVariable("DISABLE_LOGGING", "Yes");
             var loggingConfiguration = AppLoggingConfiguration.Default ;
             loggingConfiguration.IsEnabledCacheTarget = true ;
@@ -28,6 +41,8 @@ namespace Client2
             AppDomain.CurrentDomain.ProcessExit += ( sender , args )
                 => LogManager.GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
 
+            RunApp();
+#if false
             var action = CheckModifiers();
             var model = new SelectAppModel();
             model.Timeout = new TimeSpan(0,0,4);
@@ -41,18 +56,11 @@ namespace Client2
                     return;
                 } else
                 {
-                    try
-                    {
-                        var app = new Client2App();
-                        app.Run();
-                    }
-                    catch (Exception ex)
-                    {
-                        DebugUtils.WriteLine(ex.ToString());
-                    }
+                    RunApp();
                 }
 
             });
+#endif
         }
 
         private static AppAction CheckModifiers()

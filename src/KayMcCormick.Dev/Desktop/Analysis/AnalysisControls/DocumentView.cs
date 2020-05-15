@@ -58,7 +58,7 @@ namespace AnalysisControls
         {
             var contentPresenter = (Visual) GetTemplateChild("ContentPresenter");
             var myAdornerLayer = AdornerLayer.GetAdornerLayer(contentPresenter);
-            if (myAdornerLayer != null) myAdornerLayer.Add(new DragItemAdorner((UIElement) contentPresenter));
+            if (myAdornerLayer != null) myAdornerLayer.Add(new DragItemAdorner((UIElement) contentPresenter, Document));
         }
 
         /// <summary>

@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Windows.Media;
 
 namespace AnalysisControls.RibbonModel
@@ -24,7 +27,8 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
-        public ObservableCollection<object> Items { get; } = new ObservableCollection<object>();
+        [Editor(typeof(GroupItemCollectionEditor), typeof(CollectionEditor))]
+        public RibbonModelGroupItemCollection Items { get; } = new RibbonModelGroupItemCollection();
 
         /// <summary>
         /// 
@@ -170,6 +174,15 @@ namespace AnalysisControls.RibbonModel
         public override ControlKind Kind => ControlKind.RibbonGroup;
     }
 
+    [Editor(typeof(GroupItemCollectionEditor), typeof(CollectionEditor))]
+    public class RibbonModelGroupItemCollection : ObservableCollection<RibbonModelItem>
+    {
+    }
+
+    public interface IRibbonModelGroupItem
+    {
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -235,6 +248,18 @@ namespace AnalysisControls.RibbonModel
         }
 
         public override ControlKind Kind => ControlKind.RibbonTwoLine;
+    }
+
+    public class GroupItemCollectionEditor : CollectionEditor
+    {
+        public GroupItemCollectionEditor() : base(typeof(RibbonModelGroupItemCollection))
+        {
+        }
+
+        protected override Type[] CreateNewItemTypes()
+        {
+            return new[] {typeof(RibbonModelItemButton), typeof(RibbonModelItemComboBox)};
+        }
     }
 
 }

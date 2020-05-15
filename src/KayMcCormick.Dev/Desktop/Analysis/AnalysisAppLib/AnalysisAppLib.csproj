@@ -143,7 +143,6 @@
     <Compile Include="Xaml\TypeMapDictionary2.cs" />
     <Compile Include="XmlDoc\AppTypeInfoTypeConverter.cs" />
     <Compile Include="XmlDoc\AppTypeInfoTypeDescriptionProvider.cs" />
-    <Compile Include="Command\CodeGenCommand.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Dataflow\AnalysisBlockProvider.cs" />
     <Compile Include="Dataflow\DataflowTransformFuncProvider.cs" />
@@ -297,6 +296,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Auth\" />
+    <Folder Include="Command\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Syntax.xml">

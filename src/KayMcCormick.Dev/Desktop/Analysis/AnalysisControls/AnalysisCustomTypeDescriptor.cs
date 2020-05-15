@@ -4,9 +4,13 @@ using System.ComponentModel ;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using AnalysisControls.RibbonModel;
 using Autofac;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf ;
+using NLog;
+using NLog.Fluent;
+
 // ReSharper disable RedundantOverriddenMember
 
 namespace AnalysisControls
@@ -18,6 +22,7 @@ namespace AnalysisControls
     {
         private readonly UiElementTypeConverter        _uiElementTypeConverter ;
         private readonly List<IPropertiesAdapter> _props;
+        private IComponentContext _context;
 
         public override AttributeCollection GetAttributes()
         {
@@ -46,7 +51,12 @@ namespace AnalysisControls
 
         public override object GetEditor(Type editorBaseType)
         {
-            return base.GetEditor(editorBaseType);
+            if (Type == typeof(RibbonModelGroupItemCollection))
+            {
+                DebugUtils.WriteLine(editorBaseType.ToString());
+                return new GroupItemCollectionEditor();
+            }
+            return null;
         }
 
         public override EventDescriptorCollection GetEvents()
@@ -69,6 +79,8 @@ namespace AnalysisControls
                 var ti = typeof(MyXDescriptor<,>).MakeGenericType(Type, propertyInfo.PropertyType);
                 var inst = Activator.CreateInstance(ti, BindingFlags.CreateInstance, null, new object[] {propertyInfo},
                     Thread.CurrentThread.CurrentCulture);
+                IHasComponentContext xx = (IHasComponentContext) inst;
+                xx.Context = _context;
                 PropertyDescriptor xDescriptor = (PropertyDescriptor) inst;
                 foreach (var propertiesAdapter in _props)
                 {
@@ -110,15 +122,17 @@ namespace AnalysisControls
             //Func < Type , TypeConverter > funcConverter,
            UiElementTypeConverter        uiElementTypeConverter
           , Type                          type, IEnumerable<IPropertiesAdapter> propsAdapters
-	  , IComponentContext context
+	  , IComponentContext context,
+           ILogger logger
         )
         {
             DebugUtils.WriteLine("Constructor " + GetType().FullName + " " + type.FullName);
            // _funcConverter          = funcConverter ;
             _uiElementTypeConverter = uiElementTypeConverter ;
             Type                    = type ;
+            _context = context;
             _props = propsAdapters.Where(p => p.HandleType(type)).ToList();
-            
+            new LogBuilder(logger).LoggerName(GetType().FullName).Message($"Constructing instance for {type.FullName}");
         }
 
         #region Overrides of CustomTypeDescriptor

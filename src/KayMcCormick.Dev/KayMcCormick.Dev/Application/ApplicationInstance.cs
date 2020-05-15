@@ -389,7 +389,7 @@ namespace KayMcCormick.Dev.Application
                 Container1 = BuildContainer();
             }
 
-            _lifetimeScope = Container1.BeginLifetimeScope(action);
+            _lifetimeScope = Container1.BeginLifetimeScope("initial scope", action );
             return _lifetimeScope;
         }
 

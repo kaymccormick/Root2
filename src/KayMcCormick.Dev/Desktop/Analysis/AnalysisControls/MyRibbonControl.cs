@@ -61,7 +61,7 @@ namespace AnalysisControls
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
-            RibbonDebugUtils.OnPropertyChanged($"{GetType().Name}.{ControlId}", this, e);
+//            RibbonDebugUtils.OnPropertyChanged($"{GetType().Name}.{ControlId}", this, e);
             base.OnPropertyChanged(e);
         }
 

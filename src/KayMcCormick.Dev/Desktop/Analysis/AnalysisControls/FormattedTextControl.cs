@@ -379,6 +379,7 @@ namespace AnalysisControls
         {
             PixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
             CommandBindings.Add(new CommandBinding(WpfAppCommands.SerializeContents, Executed));
+            TypefaceManager = new DefaultTypefaceManager();
         }
 
         private async void Executed(object sender, ExecutedRoutedEventArgs e)

@@ -197,7 +197,7 @@ namespace AnalysisControls
         /// </summary>
         public override void OnApplyTemplate()
         {
-            CommandManager.AddPreviewCanExecuteHandler(this, PreviewCanExecute);
+            // CommandManager.AddPreviewCanExecuteHandler(this, PreviewCanExecute);
             CommandManager.AddPreviewExecutedHandler(this, PreviewExecuted);
             _dockingManager = (DockingManager) GetTemplateChild("DockingManager");
             if (_dockingManager != null) _dockingManager.ActiveContentChanged += DockingManagerOnActiveContentChanged;

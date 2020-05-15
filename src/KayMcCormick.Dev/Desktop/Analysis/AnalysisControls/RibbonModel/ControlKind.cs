@@ -52,6 +52,7 @@
         RibbonButton,
         RibbonToggleButton,
         RibbonTwoLine,
-        RibbonComboBox
+        RibbonComboBox,
+        DropZone
     }
 }

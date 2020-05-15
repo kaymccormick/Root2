@@ -47,6 +47,7 @@ namespace Client2
             SetValue(AttachedProperties.LifetimeScopeProperty, scope);
             InitializeComponent();
             ViewModel = viewModel;
+            viewModel.Ribbon = myRibbon;
 
             myCacheTarget?.Cache.SubscribeOn(Scheduler.Default)
                 .Buffer(TimeSpan.FromMilliseconds(100))
@@ -85,10 +86,10 @@ namespace Client2
                 {
                     _viewModel.Main1Model = Main1.ViewModel;
                     Main1.ViewModel.ClientViewModel = _viewModel;
-                    DumpRibbon(_ribbon);
+                    DumpRibbon(myRibbon);
                 
 
-                foreach (var o in _ribbon.ItemsSource)
+                foreach (var o in myRibbon.ItemsSource)
                     {
                         Logger.Info($"RibbonItem: {o}");
                         if (o is RibbonModelTab tab)

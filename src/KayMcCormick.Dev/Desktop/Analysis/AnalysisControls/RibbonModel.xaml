@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:AnalysisControls"
                     xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonModel"
-                    xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf">
+                    xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+                    xmlns:global="clr-namespace:">
   <local:TestConverter2 x:Key="TestConverter2"/>
   <kmWpf:GetTypeConverter x:Key="GetTypeConverter"/>
   <Style TargetType="{x:Type RibbonContextualTabGroupItemsControl}">
@@ -128,8 +129,10 @@
     <RibbonRadioButton Label="{Binding Label}" IsChecked="{Binding IsChecked}"
     ></RibbonRadioButton>
   </DataTemplate>
-
-<HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGalleryCategory}" ItemsSource="{Binding Items}">
+  <DataTemplate DataType="{x:Type ribbonModel:RibbonModelDropZone}">
+    <Rectangle AllowDrop="True" MaxWidth="{Binding MaxWidth}" MaxHeight="{Binding MaxHeight}" Fill="{Binding Fill}" MinWidth="{Binding MinWidth}" MinHeight="{Binding MinHeight}" Width="{Binding Width}" Height="{Binding Height}"/>
+  </DataTemplate>
+  <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGalleryCategory}" ItemsSource="{Binding Items}">
     <TextBlock Text="{Binding Label}"/>
   </HierarchicalDataTemplate>
 

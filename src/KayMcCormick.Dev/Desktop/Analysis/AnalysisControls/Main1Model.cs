@@ -5,16 +5,19 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Subjects;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
-using AnalysisControls.RibbonModel;
+using System.Windows.Forms.Integration;
+using System.Windows.Media;
+using System.Windows.Shapes;
+using AnalysisControls.Properties;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
-using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
@@ -23,6 +26,7 @@ using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Threading;
 using NLog;
+using Path = System.IO.Path;
 
 namespace AnalysisControls
 {
@@ -50,6 +54,21 @@ namespace AnalysisControls
                     {
                         DebugUtils.WriteLine("Adding group " + header);
                         ContextualTabGroups.Add(header);
+                        foreach (var primaryRibbonContextualTabGroup in ClientViewModel.PrimaryRibbon.ContextualTabGroups)
+                        {
+                            if (object.Equals(primaryRibbonContextualTabGroup.Header, header))
+                            {
+                                primaryRibbonContextualTabGroup.Visibility = Visibility.Visible;
+                            }
+                        }
+                        foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
+                        {
+                            if (Object.Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, header))
+                            {
+                                primaryRibbonRibbonItem.Visibility = Visibility.Visible;
+                            }
+                        }
+                        
                     }
                 }
 
@@ -164,6 +183,15 @@ namespace AnalysisControls
             lv1.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(ContextualTabGroups)) {Source = this});
             t1.Children.Add(h2);
             t1.Children.Add(lv1);
+            var uiElement = new Button() {};
+            uiElement.Click += (sender, args) =>
+            {
+                var prop = typeof(Ribbon).GetProperty("ContextualTabGroupItemsControl",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+                var ctl = prop.GetValue(ClientViewModel.Ribbon);
+                DebugUtils.WriteLine(ctl.ToString());
+            };
+            t1.Children.Add(uiElement);
 
             //b.SetBinding(TextBlock.TextProperty, new Binding("ActiveDocument.Content") {Source = this});
 
@@ -175,6 +203,31 @@ namespace AnalysisControls
             };
             assembliesDoc.ContextualTabGroupHeaders.Add("Assemblies");
             Documents.Add(assembliesDoc);
+            _userControl1 = new UserControl1();
+            var x = new Grid();
+            x.VerticalAlignment = VerticalAlignment.Stretch;
+            x.HorizontalAlignment = HorizontalAlignment.Stretch;
+            x.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            x.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star)});
+            x.ColumnDefinitions.Add(new ColumnDefinition(){Width=new GridLength(1, GridUnitType.Star)});
+            var rectangle = new Rectangle {Width=100, Height = 50, Fill = Brushes.Red, AllowDrop = true};
+            x.Children.Add(rectangle);
+            rectangle.SetValue(Grid.RowProperty, 0);
+            rectangle.SetValue(Grid.ColumnProperty, 0);
+
+            rectangle.Drop += (sender, args) =>
+            {
+                _userControl1.propertyGrid1.SelectedObject = args.Data.GetData(args.Data.GetFormats()[0]);
+                args.Effects = DragDropEffects.Copy;
+                args.Handled = true;
+            };
+            
+            var windowsFormsHost = new WindowsFormsHost() {Child = _userControl1};
+            windowsFormsHost.SetValue(Grid.RowProperty, 1);
+            windowsFormsHost.SetValue(Grid.ColumnProperty, 0);
+
+            x.Children.Add(windowsFormsHost);
+            Documents.Add(new DocModel {Content = x});
 
             var tv = new TreeView()
             {
@@ -248,6 +301,8 @@ namespace AnalysisControls
         }
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private UserControl1 _userControl1;
+        private IClientModel _clientViewModel;
 
         private void WorkspaceOnDocumentClosed(object sender, DocumentEventArgs e)
         {
@@ -655,7 +710,15 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public IClientModel ClientViewModel { get; set; }
+        public IClientModel ClientViewModel
+        {
+            get { return _clientViewModel; }
+            set
+            {
+                _clientViewModel = value;
+                _userControl1.propertyGrid1.SelectedObject = _clientViewModel.PrimaryRibbon;
+            }
+        }
 
         /// <summary>
         /// 
@@ -707,7 +770,7 @@ namespace AnalysisControls
                     Model = model
                 };
                 var doc2 = new DocModel {Title = doc.Name, Content = c};
-                doc2.ContextualTabGroupHeaders.Add("Code Analysis");
+                doc2.ContextualTabGroupHeaders.Add(RibbonResources.ContextualTabGroupHeader_CodeAnalysis);
                 Documents.Add(doc2);
                 ActiveContent = doc2;
                 CurrentOperation = null;
@@ -772,19 +835,6 @@ namespace AnalysisControls
         {
             DocumentAddedEvent?.Invoke(this, e);
         }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IClientModel
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        PrimaryRibbonModel PrimaryRibbon { get; set; }
-
-        LogEventInstanceObservableCollection LogEntries { get; set; }
     }
 
     /// <summary>

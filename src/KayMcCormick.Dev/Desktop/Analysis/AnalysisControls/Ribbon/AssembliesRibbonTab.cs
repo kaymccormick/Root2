@@ -18,8 +18,8 @@ namespace AnalysisControls.RibbonModel.Definition
         /// <param name="groups"></param>
         public AssembliesRibbonTab(IEnumerable<Meta<RibbonModelGroup>> groups)
         {
-            Visibility = Visibility.Visible;
-            ContextualTabGroupHeader = "Assemblies";
+            //Visibility = Visibility.Visible;
+            ContextualTabGroupHeader = "Code Analysis";
             Header = "Assemblies";
             foreach (var ribbonModelGroup in groups)
             {

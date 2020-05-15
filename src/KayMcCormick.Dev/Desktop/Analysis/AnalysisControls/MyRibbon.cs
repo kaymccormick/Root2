@@ -3,6 +3,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Controls.Ribbon;
+using System.Windows.Controls.Ribbon.Primitives;
+using System.Windows.Input;
+using AnalysisControls.RibbonModel;
 using Autofac;
 using Castle.DynamicProxy;
 using KayMcCormick.Lib.Wpf;
@@ -19,7 +22,9 @@ namespace AnalysisControls
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         static MyRibbon()
-        {
+       {
+           ItemsPanelProperty.OverrideMetadata(typeof(MyRibbon), new FrameworkPropertyMetadata(new ItemsPanelTemplate(new FrameworkElementFactory(typeof(MyRibbonTabsPanel)))));
+		    
             AttachedProperties.LifetimeScopeProperty.OverrideMetadata(typeof(MyRibbon), new FrameworkPropertyMetadata(null,FrameworkPropertyMetadataOptions.Inherits, null, CoerceLifetimeScope));
         }
 
@@ -144,5 +149,32 @@ namespace AnalysisControls
             Logger.Info(message);
         }
 
+      
+        protected override void OnDrop(DragEventArgs e)
+        {
+            base.OnDrop(e);
+            if (!e.Handled)
+            {
+                if (e.OriginalSource is FrameworkElement el)
+                {
+                    if (el.TemplatedParent != null)
+                    {
+                        if (el.TemplatedParent is ContentPresenter cp)
+                        {
+                            if (cp.Content is RibbonModelDropZone dz)
+                            {
+                                e.Effects= dz.OnDrop(e.Data);
+                                e.Handled = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+
+    public class MyRibbonTabsPanel : RibbonTabsPanel {
+    
+    }
+    
 }

@@ -12,13 +12,16 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Baml2006;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Threading;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
+
 // ReSharper disable RedundantOverriddenMember
 
 namespace AnalysisControls
@@ -160,7 +163,7 @@ namespace AnalysisControls
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ExpandNode, OnExpandNodeExecuted,
                 OnExpandNodeCanExecute));
         }
-        
+
         private async void OnExpandNodeExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             DebugUtils.WriteLine("Received expand node command with param " + e.Parameter);
@@ -173,13 +176,9 @@ namespace AnalysisControls
                 }
 
                 if (cc.IsExpanded)
-                {
                     cc.Collapse();
-                }
                 else
-                {
                     cc.Expand();
-                }
             }
             catch (Exception ex)
             {
@@ -192,24 +191,16 @@ namespace AnalysisControls
         {
             try
             {
-                if (!(e.Parameter is DependencyObject dependencyObject))
-                {
-                    return;
-                }
+                if (!(e.Parameter is DependencyObject dependencyObject)) return;
 
                 var itemFromContainer = _treeView.ItemContainerGenerator.ItemFromContainer(dependencyObject);
                 if (itemFromContainer is INodeData node)
                 {
                     //DebugUtils.WriteLine("param is " + node);
-                    if ((node.Items.Any() && node.ExpandedState != NodeExpandedState.Expanded))
-                    {
-                      //  DebugUtils.WriteLine("can execute");
+                    if (node.Items.Any() && node.ExpandedState != NodeExpandedState.Expanded)
+                        //  DebugUtils.WriteLine("can execute");
                         e.CanExecute = true;
-                    }
-                    else if(node.ExpandedState == NodeExpandedState.Expanded)
-                    {
-                        e.CanExecute = true;
-                    }
+                    else if (node.ExpandedState == NodeExpandedState.Expanded) e.CanExecute = true;
                 }
             }
             catch (Exception ex)
@@ -231,8 +222,6 @@ namespace AnalysisControls
             RaiseEvent(new RoutedPropertyChangedEventArgs<object>(e.OldValue, e.NewValue, SelectedItemChangedEvent));
             e.Handled = true;
         }
-
-
     }
 
 
@@ -249,7 +238,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        string Name { get; set; }
+        object Name { get; set; }
 
         /// <summary>
         /// 
@@ -276,6 +265,7 @@ namespace AnalysisControls
         /// </summary>
         /// <returns></returns>
         Subnode CreateSubnode();
+
         /// <summary>
         /// 
         /// </summary>
@@ -287,6 +277,7 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="result"></param>
         void LoadResult(TempLoadData result);
+
         /// <summary>
         /// 
         /// </summary>
@@ -297,6 +288,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         void Expand();
+
         /// <summary>
         /// 
         /// </summary>
@@ -336,7 +328,7 @@ namespace AnalysisControls
         {
             _items?.Add(new NodesPlaceHolder());
             Dispatcher = Dispatcher.CurrentDispatcher;
-                _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         }
 
         /// <summary>
@@ -362,7 +354,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public string Name { get; set; }
+        public object Name { get; set; }
 
         /// <summary>
         /// 
@@ -412,7 +404,7 @@ namespace AnalysisControls
         public virtual async void Expand()
         {
             DebugUtils.WriteLine($"Items has any {Items.Any()} and ExpandedState is {ExpandedState}");
-            if ((Items.Any() && ExpandedState != NodeExpandedState.Expanded))
+            if (Items.Any() && ExpandedState != NodeExpandedState.Expanded)
             {
                 DebugUtils.WriteLine("Data state is " + DataState);
                 if (DataState != NodeDataLoadState.DataLoaded)
@@ -429,15 +421,9 @@ namespace AnalysisControls
                         DebugUtils.WriteLine(ex.ToString());
                     }
 
-                    if (result != null)
-                    {
-                        LoadResult(result);
-                    }
+                    if (result != null) LoadResult(result);
 
-                    if (!Items.Any())
-                    {
-                        return;
-                    }
+                    if (!Items.Any()) return;
 
                     DebugUtils.WriteLine("expanded is " + ExpandedState);
                 }
@@ -449,10 +435,7 @@ namespace AnalysisControls
         /// <inheritdoc />
         public virtual void Collapse()
         {
-            if (ExpandedState != NodeExpandedState.Collapsed)
-            {
-                SetIsExpanded(false);
-            }
+            if (ExpandedState != NodeExpandedState.Collapsed) SetIsExpanded(false);
         }
 
         /// <summary>
@@ -462,7 +445,7 @@ namespace AnalysisControls
         /// <param name="arg2"></param>
         protected static void SetExpandedAction(Task<TempLoadData> arg1, object arg2)
         {
-            TaskState<NodeBase> state = (TaskState<NodeBase>) arg2;
+            var state = (TaskState<NodeBase>) arg2;
             DebugUtils.WriteLine(nameof(SetExpandedAction));
             state.Node.Items.Clear();
             state.Node.ExpandedState = NodeExpandedState.Expanded;
@@ -476,7 +459,7 @@ namespace AnalysisControls
 
         /// <inheritdoc />
         public abstract void LoadResult(TempLoadData result);
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -528,14 +511,17 @@ namespace AnalysisControls
         /// 
         /// </summary>
         NoAction,
+
         /// <summary>
         /// 
         /// </summary>
         DataLoaded,
+
         /// <summary>
         /// 
         /// </summary>
         RequiresAsync,
+
         /// <summary>
         /// 
         /// </summary>
@@ -560,15 +546,15 @@ namespace AnalysisControls
         }
 
         /// <inheritdoc />
-        public override Subnode CreateSubnode() => new Subnode();
+        public override Subnode CreateSubnode()
+        {
+            return new Subnode();
+        }
 
         /// <inheritdoc />
         public override Task<TempLoadData> CheckLoadItemsAsync()
         {
-            if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running)
-            {
-                throw new InvalidOperationException();
-            }
+            if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running) throw new InvalidOperationException();
             Items.Clear();
             _loadTask2 = Task.Factory.StartNew(LoadResources,
                 new TaskState<RootNode>(this), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
@@ -577,13 +563,13 @@ namespace AnalysisControls
 
         private static TempLoadData LoadResources(object state1)
         {
-            TaskState<RootNode> st = (TaskState<RootNode>) state1;
+            var st = (TaskState<RootNode>) state1;
             var node = st.Node;
-            TempLoadData res = new TempLoadData();
+            var res = new TempLoadData();
             try
             {
-                List<SubnodeData> dta = new List<SubnodeData>();
-                using (var stream = node.Assembly.GetManifestResourceStream(node.Name))
+                var dta = new List<SubnodeData>();
+                using (var stream = node.Assembly.GetManifestResourceStream(node.Name.ToString()))
                 {
                     if (stream != null)
                         using (var reader = new ResourceReader(stream))
@@ -644,24 +630,26 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class SubnodeData  
+    public class SubnodeData
 
     {
         /// <summary>
         /// 
         /// </summary>
-        public string Name { get; set; }
+        public object Name { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <exception cref="NotImplementedException"></exception>
-        public string ResourceName { get; set; }
+        public object ResourceName { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         public Assembly Assembly { get; set; }
+
+        public object Value { get; set; }
     }
 
     /// <summary>
@@ -694,7 +682,7 @@ namespace AnalysisControls
         public Assembly Assembly { get; set; }
 
         /// <inheritdoc />
-        public string Name { get; set; }
+        public object Name { get; set; }
 
         /// <inheritdoc />
         public ObservableCollection<INodeData> Items { get; } = new ObservableCollection<INodeData>();
@@ -715,7 +703,6 @@ namespace AnalysisControls
         /// <exception cref="NotImplementedException"></exception>
         public void SetIsExpanded(bool value)
         {
-            
         }
 
         /// <summary>
@@ -723,7 +710,6 @@ namespace AnalysisControls
         /// </summary>
         public void Expand()
         {
-            
         }
 
         /// <summary>
@@ -731,7 +717,6 @@ namespace AnalysisControls
         /// </summary>
         public void Collapse()
         {
-            
         }
 
         /// <inheritdoc />
@@ -755,7 +740,6 @@ namespace AnalysisControls
         /// <param name="result"></param>
         public void LoadResult(TempLoadData result)
         {
-            
         }
     }
 
@@ -774,7 +758,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public string ResourceName { get; set; }
+        public object ResourceName { get; set; }
 
         /// <inheritdoc />
         public override bool CheckLoadItems(out NodeDataLoadState state)
@@ -792,12 +776,11 @@ namespace AnalysisControls
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
-
-
             }
 
             return false;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -812,10 +795,7 @@ namespace AnalysisControls
         /// <inheritdoc />
         public override Task<TempLoadData> CheckLoadItemsAsync()
         {
-            if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running)
-            {
-                throw new InvalidOperationException();
-            }
+            if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running) throw new InvalidOperationException();
             Items.Clear();
             _loadTask2 = Task.Factory.StartNew(LoadResourceData,
                 new TaskState<Subnode>(this), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
@@ -826,17 +806,21 @@ namespace AnalysisControls
         public override void LoadResult(TempLoadData result)
         {
             DebugUtils.WriteLine(result.ToString());
+            if (result.Value is IEnumerable ee)
+                foreach (var o in ee)
+                    if (o is SubnodeData sd)
+                        Items.Add(new Subnode() {Name = sd.Name, Value = sd.Value});
         }
 
         private static TempLoadData LoadResourceData(object state)
         {
             var st = (TaskState<Subnode>) state;
-            Subnode subnode = st.Node;
-            var stream = subnode.Assembly.GetManifestResourceStream(subnode.ResourceName);
+            var subnode = st.Node;
+            var stream = subnode.Assembly.GetManifestResourceStream(subnode.ResourceName.ToString());
             if (stream != null)
                 using (var reader = new ResourceReader(stream))
                 {
-                    reader.GetResourceData(subnode.Name, out var dataType, out var data);
+                    reader.GetResourceData(subnode.Name.ToString(), out var dataType, out var data);
 
                     // Display the data type.
                     // DebugUtils.WriteLine("   Data Type: {0}", dataType);
@@ -857,22 +841,45 @@ namespace AnalysisControls
                         case "ResourceTypeCode.String":
                             var binaryReader = new BinaryReader(new MemoryStream(data));
                             var binData = binaryReader.ReadString();
-                            DebugUtils.WriteLine("   Recreated Value: {0}", binData);
-                            return new TempLoadData() { Value = binData };
-                        
+                            DebugUtils.WriteLine("   Recreated Value: {binData}");
+                            return new TempLoadData() {Value = binData};
+
                         case "ResourceTypeCode.Int32":
                             var int32 = BitConverter.ToInt32(data, 0);
                             return new TempLoadData() {Value = int32};
-                        
+
                         case "ResourceTypeCode.Boolean":
                             DebugUtils.WriteLine($"   Recreated Value: {BitConverter.ToBoolean(data, 0)}");
                             break;
                         // .jpeg image stored as a stream.
                         case "ResourceTypeCode.Stream":
-                            int offset = 4;
+                            var offset = 4;
 
                             var size = BitConverter.ToInt32(data, 0);
                             var memoryStream = new MemoryStream(data, offset, size);
+
+                            if (subnode.Name.ToString().EndsWith(".baml"))
+                            {
+                                var object2 = subnode.Dispatcher.Invoke(() =>
+                                {
+                                    var reader1 = new Baml2006Reader(memoryStream);
+                                    var object1 = XamlReader.Load(reader1);
+                                    var nodes = new List<SubnodeData>();
+                                    if (object1 is IDictionary rd)
+                                        foreach (DictionaryEntry entry in rd)
+                                        {
+                                            var sb = new Subnode() {Name = entry.Key, Value = entry.Value};
+                                            subnode.Items.Add(sb);
+                                        }
+
+                                    return new TempLoadData() {Value = object1};
+                                }, DispatcherPriority.Send);
+                                if (object2.Value is UIElement)
+                                {
+                                    subnode.Dispatcher.Invoke(() => { });
+                                }
+                            }
+
                             var load = new TempLoadData()
                             {
                                 Length = size,
@@ -880,7 +887,6 @@ namespace AnalysisControls
                                 Data = data
                             };
                             return load;
-
                     }
                 }
 
@@ -918,30 +924,33 @@ namespace AnalysisControls
         /// 
         /// </summary>
         None,
+
         /// <summary>
         /// 
         /// </summary>
-        
         LoadAsync,
-        
+
         /// <summary>
         /// 
         /// </summary>
-        LoadSync,
+        LoadSync
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public class TempLoadData {
+    public class TempLoadData
+    {
         /// <summary>
         /// 
         /// </summary>
-        public Subnode Node { get; set;}
+        public Subnode Node { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
         public byte[] Data { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -965,122 +974,117 @@ namespace AnalysisControls
         /// <inheritdoc />
         public override string ToString()
         {
-            return $"{nameof(Node)}: {Node}, {nameof(Data)}: {Data}, {nameof(Stream)}: {Stream}, {nameof(Length)}: {Length}, {nameof(MemoryStream)}: {MemoryStream}, {nameof(Value)}: {Value}";
+            return
+                $"{nameof(Node)}: {Node}, {nameof(Data)}: {Data}, {nameof(Stream)}: {Stream}, {nameof(Length)}: {Length}, {nameof(MemoryStream)}: {MemoryStream}, {nameof(Value)}: {Value}";
         }
     }
 
-     /// <summary>
-     /// 
-     /// </summary>
-     public class CustomTreeViewItem : TreeViewItem {
-         /// <summary>
-         /// 
-         /// </summary>
-         public static readonly RoutedEvent ExpandingEvent = EventManager.RegisterRoutedEvent("Expanded", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(CustomTreeViewItem));
-         /// <summary>Identifies the <see cref="E:System.Windows.Controls.TreeViewItem.Collapsed" /> routed event. </summary>
-         
+    /// <summary>
+    /// 
+    /// </summary>
+    public class CustomTreeViewItem : TreeViewItem
+    {
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            if (!e.Handled)
+                if (e.LeftButton == MouseButtonState.Pressed)
+                    DragDrop.DoDragDrop(this, ParentItemsControl.ItemContainerGenerator.ItemFromContainer(this),
+                        DragDropEffects.Copy);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly RoutedEvent ExpandingEvent = EventManager.RegisterRoutedEvent("Expanded",
+            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(CustomTreeViewItem));
+
+        /// <summary>Identifies the <see cref="E:System.Windows.Controls.TreeViewItem.Collapsed" /> routed event. </summary>
         protected override void OnExpanded(RoutedEventArgs e)
-         {
-             base.OnExpanded(e);
-         }
+        {
+            base.OnExpanded(e);
+        }
 
-         protected override void OnCollapsed(RoutedEventArgs e)
-         {
-             base.OnCollapsed(e);
-         }
+        protected override void OnCollapsed(RoutedEventArgs e)
+        {
+            base.OnCollapsed(e);
+        }
 
-         private static bool IsControlKeyDown
-         {
-             get
-             {
-                 return (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
-             }
-         }
+        private static bool IsControlKeyDown
+        {
+            get { return (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control; }
+        }
 
-         /// <inheritdoc />
-         protected override void OnKeyDown(KeyEventArgs e)
-         {
-             switch (e.Key)
-             {
-                 case Key.Left when IsControlKeyDown || !this.CanExpandOnInput || !this.IsExpanded:
-                     return;
-                 case Key.Left:
-                 {
-                     if (this.IsFocused)
-                         Collapse();
-                     else
-                         this.Focus();
-                     e.Handled = true;
-                     return;
-                 }
-                 case Key.Right when IsControlKeyDown || !this.CanExpandOnInput:
-                     break;
-                 case Key.Right:
-                     if (!this.IsExpanded)
-                     {
-                         Expand();
-                     }
+        /// <inheritdoc />
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Left when IsControlKeyDown || !CanExpandOnInput || !IsExpanded:
+                    return;
+                case Key.Left:
+                {
+                    if (IsFocused)
+                        Collapse();
+                    else
+                        Focus();
+                    e.Handled = true;
+                    return;
+                }
+                case Key.Right when IsControlKeyDown || !CanExpandOnInput:
+                    break;
+                case Key.Right:
+                    if (!IsExpanded) Expand();
 
-                     e.Handled = true;
-                     break;
-                 case Key.Add:
-                     if (!this.CanExpandOnInput || this.IsExpanded)
-                         break;
-                     Expand();
-                     e.Handled = true;
-                     break;
-                 case Key.Subtract:
-                     if (!this.CanExpandOnInput || !this.IsExpanded)
-                         break;
-                     Collapse();
-                     e.Handled = true;
-                     break;
+                    e.Handled = true;
+                    break;
+                case Key.Add:
+                    if (!CanExpandOnInput || IsExpanded)
+                        break;
+                    Expand();
+                    e.Handled = true;
+                    break;
+                case Key.Subtract:
+                    if (!CanExpandOnInput || !IsExpanded)
+                        break;
+                    Collapse();
+                    e.Handled = true;
+                    break;
                 default:
                     base.OnKeyDown(e);
                     return;
-             }
+            }
+        }
 
-         }
-
-         /// <summary>
-         /// 
-         /// </summary>
-         /// <param name="e"></param>
-         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-         {
-             if (!e.Handled && this.IsEnabled)
-             {
-                 if (e.ClickCount % 2 == 0)
-                 {
-                     if (this.IsExpanded)
-                     {
-                         this.Collapse();
-                     }
-                     else
-                     {
-                         this.Expand();
-                     }
-                     e.Handled = true;
-                 }
-             }
-             base.OnMouseLeftButtonDown(e);
-         }
-         /// <summary>
-         /// 
-         /// </summary>
-         public void Expand()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
+            if (!e.Handled && IsEnabled)
+                if (e.ClickCount % 2 == 0)
+                {
+                    if (IsExpanded)
+                        Collapse();
+                    else
+                        Expand();
+                    e.Handled = true;
+                }
 
+            base.OnMouseLeftButtonDown(e);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Expand()
+        {
             var item = ParentItemsControl.ItemContainerGenerator.ItemFromContainer(this);
             if (item is INodeData d)
-            {
                 d.Expand();
-            }
             else
-            {
                 DebugUtils.WriteLine($"{item}");
-            }
-
         }
 
         /// <summary>
@@ -1096,25 +1100,16 @@ namespace AnalysisControls
         /// </summary>
         public void Collapse()
         {
-
             var item = ParentItemsControl.ItemContainerGenerator.ItemFromContainer(this);
             if (item is INodeData d)
-            {
                 d.Collapse();
-            }
             else
-            {
                 DebugUtils.WriteLine($"{item}");
-            }
-
         }
 
-        ItemsControl ParentItemsControl
+        private ItemsControl ParentItemsControl
         {
-            get
-            {
-                return ItemsControl.ItemsControlFromItemContainer(this);
-            }
+            get { return ItemsControlFromItemContainer(this); }
         }
 
         /// <summary>
@@ -1125,7 +1120,6 @@ namespace AnalysisControls
         {
             return new CustomTreeViewItem();
         }
-
     }
 
 
@@ -1185,16 +1179,16 @@ namespace AnalysisControls
         }
     }
 
-/// <summary>
-/// 
-/// </summary>
-public class CustomToggleButton : ToggleButton
-{
     /// <summary>
     /// 
     /// </summary>
-    protected override void OnToggle()
+    public class CustomToggleButton : ToggleButton
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override void OnToggle()
+        {
+        }
     }
-}
 }

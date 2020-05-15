@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Autofac;
 
 namespace AnalysisControls
 {
@@ -13,5 +14,7 @@ namespace AnalysisControls
         }
 
         public IEnumerable<Type> CustomTypeList => _kayTypes;
+
+        public IComponentContext ComponentContext { get; set; }
     }
 }

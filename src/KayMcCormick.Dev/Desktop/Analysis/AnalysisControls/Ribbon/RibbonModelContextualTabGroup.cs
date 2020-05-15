@@ -8,7 +8,7 @@ namespace AnalysisControls.RibbonModel
 {
     public class RibbonModelContextualTabGroup : INotifyPropertyChanged
     {
-        private Visibility _visibility = Visibility.Visible;
+        private Visibility _visibility = Visibility.Collapsed;
         public string Header { get; set; }
 
         public Visibility Visibility
