@@ -3,17 +3,19 @@ using AnalysisAppLib.Project ;
 namespace AnalysisAppLib
 {
     /// <summary>
+    /// A request to the analysis service.
     /// </summary>
     public sealed class AnalysisRequest
     {
-        private IProjectBrowserNode projectInfo ;
+        private IProjectBrowserNode _projectInfo ;
 
         /// <summary>
+        /// Related <see cref="IProjectBrowserNode"/>
         /// </summary>
         public IProjectBrowserNode Info
         {
-            get { return projectInfo ; }
-            set { projectInfo = value ; }
+            get { return _projectInfo ; }
+            set { _projectInfo = value ; }
         }
     }
 

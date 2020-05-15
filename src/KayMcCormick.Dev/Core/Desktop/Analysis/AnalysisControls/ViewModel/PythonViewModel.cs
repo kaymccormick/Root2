@@ -3,8 +3,8 @@ using System ;
 using System.Collections.Generic ;
 using System.Collections.Specialized ;
 using System.ComponentModel ;
-using System.Diagnostics ;
 using System.IO ;
+using System.Linq ;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
 using System.Text.Json.Serialization ;
@@ -97,7 +97,7 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         [ JsonIgnore ]
-        public ICollectionView linesCollectionView
+        public ICollectionView LinesCollectionView
         {
             get { return CollectionViewSource.GetDefaultView ( Lines ) ; }
         }
@@ -106,13 +106,13 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         [ JsonIgnore ]
-        public ILifetimeScope Scope { get ; set ; }
+        public ILifetimeScope Scope { get ; }
 
         /// <summary>
         /// 
         /// </summary>
         [ JsonIgnore ]
-        public FlowDocument FlowDOcument { get ; set ; } = new FlowDocument ( ) ;
+        public FlowDocument FlowDocument { get ; set ; } = new FlowDocument ( ) ;
 
         /// <summary>
         /// 
@@ -177,16 +177,16 @@ namespace AnalysisControls.ViewModel
             // , Path   = new PropertyPath ( "CurrentItem" ),
             // Mode   = BindingMode.TwoWay
             // } ;
-            // Debug.WriteLine ( $"binding is {bindingBase}" ) ;
+            // DebugUtils.WriteLine ( $"binding is {bindingBase}" ) ;
             // BindingOperations.SetBinding (
             // this
             // , InputLineProperty
             // , bindingBase
             // ) ;
             var il = GetValue ( InputLineProperty ) ;
-            Debug.WriteLine ( $"value of input line is {il}" ) ;
-            linesCollectionView.MoveCurrentToLast ( ) ;
-            Debug.WriteLine ( linesCollectionView.CurrentItem ) ;
+            DebugUtils.WriteLine ( $"value of input line is {il}" ) ;
+            LinesCollectionView.MoveCurrentToLast ( ) ;
+            DebugUtils.WriteLine ( LinesCollectionView.CurrentItem.ToString() ) ;
 
             //Task<int>.Run((state) => RunPython(state), CancellationToken.None));
         }
@@ -200,7 +200,7 @@ namespace AnalysisControls.ViewModel
         public void GetObjectData ( SerializationInfo info , StreamingContext context ) { }
         #endregion
 
-        private void PythonInit ( ILifetimeScope scope , IEnumerable < IPythonVariable > vars )
+        private void PythonInit ( ILifetimeScope scope , [ NotNull ] IEnumerable < IPythonVariable > vars )
         {
             _py = Python.CreateEngine ( ) ;
 
@@ -208,15 +208,9 @@ namespace AnalysisControls.ViewModel
             _pyScope.SetVariable ( "viewModel" , this ) ;
             _pyScope.SetVariable ( "scope" ,     scope ) ;
 
-            foreach ( var pythonVariable in vars )
+            foreach ( var pythonVariable in vars.Where ( pythonVariable => ! string.IsNullOrEmpty ( pythonVariable.VariableName ) && ! _pyScope.TryGetVariable ( pythonVariable.VariableName , out _ ) ) )
             {
-                if ( string.IsNullOrEmpty ( pythonVariable.VariableName )
-                     || _pyScope.TryGetVariable ( pythonVariable.VariableName , out _ ) )
-                {
-                    continue ;
-                }
-
-                Debug.WriteLine ( $"populating variale {pythonVariable.VariableName}" ) ;
+                DebugUtils.WriteLine ( $"populating variable {pythonVariable.VariableName}" ) ;
                 _pyScope.SetVariable (
                                       pythonVariable.VariableName
                                     , pythonVariable.GetVariableValue ( )
@@ -235,7 +229,7 @@ namespace AnalysisControls.ViewModel
           , DependencyPropertyChangedEventArgs e
         )
         {
-            Debug.WriteLine ( $"input line changed. old = {e.OldValue}, new = {e.NewValue}" ) ;
+            DebugUtils.WriteLine ( $"input line changed. old = {e.OldValue}, new = {e.NewValue}" ) ;
         }
 
         private static void OnResultsChanged (
@@ -250,30 +244,32 @@ namespace AnalysisControls.ViewModel
           , DependencyPropertyChangedEventArgs e
         )
         {
-            Debug.WriteLine ( "Lines changed" ) ;
+            DebugUtils.WriteLine ( "Lines changed" ) ;
             var x = ( PythonViewModel ) d ;
             var old = ( StringObservableCollection ) e.OldValue ;
             if ( old != null )
             {
-                old.CollectionChanged -= x.OnLinesCOllectionChanged ;
+                old.CollectionChanged -= x.OnLinesCollectionChanged ;
             }
 
             var @new = ( StringObservableCollection ) e.NewValue ;
-            if ( @new != null ) { @new.CollectionChanged += x.OnLinesCOllectionChanged ; }
+            if ( @new != null ) { @new.CollectionChanged += x.OnLinesCollectionChanged ; }
         }
 
-        private void OnLinesCOllectionChanged (
+        private void OnLinesCollectionChanged (
             object                                       sender
           , [ NotNull ] NotifyCollectionChangedEventArgs e
         )
         {
-            Debug.WriteLine ( $"In {nameof ( OnLinesCOllectionChanged )}" ) ;
-            if ( e.Action == NotifyCollectionChangedAction.Add )
+            DebugUtils.WriteLine ( $"In {nameof ( OnLinesCollectionChanged )}" ) ;
+            if ( e.Action != NotifyCollectionChangedAction.Add )
             {
-                var new1 = e.NewStartingIndex + e.NewItems.Count - 1 ;
-                Debug.WriteLine ( $"Moving current to ${new1}" ) ;
-                linesCollectionView.MoveCurrentTo ( new1 ) ;
+                return ;
             }
+
+            var new1 = e.NewStartingIndex + e.NewItems.Count - 1 ;
+            DebugUtils.WriteLine ( $"Moving current to ${new1}" ) ;
+            LinesCollectionView.MoveCurrentTo ( new1 ) ;
         }
 
 
@@ -284,7 +280,7 @@ namespace AnalysisControls.ViewModel
 
         private void FlowWrite ( string eValue )
         {
-            FlowDOcument.Blocks.Add ( new Paragraph ( new Run ( eValue ) ) ) ;
+            FlowDocument.Blocks.Add ( new Paragraph ( new Run ( eValue ) ) ) ;
         }
 
         /// <summary>
@@ -294,8 +290,8 @@ namespace AnalysisControls.ViewModel
         public void TakeLine ( string text )
         {
             Lines.Add ( "" ) ;
-            linesCollectionView.MoveCurrentToLast ( ) ;
-            FlowDOcument.Blocks.Add ( new Paragraph ( new Run ( text ) ) ) ;
+            LinesCollectionView.MoveCurrentToLast ( ) ;
+            FlowDocument.Blocks.Add ( new Paragraph ( new Run ( text ) ) ) ;
             string strRep = null ;
             dynamic result = null ;
             try
@@ -312,16 +308,16 @@ namespace AnalysisControls.ViewModel
             {
                 try
                 {
-                    strRep = result?.__repr__ ( result ) ?? "None" ;
+                    strRep = result.__repr__ ( result ) ?? "None" ;
                 }
-                catch ( Exception ex )
+                catch ( Exception )
 
                 {
                     try
                     {
                         strRep = result.ToString ( ) ;
                     }
-                    catch ( Exception ex2 )
+                    catch ( Exception )
                     {
                         strRep = result.__name__ ;
                     }
@@ -330,7 +326,7 @@ namespace AnalysisControls.ViewModel
 
             if ( strRep != null )
             {
-                FlowDOcument.Blocks.Add ( new Paragraph ( new Run ( strRep ) ) ) ;
+                FlowDocument.Blocks.Add ( new Paragraph ( new Run ( strRep ) ) ) ;
             }
         }
 
@@ -339,11 +335,12 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         public void HistoryUp ( )
         {
-            linesCollectionView.MoveCurrentToPrevious ( ) ;
+            LinesCollectionView.MoveCurrentToPrevious ( ) ;
             //TextInput = history[ historyPos.Value ] ;
         }
 
         [ NotifyPropertyChangedInvocator ]
+        // ReSharper disable once UnusedMember.Local
         private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
@@ -352,9 +349,7 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public void HistoryDown ( ) { linesCollectionView.MoveCurrentToNext ( ) ; }
-
-        private int RunPython ( object state ) { return 0 ; }
+        public void HistoryDown ( ) { LinesCollectionView.MoveCurrentToNext ( ) ; }
 
 
         /// <summary>
@@ -363,6 +358,7 @@ namespace AnalysisControls.ViewModel
         /// <param name="textEditorText"></param>
         public void ExecutePythonScript ( string textEditorText )
         {
+            // ReSharper disable once UnusedVariable
             var objectHandle = _py.ExecuteAndWrap ( textEditorText ) ;
         }
     }
@@ -390,5 +386,154 @@ namespace AnalysisControls.ViewModel
         [ CanBeNull ] public dynamic GetVariableValue ( ) { return ValueLambda?.Invoke ( ) ; }
         #endregion
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class MyEvtArgs<T> : EventArgs
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public T Value
+        {
+            get;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        public MyEvtArgs(T value) => this.Value = value;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class NullStream : Stream
+    {
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override bool CanRead
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override bool CanSeek
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override bool CanWrite
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void Flush()
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override long Length
+        {
+            get { return 0; }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override long Position
+        {
+            get { return 0; }
+            set { }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            for (int i = 0; i < buffer.Length; i++) buffer[i] = 0;
+            return count;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            return 0;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        public override void SetLength(long value)
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+        }
+    }
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class EventRaisingStreamWriter : StreamWriter
+    {
+        public event EventHandler<MyEvtArgs<string>> StringWritten;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
+        public EventRaisingStreamWriter(Stream s) : base(s) { }
+
+        private void LaunchEvent(string txtWritten)
+        {
+            StringWritten?.Invoke(this, new MyEvtArgs<string>(txtWritten));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        public override void Write(string value)
+        {
+            LaunchEvent(value);
+        }
+    }
+
 }
 #endif

@@ -13,9 +13,10 @@ using Microsoft.CodeAnalysis ;
 
 namespace FindLogUsages
 {
-    public class RejectedItem
+    public sealed class RejectedItem
     {
         private readonly SyntaxNode                               _statement ;
+        // ReSharper disable once NotAccessedField.Local
         private readonly UnsupportedExpressionTypeSyntaxException _unsupported ;
 
         public RejectedItem (

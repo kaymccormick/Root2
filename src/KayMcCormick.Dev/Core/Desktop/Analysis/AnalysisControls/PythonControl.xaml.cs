@@ -1,8 +1,11 @@
-﻿using System.Diagnostics ;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.Windows.Controls ;
 using System.Windows.Input ;
+using AnalysisAppLib;
 using AnalysisControls.ViewModel ;
 using Autofac ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Lib.Wpf ;
@@ -13,11 +16,14 @@ namespace AnalysisControls
     ///     Interaction logic for PythonControl.xaml
     /// </summary>
     [ TitleMetadata ( "Python" ) ]
-    public partial class PythonControl : UserControl
+    [ GroupMetadata ( "Views" ) ]
+    [RequireOptionMetadata("Python")]
+    public sealed partial class PythonControl : UserControl
       , IView < PythonViewModel >
       , IView1
       , IControlView
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly ILifetimeScope _scope ;
 
         /// <summary>
@@ -30,50 +36,70 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="scope"></param>
         /// <param name="viewModel"></param>
+        [UsedImplicitly]
         public PythonControl ( ILifetimeScope scope , PythonViewModel viewModel )
         {
             _scope    = scope ;
             ViewModel = viewModel ;
             InitializeComponent ( ) ;
 
-            ViewModel.FlowDOcument = flow ;
+            ViewModel.FlowDocument = Flow ;
         }
 
         #region Implementation of IView<out PythonViewModel>
         /// <summary>
-        /// 
+        /// Retreive the view model.
         /// </summary>
         public PythonViewModel ViewModel { get ; }
         #endregion
 
-        private void UIElement_OnKeyDown ( object sender , KeyEventArgs e )
+        // ReSharper disable once UnusedMember.Local
+        private void UIElement_OnKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
         {
-            if ( e.Key == Key.Enter )
+            switch ( e.Key )
             {
-                Debug.WriteLine ( "rceived key " + e.Key ) ;
-                var textBox = ( TextBox ) sender ;
-                ViewModel.TakeLine ( textBox.Text ) ;
-                textBox.Text = "" ;
-            }
-            else if ( e.Key == Key.Up )
-            {
-                ViewModel.HistoryUp ( ) ;
+                case Key.Enter :
+                {
+                    DebugUtils.WriteLine ( $"received key {e.Key}" ) ;
+                    var textBox = ( TextBox ) sender ;
+                    ViewModel.TakeLine ( textBox.Text ) ;
+                    textBox.Text = "" ;
+                    break ;
+                }
+                case Key.Up :
+                    ViewModel.HistoryUp ( ) ;
+                    break ;
             }
         }
 
-        private void UIElement_OnPreviewKeyDown ( object sender , KeyEventArgs e )
+        // ReSharper disable once UnusedMember.Local
+        // ReSharper disable once UnusedParameter.Local
+        private void UIElement_OnPreviewKeyDown ( object sender , [ NotNull ] KeyEventArgs e )
         {
-            Debug.WriteLine ( "rceived key " + e.Key ) ;
-            if ( e.Key == Key.Up )
+            DebugUtils.WriteLine ( $"received key {e.Key}" ) ;
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+            switch ( e.Key )
             {
-                ViewModel.HistoryUp ( ) ;
-                e.Handled = true ;
+                case Key.Up :
+                    ViewModel.HistoryUp ( ) ;
+                    e.Handled = true ;
+                    break ;
+                case Key.Down :
+                    ViewModel.HistoryDown ( ) ;
+                    e.Handled = true ;
+                    break ;
             }
-            else if ( e.Key == Key.Down )
-            {
-                ViewModel.HistoryDown ( ) ;
-                e.Handled = true ;
-            }
+        }
+    }
+
+    [MetadataAttribute]
+    public class RequireOptionMetadataAttribute : Attribute
+    {
+        public string RequiredOptionName { get; }
+
+        public RequireOptionMetadataAttribute(string optionName)
+        {
+            RequiredOptionName = optionName;
         }
     }
 }

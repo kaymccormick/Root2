@@ -22,6 +22,7 @@ namespace AnalysisAppLib.ViewModel
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         List < object > Spans { get ; set ; }
 
         /// <summary>

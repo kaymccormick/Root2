@@ -21,11 +21,14 @@ namespace AnalysisAppLib.ViewModel
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public sealed class LogUsageAnalysisViewModel : ILogUsageAnalysisViewModel
       , INotifyPropertyChanged
     {
         private ObservableCollection < LogEventInstance > _events ;
+#pragma warning disable 649
         private LogInvocationCollection                   _logInvocations ;
+#pragma warning restore 649
         private PipelineResult                            _pipelineResult ;
 
         /// <summary>
@@ -46,11 +49,6 @@ namespace AnalysisAppLib.ViewModel
         public LogInvocationCollection LogInvocations
         {
             get { return _logInvocations ; }
-            set
-            {
-                _logInvocations = value ;
-                OnPropertyChanged ( ) ;
-            }
         }
 
         /// <summary>
@@ -84,7 +82,9 @@ namespace AnalysisAppLib.ViewModel
         /// </summary>
         /// <param name="viewCurrentItem"></param>
         /// <returns></returns>
+#pragma warning disable 1998
         public async Task AnalyzeCommand ( object viewCurrentItem ) { }
+#pragma warning restore 1998
         #endregion
     }
 }

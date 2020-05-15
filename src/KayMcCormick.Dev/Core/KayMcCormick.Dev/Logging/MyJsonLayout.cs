@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System.Text.Json ;
+using JetBrains.Annotations ;
 using KayMcCormick.Dev.Serialization ;
 using NLog ;
 using NLog.Layouts ;
@@ -20,7 +21,7 @@ namespace KayMcCormick.Dev.Logging
     /// </summary>
     public class MyJsonLayout : Layout
     {
-        private JsonSerializerOptions options ;
+        private JsonSerializerOptions _options ;
 
         /// <summary>
         /// </summary>
@@ -33,11 +34,12 @@ namespace KayMcCormick.Dev.Logging
 
         /// <summary>
         /// </summary>
-        public JsonSerializerOptions Options { get { return options ; } set { options = value ; } }
+        public JsonSerializerOptions Options { get { return _options ; } set { _options = value ; } }
 
         /// <summary>
         /// </summary>
         /// <returns></returns>
+        [ NotNull ]
         public JsonSerializerOptions CreateJsonSerializerOptions ( )
         {
             var jsonSerializerOptions = new JsonSerializerOptions ( ) ;

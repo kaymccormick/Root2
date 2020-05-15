@@ -6,7 +6,7 @@
     {
         /// <summary>
         /// </summary>
-        public StackTraceToken Type { get ; set ; }
+        internal StackTraceToken Type { get ; set ; }
 
         /// <summary>
         /// </summary>

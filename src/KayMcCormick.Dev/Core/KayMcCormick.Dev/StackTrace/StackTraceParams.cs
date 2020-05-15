@@ -4,7 +4,7 @@ namespace KayMcCormick.Dev.StackTrace
 {
     /// <summary>
     /// </summary>
-    public class StackTraceParams
+    internal sealed class StackTraceParams
     {
         /// <summary>
         /// </summary>

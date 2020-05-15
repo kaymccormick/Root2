@@ -16,20 +16,20 @@ namespace AnalysisControls
     /// <summary>
     ///     Interaction logic for FormattedCode.xaml
     /// </summary>
-    public partial class FormattedCode2 : UserControl , ICodeRenderer
+    public sealed partial class FormattedCode2 : UserControl , ICodeRenderer
     {
         private static readonly Logger              Logger = LogManager.GetCurrentClassLogger ( ) ;
         private readonly        Stack < IAddChild > _stack = new Stack < IAddChild > ( ) ;
         private readonly        Visitor4            _visitor3 ;
 
-        private readonly Color[] colors =
+        private readonly Color[] _colors =
         {
             Colors.Red , Colors.Green , Colors.Aqua , Colors.BlueViolet , Colors.Chocolate
         } ;
 
-        private readonly StyleInfo curSi = new StyleInfo ( ) ;
+        private readonly StyleInfo _curSi = new StyleInfo ( ) ;
 
-        private readonly Dictionary < ushort , StyleInfo > ss =
+        private readonly Dictionary < ushort , StyleInfo > _ss =
             new Dictionary < ushort , StyleInfo > ( ) ;
 
         private CompilationUnitSyntax _compilationUnitSyntax ;
@@ -40,17 +40,17 @@ namespace AnalysisControls
         private string     _sourceCode ;
         private SyntaxTree _syntaxTree ;
 
-        private int colorI ;
+        private int _colorI ;
 
         /// <summary>
         /// </summary>
         public FormattedCode2 ( )
         {
             InitializeComponent ( ) ;
-            ss[ ( ushort ) SyntaxKind.PrivateKeyword ] =
-                new StyleInfo { fg = new SColor ( 255 , 0 , 0 , 255 ) } ;
-            ss[ ( ushort ) SyntaxKind.MethodDeclaration ] =
-                new StyleInfo { bg = new SColor ( 127 , 127 , 127 , 255 ) } ;
+            _ss[ ( ushort ) SyntaxKind.PrivateKeyword ] =
+                new StyleInfo { Fg = new SColor ( 255 , 0 , 0 , 255 ) } ;
+            _ss[ ( ushort ) SyntaxKind.MethodDeclaration ] =
+                new StyleInfo { Bg = new SColor ( 127 , 127 , 127 , 255 ) } ;
             //_container = rootPanel ;
             var wrapPanel = new WrapPanel ( ) ;
             Content    = wrapPanel ;
@@ -83,26 +83,25 @@ namespace AnalysisControls
         /// <param name="rawKind"></param>
         /// <param name="text"></param>
         /// <param name="newLine"></param>
-        public void addToken ( ushort rawKind , string text , bool newLine )
+        public void AddToken ( ushort rawKind , string text , bool newLine )
         {
             //Token token = new Token ( rawKind , text ) ;
-            var tmpSi = curSi ;
             SolidColorBrush x = null ;
-            if ( ss.TryGetValue ( rawKind , out var si ) )
+            if ( _ss.TryGetValue ( rawKind , out var si ) )
             {
-                if ( si.fg.HasValue )
+                if ( si.Fg.HasValue )
                 {
                     x = new SolidColorBrush (
                                              Color.FromArgb (
-                                                             si.fg.Value.A
-                                                           , si.fg.Value.R
-                                                           , si.fg.Value.G
-                                                           , si.fg.Value.B
+                                                             si.Fg.Value.A
+                                                           , si.Fg.Value.R
+                                                           , si.Fg.Value.G
+                                                           , si.Fg.Value.B
                                                             )
                                             ) ;
                 }
 
-                tmpSi = curSi.With ( si ) ;
+                _curSi.With ( si ) ;
             }
 
             _container.AddChild ( new Token ( rawKind , text , x , newLine ) ) ;
@@ -113,7 +112,7 @@ namespace AnalysisControls
         /// <param name="rawKind"></param>
         /// <param name="text"></param>
         /// <param name="newLine"></param>
-        public void addTrivia ( int rawKind , string text , bool newLine )
+        public void AddTrivia ( int rawKind , string text , bool newLine )
         {
             _container.AddChild ( new Token ( rawKind , text , null , newLine ) ) ;
         }
@@ -137,8 +136,8 @@ namespace AnalysisControls
 
             var c = new WrapPanel { Tag = node , Margin = new Thickness ( 2 ) } ;
             bdr.Child           =  c ;
-            bdr.BorderBrush     =  new SolidColorBrush ( colors[ colorI % colors.Length ] ) ;
-            colorI              += 1 ;
+            bdr.BorderBrush     =  new SolidColorBrush ( _colors[ _colorI % _colors.Length ] ) ;
+            _colorI             += 1 ;
             bdr.BorderThickness =  new Thickness ( 1 ) ;
             bdr.Margin          =  new Thickness ( 2 ) ;
             bdr.ToolTip         =  new ToolTip { Content = node.Kind ( ) } ;
@@ -149,16 +148,16 @@ namespace AnalysisControls
             _stack.Push ( bdr ) ;
             _container = c ;
 
-            if ( ss.TryGetValue ( ( ushort ) node.RawKind , out var si ) )
+            if ( _ss.TryGetValue ( ( ushort ) node.RawKind , out var si ) )
             {
-                if ( si.bg.HasValue )
+                if ( si.Bg.HasValue )
                 {
                     x = new SolidColorBrush (
                                              Color.FromArgb (
-                                                             si.bg.Value.A
-                                                           , si.bg.Value.R
-                                                           , si.bg.Value.G
-                                                           , si.bg.Value.B
+                                                             si.Bg.Value.A
+                                                           , si.Bg.Value.R
+                                                           , si.Bg.Value.G
+                                                           , si.Bg.Value.B
                                                             )
                                             ) ;
                 }
@@ -204,33 +203,41 @@ namespace AnalysisControls
         }
     }
 
-    internal class StyleInfo
+    internal sealed class StyleInfo
     {
-        public SColor ? bg ;
+        public SColor ? Bg ;
 
 
-        public bool     bold ;
-        public SColor ? fg ;
+        public bool     Bold ;
+        public SColor ? Fg ;
 
-        public bool italics ;
+        public bool Italics ;
 
 
-        public bool underline ;
+        public bool Underline ;
+
+        public StyleInfo ( bool bold = false , bool italics = false , bool underline = false )
+        {
+            Bold      = bold ;
+            Italics   = italics ;
+            Underline = underline ;
+        }
 
 
         [ NotNull ]
         public StyleInfo With ( [ NotNull ] StyleInfo value )
         {
-            return new StyleInfo { bg = value.bg ?? bg , fg = value.bg ?? fg } ;
+            var with = new StyleInfo { Bg = value.Bg ?? Bg , Fg = value.Bg ?? Fg } ;
+            return with ;
         }
     }
 
-    internal struct SColor
+    internal readonly struct SColor
     {
-        public byte R ;
-        public byte G ;
-        public byte B ;
-        public byte A ;
+        public readonly byte R ;
+        public readonly byte G ;
+        public readonly byte B ;
+        public readonly byte A ;
 
         public SColor ( byte i , byte i1 , byte i2 , byte i3 )
         {

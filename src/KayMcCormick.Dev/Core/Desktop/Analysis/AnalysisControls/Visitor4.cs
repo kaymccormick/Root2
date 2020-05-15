@@ -25,7 +25,6 @@ namespace AnalysisControls
     /// </summary>
     public sealed class Visitor4 : CSharpSyntaxWalker
     {
-        private readonly TaskScheduler          _t ;
         private readonly SynchronizationContext _ctx ;
         private readonly ICodeRenderer          _ctl ;
 
@@ -45,10 +44,10 @@ namespace AnalysisControls
         /// <param name="t"></param>
         /// <param name="ctx"></param>
         /// <param name="ctl"></param>
+        // ReSharper disable once UnusedParameter.Local
         public Visitor4 ( TaskScheduler t , SynchronizationContext ctx , ICodeRenderer ctl ) :
             base ( SyntaxWalkerDepth.Trivia )
         {
-            _t   = t ;
             _ctx = ctx ;
             _ctl = ctl ;
         }
@@ -96,33 +95,35 @@ namespace AnalysisControls
                         , getLocation.GetMappedLineSpan ( ).StartLinePosition
                          ) ;
             Logger.Trace ( "{line} > ? {_curLine}" , line , _curLine ) ;
-            if ( line > _curLine )
+            if ( line <= _curLine )
             {
-                for ( ; _curLine < line - 1 ; _curLine += 1 )
-                {
-                    if ( _curLine >= 0 )
-                    {
-                        Logger.Trace ( "Insert New line {line}" , _curLine ) ;
-                    }
-                }
-#if DEBUG
-
-                Logger.Trace ( "New line {line}" , line ) ;
-
-#endif
-#if DEBUG
-                Logger.Trace ( "create new paragraph" ) ;
-#endif
-                newLine = true ;
-                // AdornerDecorator d = new AdornerDecorator();
-                _curLine += 1 ;
-                // d.Child = new TextBlock ( ) { Text = ( line + 1 ).ToString ( ) } ;
-                //AdornerLayer l = AdornerLayer.GetAdornerLayer(_curBlock.);
-                //_document.Blocks.Add ( _curBlock ) ;
-                Logger.Trace ( "add to blocks" ) ;
-
-                _isAtStartOfLine = true ;
+                return ;
             }
+
+            for ( ; _curLine < line - 1 ; _curLine += 1 )
+            {
+                if ( _curLine >= 0 )
+                {
+                    Logger.Trace ( "Insert New line {line}" , _curLine ) ;
+                }
+            }
+#if DEBUG
+
+            Logger.Trace ( "New line {line}" , line ) ;
+
+#endif
+#if DEBUG
+            Logger.Trace ( "create new paragraph" ) ;
+#endif
+            newLine = true ;
+            // AdornerDecorator d = new AdornerDecorator();
+            _curLine += 1 ;
+            // d.Child = new TextBlock ( ) { Text = ( line + 1 ).ToString ( ) } ;
+            //AdornerLayer l = AdornerLayer.GetAdornerLayer(_curBlock.);
+            //_document.Blocks.Add ( _curBlock ) ;
+            Logger.Trace ( "add to blocks" ) ;
+
+            _isAtStartOfLine = true ;
         }
 
         /// <summary>
@@ -165,7 +166,7 @@ namespace AnalysisControls
                                _ctl.NewLine ( ) ;
                            }
 
-                           _ctl.addToken ( ( ushort ) token.RawKind , text , newLine ) ;
+                           _ctl.AddToken ( ( ushort ) token.RawKind , text , newLine ) ;
                        }
                      , null
                       ) ;
@@ -205,7 +206,7 @@ namespace AnalysisControls
                                _ctl.NewLine ( ) ;
                            }
 
-                           _ctl.addTrivia ( syntaxTrivia.RawKind , text , newLine ) ;
+                           _ctl.AddTrivia ( syntaxTrivia.RawKind , text , newLine ) ;
                        }
                      , null
                       ) ;

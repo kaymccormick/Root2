@@ -10,31 +10,48 @@
 // ---
 #endregion
 using System ;
+using System.Collections;
+using System.Collections.Concurrent ;
 using System.Collections.Generic ;
+using System.Collections.ObjectModel;
 using System.ComponentModel ;
-using System.Diagnostics ;
+using System.Linq ;
+using System.Reactive.Subjects ;
 using System.Reflection ;
 using System.Threading.Tasks ;
 using System.Windows ;
 using System.Windows.Controls ;
-using System.Windows.Media ;
+using System.Windows.Controls.Ribbon;
+using System.Windows.Input ;
 using AnalysisAppLib ;
+using AnalysisAppLib.Syntax ;
 using AnalysisControls ;
-using AnalysisControls.Scripting ;
-using AnalysisControls.ViewModel ;
+using AnalysisControls.Scripting;
+using AnalysisControls.ViewModel;
 using Autofac ;
 using Autofac.Core ;
-using Autofac.Features.AttributeFilters ;
+using Autofac.Core.Activators.Delegate ;
+using Autofac.Core.Activators.ProvidedInstance ;
+using Autofac.Core.Activators.Reflection ;
+using Autofac.Core.Lifetime ;
+using Autofac.Core.Registration ;
 using Autofac.Features.Metadata ;
+using Autofac.Features.ResolveAnything ;
+using Autofac.Features.Variance ;
 using AvalonDock.Layout ;
 #if EXPLORER
 using ExplorerCtrl ;
 #endif
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Command ;
+using KayMcCormick.Dev.Container ;
+using KayMcCormick.Dev.Metadata ;
 using KayMcCormick.Lib.Wpf ;
+using KayMcCormick.Lib.Wpf.Command ;
 using KayMcCormick.Lib.Wpf.View ;
 using KayMcCormick.Lib.Wpf.ViewModel ;
+using Microsoft.Extensions.Logging ;
 using NLog ;
 
 #if MIGRADOC
@@ -60,34 +77,183 @@ namespace ProjInterface
 
     public sealed class ProjInterfaceModule : IocModule
     {
+        #region Overrides of Module
+        protected override void AttachToRegistrationSource (
+            IComponentRegistryBuilder componentRegistry
+          , IRegistrationSource       registrationSource
+        )
+        {
+            DebugUtils.WriteLine ( $"{componentRegistry}:{registrationSource}" ) ;
+        }
+
+        private ConcurrentDictionary < Guid , MyInfo > _regs =
+            new ConcurrentDictionary < Guid , MyInfo > ( ) ;
+
+        protected override void AttachToComponentRegistration (
+            IComponentRegistryBuilder componentRegistry
+          , IComponentRegistration    registration
+        )
+        {
+            object guidFrom = null ;
+            if ( registration.Metadata.TryGetValue ( "SeenTimes" , out var times ) )
+            {
+                registration.Metadata[ "SeenTimes" ] = ( int ) times + 1 ;
+            }
+            else
+            {
+                registration.Metadata[ "SeenTimes" ] = 0 ;
+            }
+
+            if ( registration.Metadata.TryGetValue ( "RandomGuid" , out var guid ) )
+            {
+                guidFrom = registration.Metadata[ "GuidFrom" ] ;
+            }
+            else
+            {
+                registration.Metadata[ "RandomGuid" ] = Guid.NewGuid ( ) ;
+                guidFrom                              = GetType ( ).FullName ;
+                registration.Metadata[ "GuidFrom" ]   = guidFrom ;
+            }
+
+            registration.Preparing += ( sender , args ) => {
+            } ;
+            registration.Activating += ( sender , args ) => {
+            } ;
+            registration.Activated += ( sender , args ) => {
+            } ;
+            var registrationActivator = registration.Activator ;
+            var limitType = registrationActivator.LimitType ;
+            DebugUtils.WriteLine ( $"LimitType = {limitType}" ) ;
+            if ( _activators.TryGetValue ( limitType , out var info2 ) )
+            {
+            }
+            else
+            {
+                info2 = new MyInfo2 ( ) { LimitType = limitType } ;
+                _activators.TryAdd ( limitType , info2 ) ;
+            }
+
+            info2.Registrations.Add ( registration ) ;
+            if ( ! info2.Lifetimes.TryGetValue ( registration.Lifetime , out var info3 ) )
+            {
+                info3 = new MyInfo3 { LimitType = limitType , Lifetime = registration.Lifetime } ;
+                info2.Lifetimes.TryAdd ( registration.Lifetime , info3 ) ;
+            }
+
+            info3.Registrations.Add ( registration ) ;
+            info3.Ids.Add ( registration.Id ) ;
+            DebugUtils.WriteLine ( $"{registration.Id} {limitType.FullName}" ) ;
+            if ( _regs.TryGetValue ( registration.Id , out var info ) )
+            {
+            }
+            else
+            {
+                info = new MyInfo ( ) { Id = registration.Id } ;
+                _regs.TryAdd ( registration.Id , info ) ;
+            }
+
+            info.Registrations.Add ( registration ) ;
+            if ( info.Registrations.Count > 1 )
+            {
+                DebugUtils.WriteLine (
+                                      string.Join (
+                                                   ", "
+                                                 , info.Registrations.Select (
+                                                                              x => x
+                                                                                  .Lifetime
+                                                                                  .ToString ( )
+                                                                             )
+                                                  )
+                                     ) ;
+            }
+        }
+
+        private void OnComponentRegistryOnRegistered (
+            object                       sender
+          , ComponentRegisteredEventArgs args
+        )
+        {
+            DebugUtils.WriteLine (
+                                  $"{sender} Logging reg {args.ComponentRegistration} ({args.ComponentRegistration.Lifetime})"
+                                 ) ;
+            regs.OnNext ( args.ComponentRegistration ) ;
+        }
+        #endregion
+
+
+        private Subject < IComponentRegistration >
+            regs = new Subject < IComponentRegistration > ( ) ;
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        public ProjInterfaceModule ( ) {
-        }
+        private bool _registerControlViewCommandAdapters = true ;
+
+        private ConcurrentDictionary < Type , MyInfo2 > _activators =
+            new ConcurrentDictionary < Type , MyInfo2 > ( ) ;
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+            builder.RegisterType<RibbonBuilder>();
+            builder.ComponentRegistryBuilder.Registered += ComponentRegistryBuilderOnRegistered ;
+            builder.RegisterInstance ( _activators ) ;
+            builder.Register < AppTypeInfoObservableCollection > (
+                                                                  ( c , p )
+                                                                      => new AppTypeInfoObservableCollection(
+                                                                                                    c.Resolve
+                                                                                                    < IEnumerable
+                                                                                                        < AppTypeInfo
+                                                                                                        > > ( )
+                                                                                                   )
+                                                                 ) ;
+            builder.Register<IEnumerable<GroupInfo>>((c, p) =>
+            {
+                var t = p.TypedAs<TabInfo>();
+                var views = c.Resolve<IEnumerable<Meta<Lazy<IControlView>>>>();
+                var groupInfo2 = new GroupInfo2() {Group="Views"};
+                foreach (var view in views)
+                {
+                    foreach (var keyValuePair in view.Metadata)
+                    {
+                        DebugUtils.WriteLine($"{keyValuePair.Key} = {keyValuePair.Value}");
+                    }
+
+                    view.Metadata.TryGetValue("Title", out var title);
+                    groupInfo2.Items.Add(new RibbonItemInfo() {Content = view, Title=(string) title});
+                }
+                
+                return new[] {groupInfo2};
+            });
+            builder.RegisterInstance ( regs )
+                   .AsSelf ( )
+                   .As < IObservable < IComponentRegistration > > ( ) ;
+        
+
+            builder.RegisterType < Myw > ( ).As < ILoggerProvider > ( ) ;
+            //builder.RegisterSource < MySource > ( ) ;
             Logger.Trace (
                           $"Loading module {typeof ( ProjInterfaceModule ).AssemblyQualifiedName}"
                          ) ;
-            //builder.RegisterType < PaneService > ( ) ;
 #if PYTHON
             builder.RegisterType < PythonControl > ( ).AsSelf ().As<IControlView> (  ).WithMetadata(
                                                                               "ImageSource"
-                                                                            , new Uri(
-                                                                                      "pack://application:,,,/KayMcCormick.Lib.Wpf;component/Assets/python1.jpg"
+                                                                , new Uri(
+                                                                                      "pack://application:,,,/WpfLib;component/Assets/python1.jpg"
                                                                                      )
                                                                              )
-                   .WithMetadata("Ribbon", true); ;
+                   .WithMetadata("PrimaryRibbon", true); ;
             builder.RegisterType < PythonViewModel > ( )
                    .AsSelf ( )
                    .SingleInstance ( ) ; //.AutoActivate();
                         builder.RegisterAdapter < Meta < Lazy < object > > , IPythonVariable > ( Adapter ) ;
 #endif
 
+            builder.RegisterType < ResourcesTreeView > ( )
+                   .AsSelf ( )
+                   .AsImplementedInterfaces ( )
+                   .WithCallerMetadata ( ) ;
 
-            builder.RegisterType < EventLogView > ( ).AsSelf ( ) ;
-            builder.RegisterType < EventLogViewModel > ( ) ;
+            builder.RegisterType < EventLogView > ( ).AsSelf ( ).WithCallerMetadata ( ) ;
+            builder.RegisterType < EventLogViewModel > ( ).WithCallerMetadata ( ) ;
 #if PYTHON
             builder.RegisterBuildCallback (
                                            scope => {
@@ -102,14 +268,18 @@ namespace ProjInterface
                                            }
                                           ) ;
 #endif
-            builder.RegisterModule < AnalysisAppLibModule > ( ) ; ;
-            builder.RegisterType < Window1 > ( ).AsSelf ( ) ;
+            builder.RegisterModule < AnalysisAppLibModule > ( ) ;
+
+            builder.RegisterType<Window1>().AsSelf().As<Window>().WithCallerMetadata().OnActivating(OnWindowActivating);
+            builder.RegisterType<Window2>().AsSelf().As<Window>().WithCallerMetadata().OnActivating(OnWindowActivating);
+            //builder.RegisterType<Window2>().AsSelf().As<Window>().WithCallerMetadata().OnActivating(OnWindowActivating);
 #if EXPLORER
+if(RegiserExplorerTypes){
             builder.RegisterAdapter < AppExplorerItem , IExplorerItem > (
                                                                          (
                                                                              context
-                                                                           , parameters
-                                                                           , item
+                                                               , parameters
+                                                               , item
                                                                          ) => {
                                                                              var r =
                                                                                  new
@@ -119,94 +289,102 @@ namespace ProjInterface
                                                                              return r ;
                                                                          }
                                                                         ) ;
+}
 #endif
             builder.RegisterType < AllResourcesTree > ( )
                    .As < UserControl > ( )
                    .AsSelf ( )
-                   .As < IViewWithTitle > ( ) 
-                   .As < IControlView > ( ) ;
+                   .As < IViewWithTitle > ( )
+                   .As < IControlView > ( )
+                   .WithCallerMetadata ( ) ;
+            builder.RegisterType < AllResourcesView > ( )
+                   .As < UserControl > ( )
+                   .AsSelf ( )
+                   .As < IViewWithTitle > ( )
+                   .As < IControlView > ( )
+                   .WithMetadata < IViewMetadata > (
+                                                    m => {
+                                                        m.For (
+                                                               am => am.Title
+                                                             , "Resources View"
+                                                              ) ;
+                                                        m.For (
+                                                               am => am.Description
+                                                             , "View resources in application"
+                                                              ) ;
+                                                    }
+                                                   )
+                   .WithCallerMetadata ( ) ;
+            builder.RegisterType < DockWindowViewModel > ( ).AsSelf ( ).WithCallerMetadata ( ) ;
             builder.RegisterType < WorkspaceControl > ( )
                    .As < IViewWithTitle > ( )
-                   .As < IControlView > ( ) ;
-            builder.RegisterType < WorkspaceViewModel > ( ) ;
-            builder.RegisterInstance ( Application.Current ).As < IResourceResolver > ( ) ;
+                   .As < IControlView > ( )
+                   .WithCallerMetadata ( ) ;
+            builder.RegisterType < WorkspaceViewModel > ( ).WithCallerMetadata ( ) ;
+            builder.RegisterInstance ( Application.Current )
+                   .As < IResourceResolver > ( )
+                   .WithCallerMetadata ( ) ;
 
-            builder.RegisterType < AllResourcesTreeViewModel > ( ).AsSelf ( ) ;
-            builder.RegisterType < IconsSource > ( ).As < IIconsSource > ( ) ;
-            //   builder.RegisterType < ShellExplorerItemProvider > ( ).As < IExplorerItemProvider> ( ) ;
+            builder.RegisterType < IconsSource > ( )
+                   .As < IIconsSource > ( )
+                   .WithCallerMetadata ( ) ;
 
-            builder.RegisterType < LogViewerWindow > ( ).AsSelf ( ).As < IViewWithTitle > ( ) ;
-            builder.RegisterType < LogViewerControl > ( ).AsSelf ( ).As < IViewWithTitle > ( ) ;
-                   //.As < IControlView > ( ) ;
+            builder.RegisterType < LogViewerWindow > ( )
+                   .AsSelf ( )
+                   .As < IViewWithTitle > ( )
+                   .WithCallerMetadata ( ) ;
+            builder.RegisterType < LogViewerControl > ( )
+                   .AsSelf ( )
+                   .As < IViewWithTitle > ( )
+                   .WithCallerMetadata ( ) ;
 
-                   builder
-                      .RegisterAdapter < Meta < Func < LayoutDocumentPane , IControlView > > ,
-                           Func < LayoutDocumentPane , IDisplayableAppCommand >
-                       > ( ControlViewCommandAdapter )
-                      .As < Func < LayoutDocumentPane , IDisplayableAppCommand > > ( ) ;
+            // builder.RegisterAdapter<Meta<Lazy<IViewModel>>, IDisplayableAppCommand>((c, p, o) =>
+            // {
+                // var meta = o.Metadata;
+                
+            // })
+            
+
 
 #if PYTHON
-            builder.RegisterAssemblyTypes (
-                                           Assembly.GetCallingAssembly ( )
-                                         , typeof ( PythonControl ).Assembly
-                                          )
-                   .Where (
-                           type => {
-                               var isAssignableFrom =
-                                   typeof ( IDisplayableAppCommand ).IsAssignableFrom ( type )
-                                   && type != typeof ( LambdaAppCommand ) ;
-                               Debug.WriteLine ( $"{type.FullName} - {isAssignableFrom}" ) ;
-                               return isAssignableFrom ;
-                           }
-                          )
-                   .As < IDisplayableAppCommand > ( )
-                   .As < IAppCommand > ( )
-                   .As < IDisplayable > ( ) ;
 #endif
 
-            builder.Register (
-                              ( context , parameters )
-                                  => new LogViewerControl ( new LogViewerConfig ( 0 ) )
-                             )
-                   .As < IViewWithTitle > ( )
-                   .As < LogViewerControl > ( ) ;
+            // builder.Register (
+            // ( context , parameters )
+            // => new LogViewerControl ( new LogViewerConfig ( 0 ) )
+            // )
+            // .As < IViewWithTitle > ( )
+            // .As < LogViewerControl > ( )
+            // .WithCallerMetadata ( ) ;
         }
 
-        [ NotNull ]
-        private Func < LayoutDocumentPane , IDisplayableAppCommand > ControlViewCommandAdapter (
-            IComponentContext                                               c
-          , IEnumerable < Parameter >                                       p
-          , [ NotNull ] Meta < Func < LayoutDocumentPane , IControlView> >  metaFunc
+        private void OnWindowActivating<T>(IActivatingEventArgs<T> obj) where T : Window
+        {
+            //obj.Instance.SetValue(AttachedProperties.LifetimeScopeProperty, obj.Context.Resolve<ILifetimeScope>());
+        }
+
+        private void ComponentRegistryBuilderOnRegistered (
+            object                       sender
+          , ComponentRegisteredEventArgs e
         )
         {
-            var r = c.Resolve < IResourceResolver > ( ) ;
-            metaFunc.Metadata.TryGetValue ( "Title" ,       out var titleo ) ;
-            metaFunc.Metadata.TryGetValue ( "ImageSource" , out var imageSource ) ;
-            // object res = r.ResolveResource ( imageSource ) ;
-            // var im = res as ImageSource ; 
-
-            var title = ( string ) titleo ?? "no title" ;
-
-            return pane => ( IDisplayableAppCommand ) new LambdaAppCommand (
-                                                                            title
-                                                                          , CommandFunc
-                                                                          , Tuple.Create (
-                                                                                          metaFunc
-                                                                                             .Value
-                                                                                        , pane
-                                                                                         )
-                                                                           )
-                                                      {
-                                                          LargeImageSourceKey = imageSource
-                                                      } ;
-                
+            DebugUtils.WriteLine (
+                                  $"{e.ComponentRegistration.Id}:{e.ComponentRegistryBuilder}:{e.ComponentRegistration}"
+                                 ) ;
         }
+
+        public bool RegisterControlViewCommandAdapters
+        {
+            get { return _registerControlViewCommandAdapters ; }
+            set { _registerControlViewCommandAdapters = value ; }
+        }
+
 #if PYTHON
         [ NotNull ]
         private IPythonVariable Adapter (
             IComponentContext                    c
-          , IEnumerable < Parameter >            p
-          , [ NotNull ] Meta < Lazy < object > > item
+, IEnumerable < Parameter >            p
+, [ NotNull ] Meta < Lazy < object > > item
         )
         {
             if ( ! item.Metadata.TryGetValue ( "VariableName" , out var name ) )
@@ -221,22 +399,10 @@ namespace ProjInterface
             return r ;
         }
 #endif
-        private static async Task < IAppCommandResult > CommandFunc ( [ NotNull ] LambdaAppCommand command )
-        {
-            var (viewFunc1 , pane1) =
-                ( Tuple < Func < LayoutDocumentPane , IControlView > , LayoutDocumentPane > )
-                command.Argument ;
-
-            var n = DateTime.Now ;
-            var view = viewFunc1 ( pane1 ) ;
-            Debug.WriteLine(DateTime.Now - n);
-            var doc = new LayoutDocument { Content = view } ;
-            pane1.Children.Add ( doc ) ;
-            pane1.SelectedContentIndex = pane1.Children.IndexOf ( doc ) ;
-            return AppCommandResult.Success ;
-        }
+#pragma warning disable 1998
 
         [ NotNull ]
+        // ReSharper disable once UnusedMember.Local
         private static LambdaAppCommand LambdaAppCommandAdapter (
             [ NotNull ] Meta < Lazy < IViewWithTitle > > view
           , object                                       obj = null
@@ -250,7 +416,9 @@ namespace ProjInterface
 
             return new LambdaAppCommand (
                                          title.ToString ( )
+#pragma warning disable 1998
                                        , async command => {
+#pragma warning restore 1998
                                              try
                                              {
                                                  if ( view.Value.Value is Window w )
@@ -267,7 +435,7 @@ namespace ProjInterface
                                              }
                                              catch ( Exception ex )
                                              {
-                                                 Debug.WriteLine ( ex.ToString ( ) ) ;
+                                                 DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                                              }
 
                                              return AppCommandResult.Failed ;
@@ -277,8 +445,93 @@ namespace ProjInterface
         }
     }
 
+    internal class MyInfo
+    {
+        public Guid Id { get; internal set; }
+        public List<IComponentRegistration> Registrations { get; internal set; } = new List<IComponentRegistration>();
+    }
+
     internal interface IResourceResolver
     {
         object ResolveResource ( object resourceKey ) ;
+    }
+
+    public sealed class MySource : IRegistrationSource
+    {
+        public MySource ( )
+        {
+            _commands = new List < CommandInfo2 > ( ) ;
+            foreach ( var cmd in typeof ( WpfAppCommands )
+                                .GetFields ( BindingFlags.Public | BindingFlags.Static )
+                                .Select ( fieldInfo => fieldInfo.GetValue ( null ) ) )
+            {
+                if ( cmd is RoutedUICommand ri )
+                {
+                    _commands.Add ( new CommandInfo2 { Command = ri } ) ;
+                }
+            }
+        }
+
+#pragma warning disable 649
+        private bool _isAdapterForIndividualComponents ;
+#pragma warning restore 649
+        private readonly List < CommandInfo2 > _commands ;
+        #region Implementation of IRegistrationSource
+        // ReSharper disable once AnnotateNotNullTypeMember
+        public IEnumerable < IComponentRegistration > RegistrationsFor (
+            Service                                                   service
+          , Func < Service , IEnumerable < IComponentRegistration > > registrationAccessor
+        )
+        {
+            DebugUtils.WriteLine ( $"{service}" ) ;
+            if ( ! ( service is IServiceWithType swt )
+                 || swt.ServiceType != typeof ( RoutedUICommand ) )
+            {
+                return Enumerable.Empty < IComponentRegistration > ( ) ;
+            }
+
+            var reg = new ComponentRegistration (
+                                                 Guid.NewGuid ( )
+                                               , new DelegateActivator (
+                                                                        swt.ServiceType
+                                                                      , ( c , p ) => _commands[ 0 ]
+                                                                       )
+                                               , new CurrentScopeLifetime ( )
+                                               , InstanceSharing.None
+                                               , InstanceOwnership.OwnedByLifetimeScope
+                                               , new[] { service }
+                                               , new Dictionary < string , object > ( )
+                                                ) ;
+            return new IComponentRegistration[] { reg } ;
+        }
+
+        public bool IsAdapterForIndividualComponents
+        {
+            get { return _isAdapterForIndividualComponents ; }
+        }
+        #endregion
+    }
+
+    public sealed class CommandInfo2
+    {
+        private RoutedUICommand _command ;
+        public  RoutedUICommand Command { get { return _command ; } set { _command = value ; } }
+    }
+
+
+    public class GroupInfo2 : GroupInfo
+    {
+        public ObservableCollection<RibbonItemInfo> Items { get; } = new ObservableCollection<RibbonItemInfo>();
+
+        public GroupInfo2()
+        {
+        }
+    }
+
+    public class RibbonItemInfo
+    {
+        public bool? Checked { get; set; } 
+        public Meta<Lazy<IControlView>> Content { get; set; }
+        public string Title { get; set; }
     }
 }

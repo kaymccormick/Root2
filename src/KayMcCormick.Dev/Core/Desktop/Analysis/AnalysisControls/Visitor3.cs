@@ -22,10 +22,10 @@ using NLog ;
 
 namespace AnalysisControls
 {
-    // ReSharper disable once UnusedType.Global
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedMember.Global
     public class Visitor3 : CSharpSyntaxWalker
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -36,7 +36,7 @@ namespace AnalysisControls
         private          Style           _curStyle ;
         private          bool            _isAtStartOfLine = true ;
         private readonly Stack < Style > _styles          = new Stack < Style > ( ) ;
-        private          bool            attached ;
+        private          bool            _attached ;
 
         /// <summary>
         /// 
@@ -60,6 +60,7 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
+        // ReSharper disable once UnusedMember.Global
         public async Task DefaultVisitAsync ( SyntaxNode node )
         {
             await Task.Run ( ( ) => DefaultVisit ( node ) ) ;
@@ -70,6 +71,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <param name="node"></param>
+        // ReSharper disable once AnnotateNotNullParameter
         public override void Visit ( SyntaxNode node )
         {
             RecordLocation ( node.GetLocation ( ) ) ;
@@ -92,17 +94,20 @@ namespace AnalysisControls
             var b = VisualTreeHelper.GetDescendantBounds ( FlowViewer ) ;
             Logger.Info ( "bounds is {b}" , b ) ;
             var fileLinePositionSpan = node.GetLocation ( ).GetMappedLineSpan ( ) ;
+            // ReSharper disable once UnusedVariable
             var x = fileLinePositionSpan.StartLinePosition ;
             DependencyObject elem = FlowViewer.ScrollViewer ;
-            if ( elem != null )
+            if ( elem == null )
             {
-                var count = VisualTreeHelper.GetChildrenCount ( elem ) ;
-                for ( var i = 0 ; i < count ; i ++ )
-                {
-                    elem = FlowViewer ;
-                    var child = VisualTreeHelper.GetChild ( elem , 0 ) ;
-                    Logger.Info ( "{}" , child.GetType ( ) ) ;
-                }
+                return ;
+            }
+
+            var count = VisualTreeHelper.GetChildrenCount ( elem ) ;
+            for ( var i = 0 ; i < count ; i ++ )
+            {
+                elem = FlowViewer ;
+                var child = VisualTreeHelper.GetChild ( elem , 0 ) ;
+                Logger.Info ( "{}" , child.GetType ( ) ) ;
             }
         }
 
@@ -126,55 +131,59 @@ namespace AnalysisControls
                         , getLocation.GetMappedLineSpan ( ).StartLinePosition
                          ) ;
             Logger.Info ( "{line} > ? {_curLine}" , line , _curLine ) ;
-            if ( line > _curLine )
+            if ( line <= _curLine )
             {
-                for ( ; _curLine < line - 1 ; _curLine += 1 )
-                {
-                    if ( _curLine >= 0 )
-                    {
-                        Logger.Warn ( "Insert New line {line}" , _curLine ) ;
-                        _document.Blocks.Add ( new Paragraph { Margin = new Thickness ( 0 ) } ) ;
-                    }
-                }
-
-                Logger.Trace ( "New line {line}" , line ) ;
-
-                if ( _curBlock != null )
-                {
-                    // var rr = _curBlock.Inlines.FirstInline.ContentStart.GetCharacterRect (
-                    // LogicalDirection
-                    // .Forward
-                    // ) ;
-                    // Logger.Warn ( "{line} {}" , line, rr ) ;
-                    // _oldLineStart += _curBlock.LineHeight ;
-                }
-
-                Logger.Warn ( "create new paragraph" ) ;
-                _curBlock = new Paragraph
-                            {
-                                KeepTogether = true
-                              , KeepWithNext = true
-                              , Margin       = new Thickness ( 0 )
-                            } ;
-                // AdornerDecorator d = new AdornerDecorator();
-                _curLine += 1 ;
-                // d.Child = new TextBlock ( ) { Text = ( line + 1 ).ToString ( ) } ;
-                //AdornerLayer l = AdornerLayer.GetAdornerLayer(_curBlock.);
-                //_document.Blocks.Add ( _curBlock ) ;
-                Logger.Warn ( "add to blocks" ) ;
-                _document.Blocks.Add ( _curBlock ) ;
-                if ( FlowViewer.ScrollViewer != null
-                     && ! attached )
-                {
-                    FlowViewer.ScrollViewer.ScrollChanged += ScrollViewerOnScrollChanged ;
-                    attached                              =  true ;
-                }
-
-                var offset = FlowViewer.ScrollViewer?.HorizontalOffset ;
-                //_curLine = line;
-                Logger.Warn ( "mark at start of line {offset}" , offset ) ;
-                _isAtStartOfLine = true ;
+                return ;
             }
+
+            for ( ; _curLine < line - 1 ; _curLine += 1 )
+            {
+                if ( _curLine < 0 )
+                {
+                    continue ;
+                }
+
+                Logger.Warn ( "Insert New line {line}" , _curLine ) ;
+                _document.Blocks.Add ( new Paragraph { Margin = new Thickness ( 0 ) } ) ;
+            }
+
+            Logger.Trace ( "New line {line}" , line ) ;
+
+            if ( _curBlock != null )
+            {
+                // var rr = _curBlock.Inlines.FirstInline.ContentStart.GetCharacterRect (
+                // LogicalDirection
+                // .Forward
+                // ) ;
+                // Logger.Warn ( "{line} {}" , line, rr ) ;
+                // _oldLineStart += _curBlock.LineHeight ;
+            }
+
+            Logger.Warn ( "create new paragraph" ) ;
+            _curBlock = new Paragraph
+                        {
+                            KeepTogether = true
+                          , KeepWithNext = true
+                          , Margin       = new Thickness ( 0 )
+                        } ;
+            // AdornerDecorator d = new AdornerDecorator();
+            _curLine += 1 ;
+            // d.Child = new TextBlock ( ) { Text = ( line + 1 ).ToString ( ) } ;
+            //AdornerLayer l = AdornerLayer.GetAdornerLayer(_curBlock.);
+            //_document.Blocks.Add ( _curBlock ) ;
+            Logger.Warn ( "add to blocks" ) ;
+            _document.Blocks.Add ( _curBlock ) ;
+            if ( FlowViewer.ScrollViewer != null
+                 && ! _attached )
+            {
+                FlowViewer.ScrollViewer.ScrollChanged += ScrollViewerOnScrollChanged ;
+                _attached                              =  true ;
+            }
+
+            var offset = FlowViewer.ScrollViewer?.HorizontalOffset ;
+            //_curLine = line;
+            Logger.Warn ( "mark at start of line {offset}" , offset ) ;
+            _isAtStartOfLine = true ;
         }
 
         private static void ScrollViewerOnScrollChanged ( object sender , [ NotNull ] ScrollChangedEventArgs e )
@@ -218,24 +227,27 @@ namespace AnalysisControls
 
 
             var resource = _document.TryFindResource ( token.Kind ( ) ) ;
-            if ( resource is Style style )
+            if ( resource is Style )
             {
             }
 
             _curBlock.Inlines.Add ( run ) ;
         }
 
-        private void MergeStyle ( Style curStyle , Style style )
+        // ReSharper disable once UnusedMember.Local
+        private void MergeStyle ( Style curStyle , [ NotNull ] Style style )
         {
             foreach ( var styleSetter in style.Setters )
             {
-                if ( styleSetter is Setter s )
+                if ( ! ( styleSetter is Setter s ) )
                 {
-                    var s2 = new Setter ( s.Property , s.Value , s.TargetName ) ;
-//                    Logger.Info ( "adding setter {s2}" , s2 ) ;
-                    curStyle.Setters.Add ( s2 ) ;
-                    //toRemove.Add(s2);
+                    continue ;
                 }
+
+                var s2 = new Setter ( s.Property , s.Value , s.TargetName ) ;
+//                    Logger.Info ( "adding setter {s2}" , s2 ) ;
+                curStyle.Setters.Add ( s2 ) ;
+                //toRemove.Add(s2);
             }
         }
 

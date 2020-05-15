@@ -12,7 +12,6 @@
 using System ;
 using System.Linq ;
 using AnalysisAppLib.Span ;
-using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
@@ -23,14 +22,17 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class Visitor2 : CSharpSyntaxWalker
     {
-        private static readonly Logger logger =
+        private static readonly Logger Logger =
             LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly Func < string , object , LogBuilder > _message ;
 
+#pragma warning disable 649
         private readonly Func < object , ISpanViewModel > _mFunc ;
+#pragma warning restore 649
 
         /// <summary>
         /// 
@@ -61,7 +63,8 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="node"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public override void DefaultVisit ( [ NotNull ] SyntaxNode node )
+        // ReSharper disable once AnnotateNotNullParameter
+        public override void DefaultVisit (  SyntaxNode node )
         {
             if ( node == null )
             {
@@ -85,35 +88,39 @@ namespace AnalysisAppLib
                     var asNode = child.AsNode ( ) ;
                     if ( asNode != null )
                     {
-                        if ( Depth >= SyntaxWalkerDepth.Node )
+                        if ( Depth < SyntaxWalkerDepth.Node )
                         {
-                            var model2 = _mFunc?.Invoke ( asNode ) ;
-                            ActiveSpans.AddSpan ( asNode , asNode.Span , model2 ) ;
-                            Visit ( asNode ) ;
-                            ActiveSpans.Remove ( asNode ) ;
+                            continue ;
                         }
+
+                        var model2 = _mFunc?.Invoke ( asNode ) ;
+                        ActiveSpans.AddSpan ( asNode , asNode.Span , model2 ) ;
+                        Visit ( asNode ) ;
+                        ActiveSpans.Remove ( asNode ) ;
                     }
                     else
                     {
-                        if ( Depth >= SyntaxWalkerDepth.Token )
+                        if ( Depth < SyntaxWalkerDepth.Token )
                         {
-                            var syntaxToken = child.AsToken ( ) ;
-                            if ( _mFunc != null )
-                            {
-                                var model1 = _mFunc ( syntaxToken ) ;
-                                ActiveSpans.AddSpan ( syntaxToken , syntaxToken.Span , model1 ) ;
-                            }
-
-                            VisitToken ( syntaxToken ) ;
-                            ActiveSpans.RemoveAll ( syntaxToken ) ;
+                            continue ;
                         }
+
+                        var syntaxToken = child.AsToken ( ) ;
+                        if ( _mFunc != null )
+                        {
+                            var model1 = _mFunc ( syntaxToken ) ;
+                            ActiveSpans.AddSpan ( syntaxToken , syntaxToken.Span , model1 ) ;
+                        }
+
+                        VisitToken ( syntaxToken ) ;
+                        ActiveSpans.RemoveAll ( syntaxToken ) ;
                     }
                 }
                 while ( i < childCnt ) ;
             }
             catch ( Exception ex )
             {
-                logger.Error ( ex , ex.ToString ) ;
+                Logger.Error ( ex , ex.ToString ) ;
             }
             finally
             {

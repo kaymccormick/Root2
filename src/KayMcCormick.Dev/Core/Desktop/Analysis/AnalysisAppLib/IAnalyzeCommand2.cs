@@ -18,6 +18,7 @@ namespace AnalysisAppLib
     /// 
     /// </summary>
     /// <typeparam name="TOutput"></typeparam>
+    // ReSharper disable once UnusedTypeParameter
     public interface IAnalyzeCommand2 < TOutput > : IAnalyzeCommand3
     {
     }
@@ -32,6 +33,7 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="projectNode"></param>
         /// <returns></returns>
+        // ReSharper disable once UnusedMember.Global
         Task AnalyzeCommandAsync ( IProjectBrowserNode projectNode ) ;
     }
 }

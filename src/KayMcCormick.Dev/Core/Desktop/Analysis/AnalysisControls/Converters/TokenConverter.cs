@@ -9,7 +9,7 @@ namespace AnalysisControls.Converters
     /// <summary>
     /// 
     /// </summary>
-    public class TokenConverter : IValueConverter
+    public sealed class TokenConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>
@@ -27,14 +27,10 @@ namespace AnalysisControls.Converters
           , CultureInfo culture
         )
         {
-            if ( value is SyntaxToken x )
+            switch ( value )
             {
-                return x.ToFullString ( ) ;
-            }
-
-            if ( value is SyntaxTrivia t )
-            {
-                return t.ToString ( ) ;
+                case SyntaxToken x :  return x.ToFullString ( ) ;
+                case SyntaxTrivia t : return t.ToString ( ) ;
             }
 
             if ( value != null )

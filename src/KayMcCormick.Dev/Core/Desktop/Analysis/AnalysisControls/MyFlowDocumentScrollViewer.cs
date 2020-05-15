@@ -12,6 +12,7 @@
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
+using JetBrains.Annotations ;
 using NLog ;
 
 namespace AnalysisControls
@@ -19,6 +20,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class MyFlowDocumentScrollViewer : FlowDocumentScrollViewer
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -26,43 +28,45 @@ namespace AnalysisControls
         /// <summary>
         ///     Backing store for the <see cref="ScrollViewer" /> property.
         /// </summary>
-        private ScrollViewer scrollViewer ;
+        private ScrollViewer _scrollViewer ;
 
         /// <summary>
         /// 
         /// </summary>
-        public bool doOverrideMeasure { get ; set ; }
+        public bool DoOverrideMeasure { get ; set ; }
 
         /// <summary>
         ///     Gets the scroll viewer contained within the FlowDocumentScrollViewer
         ///     control
         /// </summary>
-        public ScrollViewer ScrollViewer
+        [ CanBeNull ] public ScrollViewer ScrollViewer
         {
             get
             {
-                if ( scrollViewer == null )
+                if ( _scrollViewer != null )
                 {
-                    DependencyObject obj = this ;
-
-                    do
-                    {
-                        if ( VisualTreeHelper.GetChildrenCount ( obj ) > 0 )
-                        {
-                            // ReSharper disable once AssignNullToNotNullAttribute
-                            obj = VisualTreeHelper.GetChild ( obj as Visual , 0 ) ;
-                        }
-                        else
-                        {
-                            return null ;
-                        }
-                    }
-                    while ( ! ( obj is ScrollViewer ) ) ;
-
-                    scrollViewer = obj as ScrollViewer ;
+                    return _scrollViewer ;
                 }
 
-                return scrollViewer ;
+                DependencyObject obj = this ;
+
+                do
+                {
+                    if ( VisualTreeHelper.GetChildrenCount ( obj ) > 0 )
+                    {
+                        // ReSharper disable once AssignNullToNotNullAttribute
+                        obj = VisualTreeHelper.GetChild ( obj as Visual , 0 ) ;
+                    }
+                    else
+                    {
+                        return null ;
+                    }
+                }
+                while ( ! ( obj is ScrollViewer ) ) ;
+
+                _scrollViewer = obj as ScrollViewer ;
+
+                return _scrollViewer ;
             }
         }
 
@@ -87,16 +91,6 @@ namespace AnalysisControls
             base.OnVisualChildrenChanged ( visualAdded , visualRemoved ) ;
         }
         #endregion
-        #region Overrides of UIElement
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="drawingContext"></param>
-        protected override void OnRender ( DrawingContext drawingContext )
-        {
-            base.OnRender ( drawingContext ) ;
-        }
-        #endregion
 
         /// <summary>
         /// 
@@ -105,7 +99,7 @@ namespace AnalysisControls
         /// <returns></returns>
         protected override Size MeasureOverride ( Size availableSize )
         {
-            if ( ! doOverrideMeasure )
+            if ( ! DoOverrideMeasure )
             {
                 return base.MeasureOverride ( availableSize ) ;
             }

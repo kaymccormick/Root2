@@ -9,26 +9,3 @@
 // 
 // ---
 #endregion
-namespace AnalysisAppLib
-{
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IAppState
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        bool Processing { get ; set ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        string CurrentProject { get ; set ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        string CurrentDocumentPath { get ; set ; }
-    }
-}

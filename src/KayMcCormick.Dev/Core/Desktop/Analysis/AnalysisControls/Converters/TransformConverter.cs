@@ -1,9 +1,6 @@
 using System ;
 using System.Globalization ;
-using System.Text.Json ;
 using System.Windows.Data ;
-using FindLogUsages ;
-using Microsoft.CodeAnalysis ;
 
 namespace AnalysisControls.Converters
 {
@@ -15,7 +12,7 @@ namespace AnalysisControls.Converters
     ///     <para></para>
     /// </summary>
     /// <seealso cref="System.Windows.Data.IValueConverter" />
-    public class TransformConverter : IValueConverter
+    public sealed class TransformConverter : IValueConverter
     {
         #region Implementation of IValueConverter
         /// <summary>
@@ -40,8 +37,13 @@ namespace AnalysisControls.Converters
                     return null ;
                 }
 
-                var r = Transforms.TransformSyntaxNode ( ( SyntaxNode ) value ) ;
+#if POCO
+                var r = GenTransforms.Transform_CSharp_Node(( CSharpSyntaxNode ) value ) ;
                 return JsonSerializer.Serialize ( r ) ;
+#else
+                throw new NotImplementedException();
+#endif
+
             }
             catch ( Exception ex )
             {
@@ -67,6 +69,6 @@ namespace AnalysisControls.Converters
         {
             return null ;
         }
-        #endregion
+#endregion
     }
 }

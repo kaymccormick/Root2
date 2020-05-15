@@ -9,10 +9,3 @@
 // 
 // ---
 #endregion
-namespace KayMcCormick.Dev.Logging
-{
-    internal interface IConfigSource
-    {
-        string PathForLogFile ( ILogFileSpecification spec ) ;
-    }
-}

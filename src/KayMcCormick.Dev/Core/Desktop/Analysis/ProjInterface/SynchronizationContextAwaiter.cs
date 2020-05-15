@@ -4,10 +4,11 @@ using System.Threading ;
 
 namespace ProjInterface
 {
+    // ReSharper disable once StructCanBeMadeReadOnly
     public struct SynchronizationContextAwaiter : INotifyCompletion
     {
         private static readonly SendOrPostCallback
-            _postCallback = state => ( ( Action ) state ) ( ) ;
+            PostCallback = state => ( ( Action ) state ) ( ) ;
 
         private readonly SynchronizationContext _context ;
 
@@ -16,10 +17,11 @@ namespace ProjInterface
             _context = context ;
         }
 
+        // ReSharper disable once UnusedMember.Global
         public bool IsCompleted { get { return _context == SynchronizationContext.Current ; } }
 
         public void OnCompleted ( Action continuation )
-            => _context.Post ( _postCallback , continuation ) ;
+            => _context.Post ( PostCallback , continuation ) ;
 
         public void GetResult ( ) { }
     }

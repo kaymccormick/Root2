@@ -1,9 +1,8 @@
-﻿using System.Collections ;
-using System.Collections.Generic ;
+﻿using System.Collections.Generic ;
 using System.Collections.ObjectModel ;
 using System.Windows ;
 using System.Windows.Controls ;
-using AnalysisAppLib ;
+using AnalysisAppLib.Syntax ;
 
 namespace AnalysisControls
 {
@@ -31,8 +30,11 @@ namespace AnalysisControls
     ///     Go ahead and use your control in the XAML file.
     ///     <MyNamespace:CustomControl1 />
     /// </summary>
-    public class CustomControl1 : Control
+    public sealed class CustomControl1 : Control
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty RootItemsSourceProperty =
             DependencyProperty.Register (
                                          "RootItemsSource"
@@ -53,6 +55,9 @@ namespace AnalysisControls
                                                                                )
                                                 ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty RootItemsProperty =
             RootItemsPropertyKey.DependencyProperty ;
 
@@ -69,6 +74,9 @@ namespace AnalysisControls
                                                                              )
                                                );
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty FactoryMethodsProperty =
             FactoryMethodsPropertyKey.DependencyProperty;
         static CustomControl1 ( )
@@ -83,25 +91,39 @@ namespace AnalysisControls
                                                      ) ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public CustomControl1 ( ) {
             SetValue (RootItemsPropertyKey, new ObservableCollection<AppTypeInfo>()  );
             SetValue (FactoryMethodsPropertyKey, new ObservableCollection<AppMethodInfo>()  );
         }
 
         #region Overrides of FrameworkElement
+        /// <inheritdoc />
         public override void OnApplyTemplate ( )
         {
-            TreeView treeView = GetTemplateChild ( "treeView" ) as TreeView ;
+            // ReSharper disable once UnusedVariable
+            var treeView = GetTemplateChild ( "treeView" ) as TreeView ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection <AppMethodInfo> FactoryMethods { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ObservableCollection < AppTypeInfo > RootItems
         {
             get { return ( ObservableCollection < AppTypeInfo > ) GetValue ( RootItemsProperty ) ; }
             set { SetValue ( RootItemsProperty , value ) ; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IEnumerable<AppTypeInfo> RootItemsSource
         {
             get { return ( IEnumerable < AppTypeInfo > ) GetValue ( RootItemsSourceProperty ) ; }

@@ -13,7 +13,7 @@ using System ;
 
 namespace FindLogUsages
 {
-    public class EmptyDisposable : IDisposable
+    public sealed class EmptyDisposable : IDisposable
     {
         #region IDisposable
         public void Dispose ( ) { }

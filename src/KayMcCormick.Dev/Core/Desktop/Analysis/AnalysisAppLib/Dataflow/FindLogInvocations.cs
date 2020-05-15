@@ -1,28 +1,32 @@
 using System ;
 using System.Collections.Generic ;
-using System.Diagnostics ;
 using System.Linq ;
 using System.Threading.Tasks.Dataflow ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib.Dataflow
 {
-    internal class FindLogInvocations : AnalysisBlockProvider < Document , ILogInvocation ,
+    internal sealed class FindLogInvocations : AnalysisBlockProvider < Document , ILogInvocation ,
             TransformManyBlock < Document , ILogInvocation > >
       , IHaveRejectBlock
     {
-        private readonly Func < ILogInvocation >                                      _factory ;
-        private readonly Func < Document , IEnumerable < ILogInvocation > >           _func ;
+        // ReSharper disable once NotAccessedField.Local
+        private readonly Func < ILogInvocation > _factory ;
+#pragma warning disable 169
+        private readonly Func < Document , IEnumerable < ILogInvocation > > _func ;
+#pragma warning restore 169
         private readonly IDataflowTransformFuncProvider < Document , ILogInvocation > _provider ;
+        private          Microsoft.CodeAnalysis.Project                               _teamProject ;
 
         public FindLogInvocations (
             [ NotNull ] IDataflowTransformFuncProvider < Document , ILogInvocation > provider
           , Func < ILogInvocation >                                                  factory
         )
         {
-            Debug.WriteLine ( $"creating {nameof ( FindLogInvocations )}" ) ;
+            DebugUtils.WriteLine ( $"creating {nameof ( FindLogInvocations )}" ) ;
             _provider = provider ?? throw new ArgumentNullException ( nameof ( provider ) ) ;
             _factory  = factory ;
         }
@@ -34,9 +38,10 @@ namespace AnalysisAppLib.Dataflow
         }
         #endregion
 
-
+        [ NotNull ]
         public override TransformManyBlock < Document , ILogInvocation > GetDataflowBlock ( )
         {
+            // ReSharper disable once UnusedVariable
             Func < Document , IEnumerable < ILogInvocation > > func = document
                 => Enumerable.Empty < ILogInvocation > ( ) ;
             return new TransformManyBlock < Document , ILogInvocation > (
@@ -44,17 +49,10 @@ namespace AnalysisAppLib.Dataflow
                                                                             .GetAsyncTransformFunction ( )
                                                                         ) ;
         }
-    }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IHaveRejectBlock
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        ISourceBlock < RejectedItem > GetRejectBlock ( ) ;
+        [ NotNull ] public override IDataflowBlock GetDataflowBlockObj ( )
+        {
+            return GetDataflowBlock ( ) ;
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace AnalysisControls
     /// </summary>
     public class StatusBarItemContentTemplateSelector : DataTemplateSelector
     {
-        private static readonly Logger logger = LogManager.GetCurrentClassLogger ( ) ;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Overrides of DataTemplateSelector
         /// <summary>
         /// 
@@ -27,29 +27,36 @@ namespace AnalysisControls
                 {
                     var type = item.GetType ( ) ;
 
+                    // ReSharper disable once UnusedVariable
                     var cType = container.GetType ( ) ;
                     foreach ( DictionaryEntry currentResource in Application.Current.Resources )
                     {
-                        if ( currentResource.Value is DataTemplate dt )
+                        if ( ! ( currentResource.Value is DataTemplate dt ) )
                         {
-                            if ( dt.DataType is Type t )
-                            {
-                                if ( t.IsAssignableFrom ( type ) )
-                                {
-                                    var currentClassLogger = logger ;
-                                    currentClassLogger.Info (
-                                                             $"{currentResource.Key} is candidate"
-                                                            ) ;
-                                    return dt ;
-                                }
-                            }
+                            continue ;
                         }
+
+                        if ( ! ( dt.DataType is Type t ) )
+                        {
+                            continue ;
+                        }
+
+                        if ( ! t.IsAssignableFrom ( type ) )
+                        {
+                            continue ;
+                        }
+
+                        var currentClassLogger = Logger ;
+                        currentClassLogger.Info (
+                                                 $"{currentResource.Key} is candidate"
+                                                ) ;
+                        return dt ;
                     }
                 }
             }
             catch ( Exception ex )
             {
-                logger.Warn ( ex , ex.ToString ( ) ) ;
+                Logger.Warn ( ex , ex.ToString ( ) ) ;
             }
 
             return base.SelectTemplate ( item , container ) ;

@@ -22,7 +22,6 @@ namespace FindLogUsages
     {
         object Pojo { get ; set ; }
 
-        string GetJSON ( ILogInvocationArgument arg ) ;
-        void   SetJSON ( string                 value ) ;
+        string GetJson ( ILogInvocationArgument arg ) ;
     }
 }

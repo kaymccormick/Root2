@@ -20,15 +20,19 @@ namespace AnalysisAppLib.Span
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class LogInvocationSpan : SpanObject < ILogInvocation > , ISpanObject < ILogInvocation >
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
 
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly string _displayString ;
 
 
+#pragma warning disable 169
         private Func < object , object > _getResource ;
+#pragma warning restore 169
 
         /// <summary>
         /// 
@@ -46,7 +50,7 @@ namespace AnalysisAppLib.Span
                                             ", "
                                           , Instance.Arguments.Select (
                                                                        ( argument , i )
-                                                                           => argument.GetJSON (
+                                                                           => argument.GetJson (
                                                                                                 argument
                                                                                                )
                                                                       )

@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.Text ;
@@ -18,6 +19,7 @@ namespace AnalysisAppLib.Span
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class SyntaxNodeSpanObject : SpanObject < SyntaxNode >
     {
         private SyntaxKind _kind ;
@@ -28,10 +30,10 @@ namespace AnalysisAppLib.Span
         /// </summary>
         /// <param name="span"></param>
         /// <param name="instance"></param>
-        public SyntaxNodeSpanObject ( TextSpan span , SyntaxNode instance ) : base (
-                                                                                    span
-                                                                                  , instance
-                                                                                   )
+        public SyntaxNodeSpanObject ( TextSpan span , [ NotNull ] SyntaxNode instance ) : base (
+                                                                                                span
+                                                                                              , instance
+                                                                                               )
         {
             _kind = instance.Kind ( ) ;
         }
@@ -40,6 +42,7 @@ namespace AnalysisAppLib.Span
         ///
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public SyntaxKind Kind { get { return _kind ; } set { _kind = value ; } }
     }
 }

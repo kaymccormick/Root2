@@ -15,7 +15,6 @@ using System.Net.Sockets ;
 using System.Reactive.Subjects ;
 using System.Reflection ;
 using System.Runtime.CompilerServices ;
-using System.Runtime.InteropServices ;
 using System.Security ;
 using System.Security.Permissions ;
 using System.Text ;
@@ -29,6 +28,10 @@ using NLog.Config ;
 using NLog.LayoutRenderers ;
 using NLog.Layouts ;
 using NLog.Targets ;
+// ReSharper disable InconsistentNaming
+// ReSharper disable RedundantAssignment
+// ReSharper disable ConditionIsAlwaysTrueOrFalse
+// ReSharper disable ExpressionIsAlwaysNull
 
 #if ENABLE_WCF_TARGET
 using NLog.LogReceiverService ;
@@ -41,7 +44,7 @@ namespace KayMcCormick.Dev.Logging
     {
         public static EndpointAddress serviceAddress ;
 
-        // ** DISCOVERY ** //  
+        // ** DISCOVERY ** //
         public static bool FindService ( )
         {
             var discoveryClient = new DiscoveryClient ( new UdpDiscoveryEndpoint ( ) ) ;
@@ -80,15 +83,17 @@ namespace KayMcCormick.Dev.Logging
     /// <seealso cref="NLog.Config.LoggingConfiguration" />
     public static class AppLoggingConfigHelper
     {
-        private const           string JsonTargetName              = "json_out" ;
-        private const           string DisableLogTargetsEnvVarName = "DISABLE_LOG_TARGETS" ;
+        private const string JsonTargetName              = "json_out" ;
+        private const string DisableLogTargetsEnvVarName = "DISABLE_LOG_TARGETS" ;
+
         // ReSharper disable once UnusedMember.Local
-        private const           string PublicFacingHostAddress     = "xx1.mynetgear.com:" ;
-        private const           int    DefaultProtoLogUdpPort      = 4445 ;
-        private const           string EnvVarName_MINLOGLEVEL      = "MINLOGLEVEL" ;
-        private const           string DefaultEventLogTargetName   = "eventLogTarget" ;
-        private const           string LogRootPath                 = @"c:\data\logs\" ;
-        private static readonly int    _nLogViewerPort             = 9995 ;
+        private const string PublicFacingHostAddress   = "xx1.mynetgear.com:" ;
+        private const int    DefaultProtoLogUdpPort    = 4445 ;
+        // ReSharper disable once InconsistentNaming
+        private const string EnvVarName_MINLOGLEVEL    = "MINLOGLEVEL" ;
+        private const string DefaultEventLogTargetName = "eventLogTarget" ;
+        private const string LogRootPath               = @"c:\data\logs\" ;
+        private const int    _nLogViewerPort           = 9995 ;
 
 
         private static Logger Logger ;
@@ -96,17 +101,19 @@ namespace KayMcCormick.Dev.Logging
         [ ThreadStatic ]
         private static int ? _numTimesConfigured ;
 
-        private static          LogFactory                                _factory ;
-        private static          Target                                    _serviceTarget ;
-        private static readonly int                                       _chainsawPort = 4445 ;
-        private static          MyCacheTarget                             _cacheTarget ;
-        private static          LogDelegates.LogMethod                    _oldLogMethod ;
-        private static          Dictionary < LogLevel , List < Target > > _dict ;
-        private static          bool                                      _loggingConfigured ;
-        private static          LogLevel                                  _minLogLevel ;
-        private static          ChainsawTarget                            _chainsawTarget ;
+        private static LogFactory _factory ;
+#pragma warning disable 169
+        private static Target _serviceTarget ;
+#pragma warning restore 169
+        private const  int                                       _chainsawPort = 4445 ;
+        private static MyCacheTarget                             _cacheTarget ;
+        private static LogDelegates.LogMethod                    _oldLogMethod ;
+        private static Dictionary < LogLevel , List < Target > > _dict ;
+        private static bool                                      _loggingConfigured ;
+        private static LogLevel                                  _minLogLevel ;
+        private static ChainsawTarget                            _chainsawTarget ;
 
-        private static readonly int _protoLogPort = DefaultProtoLogUdpPort ;
+        private const int _protoLogPort = DefaultProtoLogUdpPort ;
 
         private static readonly IPAddress _protoLogIpAddress = IPAddress.Broadcast ;
 
@@ -118,12 +125,14 @@ namespace KayMcCormick.Dev.Logging
         private static readonly Log4JXmlEventLayoutRenderer _xmlEventLayoutRenderer =
             new MyLog4JXmlEventLayoutRenderer ( ) ;
 
+#pragma warning disable 169
         private static NetworkTarget jsonNetworkTarget ;
+#pragma warning restore 169
 
         //private static string _chainsawHost = PublicFacingHostAddress;
-        private static readonly string _chainsawHost = "10.25.0.102" ;
-        private static          bool   _performant ;
-        private static readonly bool _checkExistingConfig = true ;
+        private const  string _chainsawHost = "10.25.0.102" ;
+        private static bool   _performant ;
+        private const  bool   _checkExistingConfig = true ;
 
         /// <summary>The string writer</summary>
         /// <autogeneratedoc />
@@ -215,14 +224,12 @@ namespace KayMcCormick.Dev.Logging
 
         private static void DoLogMessage ( string message )
         {
-            System.Diagnostics.Debug.WriteLine (
-                                                nameof ( AppLoggingConfigHelper ) + ":" + message
-                                               ) ;
-            // System.Diagnostics.Debug.WriteLine ( nameof(AppLoggingConfigHelper) + ":" + message ) ;
+            DebugUtils.WriteLine ( nameof ( AppLoggingConfigHelper ) + ":" + message ) ;
+            // DebugUtils.WriteLine ( nameof(AppLoggingConfigHelper) + ":" + message ) ;
         }
 
 
-        internal static async Task<LogFactory> ConfigureLoggingAsync (
+        internal static async Task < LogFactory > ConfigureLoggingAsync (
             LogDelegates.LogMethod logMethod
           , bool                   proxyLogging = false
           , ILoggingConfiguration  config1      = null
@@ -262,7 +269,7 @@ namespace KayMcCormick.Dev.Logging
 #if FIELD_ACCESS
             var fieldInfo = typeof ( LogManager ).GetField (
                                                             "factory"
-                              , BindingFlags.Static
+                          , BindingFlags.Static
                                                             | BindingFlags.NonPublic
                                                            ) ;
             if ( fieldInfo != null )
@@ -295,7 +302,8 @@ namespace KayMcCormick.Dev.Logging
             ConsoleTargetName  = "consoleTarget" ;
         }
 
-        private static async Task<LogFactory> PerformConfigurationAsync (
+        // ReSharper disable once FunctionComplexityOverflow
+        private static async Task < LogFactory > PerformConfigurationAsync (
             LogDelegates.LogMethod logMethod
           , bool                   proxyLogging
           , LogFactory             proxiedFactory
@@ -312,7 +320,7 @@ namespace KayMcCormick.Dev.Logging
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine ( "Using stock log factory" ) ;
+                DebugUtils.WriteLine ( "Using stock log factory" ) ;
                 useFactory = LogManager.LogFactory ;
             }
 
@@ -327,7 +335,7 @@ namespace KayMcCormick.Dev.Logging
                 logMethod ( "Setting throwExceptions to false" ) ;
                 LogManager.ThrowExceptions = false ;
             }
-#if DEBUG
+#if LOGTHROW
             LogManager.ThrowExceptions = true ;
 #endif
             _dict = LogLevel.AllLoggingLevels.ToDictionary (
@@ -339,7 +347,7 @@ namespace KayMcCormick.Dev.Logging
                       ) ;
             _minLogLevel = config1.MinLogLevel ;
 
-            var envVarName = EnvVarName_MINLOGLEVEL ;
+            const string envVarName = EnvVarName_MINLOGLEVEL ;
             var env = Environment.GetEnvironmentVariable ( envVarName ) ;
             if ( env != null )
             {
@@ -433,24 +441,24 @@ namespace KayMcCormick.Dev.Logging
 , EndpointConfigurationName =
                                         "WSDualHttpBinding_ILogReceiverServer"
 , IncludeEventProperties = true
-       ,
+     ,
                                 } ;
             }
-                
+
             // var wrap = new AsyncTargetWrapper("wrap1", ServiceTarget);
             // "http://localhost:27809/ReceiveLogs.svc";
             // webServiceTarget.EndpointConfigurationName = "log";
             _dict[LogLevel.Debug].Add(ServiceTarget);
 #endif
 
-            var networkT1 = new NetworkTarget ( "n1" ) ;
-            networkT1.Layout= Layout.FromString("${message}");
-            networkT1.Address = Layout.FromString ( "udp://10.25.0.102:6655" ) ;
-            _dict[ LogLevel.Trace].Add ( networkT1 )  ;
-            
-            if ( config1.IsEnabledConsoleTarget.HasValue
-                 && config1.IsEnabledConsoleTarget.Value
-                 && ! disabled.Contains ( ConsoleTargetName ) )
+            var networkT1 = new NetworkTarget ( "n1" )
+                            {
+                                Layout  = Layout.FromString ( "${message}" )
+                              , Address = Layout.FromString ( "udp://10.25.0.102:6655" )
+                            } ;
+            _dict[ LogLevel.Trace ].Add ( networkT1 ) ;
+
+            if ( config1.IsEnabledConsoleTarget == true && ! disabled.Contains ( ConsoleTargetName ) )
             {
                 var consoleTarget = new ConsoleTarget ( ConsoleTargetName )
                                     {
@@ -470,7 +478,7 @@ namespace KayMcCormick.Dev.Logging
             // t.Add ( jsonNetworkTarget ) ;
             if ( config1.IsEnabledXmlFileTarget )
             {
-                var logRootDir = LogRootPath ;
+                const string logRootDir = LogRootPath ;
                 var xmlTarget = new AppFileTarget ( "xmlFile" )
                                 {
                                     FileName =
@@ -488,7 +496,7 @@ namespace KayMcCormick.Dev.Logging
             {
                 _cacheTarget = new MyCacheTarget ( ) ;
                 _dict[ LogLevel.Debug ].Add ( _cacheTarget ) ;
-                CacheTarget2 = new MyCacheTarget2 { Layout = SetupJsonLayout ( ) } ;
+                CacheTarget2 = new MyCacheTarget2 { Layout = new MyJsonLayout (  ) } ;
                 _dict[ LogLevel.Debug ].Add ( CacheTarget2 ) ;
             }
             #endregion
@@ -539,7 +547,7 @@ namespace KayMcCormick.Dev.Logging
                 byType[ type ] =  count ;
 
                 if ( target.Name == null
-                     || usedNames != null && usedNames.Contains ( target.Name ) )
+                     || usedNames?.Contains ( target.Name ) == true )
                 {
                     target.Name = $"{Regex.Replace ( type.Name , "Target" , "" )}{count:D2}" ;
                 }
@@ -551,21 +559,16 @@ namespace KayMcCormick.Dev.Logging
                 lConf.AddTarget ( target ) ;
             }
 
-            foreach ( var result in _dict.Select (
-                                                  pair => LoggingRule (
-                                                                       pair
-                                                                     , _minLogLevel
-                                                                     , config1
-                                                                      )
-                                                 ) )
+            foreach ( var loggingRule in _dict.Select (
+                                                       pair => LoggingRule (
+                                                                            pair
+                                                                          , _minLogLevel
+                                                                          , config1
+                                                                           )
+                                                      ).SelectMany ( result => result ) )
             {
-                foreach ( var loggingRule in result )
-                {
-                    logMethod ( $"Adding logging rule {loggingRule}" ) ;
-                    lConf.LoggingRules.Add ( loggingRule ) ;
-                }
-
-                // ((List<LoggingRule>lConf.LoggingRules)).AddRange ( result ) ;
+                logMethod ( $"Adding logging rule {loggingRule}" ) ;
+                lConf.LoggingRules.Add ( loggingRule ) ;
             }
 
             if ( oldTargets != null )
@@ -589,24 +592,28 @@ namespace KayMcCormick.Dev.Logging
                 LogManager.Configuration = lConf ;
                 Logger                   = LogManager.GetCurrentClassLogger ( ) ;
                 _loggingConfigured       = true ;
-                System.Diagnostics.Debug.WriteLine (
-                                                    $"Logging configured. Logger is {Logger}. Configuration is {lConf}. Returning factory {useFactory}"
-                                                   ) ;
+                DebugUtils.WriteLine (
+                                      $"Logging configured. Logger is {Logger}. Configuration is {lConf}. Returning factory {useFactory}"
+                                     ) ;
                 return useFactory ;
             }
             catch ( Exception ex )
             {
-                System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                 throw ;
             }
         }
 
         private static void LogAddTarget ( [ NotNull ] Target target )
         {
+            if ( target == null )
+            {
+                throw new ArgumentNullException ( nameof ( target ) ) ;
+            }
 #if TRACEPROVIDER
             PROVIDER_GUID.EventWriteLOGTARGET_ATTACHED_EVENT (
                                                               target.Name
-                                                            , target.GetType ( ).FullName
+                                                        , target.GetType ( ).FullName
                                                              ) ;
 #endif
         }
@@ -630,7 +637,7 @@ namespace KayMcCormick.Dev.Logging
             KeyValuePair < LogLevel , List < Target > > pair
           , LogLevel                                    config1MinLogLevel
             // ReSharper disable once UnusedParameter.Local
-          , ILoggingConfiguration                       config1
+          , ILoggingConfiguration config1
         )
         {
             return pair.Value.Select (
@@ -692,17 +699,20 @@ namespace KayMcCormick.Dev.Logging
         }
 
         [ NotNull ]
-        private static Task<NLogViewerTarget> ViewerAsync ( string name = null )
+        private static Task < NLogViewerTarget > ViewerAsync ( string name = null )
         {
-            var s = _nLogViewerPort ;
-            return Task.FromResult(new NLogViewerTarget ( name )
-                   {
-                       Address              = new SimpleLayout ( $"udp://10.25.0.102:{s}" )
-                     , IncludeAllProperties = true
-                     , IncludeCallSite      = true
-                     , IncludeSourceInfo    = true
-                     , IncludeNdlc          = true
-                   }) ;
+            const int s = _nLogViewerPort ;
+            return Task.FromResult (
+                                    new NLogViewerTarget ( name )
+                                    {
+                                        Address =
+                                            new SimpleLayout ( $"udp://10.25.0.102:{s}" )
+                                      , IncludeAllProperties = true
+                                      , IncludeCallSite      = true
+                                      , IncludeSourceInfo    = true
+                                      , IncludeNdlc          = true
+                                    }
+                                   ) ;
         }
 
         /// <summary>JSON File Target</summary>
@@ -771,37 +781,54 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="callerFilePath"></param>
         /// <returns></returns>
         public static ILogger EnsureLoggingConfigured (
-            [ CanBeNull ] LogDelegates.LogMethod slogMethod     = null
-          , ILoggingConfiguration                config1        = null
-          , [ CallerFilePath ] string            callerFilePath = null
+            [ CanBeNull ] LogDelegates.LogMethod  slogMethod     = null
+          , ILoggingConfiguration                 config1        = null
+          , [ CallerFilePath ] [ NotNull ] string callerFilePath = ""
         )
         {
-            var task = Task.Run ( () => EnsureLoggingConfiguredAsync ( slogMethod , config1 , null, callerFilePath ) ) ;
-            return task.Result;
+            Task < ILogger > Function ( )
+            {
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                if ( callerFilePath != null )
+                {
+                    return EnsureLoggingConfiguredAsync (
+                                                         slogMethod
+                                                       , config1
+                                                       , null
+                                                         // ReSharper disable once ExplicitCallerInfoArgument
+                                                       , callerFilePath
+                                                        ) ;
+                }
+
+                throw new InvalidOperationException ( ) ;
+            }
+
+
+            var task = Task.Run ( Function ) ;
+            return task.Result ;
         }
 
         /// <summary>Ensures the logging configured.</summary>
         /// <param name="slogMethod"></param>
         /// <param name="config1"></param>
-        /// <param name="filePath"></param>
+        /// <param name="observable"></param>
         /// <param name="callerFilePath">The caller file path.</param>
         /// <exception cref="Exception">no config loaded field found</exception>
         /// <autogeneratedoc />
         /// TODO Edit XML Comment Template for EnsureLoggingConfigured
-        [SuppressMessage (
-                             "Microsoft.Naming"
-                           , "CA2204:Literals should be spelled correctly"
-                           , MessageId = "EnsureLoggingConfigured"
-                         ) ]
+        [ SuppressMessage (
+                              "Microsoft.Naming"
+                            , "CA2204:Literals should be spelled correctly"
+                            , MessageId = "EnsureLoggingConfigured"
+                          ) ]
         public static async Task < ILogger > EnsureLoggingConfiguredAsync (
-            [ CanBeNull ] LogDelegates.LogMethod slogMethod = null
-          , ILoggingConfiguration                config1    = null
-          , Subject < ILogger > observable = null
-          , [ CallerFilePath ] string            callerFilePath = null
+            [ CanBeNull ] LogDelegates.LogMethod   slogMethod     = null
+          , ILoggingConfiguration                  config1        = null
+          , [ CanBeNull ]      Subject < ILogger > observable     = null
+          , [ CallerFilePath ] string              callerFilePath = null
         )
         {
-            
-            System.Diagnostics.Debug.WriteLine("Logging");
+            DebugUtils.WriteLine ( "Logging" ) ;
             try
             {
                 var logMethod = slogMethod != null
@@ -850,7 +877,7 @@ namespace KayMcCormick.Dev.Logging
                           ) ;
                 if ( ! Performant && DumpExistingConfig )
                 {
-                    void Collect ( string s ) { System.Diagnostics.Debug.WriteLine ( s ) ; }
+                    void Collect ( string s ) { DebugUtils.WriteLine ( s ) ; }
 
                     var x = new StringWriter ( ) ;
                     Utils.PerformLogConfigDump ( x ) ;
@@ -865,14 +892,14 @@ namespace KayMcCormick.Dev.Logging
                 }
 
 
-                var logger = _factory.GetLogger("DefaultLogger");
-                observable?.OnNext(logger);
+                var logger = _factory.GetLogger ( "DefaultLogger" ) ;
+                observable?.OnNext ( logger ) ;
                 // DumpPossibleConfig ( LogManager.Configuration ) ;
                 return logger ;
             }
             catch ( SecurityException ex )
             {
-                System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
                 ProtoLogger.ProtoLogDelegate ( ex.ToString ( ) ) ;
             }
 
@@ -894,51 +921,46 @@ namespace KayMcCormick.Dev.Logging
 
                 if ( fieldInfo2 == null )
                 {
-                    System.Diagnostics.Debug.WriteLine (
-                                                        "no field _configLoaded for "
-                                                        + LogManager.LogFactory
-                                                       ) ;
+                    DebugUtils.WriteLine ( "no field _configLoaded for " + LogManager.LogFactory ) ;
                     // throw new Exception ( Resources.AppLoggingConfigHelper_EnsureLoggingConfigured_no_config_loaded_field_found ) ;
                 }
 
                 bool ? configLoaded = null ;
-                if ( fieldInfo2 != null )
+                if ( fieldInfo2 == null )
                 {
-                    var config = fieldInfo2.GetValue ( LogManager.LogFactory ) ;
-
-                    //LogManager.ThrowConfigExceptions = true;
-                    //LogManager.ThrowExceptions = true;
-                    var fieldInfo = LogManager.LogFactory.GetType ( )
-                                              .GetField (
-                                                         "_configLoaded"
-                                                       , BindingFlags.Instance
-                                                         | BindingFlags.NonPublic
-                                                        ) ;
-
-
-                    if ( fieldInfo == null )
-                    {
-                        configLoaded = config != null ;
-
-                        System.Diagnostics.Debug.WriteLine (
-                                                            "no field _configLoaded for "
-                                                            + LogManager.LogFactory
-                                                           ) ;
-                        // throw new Exception ( "no config loaded field found" ) ;
-                    }
-                    else
-                    {
-                        configLoaded = ( bool ) fieldInfo.GetValue ( LogManager.LogFactory ) ;
-                    }
-
-                    LoggingIsConfigured = configLoaded ;
+                    return configLoaded ;
                 }
+
+                var config = fieldInfo2.GetValue ( LogManager.LogFactory ) ;
+
+                //LogManager.ThrowConfigExceptions = true;
+                //LogManager.ThrowExceptions = true;
+                var fieldInfo = LogManager.LogFactory.GetType ( )
+                                          .GetField (
+                                                     "_configLoaded"
+                                                   , BindingFlags.Instance | BindingFlags.NonPublic
+                                                    ) ;
+
+
+                if ( fieldInfo == null )
+                {
+                    configLoaded = config != null ;
+
+                    DebugUtils.WriteLine ( "no field _configLoaded for " + LogManager.LogFactory ) ;
+                    // throw new Exception ( "no config loaded field found" ) ;
+                }
+                else
+                {
+                    configLoaded = ( bool ) fieldInfo.GetValue ( LogManager.LogFactory ) ;
+                }
+
+                LoggingIsConfigured = configLoaded ;
 
                 return configLoaded ;
             }
             catch ( SecurityException ex )
             {
-                System.Diagnostics.Debug.WriteLine ( ex.ToString ( ) ) ;
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
             }
 
             return null ;
@@ -1166,7 +1188,7 @@ namespace KayMcCormick.Dev.Logging
                         LogManager.Configuration.RemoveTarget ( target.Name ) ;
                     }
 
-                    target.Dispose();
+                    target.Dispose ( ) ;
                 }
             }
 
@@ -1179,10 +1201,7 @@ namespace KayMcCormick.Dev.Logging
             LogManager.Shutdown ( ) ;
         }
 
-        [ DllImport ( "kernel32.dll" ) ]
-        private static extern void OutputDebugString ( string lpOutputString ) ;
-
-#region Target Methods
+        #region Target Methods
         /// <summary>Adds the supplied target to the current NLog configuration.</summary>
         /// <param name="target">The target.</param>
         /// <param name="minLevel"></param>
@@ -1202,24 +1221,28 @@ namespace KayMcCormick.Dev.Logging
 
             LogManager.Configuration.AddTarget ( target ) ;
 
-            if ( addRules )
+            if ( ! addRules )
             {
-                LogManager.Configuration.AddRule ( minLevel , LogLevel.Fatal , target ) ;
-                LogManager.LogFactory.ReconfigExistingLoggers ( ) ;
+                return ;
             }
+
+            LogManager.Configuration.AddRule ( minLevel , LogLevel.Fatal , target ) ;
+            LogManager.LogFactory.ReconfigExistingLoggers ( ) ;
         }
 
         /// <summary>Removes a target by name from the current NLog configuration.</summary>
         /// <param name="name">The name of the target to remove.</param>
+        // ReSharper disable once MemberCanBeInternal
         public static void RemoveTarget ( string name )
         {
-            if ( LogManager.Configuration != null )
+            if ( LogManager.Configuration == null )
             {
-                LogManager.Configuration.RemoveTarget ( name ) ;
-                LogManager.Configuration.LogFactory.ReconfigExistingLoggers ( ) ;
+                return ;
             }
-        }
-#endregion
 
+            LogManager.Configuration.RemoveTarget ( name ) ;
+            LogManager.Configuration.LogFactory.ReconfigExistingLoggers ( ) ;
+        }
+        #endregion
     }
 }

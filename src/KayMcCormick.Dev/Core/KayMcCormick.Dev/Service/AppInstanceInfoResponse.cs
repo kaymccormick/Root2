@@ -6,6 +6,6 @@
     {
         /// <summary>
         /// </summary>
-        public AppInstanceInfo Info { get ; set ; }
+        internal AppInstanceInfo Info { get ; set ; }
     }
 }

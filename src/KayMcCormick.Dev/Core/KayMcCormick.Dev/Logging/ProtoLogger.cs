@@ -13,6 +13,7 @@ using System ;
 using System.Net ;
 using System.Net.Sockets ;
 using System.Text ;
+using JetBrains.Annotations ;
 using NLog ;
 using NLog.LayoutRenderers ;
 using NLog.Layouts ;
@@ -28,12 +29,10 @@ namespace KayMcCormick.Dev.Logging
 
         private static ProtoLogger _instance ;
 
-        private readonly Log4JXmlEventLayoutRenderer _xmlEventLayoutRenderer ;
-        
 
         public Layout XmlEventLayout { get ; }
 
-        public static ProtoLogger Instance
+        [ NotNull ] public static ProtoLogger Instance
         {
             get
             {
@@ -48,9 +47,8 @@ namespace KayMcCormick.Dev.Logging
 
         public ProtoLogger ( )
         {
-            _xmlEventLayoutRenderer =
-                new MyLog4JXmlEventLayoutRenderer();
-            XmlEventLayout = new MyLayout(_xmlEventLayoutRenderer);
+            Log4JXmlEventLayoutRenderer xmlEventLayoutRenderer = new MyLog4JXmlEventLayoutRenderer() ;
+            XmlEventLayout = new MyLayout(xmlEventLayoutRenderer);
             _udpClient  = AppLoggingConfigHelper.UdpClient ;
             _ipEndPoint = AppLoggingConfigHelper.IpEndPoint ;
             _layout     = XmlEventLayout ;
@@ -63,14 +61,7 @@ namespace KayMcCormick.Dev.Logging
         }
 
 
-        private ProtoLogger ( UdpClient udpClient , IPEndPoint ipEndPoint )
-        {
-            _udpClient  = udpClient ;
-            _ipEndPoint = ipEndPoint ;
-            _layout     = AppLoggingConfigHelper.XmlEventLayout ;
-            _getBytes   = DefaultGetBytes ;
-        }
-
+        [ NotNull ]
         private byte[] DefaultGetBytes ( LogEventInfo arg )
         {
             var encoding = Encoding.UTF8 ;
@@ -84,7 +75,7 @@ namespace KayMcCormick.Dev.Logging
             _udpClient.Send ( bytes , nBytes , _ipEndPoint ) ;
         }
 
-        public static readonly Action < LogEventInfo > _protoLogAction = Instance.LogAction ;
+        public static readonly Action < LogEventInfo > ProtoLogAction = Instance.LogAction ;
 
         /// <summary>
         /// </summary>
@@ -92,7 +83,7 @@ namespace KayMcCormick.Dev.Logging
 
         private static void ProtoLogMessage ( string message )
         {
-            _protoLogAction (
+            ProtoLogAction (
                              LogEventInfo.Create (
                                                   LogLevel.Warn
                                                 , typeof ( AppLoggingConfigHelper ).FullName

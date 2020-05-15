@@ -1,12 +1,13 @@
 ﻿using System ;
 using System.Collections.Generic ;
 using System.Text.Json ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
     /// </summary>
-    public class LogEventInstance
+    public sealed class LogEventInstance
     {
         private readonly IDictionary < string , object > _properties =
             new Dictionary < string , object > ( ) ;
@@ -73,6 +74,7 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         /// </summary>
 
+        // ReSharper disable once InconsistentNaming
         public long SequenceID { get { return _sequenceId ; } set { _sequenceId = value ; } }
 
         /// <summary>
@@ -114,10 +116,12 @@ namespace KayMcCormick.Dev.Logging
 
         /// <summary>
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         public IDictionary < string , object > GDC { get { return _gdc ; } set { _gdc = value ; } }
 
         /// <summary>
         /// </summary>
+        // ReSharper disable once InconsistentNaming
         public IDictionary < string , object > MDLC
         {
             get { return _mdlc ; }
@@ -160,7 +164,7 @@ namespace KayMcCormick.Dev.Logging
         /// </summary>
         /// <param name="field"></param>
         /// <param name="elem"></param>
-        public void AddUnknown ( string field , JsonElement elem )
+        public void AddUnknown ( [ NotNull ] string field , JsonElement elem )
         {
             UnknownFields[ field ] = elem ;
         }

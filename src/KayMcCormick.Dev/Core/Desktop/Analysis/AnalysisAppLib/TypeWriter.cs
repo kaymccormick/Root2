@@ -16,6 +16,7 @@ namespace AnalysisAppLib
     ///     Class to write type information to XML file.
     /// </summary>
     [ SuppressMessage ( "ReSharper" , "UnusedMember.Global" ) ]
+    // ReSharper disable once UnusedType.Global
     public static class TypeWriter
     {
         private const string TypesElementName = "types" ;
@@ -48,6 +49,7 @@ namespace AnalysisAppLib
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
+        // ReSharper disable once UnusedMember.Local
         private static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator ( ) ;
 
         /// <summary>
@@ -67,7 +69,7 @@ namespace AnalysisAppLib
         public static XmlElement MethodXmlElement (
             [ NotNull ] Func < string , XmlElement >          c
           , [ NotNull ] Func < string , string , XmlElement > c2
-          , [ NotNull ] MethodInfo                            m
+          , [ NotNull ] System.Reflection.MethodInfo                            m
           , WriteStyle                                        style
         )
         {
@@ -164,10 +166,9 @@ namespace AnalysisAppLib
                     typElement.AppendChild ( propElem ) ;
                 }
 
-                foreach ( var m in type.GetMethods ( )
-                                       .Where ( ( info , i ) => ! info.IsSpecialName ) )
+                foreach ( var elem in type.GetMethods ( )
+                                          .Where ( ( info , i ) => ! info.IsSpecialName ).Select ( m => MethodXmlElement ( c , c2 , m , style ) ) )
                 {
-                    var elem = MethodXmlElement ( c , c2 , m , style ) ;
                     typElement.AppendChild ( elem ) ;
                 }
             }
@@ -177,38 +178,41 @@ namespace AnalysisAppLib
 
         private static void AddMember ( XmlNode typElement , MemberInfo member )
         {
-            if ( member is MethodInfo mi
+            if ( member is System.Reflection.MethodInfo mi
                  && mi.IsSpecialName )
             {
                 return ;
             }
 
-            if ( typElement.OwnerDocument != null )
+            if ( typElement.OwnerDocument == null )
             {
-                var elem = typElement.OwnerDocument.CreateElement ( "Member" ) ;
-                elem.SetAttribute ( "Name" ,       member.Name ) ;
-                elem.SetAttribute ( "MemberType" , member.MemberType.ToString ( ) ) ;
-                if ( member.DeclaringType != null )
-                {
-                    elem.SetAttribute ( "DeclaringType" , member.DeclaringType.FullName ) ;
-                }
-
-                typElement.AppendChild ( elem ) ;
+                return ;
             }
+
+            var elem = typElement.OwnerDocument.CreateElement ( "Member" ) ;
+            elem.SetAttribute ( "Name" ,       member.Name ) ;
+            elem.SetAttribute ( "MemberType" , member.MemberType.ToString ( ) ) ;
+            if ( member.DeclaringType != null )
+            {
+                elem.SetAttribute ( "DeclaringType" , member.DeclaringType.FullName ) ;
+            }
+
+            typElement.AppendChild ( elem ) ;
         }
 
         /// <summary>
-        ///     Get the document ID for an code elmement.
+        ///     Get the document ID for an code element.
         /// </summary>
         /// <param name="o"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static string GetXmlId ( object o )
+        [ NotNull ]
+        public static string GetXmlId ( [ NotNull ] object o )
         {
             switch ( o )
             {
                 case Type t : return "T:" + t.FullName ;
-                case MethodInfo m :
+                case System.Reflection.MethodInfo m :
                     return "M:"
                            + ( m.ReflectedType != null
                                && ! string.IsNullOrEmpty ( m.ReflectedType.Namespace )
@@ -234,7 +238,8 @@ namespace AnalysisAppLib
         /// <param name="t"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static string SubIdForGenericType ( Type t )
+        [ NotNull ]
+        public static string SubIdForGenericType ( [ NotNull ] Type t )
         {
             if ( ! t.IsGenericType )
             {
@@ -242,19 +247,21 @@ namespace AnalysisAppLib
             }
 
             var g = t.GetGenericTypeDefinition ( ) ;
-            if ( g.FullName != null )
+            if ( g.FullName == null )
             {
-                var s = g.FullName.Substring ( 0 , g.FullName.LastIndexOf ( '`' ) ) ;
-                return s
-                       + "{"
-                       + string.Join ( "," , t.GenericTypeArguments.Select ( SubIdForType ) )
-                       + "}" ;
+                return string.Empty ;
             }
 
-            return string.Empty ;
+            var s = g.FullName.Substring ( 0 , g.FullName.LastIndexOf ( '`' ) ) ;
+            return s
+                   + "{"
+                   + string.Join ( "," , t.GenericTypeArguments.Select ( SubIdForType ) )
+                   + "}" ;
+
         }
 
-        private static string SubIdForType ( Type arg )
+        [ CanBeNull ]
+        private static string SubIdForType ( [ NotNull ] Type arg )
         {
             if ( arg.IsGenericType )
             {
@@ -264,9 +271,9 @@ namespace AnalysisAppLib
             return SubIdforNonGeneric ( arg ) ;
         }
 
-        private static string SubIdforNonGeneric ( Type type ) { return type.FullName ; }
+        [ CanBeNull ] private static string SubIdforNonGeneric ( [ NotNull ] Type type ) { return type.FullName ; }
 
-        private static void WriteDocument ( XmlNode doc , string outFile )
+        private static void WriteDocument ( [ NotNull ] XmlNode doc , [ NotNull ] string outFile )
         {
             var xmlWriterSettings = new XmlWriterSettings { Indent = true } ;
             using ( var xmlWriter = XmlWriter.Create ( outFile , xmlWriterSettings ) )
@@ -294,9 +301,10 @@ namespace AnalysisAppLib
             }
         }
 
+        [ NotNull ]
         private static XmlDocument CreateTypesDocument (
-            out NameTable           xmlNameTable
-          , out XmlNamespaceManager nsManager
+            [ CanBeNull ] out NameTable           xmlNameTable
+          , [ CanBeNull ] out XmlNamespaceManager nsManager
         )
         {
             var d1 = new XmlDocument ( ) ;

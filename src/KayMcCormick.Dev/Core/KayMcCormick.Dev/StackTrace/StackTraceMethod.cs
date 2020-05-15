@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// </summary>
-    public sealed class StackTraceMethod
+    internal sealed class StackTraceMethod
     {
         /// <summary>
         /// </summary>

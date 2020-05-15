@@ -1,15 +1,15 @@
-﻿using System ;
+﻿
+using System ;
+using System.Collections ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
-using System.Diagnostics ;
+using System.Data ;
 using System.Linq ;
 using System.Net.Http.Headers ;
+using System.Reactive.Subjects;
 using System.Reflection ;
 using System.Threading.Tasks ;
-using AnalysisAppLib.Auth ;
 using AnalysisAppLib.Dataflow ;
-using AnalysisAppLib.Project ;
-using AnalysisAppLib.ViewModel ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Registration ;
@@ -18,74 +18,116 @@ using Autofac.Features.AttributeFilters ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Logging ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
-using NLog ;
-using Logger = NLog.Logger ;
+using Document = Microsoft.CodeAnalysis.Document;
 
 namespace AnalysisAppLib
 {
     /// <summary>
-    /// 
+    ///     Autofac module for the base Analysis App Lib.
     /// </summary>
     public sealed class AnalysisAppLibModule : IocModule
     {
+        // ReSharper disable once RedundantDefaultMemberInitializer
+        private bool _registerExplorerTypes = false ;
+        private readonly ReplaySubject<ActivationInfo> _activations = new ReplaySubject<ActivationInfo>();
+
         /// <summary>
-        /// 
+        ///     Parameter-less constructor.
         /// </summary>
-        public AnalysisAppLibModule ( )
+        public AnalysisAppLibModule ( ) { DebugUtils.WriteLine ( "here" ) ; }
+
+        /// <summary>
+        ///     Boolean indicating whether or not to register the "File explorer" types.
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        public bool RegisterExplorerTypes
         {
-             Debug.WriteLine ( "here" ) ;
+            get { return _registerExplorerTypes ; }
+            set { _registerExplorerTypes = value ; }
         }
 
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
-
-        #region Overrides of Module
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="componentRegistry"></param>
         /// <param name="registration"></param>
         protected override void AttachToComponentRegistration (
             IComponentRegistryBuilder componentRegistry
-          , IComponentRegistration    registration
+            // ReSharper disable once AnnotateNotNullParameter
+          , IComponentRegistration registration
         )
         {
+            var svc = String.Join ( "; " , registration.Services.Select ( s => s.ToString ( ) ) ) ;
+            DebugUtils.WriteLine (
+                                  $"{nameof ( AttachToComponentRegistration )}: {registration.Id} {registration.Lifetime} {svc}"
+                                 ) ;
+
+            registration.Activated += (sender, args) =>
+            {
+                ActivationInfo x = new ActivationInfo()
+                {
+                    Instance = args.Instance,
+                    Component = args.Component,
+                    Parameters = args.Parameters,
+                    Context = args.Context
+                };
+                _activations.OnNext(x);
+            };
             registration.Activating += ( sender , args ) => {
-                var inst = args.Instance;
-                Debug.WriteLine ( $"activating {inst} {registration.Lifetime}" ) ;
-                if ( inst is IViewModel) {
-                    if (inst is ISupportInitializeNotification xx)
+                var inst = args.Instance ;
+                DebugUtils.WriteLine ( $"activating {inst} {registration.Lifetime}" ) ;
+                if ( ! ( inst is IViewModel ) )
+                {
+                    return ;
+                }
+
+                switch ( inst )
+                {
+                    case ISupportInitializeNotification xx :
                     {
-                        Debug.WriteLine("calling init on instance");
-                        if (!xx.IsInitialized)
+                        if ( ! xx.IsInitialized )
                         {
-                            xx.BeginInit();
-                            xx.EndInit();
+                            DebugUtils.WriteLine($"calling init on instance {xx}");
+                            xx.BeginInit ( ) ;
+                            xx.EndInit ( ) ;
                         }
-                    } else 
-                    if ( inst is ISupportInitialize x )
-                    {
-                        Debug.WriteLine ( "calling init on instance" ) ;
+
+                        break ;
+                    }
+                    case ISupportInitialize x :
+                        DebugUtils.WriteLine($"calling init on instance {x}");
                         x.BeginInit ( ) ;
                         x.EndInit ( ) ;
-                    } 
+                        break ;
                 }
             } ;
         }
-        #endregion
 
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="builder"></param>
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+            builder.RegisterType<AppDbContext>().As<IAppDbContext1>().AsSelf().WithCallerMetadata().SingleInstance();
+            builder.RegisterInstance(_activations);            
+            builder.RegisterType<ResourceNodeInfo>().As<IHierarchicalNode>();
+            builder.RegisterGeneric(typeof(ReplaySubject<>)).SingleInstance();
+            
+            builder.RegisterType < SyntaxTypesService > ( )
+                   .As < ISyntaxTypesService > ( )
+                   .WithCallerMetadata ( ) ;
+            builder.RegisterType < DocInterface > ( )
+                   .As < IDocInterface > ( )
+                   .WithCallerMetadata ( ) ;
             builder.RegisterModule < LegacyAppBuildModule > ( ) ;
-            builder.RegisterType<ModelResources>().SingleInstance();
-
+            if (RegisterModelResources)
+            {
+                builder.RegisterType<ModelResources>().WithCallerMetadata().SingleInstance();
+            }
+            
             builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly ( ) )
                    .Where (
                            type => {
@@ -95,158 +137,84 @@ namespace AnalysisAppLib
                                                                                                      type
                                                                                                     )
                                                                                   ) )
+                               {
                                    return false ;
+                               }
+
                                var b = typeof ( IViewModel ).IsAssignableFrom ( type ) ;
-//                               Debug.WriteLine ( $"{type.FullName} - {b}" ) ;
                                return b ;
                            }
-                           // || typeof ( IView1 ).IsAssignableFrom ( type )
                           )
                    .AsImplementedInterfaces ( )
                    .AsSelf ( )
-                   .WithAttributedMetadata ( ) ;
+                   .WithAttributedMetadata ( )
+                   .WithCallerMetadata ( ) ;
 
-            //builder.RegisterType<DockWindowViewModel>().AsSelf();
-#if false
-            
-            
-            builder.RegisterType < LogUsageAnalysisViewModel > ( )
-                   .As < ILogUsageAnalysisViewModel > ( ) ;
-            builder.RegisterType < FileSystemExplorerItemProvider > ( )
-                   .As < IExplorerItemProvider > ( ) ;
-            builder.RegisterType < TypesViewModel > ( ).As < ITypesViewModel > ( ) ;
-#endif
-            builder.RegisterType < AnalyzeCommand > ( ).As < IAnalyzeCommand > ( ) ;
+            builder.RegisterType<AnalyzeCommandWrap>().AsImplementedInterfaces().WithCallerMetadata();
+            builder.RegisterType < AnalyzeCommand > ( ).AsSelf()
+                   .As < IAnalyzeCommand > ( ).AsImplementedInterfaces()
+                   .WithCallerMetadata ( ) ;
 
-            builder.RegisterGeneric ( typeof ( GenericAnalyzeCommand <> ) )
-                   .As ( typeof ( IAnalyzeCommand2 <> ) ) ;
-            builder.RegisterType<Pipeline>().AsSelf();
+            builder.RegisterGeneric ( typeof ( GenericAnalyzeCommand<>) )
+                   .As ( typeof ( IAnalyzeCommand2<>) )
+                   .WithCallerMetadata ( ) ;
+            builder.RegisterType < Pipeline > ( ).AsSelf ( ).WithCallerMetadata ( ) ;
 
-
-#if false
-            builder.RegisterType < ProjectBrowserViewModel > ( )
-                   .As < IProjectBrowserViewModel > ( ) ;
-            
-            /* Register the "Cache target view model. */
-
-            builder.RegisterType < CacheTargetViewModel > ( ).AsSelf ( ) ;
-
-            builder.RegisterType < SyntaxPanelViewModel > ( ).As < ISyntaxPanelViewModel > ( ) ;
-
-            builder.RegisterType < SyntaxTokenViewModel > ( )
-                   .As < ISyntaxTokenViewModel > ( )
-                   .SingleInstance ( ) ;
-#endif
-            builder.RegisterType < LogInvocation2 > ( ).As < ILogInvocation > ( ) ;
-            // builder.RegisterType < FindLogUsagesAnalysisDefinition > ( )
-            // .As < IAnalysisDefinition > ( ) ;
+            builder.RegisterType < LogInvocation2 > ( )
+                   .As < ILogInvocation > ( )
+                   .WithCallerMetadata ( ) ;
 
             builder.RegisterType < FindLogInvocations > ( )
                    .AsImplementedInterfaces ( )
-                   .WithAttributeFiltering ( ) ;
+                   .WithAttributeFiltering ( )
+                   .WithCallerMetadata ( ) ;
 
             builder.RegisterType < FindLogUsagesFuncProvider > ( )
                    .AsImplementedInterfaces ( )
                    .WithAttributeFiltering ( )
                    .AsSelf ( )
-                   .InstancePerLifetimeScope ( ) ;
+                   .InstancePerLifetimeScope ( )
+                   .WithCallerMetadata ( ) ;
 
+            builder.Register < Action<Document>> (
+                                                                             ( c , p ) => doc => {
+                                                                                 DebugUtils
+                                                                                    .WriteLine (
+                                                                                                doc
+                                                                                                   .FilePath
+                                                                                               ) ;
+                                                                             }
+                                                                            ) ;
+            if ( true )
+            {
+                builder.RegisterGeneric ( typeof ( AnalysisBlockProvider<,,>) )
+                       .As ( typeof ( IAnalysisBlockProvider<,,>) )
+                       .WithAttributeFiltering ( )
+                       .InstancePerLifetimeScope ( )
+                       .WithCallerMetadata ( )
+                       .WithMetadata ( "Purpose" , "Analysis" ) ;
+            }
 
-            //builder.Register()
-            //builder.Register ( typeof ( IAnalysisDefinition <> ) )
-            //.As ( typeof ( IAnalyzeCommand2 <> ) ).As<IAnalyzeCommand3> (  ) ;
-            //  (
-            //      context
-            //    , parameters
-            //    , arg3
-            //  ) => {
-            //      return new
-            //          GenericAnalyzeCommandImpl (
-            //                                     context
-            //                                        .Resolve
-            //                                         < ITargetBlock
-            //                                             < AnalysisRequest
-            //                                             > > ( )
-            //                                   , context
-            //                                        .Resolve
-            //                                         < ISourceBlock
-            //                                             < object
-            //                                             > > ( )
-            //                                    ) ;
-            //  }
-            // ) ;
+            if ( RegisterConcreteBlockProviders )
+            {
+                builder.RegisterGeneric ( typeof ( ConcreteAnalysisBlockProvider<,,>) )
+                       .As ( typeof ( IAnalysisBlockProvider<,,>) )
+                       .WithAttributeFiltering ( )
+                       .InstancePerLifetimeScope ( )
+                       .WithCallerMetadata ( )
+                       .WithMetadata ( "Purpose" , "Analysis" ) ;
+                builder.RegisterGeneric ( typeof ( ConcreteDataflowTransformFuncProvider<,>) )
+                       .As ( typeof ( IDataflowTransformFuncProvider<,>) )
+                       .WithAttributeFiltering ( )
+                       .InstancePerLifetimeScope ( )
+                       .WithMetadata ( "Purpose" , "Analysis" )
+                       .WithCallerMetadata ( ) ;
+            }
 
-            builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly()  )
-                   .Where (
-                           t => t.FindInterfaces (
-                                                  ( type , criteria ) => {
-                                                      if ( ! type.IsGenericType )
-                                                      {
-                                                          return false ;
-                                                      }
-
-                                                      var assemblyName =
-                                                          type.GetGenericTypeDefinition ( )
-                                                              .Assembly.GetName ( ) ;
-                                                      // Logger.Warn ( $"assembly is {assemblyName}" ) ;
-                                                      if ( assemblyName
-                                                           != Assembly
-                                                             .GetCallingAssembly ( )
-                                                             .GetName ( ) )
-                                                      {
-                                                          return false ;
-                                                      }
-
-                                                      // Logger.Warn(
-                                                      // $"{t.FullName} {type.FullName} {criteria}"
-                                                      // );
-
-                                                      if ( type.GetGenericTypeDefinition ( )
-                                                           == typeof ( IAnalysisBlockProvider < , ,
-                                                           > ) )
-                                                      {
-                                                          Logger.Warn (
-                                                                       "Discovered class {type}"
-                                                                      ) ;
-                                                          return true ;
-                                                      }
-
-                                                      return false ;
-                                                  }
-                                                , t
-                                                 )
-                                 .Any ( )
-                          )
-                   .AsImplementedInterfaces ( ) ;
-
-
-            //        .AsImplementedInterfaces ( )
-            //        .WithAttributeFiltering ( )
-            //        .InstancePerLifetimeScope ( ) ;
-
-             builder.RegisterGeneric ( typeof ( AnalysisBlockProvider < , , > ) )
-             .As ( typeof ( IAnalysisBlockProvider < , , > ) )
-             .WithAttributeFiltering ( )
-             .InstancePerLifetimeScope ( ) ;
-
-            builder.RegisterGeneric ( typeof ( DataflowTransformFuncProvider < , > ) )
-             .As ( typeof ( IDataflowTransformFuncProvider < , > ) )
-             .WithAttributeFiltering ( )
-             .InstancePerLifetimeScope ( ) ;
-
-            builder.RegisterGeneric(typeof(ConcreteAnalysisBlockProvider<,,>))
-             .As(typeof(IAnalysisBlockProvider<,,>))
-             .WithAttributeFiltering()
-             .InstancePerLifetimeScope(); 
-
-             builder.RegisterGeneric(typeof(ConcreteDataflowTransformFuncProvider<,>))
-             .As(typeof(IDataflowTransformFuncProvider<,>))
-             .WithAttributeFiltering()
-             .InstancePerLifetimeScope();
-
-
-#region MS LOGIN
-            builder.Register ( MakePublicClientApplication ).As < IPublicClientApplication > ( ) ;
+            #region MS LOGIN
+            builder.Register ( MakePublicClientApplication )
+                   .As < IPublicClientApplication > ( )
+                   .WithCallerMetadata ( ) ;
 
             builder.Register (
                               ( ctx , p ) => {
@@ -254,20 +222,81 @@ namespace AnalysisAppLib
                                   return MakeGraphServiceClient ( bearerToken ) ;
                               }
                              )
-                   .AsSelf ( ) ;
+                   .AsSelf ( )
+                   .WithCallerMetadata ( ) ;
             #endregion
-#if false
-            builder.RegisterType < LogViewModel > ( ).AsSelf ( ) ;
-            builder.RegisterType < LogViewerAppViewModel > ( ).AsSelf ( ) ;
-            builder.Register ( ( c , p ) => new LogViewerConfig ( p.TypedAs < ushort > ( ) ) )
-                   .AsSelf ( ) ;
-            builder.RegisterType < MicrosoftUserViewModel > ( ).AsSelf ( ) ;
-#endif
         }
 
-        private IPublicClientApplication MakePublicClientApplication (
-            IComponentContext         context
-          , IEnumerable < Parameter > p
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        public bool RegisterConcreteBlockProviders { get; set; }
+
+        private bool RegisterModelResources { get; set; }
+
+        [ NotNull ]
+        // ReSharper disable once UnusedMember.Local
+        private static DataTable DataAdapter (
+            IComponentContext         c
+          , IEnumerable<Parameter> p
+          , [NotNull ] object        o
+        )
+        {
+            var r = new DataTable ( o.GetType ( ).Name ) ;
+            var values = new ArrayList ( ) ;
+            foreach ( var p1 in o.GetType ( )
+                                 .GetProperties ( BindingFlags.Instance | BindingFlags.Public ) )
+            {
+                object rr1 = null ;
+                try { rr1 = p1.GetValue ( o ) ; }
+                catch
+                {
+                    // ignored
+                }
+
+                if ( p1.GetMethod.GetParameters ( ).Any ( ) )
+                {
+                    continue ;
+                }
+
+                r.Columns.Add ( new DataColumn ( p1.Name , p1.PropertyType ) ) ;
+                values.Add ( rr1 ) ;
+            }
+
+            r.LoadDataRow ( values.ToArray ( ) , LoadOption.OverwriteChanges ) ;
+            return r ;
+        }
+
+        [ NotNull ]
+        // ReSharper disable once UnusedMember.Local
+        private Dictionary<string, object> DictAdapter (
+            IComponentContext         c
+          , IEnumerable<Parameter> p
+          , [ NotNull ] object        o
+        )
+        {
+            var r = new Dictionary<string, object>( ) ;
+            foreach ( var p1 in o.GetType ( )
+                                 .GetProperties ( BindingFlags.Instance | BindingFlags.Public ) )
+            {
+                object rr1 = null ;
+                try { rr1 = p1.GetValue ( o ) ; }
+                catch
+                {
+                    // ignored
+                }
+
+                r[ p1.Name ] = rr1 ;
+            }
+
+            return r ;
+        }
+
+        [ NotNull ]
+        private static IPublicClientApplication MakePublicClientApplication (
+            IComponentContext                     context
+          , [ NotNull ] IEnumerable<Parameter> p
         )
         {
             var typedAs = p.TypedAs < Guid > ( ) ;
@@ -282,10 +311,11 @@ namespace AnalysisAppLib
                                                  )
                    .WithAuthority ( AadAuthorityAudience.AzureAdAndPersonalMicrosoftAccount )
                    .Build ( ) ;
-            TokenCacheHelper.EnableSerialization ( a.UserTokenCache ) ;
+            //TokenCacheHelper.EnableSerialization ( a.UserTokenCache ) ;
             return a ;
         }
 
+        [ NotNull ]
         private static GraphServiceClient MakeGraphServiceClient ( string bearerToken )
         {
             var parameter = bearerToken ;
@@ -297,6 +327,7 @@ namespace AnalysisAppLib
             return new GraphServiceClient ( auth ) ;
         }
 
+        [ NotNull ]
         private static AuthenticateRequestAsyncDelegate AuthenticateRequestAsyncDelegate (
             string parameter
         )
@@ -307,35 +338,5 @@ namespace AnalysisAppLib
                 return Task.FromResult ( 0 ) ;
             } ;
         }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    [ TitleMetadata ( "Find and analyze usages of NLog logging." ) ]
-    public sealed class FindLogUsagesAnalysisDefinition : IAnalysisDefinition < ILogInvocation >
-    {
-        private Type _dataflowOutputType = typeof ( ILogInvocation ) ;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Type DataflowOutputType
-        {
-            get { return _dataflowOutputType ; }
-            set { _dataflowOutputType = value ; }
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <typeparam name="TOutput"></typeparam>
-    public interface IAnalysisDefinition < TOutput >
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        Type DataflowOutputType { get ; set ; }
     }
 }

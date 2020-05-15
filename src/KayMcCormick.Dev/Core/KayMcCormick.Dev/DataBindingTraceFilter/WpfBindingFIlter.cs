@@ -12,13 +12,15 @@
 using System.Diagnostics ;
 using System.Linq ;
 using System.Text.RegularExpressions ;
+using JetBrains.Annotations ;
 using NLog ;
 
 namespace KayMcCormick.Dev.DataBindingTraceFilter
 {
     /// <summary>
     /// </summary>
-    public class WpfBindingFIlter : TraceFilter
+    // ReSharper disable once UnusedType.Global
+    public class WpfBindingFilter : TraceFilter
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
@@ -38,7 +40,7 @@ namespace KayMcCormick.Dev.DataBindingTraceFilter
           , string          source
           , TraceEventType  eventType
           , int             id
-          , string          formatOrMessage
+          , [ NotNull ] string          formatOrMessage
           , object[]        args
           , object          data1
           , object[]        data
@@ -46,23 +48,24 @@ namespace KayMcCormick.Dev.DataBindingTraceFilter
         {
             string[] ignores = { "UserOptions." } ;
             var match = Regex.Match ( formatOrMessage , "BindingExpression:(.*) DataItem" ) ;
-            if ( match.Success )
+            if ( ! match.Success )
             {
-                var expr = match.Groups[ 1 ].Captures[ 0 ].Value ;
-
-                var haveIgnore = ignores.Any ( s => expr.Contains ( s ) ) ;
-
-                Logger.Trace ( @"{ignore}" , haveIgnore ) ;
-
-                if ( ! haveIgnore )
-                {
-                    Logger.Debug ( @"expr is {expr}" , expr ) ;
-                }
-
-                return haveIgnore ;
+                return false ;
             }
 
-            return false ;
+            var expr = match.Groups[ 1 ].Captures[ 0 ].Value ;
+
+            var haveIgnore = ignores.Any ( s => expr.Contains ( s ) ) ;
+
+            Logger.Trace ( @"{ignore}" , haveIgnore ) ;
+
+            if ( ! haveIgnore )
+            {
+                Logger.Debug ( @"expr is {expr}" , expr ) ;
+            }
+
+            return haveIgnore ;
+
         }
     }
 }

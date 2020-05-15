@@ -15,7 +15,6 @@ using System.Collections.Generic ;
 using Autofac ;
 using Autofac.Core ;
 using JetBrains.Annotations ;
-using KayMcCormick.Dev.Logging ;
 
 namespace KayMcCormick.Dev.Application
 {
@@ -25,8 +24,7 @@ namespace KayMcCormick.Dev.Application
     {
         /// <summary>
         /// </summary>
-        /// <param name="logMethod"></param>
-        protected ApplicationInstanceBase ( ApplicationInstance.LogMethodDelegate logMethod )
+        protected ApplicationInstanceBase ( )
         {
             InstanceRunGuid = Guid.NewGuid ( ) ;
         }
@@ -41,6 +39,7 @@ namespace KayMcCormick.Dev.Application
 
         /// <summary>
         /// </summary>
+        // ReSharper disable once EventNeverSubscribedTo.Global
         public virtual event EventHandler < AppStartupEventArgs > AppStartup ;
 
         /// <summary>
@@ -55,9 +54,17 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        public virtual ILifetimeScope GetLifetimeScope ( )
+        public virtual ILifetimeScope GetLifetimeScope()
         {
-            throw new NotImplementedException ( ) ;
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        public virtual ILifetimeScope GetLifetimeScope(Action<ContainerBuilder> config)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -77,7 +84,7 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// </summary>
         /// todo call from wpf
-        public virtual void Shutdown ( ) { }
+        protected virtual void Shutdown ( ) { }
 
         /// <summary>
         /// </summary>

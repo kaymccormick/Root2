@@ -38,13 +38,16 @@ namespace AnalysisControls
             [ NotNull ] JsonSerializerOptions jsonSerializerOptions
         )
         {
-            if ( jsonSerializerOptions == null )
+                if ( jsonSerializerOptions == null )
             {
                 throw new ArgumentNullException ( nameof ( jsonSerializerOptions ) ) ;
             }
-            KayMcCormick.Dev.Serialization.JsonConverters.AddJsonConverters(jsonSerializerOptions);
-            jsonSerializerOptions.Converters.Add(new JsonPocoSyntaxConverter());
-            jsonSerializerOptions.Converters.Add(new JsonSyntaxNodeConverter());
+
+            KayMcCormick.Dev.Serialization.JsonConverters.AddJsonConverters (
+                                                                             jsonSerializerOptions
+                                                                            ) ;
+            jsonSerializerOptions.Converters.Add ( new JsonPocoSyntaxConverter ( ) ) ;
+            jsonSerializerOptions.Converters.Add ( new JsonSyntaxNodeConverter ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonImageConverterFactory ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonConverterResourceDictionary ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new HashtableConverter ( ) ) ;
@@ -56,8 +59,10 @@ namespace AnalysisControls
                                                  ) ;
             jsonSerializerOptions.Converters.Add ( new JsonBrushConverter ( ) ) ;
 
-            
-            jsonSerializerOptions.Converters.Add ( new JsonSimpleFrameworkElementConverterFactory());
+
+            jsonSerializerOptions.Converters.Add (
+                                                  new JsonSimpleFrameworkElementConverterFactory ( )
+                                                 ) ;
         }
     }
 }

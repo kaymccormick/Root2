@@ -4,10 +4,10 @@ using JetBrains.Annotations ;
 
 namespace AnalysisControls.Scripting
 {
-    /* fOR PYTHON SUTFF */
+    /* fOR PYTHON STUFF */
     /// <summary>
     /// </summary>
-    public class EventRaisingStreamWriter : StreamWriter
+    internal sealed class EventRaisingStreamWriter : StreamWriter
     {
         /// <summary>
         /// 
@@ -21,10 +21,7 @@ namespace AnalysisControls.Scripting
 
         private void LaunchEvent ( string txtWritten )
         {
-            if ( StringWritten != null )
-            {
-                StringWritten ( this , new MyEvtArgs < string > ( txtWritten ) ) ;
-            }
+            StringWritten?.Invoke ( this , new MyEvtArgs < string > ( txtWritten ) ) ;
         }
 
         /// <summary>

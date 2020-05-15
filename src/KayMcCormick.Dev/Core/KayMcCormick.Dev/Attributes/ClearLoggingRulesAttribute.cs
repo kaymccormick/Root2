@@ -20,6 +20,7 @@ namespace KayMcCormick.Dev.Attributes
     /// <summary>
     ///     Clear all logging rules attribute
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class ClearLoggingRulesAttribute : LoggingAttribute
     {
         /// <summary>

@@ -13,134 +13,164 @@ using System ;
 using System.Collections ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
-using System.Diagnostics ;
-using System.Runtime.CompilerServices ;
+using System.Linq ;
 using System.Text.Json.Serialization ;
 using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev
 {
-    /// <summary>Class representing a node in the resource tree. Relatively generic in that Key and Data refer to instances of type 'object' or in other words any chosen type.</summary>
-    public sealed class ResourceNodeInfo : INotifyPropertyChanged, IEnumerable <ResourceNodeInfo>, IHierarchicalNode
+    /// <summary>
+    ///     Class representing a node in the resource tree. Relatively generic
+    ///     in that Key and Data refer to instances of type 'object' or in other
+    ///     words any chosen type.
+    /// </summary>
+    public sealed class ResourceNodeInfo : ResourceNodeInfoBase
+      , INotifyPropertyChanged
+      , IEnumerable < ResourceNodeInfo >
     {
-        private int _depth ;
-        private List < ResourceNodeInfo > _children = new List < ResourceNodeInfo > ( ) ;
-        private object                    _data ;
+        /// <summary>
+        /// Create ResourceNodeInfo instance.
+        /// </summary>
+        /// <param name="createNodeFunc"></param>
+        /// <returns></returns>
+        [ NotNull ] public static ResourceNodeInfo CreateInstance (
+            Func < ResourceNodeInfo , object , object , bool ? , bool , ResourceNodeInfo >
+                createNodeFunc = null
+        )
+        {
+            return new ResourceNodeInfo ( )
+                   {
+                       CreateNodeFunc = createNodeFunc,
+                       Id = Guid.NewGuid()
+                   } ;
+        }
 
+        public ResourceNodeInfo ( ) { CreatedDatetime = DateTime.Now ; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime CreatedDatetime
+        {
+            get { return _createdDatetime ; }
+            set { _createdDatetime = value ; }
+        }
+
+        private List < ResourceNodeInfo > _children = new List < ResourceNodeInfo > ( ) ;
+
+        private Func < ResourceNodeInfo , object , object , bool ? , bool , ResourceNodeInfo >
+            _createNodeFunc ;
+
+        private Func < ResourceNodeInfo , Func < object , object , ResourceNodeInfo > ,
+            IEnumerable < ResourceNodeInfo > > _getChildrenFunc ;
 
         private bool ? _internalIsExpanded ;
+        private bool ? _isChildrenLoaded ;
         private bool ? _isValueChildren ;
-        private object _key ;
-        private object _styleKey ;
 
-        private object _templateKey ;
+        private object           _styleKey ;
+        private object           _templateKey ;
+        private DateTime         _createdDatetime ;
+        private ResourceNodeInfo _parent ;
+        /// <summary>
+        /// 
+        /// </summary>
+        public object KeyObject ;
+        private Guid _id ;
+        private int _ordinal ;
 
         /// <summary>
         /// </summary>
-        [ JsonIgnore ]
-        public object Data { get { return _data ; } set { _data = value ; } }
+        [Browsable(false)]
+        public Func < ResourceNodeInfo , object , object , bool ? , bool , ResourceNodeInfo >
+            CreateNodeFunc { get { return _createNodeFunc ; } set { _createNodeFunc = value ; } }
 
         /// <summary>
         /// </summary>
-        [ JsonIgnore ]
-        public List < ResourceNodeInfo > Children
+        [Browsable(false)]
+        public bool ? IsChildrenLoaded
         {
-            get { return _children ; }
+            get { return _isChildrenLoaded ; }
+            set { _isChildrenLoaded = value ; }
+        }
+
+        /// <summary>
+        /// </summary>
+        [Browsable(false)]
+
+        public Func < ResourceNodeInfo , Func < object , object , ResourceNodeInfo > ,
+            IEnumerable < ResourceNodeInfo > > GetChildrenFunc
+        {
+            get { return _getChildrenFunc ; }
+            set { _getChildrenFunc = value ; }
+        }
+
+        /// <summary>
+        /// </summary>
+        [ JsonIgnore ] [ NotNull ] public override List < ResourceNodeInfo > Children
+        {
+            get
+            {
+                if (IsChildrenLoaded.GetValueOrDefault ( ) )
+                {
+                    return _children ;
+                }
+
+                DebugUtils.WriteLine ( $"Expanding children for {this}" ) ;
+                // ReSharper disable once AssignNullToNotNullAttribute
+                if ( _getChildrenFunc == null )
+                {
+                    _children = new List < ResourceNodeInfo > ( ) ;
+                }
+                else
+                {
+                    _children = _getChildrenFunc.Invoke (
+                                                         this
+                                                       , ( o , o1 ) => {
+                                                             DebugUtils.WriteLine (
+                                                                                   $"creating node for {o} {o1}"
+                                                                                  ) ;
+                                                             var r = CreateNodeFunc (
+                                                                                     this
+                                                                                   , o
+                                                                                   , o1
+                                                                                   , false
+                                                                                   , false
+                                                                                    ) ;
+
+                                                             return r ;
+                                                         }
+                                                        )
+                                                .ToList ( ) ;
+                }
+
+                foreach ( var resourceNodeInfo in _children )
+                {
+                    DebugUtils.WriteLine ( $"collected child {resourceNodeInfo}" ) ;
+                }
+
+                IsChildrenLoaded = true ;
+                return _children ;
+            }
             set { _children = value ; }
         }
 
         /// <summary>
         /// </summary>
-        [ JsonIgnore ]
-        public object Key { get { return _key ; } set { _key = value ; } }
-
-        /// <summary>
-        /// </summary>
-        public object TemplateKey { get { return _templateKey ; } set { _templateKey = value ; } }
-
-        /// <summary>
-        /// </summary>
-        public bool IsExpanded
-        {
-            // ReSharper disable once UnusedMember.Global
-            get { return _internalIsExpanded.GetValueOrDefault ( ) ; }
-            set
-            {
-                Debug.WriteLine ( $"isExpanded = {value} for {Key}" ) ;
-                _internalIsExpanded = value ;
-                OnPropertyChanged ( ) ;
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        [ UsedImplicitly ] public object StyleKey { get { return _styleKey ; } set { _styleKey = value ; } }
-
-        /// <summary>
-        /// </summary>
-        public bool ? IsValueChildren
-        {
-            // ReSharper disable once UnusedMember.Global
-            get { return _isValueChildren ; }
-            set { _isValueChildren = value ; }
-        }
-
-        /// <summary>
-        /// Depth of node. 0 for a top-level node.
-        /// </summary>
-        public int Depth { get { return _depth ; } set { _depth = value ; } }
-
-        /// <summary>
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged ;
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <returns></returns>
-        public IEnumerator < ResourceNodeInfo > GetEnumerator ( ) { return _children.GetEnumerator ( ) ; }
-
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString ( )
+        [Browsable(false)]
+        public IEnumerator < ResourceNodeInfo > GetEnumerator ( )
         {
-            return $"{new String(' ', Depth)}Key: {_key}; Data: {_data}" ;
+            return _children.GetEnumerator ( ) ;
         }
 
-        IEnumerator IEnumerable.GetEnumerator ( ) { return ( ( IEnumerable ) _children ).GetEnumerator ( ) ; }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="propertyName"></param>
-        [ NotifyPropertyChangedInvocator ]
-        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        [Browsable(false)]
+        IEnumerator IEnumerable.GetEnumerator ( )
         {
-            PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
-        }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IHierarchicalNode
-    {
-        /// <summary>
-        /// </summary>
-        List < ResourceNodeInfo > Children { get ; set ; }
-
-        /// <summary>
-        /// </summary>
-        bool IsExpanded
-        {
-            // ReSharper disable once UnusedMember.Global
-            get ;
-            set ;
+            return ( ( IEnumerable ) _children ).GetEnumerator ( ) ;
         }
 
-        /// <summary>
-        /// Depth of node. 0 for a top-level node.
-        /// </summary>
-        int Depth { get ; set ; }
+
+        public int Ordinal { get ; set ; }
     }
 }

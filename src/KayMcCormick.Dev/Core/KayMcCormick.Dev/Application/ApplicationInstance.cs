@@ -2,9 +2,7 @@
 using System.Collections ;
 using System.Collections.Generic ;
 using System.Configuration ;
-using System.Diagnostics ;
 using System.Linq ;
-using System.Reactive.Linq ;
 using System.Reactive.Subjects ;
 using System.Reflection ;
 using System.Runtime.ExceptionServices ;
@@ -20,11 +18,13 @@ using Autofac.Integration.Mef ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Attributes ;
 using KayMcCormick.Dev.Configuration ;
+using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Dev.StackTrace ;
 using Microsoft.Extensions.DependencyInjection ;
 using NLog ;
+using IContainer = Autofac.IContainer ;
 
 namespace KayMcCormick.Dev.Application
 {
@@ -48,22 +48,33 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// Application GUID for a basic command-line configuration test application.
         /// </summary>
+        // ReSharper disable once UnusedMember.Global"
         // ReSharper disable once UnusedMember.Global
-        public static Guid ConfigTest { get ; set ; } =
+        public static Guid ConfigTest { get ; } =
             new Guid ( "{28CE37FB-A675-4483-BD6F-79FC9C68D973}" ) ;
 
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public static Guid ClassLibTests { get ; set ; } =
             new Guid ( "{177EF37C-8D28-4CBE-A3D7-703E51AEE246}" ) ;
+
+        /// <summary>
+        /// Basic win forms app
+        /// </summary>
+        public static Guid BasicWinForms { get ; } = new Guid("c9c74fca-0769-4990-9967-2ac8c06b4630");
+
+        public static Guid ProjTests { get; set; } = new Guid("{EEC2E4DC-A0BE-4472-A936-50CA7419B530}");
     }
 
     /// <summary>
-    /// </summary>
+    /// </  summary>
     public sealed class ApplicationInstance : ApplicationInstanceBase , IDisposable
     {
+#pragma warning disable 169
         private readonly bool                            _disableLogging ;
+#pragma warning restore 169
         private readonly bool                            _disableServiceHost ;
         private readonly List < IModule >                _modules = new List < IModule > ( ) ;
         private          IContainer                      _container ;
@@ -118,7 +129,6 @@ namespace KayMcCormick.Dev.Application
             /// <summary>
             /// 
             /// </summary>
-            /// <param name="message"></param>
             private readonly LogMethodDelegate _logMethod ;
 
             /// <summary>
@@ -197,7 +207,7 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         public ApplicationInstance (
             [ NotNull ] ApplicationInstanceConfiguration applicationInstanceConfiguration
-        ) : base ( applicationInstanceConfiguration.LogMethod )
+        )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException ;
 
@@ -215,6 +225,7 @@ namespace KayMcCormick.Dev.Application
 
             var serviceCollection = new ServiceCollection ( ) ;
 
+            // ReSharper disable once UnusedVariable
             var protoLogger = ProtoLogger.Instance ;
             if ( ! applicationInstanceConfiguration.DisableRuntimeConfiguration )
             {
@@ -229,6 +240,7 @@ namespace KayMcCormick.Dev.Application
             if ( ! applicationInstanceConfiguration.DisableLogging )
             {
                 serviceCollection.AddLogging ( ) ;
+                // ReSharper disable once UnusedVariable
                 var config = applicationInstanceConfiguration.Configs != null
                                  ? applicationInstanceConfiguration
                                   .Configs.OfType < ILoggingConfiguration > ( )
@@ -237,15 +249,17 @@ namespace KayMcCormick.Dev.Application
                 // LogManager.EnableLogging ( ) ;
                 if ( LogManager.IsLoggingEnabled ( ) )
                 {
-                    Debug.WriteLine ( "logging enableD" ) ;
+                    DebugUtils.WriteLine ( "logging enableD" ) ;
                 }
 
-                if ( LogManager.Configuration != null )
+                if ( LogManager.Configuration == null )
                 {
-                    foreach ( var configurationAllTarget in LogManager.Configuration.AllTargets )
-                    {
-                        Debug.WriteLine ( configurationAllTarget ) ;
-                    }
+                    return ;
+                }
+
+                foreach ( var configurationAllTarget in LogManager.Configuration.AllTargets )
+                {
+                    DebugUtils.WriteLine ( configurationAllTarget.ToString()) ;
                 }
 
                 // Logger = AppLoggingConfigHelper.EnsureLoggingConfigured (
@@ -302,6 +316,7 @@ namespace KayMcCormick.Dev.Application
             _host?.Dispose ( ) ;
             _lifetimeScope?.Dispose ( ) ;
             Container1?.Dispose ( ) ;
+            _subject?.Dispose();
         }
 
         private static void CurrentDomain_FirstChanceException (
@@ -309,7 +324,7 @@ namespace KayMcCormick.Dev.Application
           , [ NotNull ] FirstChanceExceptionEventArgs e
         )
         {
-            Utils.LogParsedExceptions ( e.Exception ) ;
+            // Utils.LogParsedExceptions ( e.Exception ) ;
         }
 
 #region Overrides of ApplicationInstanceBase
@@ -335,7 +350,7 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         /// <returns></returns>
         [ NotNull ]
-        public override ILifetimeScope GetLifetimeScope ( )
+        public override ILifetimeScope GetLifetimeScope ()
         {
             if ( _lifetimeScope != null )
             {
@@ -347,8 +362,35 @@ namespace KayMcCormick.Dev.Application
                 Container1 = BuildContainer ( ) ;
             }
 
-            _lifetimeScope = Container1.BeginLifetimeScope ( ) ;
+            _lifetimeScope = Container1.BeginLifetimeScope ("Primary") ;
             return _lifetimeScope ;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        [ NotNull ]
+        public override ILifetimeScope GetLifetimeScope(Action<ContainerBuilder> action)
+        {
+            if (_lifetimeScope != null)
+            {
+                // if (action != null)
+                // {
+                    // throw new InvalidOperationException();
+                // }
+                return _lifetimeScope;
+            }
+
+            if (Container1 == null)
+            {
+                Container1 = BuildContainer();
+            }
+
+            _lifetimeScope = Container1.BeginLifetimeScope("initial scope", action );
+            return _lifetimeScope;
         }
 
         /// <summary>
@@ -362,10 +404,27 @@ namespace KayMcCormick.Dev.Application
             builder.RegisterMetadataRegistrationSources ( ) ;
             builder.RegisterModule < NouveauAppModule > ( ) ;
 
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                DebugUtils.WriteLine(assembly.GetName().ToString());
+            }
+
+            Assembly loaded = null;
+            var entryAssembly = Assembly.GetEntryAssembly();
+            if (entryAssembly != null)
+                foreach (var assembly in entryAssembly.GetReferencedAssemblies())
+                {
+                    DebugUtils.WriteLine("ref:" + assembly.Name);
+                    if (assembly.Name == "AnalysisAppLib")
+                    {
+                        loaded = Assembly.Load(assembly);
+                    }
+                }
+
             var yy = AppDomain.CurrentDomain.GetAssemblies ( )
                      .Where (
                              assembly => {
-                                 if ( assembly.GetName().Name == "KayMcCormick.Lib.Wpf")
+                                 if ( assembly.GetName().Name == "WpfLib" || assembly.GetName().Name == "AnalysisAppLib")
                                  {
                                      return true ;
                                  }
@@ -377,15 +436,15 @@ namespace KayMcCormick.Dev.Application
                    .AssignableTo < JsonConverter > ( ).PublicOnly()
                    .AsImplementedInterfaces ( )
                    .As<JsonConverter> (  )
-                   .AsSelf ( );
+                   .AsSelf ( ).WithCallerMetadata();
 
             var jsonSerializerOptions = new JsonSerializerOptions ( ) ;
             JsonConverters.AddJsonConverters(jsonSerializerOptions);
             foreach ( var jsonConverter in jsonSerializerOptions.Converters )
             {
-                builder.RegisterInstance ( jsonConverter ).AsSelf ( ).As<JsonConverter>().AsImplementedInterfaces ( ) ;
+                builder.RegisterInstance ( jsonConverter ).AsSelf ( ).As<JsonConverter>().AsImplementedInterfaces ( ).WithCallerMetadata (  ) ;
             }
-            
+
             //builder.RegisterInstance ( jsonSerializerOptions ).As < JsonSerializerOptions > ( ) ;
             builder.Register (
                               ( context , parameters ) => {
@@ -399,13 +458,23 @@ namespace KayMcCormick.Dev.Application
                                   return o ;
                               }
                              )
-                   .As < JsonSerializerOptions > ( ) ;
+                   .As < JsonSerializerOptions > ( ).WithCallerMetadata() ;
 
             foreach ( var module in _modules )
             {
                 LogDebug ( $"Registering module {module}" ) ;
                 builder.RegisterModule ( module ) ;
             }
+
+            builder.RegisterBuildCallback(scope => scope.ChildLifetimeScopeBeginning += (sender, args) =>
+            {
+
+                if (args.LifetimeScope.Tag.GetType() == typeof(object))
+                {
+                    throw new InvalidOperationException();
+                }
+
+            });
 
             try
             {
@@ -440,7 +509,7 @@ namespace KayMcCormick.Dev.Application
 
         /// <summary>
         /// </summary>
-        public override void Shutdown ( )
+        protected override void Shutdown ( )
         {
             base.Shutdown ( ) ;
 #if NETSTANDARD || NETFRAMEWORK
@@ -453,6 +522,7 @@ namespace KayMcCormick.Dev.Application
         /// <param name="logMethod2"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
+        // ReSharper disable once FunctionComplexityOverflow
         protected override IEnumerable LoadConfiguration ( Action < string > logMethod2 )
         {
             if ( logMethod2 == null )
@@ -474,51 +544,55 @@ namespace KayMcCormick.Dev.Application
                     {
                         var type = configSection.SectionInformation.Type ;
                         var sectionType = Type.GetType ( type ) ;
-                        if ( sectionType             != null
-                             && sectionType.Assembly == type1.Assembly )
+                        if ( sectionType             == null
+                             || sectionType.Assembly != type1.Assembly )
                         {
-                            logMethod2 ( "Found section " + sectionType.Name ) ;
-                            var at = sectionType.GetCustomAttribute < ConfigTargetAttribute > ( ) ;
-                            var configTarget = Activator.CreateInstance ( at.TargetType ) ;
-                            var infos = sectionType
-                                       .GetMembers ( )
-                                       .Select (
-                                                info => Tuple.Create (
-                                                                      info
-                                                                    , info
-                                                                         .GetCustomAttribute <
-                                                                              ConfigurationPropertyAttribute
-                                                                          > ( )
-                                                                     )
-                                               )
-                                       .Where ( tuple => tuple.Item2 != null )
-                                       .ToArray ( ) ;
-                            foreach ( var (item1 , _) in infos )
+                            continue ;
+                        }
+
+                        logMethod2 ( "Found section " + sectionType.Name ) ;
+                        var at = sectionType.GetCustomAttribute < ConfigTargetAttribute > ( ) ;
+                        var configTarget = Activator.CreateInstance ( at.TargetType ) ;
+                        var infos = sectionType
+                                   .GetMembers ( )
+                                   .Select (
+                                            info => Tuple.Create (
+                                                                  info
+                                                                , info
+                                                                     .GetCustomAttribute <
+                                                                          ConfigurationPropertyAttribute
+                                                                      > ( )
+                                                                 )
+                                           )
+                                   .Where ( tuple => tuple.Item2 != null )
+                                   .ToArray ( ) ;
+                        foreach ( var (item1 , _) in infos )
+                        {
+                            if ( item1.MemberType != MemberTypes.Property )
                             {
-                                if ( item1.MemberType == MemberTypes.Property )
-                                {
-                                    var attr = at.TargetType.GetProperty ( item1.Name ) ;
-                                    try
-                                    {
-                                        var configVal =
-                                            ( ( PropertyInfo ) item1 ).GetValue ( configSection ) ;
-                                        if ( attr != null )
-                                        {
-                                            attr.SetValue ( configTarget , configVal ) ;
-                                        }
-                                    }
-                                    catch ( Exception ex )
-                                    {
-                                        logMethod2 (
-                                                    $"Unable to set property {item1.Name}: {ex.Message}"
-                                                   ) ;
-                                    }
-                                }
+                                continue ;
                             }
 
-
-                            ConfigSettings.Add ( configTarget ) ;
+                            var attr = at.TargetType.GetProperty ( item1.Name ) ;
+                            try
+                            {
+                                var configVal =
+                                    ( ( PropertyInfo ) item1 ).GetValue ( configSection ) ;
+                                if ( attr != null )
+                                {
+                                    attr.SetValue ( configTarget , configVal ) ;
+                                }
+                            }
+                            catch ( Exception ex )
+                            {
+                                logMethod2 (
+                                            $"Unable to set property {item1.Name}: {ex.Message}"
+                                           ) ;
+                            }
                         }
+
+
+                        ConfigSettings.Add ( configTarget ) ;
                     }
                     catch ( Exception ex1 )
                     {
@@ -544,8 +618,8 @@ namespace KayMcCormick.Dev.Application
     /// </summary>
     public sealed class AppLogMessage
     {
-        private string _message ;
-        private int _threadId ;
+        private readonly string _message ;
+        private readonly int _threadId ;
 
         /// <summary>
         /// 
@@ -589,7 +663,7 @@ namespace KayMcCormick.Dev.Application
         public ContainerBuildException ( string message ) : base ( message ) { }
 
         /// <summary>
-        /// Construcotr
+        /// Constructor
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
@@ -629,12 +703,12 @@ namespace KayMcCormick.Dev.Application
                    .AsSelf ( )
                    .AsImplementedInterfaces ( )
                    .WithAttributedMetadata ( )
-                   .WithAttributeFiltering ( ) ;
+                   .WithAttributeFiltering ( ).WithCallerMetadata() ;
             if ( AppLoggingConfigHelper.CacheTarget2 != null )
             {
                 builder.RegisterInstance ( AppLoggingConfigHelper.CacheTarget2 )
                        .WithMetadata ( "Description" , "Cache target" )
-                       .SingleInstance ( ) ;
+                       .SingleInstance ( ).WithCallerMetadata() ;
             }
         }
     }
@@ -658,6 +732,7 @@ namespace KayMcCormick.Dev.Application
     /// </summary>
     public sealed class ParsedStackInfo
     {
+        // ReSharper disable once NotAccessedField.Local
         private readonly string _exMessage ;
 
         private readonly string                   _typeName ;
@@ -695,4 +770,5 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         public string TypeName { get { return _typeName ; } }
     }
+
 }

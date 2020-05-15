@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System.Collections.Generic ;
+using System.Text.Json.Serialization ;
 using Microsoft.CodeAnalysis ;
 
 namespace FindLogUsages
@@ -148,6 +149,7 @@ namespace FindLogUsages
         /// <summary>
         /// 
         /// </summary>
+        [JsonIgnore]
         public Location Location { get { return _location ; } set { _location = value ; } }
         #endregion
     }

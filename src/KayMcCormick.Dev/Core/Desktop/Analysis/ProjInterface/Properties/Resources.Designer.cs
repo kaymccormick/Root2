@@ -95,5 +95,14 @@ namespace ProjInterface.Properties {
                 return ResourceManager.GetString("ProjInterfaceApp_OnStartup_Application_Error", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in compile-time configuration. Please contact your local administrator..
+        /// </summary>
+        internal static string ProjInterfaceApp_OnStartup_Compile_time_configuration_error {
+            get {
+                return ResourceManager.GetString("ProjInterfaceApp_OnStartup_Compile_time_configuration_error", resourceCulture);
+            }
+        }
     }
 }

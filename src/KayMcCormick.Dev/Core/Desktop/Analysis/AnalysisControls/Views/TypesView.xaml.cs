@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel ;
-using System.Diagnostics ;
 using System.Runtime.CompilerServices ;
 using System.Windows ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
-using AnalysisAppLib.ViewModel ;
+using AnalysisAppLib ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Attributes ;
@@ -17,6 +16,9 @@ namespace AnalysisControls.Views
     /// </summary>
     [ TitleMetadata ( "Syntax node types" ) ]
     [ ImageMetadata ( "helpStatusColor" ) ]
+    [CategoryMetadata(Category.Management)]
+    [CommandIdMetadata("{2B0E68A0-5D5D-4296-8808-90E8AAAC783D}")]
+    [GroupMetadata("Syntax")]
     public sealed partial class TypesView : UserControl
       , IView < ITypesViewModel >
       , IViewWithTitle
@@ -29,7 +31,7 @@ namespace AnalysisControls.Views
         /// </summary>
         private TypesView ( )
         {
-            Debug.WriteLine ( "Initializing without ViewModel" ) ;
+            DebugUtils.WriteLine ( "Initializing without ViewModel" ) ;
             InitializeComponent ( ) ;
         }
 
@@ -39,7 +41,7 @@ namespace AnalysisControls.Views
         public TypesView ( ITypesViewModel viewModel )
         {
             _viewModel = viewModel ;
-            Debug.WriteLine ( "View model is " + _viewModel ) ;
+            DebugUtils.WriteLine ( "View model is " + _viewModel ) ;
             InitializeComponent ( ) ;
         }
 
@@ -56,7 +58,7 @@ namespace AnalysisControls.Views
             set
             {
                 _viewModel = value ;
-                Debug.WriteLine ( "Set viewModel" ) ;
+                DebugUtils.WriteLine ( "Set viewModel" ) ;
                 OnPropertyChanged ( ) ;
             }
         }
@@ -91,7 +93,7 @@ namespace AnalysisControls.Views
                 var dependencyObject = VisualTreeHelper.GetChild ( reference , i ) ;
                 var v = ( Visual ) dependencyObject ;
                 var contentBounds = VisualTreeHelper.GetContentBounds ( v ) ;
-                Debug.WriteLine (
+                DebugUtils.WriteLine (
                                  $"{v}{i} {contentBounds.Left},{contentBounds.Top} - {contentBounds.Right},{contentBounds.Bottom}"
                                 ) ;
                 DumpVisualRects ( v ) ;

@@ -13,11 +13,13 @@ using System ;
 using System.Collections.Generic ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class DictConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
@@ -41,6 +43,7 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ NotNull ]
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
@@ -51,9 +54,10 @@ namespace KayMcCormick.Dev.Logging
 
         /// <summary>
         /// </summary>
-        private class Inner : JsonConverter < IDictionary < object , object > >
+        private sealed class Inner : JsonConverter < IDictionary < object , object > >
         {
             #region Overrides of JsonConverter<IDictionary<object,object>>
+            [ NotNull ]
             public override IDictionary < object , object > Read (
                 ref Utf8JsonReader    reader
               , Type                  typeToConvert
@@ -82,8 +86,8 @@ namespace KayMcCormick.Dev.Logging
             }
 
             public override void Write (
-                Utf8JsonWriter                  writer
-              , IDictionary < object , object > value
+                [ NotNull ] Utf8JsonWriter                  writer
+              , [ NotNull ] IDictionary < object , object > value
               , JsonSerializerOptions           options
             )
             {

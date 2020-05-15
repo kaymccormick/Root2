@@ -1,18 +1,18 @@
-﻿using System.ComponentModel ;
-using System.Runtime.CompilerServices ;
-using System.Windows ;
-using System.Windows.Controls.Primitives ;
-using AnalysisAppLib ;
-using Autofac ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev ;
-using KayMcCormick.Dev.Attributes ;
-using KayMcCormick.Lib.Wpf ;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls.Primitives;
+using AnalysisAppLib;
+using Autofac;
+using JetBrains.Annotations;
+using KayMcCormick.Dev;
+using KayMcCormick.Dev.Attributes;
+using KayMcCormick.Lib.Wpf;
 
 namespace ProjInterface
 {
     [ TitleMetadata ( "Log Viewer Window" ) ]
-    public partial class LogViewerWindow : AppWindow
+    public sealed partial class LogViewerWindow : AppWindow
       , INotifyPropertyChanged
       , IViewWithTitle
       , IView < LogViewerAppViewModel >
@@ -41,7 +41,8 @@ namespace ProjInterface
         #endregion
 
         [ NotifyPropertyChangedInvocator ]
-        protected void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
+        // ReSharper disable once UnusedMember.Local
+        private void OnPropertyChanged ( [ CallerMemberName ] string propertyName = null )
         {
             PropertyChanged?.Invoke ( this , new PropertyChangedEventArgs ( propertyName ) ) ;
         }
@@ -53,12 +54,13 @@ namespace ProjInterface
 
         private void ButtonBase_OnClick2 ( object sender , RoutedEventArgs e )
         {
-            var port = int.Parse ( this.port.Text ) ;
+            // ReSharper disable once InconsistentNaming
+            var port_ = int.Parse ( this.Port.Text ) ;
             var logViewModel = new LogViewModel ( ) ;
-            var x = new LogListener ( port , logViewModel ) ;
-            logViewModel.DisplayName = port.ToString ( ) ;
+            var x = new LogListener ( port_ , logViewModel ) ;
+            logViewModel.DisplayName = port_.ToString ( ) ;
             ViewModel.LogViewModels.Add ( logViewModel ) ;
-            mainTabControl.SetCurrentValue ( Selector.SelectedItemProperty , logViewModel ) ;
+            MainTabControl.SetCurrentValue ( Selector.SelectedItemProperty , logViewModel ) ;
             x.Start ( ) ;
         }
     }

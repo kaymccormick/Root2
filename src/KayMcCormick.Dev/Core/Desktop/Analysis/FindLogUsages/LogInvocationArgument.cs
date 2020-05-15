@@ -1,28 +1,25 @@
-﻿using System.ComponentModel ;
+﻿using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace FindLogUsages
 {
-    internal class LogInvocationArgument : ILogInvocationArgument
+    internal sealed class LogInvocationArgument : ILogInvocationArgument
     {
-        [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
-        private readonly ArgumentSyntax _syntax ;
+#pragma warning disable 649
+        private string _jSon ;
+#pragma warning restore 649
 
-        private string jSON ;
-
-        public LogInvocationArgument ( ArgumentSyntax syntax )
+        public LogInvocationArgument ( [ NotNull ] ArgumentSyntax syntax )
         {
-            _syntax = syntax ;
             var jsonOut = GenTransforms.Transform_Expression( syntax.Expression ) ;
             Pojo = jsonOut ;
         }
 
 
+        // ReSharper disable once UnusedMember.Global
         public LogInvocationArgument ( ) { }
 
-        public string GetJSON ( ILogInvocationArgument arg ) { return jSON ; }
-
-        public void SetJSON ( string value ) { jSON = value ; }
+        public string GetJson ( ILogInvocationArgument arg ) { return _jSon ; }
 
         public object Pojo { get ; set ; }
     }

@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// </summary>
-    public class StackTraceSourceLocation
+    internal sealed class StackTraceSourceLocation
     {
         /// <summary>
         /// </summary>

@@ -1,20 +1,21 @@
 ﻿using System ;
-using System.Collections ;
+using System.Collections;
 using System.Collections.Generic ;
 using System.ComponentModel ;
-using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
-using System.Reflection ;
+using System.Reflection;
 using System.Runtime.CompilerServices ;
 using System.Runtime.Serialization ;
+using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Xml ;
-using System.Xml.Linq ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Properties ;
-using Corenet.Desktop.Analysis.AnalysisAppLib.Properties ;
+using AnalysisAppLib.Syntax ;
+using AnalysisAppLib.Xaml ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Serialization ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -25,247 +26,62 @@ namespace AnalysisControls.ViewModel
 {
     /// <summary>
     /// </summary>
-    [NoJsonConverter]
+    [ NoJsonConverter ]
     public sealed class TypesViewModel : ITypesViewModel
       , INotifyPropertyChanged
       , ISupportInitializeNotification
     {
-        private bool _showBordersIsChecked ;
+        /// <summary>
+        /// 
+        /// </summary>
+        public TypesViewModel ( ) {
+        }
+
+        private readonly List < AppTypeInfo > _typeInfos ;
+        private const string PocoPrefix = "Poco" ;
+        private const string CollectionSuffix = "Collection" ;
+
+        private DateTime _initializationDateTime ;
+        private bool     _showBordersIsChecked ;
 
         private uint[] _hierarchyColors =
         {
             0xff9cbf60 , 0xff786482 , 0xffb89428 , 0xff9ec28c , 0xff3c6e7d , 0xff533ca3
         } ;
 
-        private AppTypeInfo   root ;
+        private AppTypeInfo   _root ;
         private List < Type > _nodeTypes ;
 
-        private TypeMapDictionary map = new TypeMapDictionary ( ) ;
+        private TypeMapDictionary  _map   = new TypeMapDictionary ( ) ;
+        private TypeMapDictionary2 _map2 = new TypeMapDictionary2 ( ) ;
 
-        private readonly Dictionary < Type , AppTypeInfo > otherTyps =
-            new Dictionary < Type , AppTypeInfo > ( ) ;
-#if false
+
+#if true
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 #else
-        private static readonly Logger Logger = LogManager.CreateNullLogger ( ) ;
 #endif
 
-        private Dictionary < Type , TypeDocInfo >
-            _docs = new Dictionary < Type , TypeDocInfo > ( ) ;
+        // ReSharper disable once CollectionNeverUpdated.Local
+        private readonly Dictionary < Type , TypeDocInfo > _docs =
+            new Dictionary < Type , TypeDocInfo > ( ) ;
+
+        private readonly DocumentCollection _documentCollection = new DocumentCollection ( ) ;
+        [ CanBeNull ] private readonly object _docInfo = null ;
+        private Dictionary<Type, AppTypeInfo> otherTyps = new Dictionary<Type, AppTypeInfo>();
 
         /// <summary>
         /// 
         /// </summary>
+        public TypesViewModel ( List < AppTypeInfo > typeInfos =null) { _typeInfos = typeInfos ; }
+
+        /// <summary>
+        /// </summary>
         // ReSharper disable once EmptyConstructor
-        public TypesViewModel ( ) { }
-
-        internal void LoadSyntaxFactoryDocs ( )
+        public TypesViewModel ( JsonSerializerOptions options )
         {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            _docs.TryGetValue ( typeof ( SyntaxFactory ) , out var si ) ;
-            var methodInfos = typeof ( SyntaxFactory )
-                             .GetMethods ( BindingFlags.Static | BindingFlags.Public )
-                             .ToList ( ) ;
-
-            foreach ( var methodInfo in methodInfos.Where (
-                                                           info => typeof ( SyntaxNode )
-                                                              .IsAssignableFrom ( info.ReturnType )
-                                                          ) )
-            {
-                var info = ( AppTypeInfo ) Map[ methodInfo.ReturnType ] ;
-                var appMethodInfo = new AppMethodInfo { MethodInfo = methodInfo } ;
-                if ( si != null
-                     && si.MethodDocumentation.TryGetValue ( methodInfo.Name , out var mdoc ) )
-                {
-                    var p = string.Join (
-                                         ","
-                                       , methodInfo
-                                        .GetParameters ( )
-                                        .Select (
-                                                 parameterInfo
-                                                     => parameterInfo.ParameterType.FullName
-                                                )
-                                        ) ;
-                    //Debug.WriteLine ( $"xx: {p}" ) ;
-                    foreach ( var methodDocumentation in mdoc )
-                    {
-                        //  Debug.WriteLine ( methodDocumentation.Parameters ) ;
-                        if ( methodDocumentation.Parameters == p )
-                        {
-                            //    Debug.WriteLine ( $"Docs for {methodInfo}" ) ;
-                            appMethodInfo.XmlDoc = methodDocumentation ;
-                            CollectDoc ( methodDocumentation ) ;
-                        }
-                    }
-                }
-
-                info.FactoryMethods.Add ( appMethodInfo ) ;
-                //Logger.Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
-            }
-
-            foreach ( var pair in Map.dict.Where ( pair => pair.Key != typeof ( CSharpSyntaxNode ) )
-            )
-            {
-                //}.Where ( pair => pair.Key.IsAbstract == false ) )
-                {
-                    foreach ( var propertyInfo in pair.Key.GetProperties (
-                                                                          BindingFlags.DeclaredOnly
-                                                                          | BindingFlags.Instance
-                                                                          | BindingFlags.Public
-                                                                         ) )
-                    {
-                        if ( propertyInfo.DeclaringType != pair.Key )
-                        {
-                            continue ;
-                        }
-
-                        var t = propertyInfo.PropertyType ;
-                        // if ( t == typeof ( SyntaxToken ) )
-                        // {
-                        // continue ;
-                        // }
-
-                        var isList = false ;
-                        AppTypeInfo typeInfo = null ;
-                        AppTypeInfo otherTypeInfo = null ;
-                        if ( t.IsGenericType )
-                        {
-                            var targ = t.GenericTypeArguments[ 0 ] ;
-                            if ( typeof ( SyntaxNode ).IsAssignableFrom ( targ )
-                                 && typeof ( IEnumerable ).IsAssignableFrom ( t ) )
-                            {
-                                isList   = true ;
-                                typeInfo = ( AppTypeInfo ) Map[ targ ] ;
-                            }
-                        }
-                        else
-                        {
-                            if ( ! Map.dict.TryGetValue ( t , out typeInfo ) )
-                            {
-                                if ( ! otherTyps.TryGetValue ( t , out otherTypeInfo ) )
-                                {
-                                    otherTypeInfo = otherTyps[ t ] = new AppTypeInfo { Type = t } ;
-                                }
-                            }
-                        }
-
-                        if ( typeInfo         == null
-                             && otherTypeInfo == null )
-                        {
-                            continue ;
-                        }
-
-                        PropertyDocumentation propDoc = null ;
-                        if ( pair.Value.Type != null
-                             && _docs.TryGetValue ( pair.Value.Type , out var info ) )
-                        {
-                            if ( info.PropertyDocumentation.TryGetValue (
-                                                                         propertyInfo.Name
-                                                                       , out propDoc
-                                                                        ) )
-                            {
-                            }
-                        }
-
-                        CollectDoc ( propDoc ) ;
-                        pair.Value.Components.Add (
-                                                   new ComponentInfo
-                                                   {
-                                                       XmlDoc         = propDoc
-                                                     , IsSelfOwned    = true
-                                                     , OwningTypeInfo = pair.Value
-                                                     , IsList         = isList
-                                                     , TypeInfo       = typeInfo ?? otherTypeInfo
-                                                     , PropertyName   = propertyInfo.Name
-                                                   }
-                                                  ) ;
-                        //Logger.Info ( t.ToString ( ) ) ;
-                    }
-                }
-            }
+            options.WriteIndented = true ;
         }
 
-
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        [ NotNull ]
-        public static Dictionary < Type , TypeDocInfo > LoadXmlDoc ( )
-        {
-            var docDict = new Dictionary < Type , TypeDocInfo > ( ) ;
-            var doc = LoadDoc ( ) ;
-            if ( doc.DocumentElement == null )
-            {
-                throw new InvalidOperationException ( ) ;
-            }
-
-            foreach ( var xmlElement in DocMembers ( doc ) )
-            {
-                var elem = HandleDocElement ( xmlElement ) ;
-                if ( elem == null )
-                {
-                    continue ;
-                }
-
-                if ( ! docDict.TryGetValue ( elem.Type , out var info ) )
-                {
-                    info                 = new TypeDocInfo ( ) ;
-                    docDict[ elem.Type ] = info ;
-                }
-
-                switch ( elem )
-                {
-                    case FieldDocumentation fieldDocumentation :
-                        info.FieldDocumentation[ fieldDocumentation.MemberName ] =
-                            fieldDocumentation ;
-                        break ;
-                    case MethodDocumentation methodDocumentation :
-                        if ( ! info.MethodDocumentation.TryGetValue (
-                                                                     methodDocumentation.MemberName
-                                                                   , out var docs
-                                                                    ) )
-                        {
-                            docs =
-                                new List < MethodDocumentation > ( ) ;
-                            info.MethodDocumentation[ methodDocumentation.MemberName ] = docs ;
-                        }
-
-                        docs.Add ( methodDocumentation ) ;
-                        break ;
-                    case PropertyDocumentation propertyDocumentation :
-                        info.PropertyDocumentation[ propertyDocumentation.MemberName ] =
-                            propertyDocumentation ;
-
-                        break ;
-                    case TypeDocumentation typeDocumentation :
-                        info.TypeDocumentation = typeDocumentation ;
-                        break ;
-                    default : throw new ArgumentOutOfRangeException ( nameof ( elem ) ) ;
-                }
-            }
-
-            return docDict ;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="doc"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        [ NotNull ]
-        public static IEnumerable < XmlElement > DocMembers ( [ NotNull ] XmlDocument doc )
-        {
-            if ( doc.DocumentElement == null )
-            {
-                throw new InvalidOperationException ( ) ;
-            }
-
-            return doc.DocumentElement.ChildNodes.OfType < XmlElement > ( )
-                      .First ( child => child.Name == "members" )
-                      .ChildNodes.OfType < XmlElement > ( ) ;
-        }
 
         /// <summary>
         /// </summary>
@@ -273,7 +89,7 @@ namespace AnalysisControls.ViewModel
         [ NotNull ]
         public static XmlDocument LoadDoc ( )
         {
-            var xml = Resource1.doc;
+            var xml = Resources.doc ;
             var docuDoc = new XmlDocument ( ) ;
             docuDoc.LoadXml ( xml ) ;
             return docuDoc ;
@@ -281,96 +97,14 @@ namespace AnalysisControls.ViewModel
 
         /// <summary>
         /// </summary>
-        /// <param name="xmlElement"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        [ CanBeNull ]
-        public static CodeElementDocumentation HandleDocElement (
-            [ NotNull ] XmlElement xmlElement
-        )
-        {
-            if ( xmlElement == null )
-            {
-                throw new ArgumentNullException ( nameof ( xmlElement ) ) ;
-            }
-
-            var elementId = xmlElement.GetAttribute ( "name" ) ;
-            var doc = XDocument.Parse ( xmlElement.OuterXml ) ;
-            var xNodes = doc.Element ( "member" )?.Nodes ( ) ;
-
-            var xmlDoc = ( xNodes ?? throw new InvalidOperationException ( ) ).Select ( XmlDocElements.Selector ) ;
-            var kind = elementId[ 0 ] ;
-            var type = elementId.Substring ( 2 ) ;
-            string parameters = null ;
-            if ( type.Contains ( '(' ) )
-            {
-                var leftParen = type.IndexOf ( '(' ) ;
-                var rightParen = type.LastIndexOf ( ')' ) ;
-
-                parameters = type.Substring ( leftParen + 1 , rightParen - leftParen - 1 ) ;
-                type       = type.Substring ( 0 ,             leftParen ) ;
-            }
-
-            string memberName = null ;
-            if ( kind    == 'M'
-                 || kind == 'P'
-                 || kind == 'F' )
-            {
-                memberName = type.Substring ( type.LastIndexOf ( '.' ) + 1 ) ;
-                type       = type.Substring ( 0 , type.LastIndexOf ( '.' ) ) ;
-            }
-
-            var t = typeof ( CSharpSyntaxNode ).Assembly.GetType ( type ) ;
-            if ( t == null )
-            {
-                Debug.WriteLine ( $"cant find type {type}" ) ;
-                return null ;
-            }
-
-            //var t = Type.GetType ( type ) ;
-            switch ( kind )
-            {
-                case 'T' : return new TypeDocumentation ( elementId , t , xmlDoc ) ;
-                case 'M' :
-                    return new MethodDocumentation (
-                                                    elementId
-                                                  , t
-                                                  , memberName
-                                                  , parameters
-                                                  , xmlDoc
-                                                   ) ;
-                case 'P' :
-                    return new PropertyDocumentation (
-                                                      elementId
-                                                    , t
-                                                    , memberName
-                                                      ?? throw new InvalidOperationException ( )
-                                                    , xmlDoc
-                                                     ) ;
-                case 'F' :
-                    return new FieldDocumentation (
-                                                   elementId
-                                                 , t
-                                                 , memberName
-                                                   ?? throw new InvalidOperationException ( )
-                                                 , xmlDoc
-                                                  ) ;
-                default : throw new InvalidOperationException ( kind.ToString ( ) ) ;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
-        [JsonIgnore]
+        [ JsonIgnore ]
         public AppTypeInfo Root
         {
-            get { return root ; }
+            get { return _root ; }
             set
             {
-                root = value ;
+                _root = value ;
                 OnPropertyChanged ( ) ;
             }
         }
@@ -397,61 +131,159 @@ namespace AnalysisControls.ViewModel
         }
 
         /// <summary>
-        /// 
         /// </summary>
-        public DocumentCollection DocumentCollection { get ; set ; } = new DocumentCollection ( ) ;
+        public DocumentCollection DocumentCollection { get { return _documentCollection ; } }
+
+        /// <summary>
+        /// </summary>
+        [ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
+        public TypeMapDictionary Map { get { return _map ; } set { _map = value ; } }
+
+        /// <summary>
+        /// </summary>
+        public AppTypeInfoCollection StructureRoot { get ; set ; } = new AppTypeInfoCollection ( ) ;
 
         /// <summary>
         /// 
         /// </summary>
-        public TypeMapDictionary Map { get { return map ; } set { map = value ; } }
+        [ CanBeNull ] public object DocInfo { get { return _docInfo ; } }
 
         /// <summary>
         /// 
         /// </summary>
-        public AppTypeInfoCollection StructureRoot { get ; set ; } = new AppTypeInfoCollection();
-
-        [ NotNull ]
-        private AppTypeInfo CollectTypeInfos (
-            AppTypeInfo      parentTypeInfo
-          , [ NotNull ] Type rootR
-          , int              level = 0
-        )
+        /// <param name="identifier"></param>
+        /// <returns></returns>
+        [ CanBeNull ]
+        public AppTypeInfo GetAppTypeInfo ( [ NotNull ] object identifier )
         {
-            TypeDocumentation docNode = null ;
-
-            if ( _docs.TryGetValue (
-                                    rootR ?? throw new InvalidOperationException ( )
-                                  , out var info
-                                   ) )
+            AppTypeInfoKey key = null ;
+            string unqualifiedTypeName = null ;
+            switch ( identifier )
             {
-                docNode = info.TypeDocumentation ;
+                case Type type :         unqualifiedTypeName = type.Name ;
+                    break ;
+                case string s1 :         unqualifiedTypeName = s1 ;
+                    break ;
+                case AppTypeInfoKey k1 : key                 = k1 ;
+                    break ;
+                default :                throw new InvalidOperationException ( "Bad key" ) ;
             }
 
-            CollectDoc ( docNode ) ;
-            var r = new AppTypeInfo
+            if ( unqualifiedTypeName != null )
+            {
+                key = new AppTypeInfoKey ( unqualifiedTypeName ) ;
+            }
+
+            if ( Map.Dict.TryGetValue ( key , out var typeInfo ) )
+            {
+                return typeInfo ;
+            }
+
+            throw new InvalidOperationException ( "No such type" ) ;
+        }
+
+
+        [CanBeNull]
+        public bool TryGetAppTypeInfo([NotNull] object identifier, out AppTypeInfo appTypeInfo)
+        {
+            AppTypeInfoKey key = null;
+            string unqualifiedTypeName = null;
+            switch (identifier)
+            {
+                case Type type:
+                    unqualifiedTypeName = type.Name;
+                    break;
+                case string s1:
+                    unqualifiedTypeName = s1;
+                    break;
+                case AppTypeInfoKey k1:
+                    key = k1;
+                    break;
+                default:
+                    appTypeInfo = null;
+                    return false;
+            }
+
+            if (unqualifiedTypeName != null)
+            {
+                key = new AppTypeInfoKey(unqualifiedTypeName);
+            }
+
+            if (Map.Dict.TryGetValue(key, out appTypeInfo))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Discover information about the given Syntax Node class and all children recursively, depth-first.
+        /// </summary>
+        /// <param name="clrSyntaxNodeType"></param>
+        /// <param name="parentTypeInfo"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        [NotNull ]
+        public AppTypeInfo CollectTypeInfos (
+            [ NotNull ] Type clrSyntaxNodeType
+          , AppTypeInfo      parentTypeInfo = null
+          , int              level          = 0
+        )
+        {
+            if ( clrSyntaxNodeType == null )
+            {
+                throw new ArgumentNullException ( nameof ( clrSyntaxNodeType ) ) ;
+            }
+
+            TypeDocumentation docNode = null ;
+
+            if ( _docs.TryGetValue ( clrSyntaxNodeType , out var info ) )
+            {
+                if ( info.TypeDocumentation != null )
+                {
+                    docNode = info.TypeDocumentation ;
+                }
+            }
+
+            if ( docNode != null )
+            {
+                CollectDoc ( docNode ) ;
+            }
+
+            /* Construct appTypeInfo */
+            var appTypeInfoKey = new AppTypeInfoKey ( clrSyntaxNodeType ) ;
+            const int version = 1 ;
+            var appTypeInfo = new AppTypeInfo
                     {
-                        Type           = rootR
+                        Type           = clrSyntaxNodeType
                       , DocInfo        = docNode
                       , ParentInfo     = parentTypeInfo
                       , HierarchyLevel = level
                       , ColorValue     = HierarchyColors[ level ]
+                      , Version        = version
+                      , KeyValue       = appTypeInfoKey.StringValue
                     } ;
-            foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
+            //DebugUtils.WriteLine ( $"{JsonSerializer.Serialize ( appTypeInfo , _options )}" ) ;
+            /* Descend into related subtypes to populate complete syntax node structure. */
+            foreach ( var subType in _nodeTypes.Where ( type => type.BaseType == clrSyntaxNodeType ) )
             {
-                r.SubTypeInfos.Add ( CollectTypeInfos ( r , type1 , level + 1 ) ) ;
+                appTypeInfo.SubTypeInfos.Add ( CollectTypeInfos ( subType , appTypeInfo , level + 1 ) ) ;
             }
 
-            Map[ rootR ] = r ;
-            return r ;
+            Map.Dict[ appTypeInfoKey ] = appTypeInfo ;
+            return appTypeInfo ;
         }
 
         private void CollectDoc ( [ CanBeNull ] CodeElementDocumentation docNode )
         {
-            if ( docNode != null )
+            if ( docNode == null )
             {
-                DocumentCollection.Add ( docNode ) ;
+                return ;
             }
+
+            DebugUtils.WriteLine ( $"{docNode}" ) ;
+            DocumentCollection.Add ( docNode ) ;
         }
 
         #region Implementation of ISerializable
@@ -474,23 +306,48 @@ namespace AnalysisControls.ViewModel
 
         #region Implementation of ISupportInitialize
         /// <summary>
-        /// 
         /// </summary>
         public void BeginInit ( ) { }
 
         /// <summary>
-        /// 
         /// </summary>
         public void EndInit ( )
         {
-            if ( DocumentCollection.Count == 0 )
+            Logger.Info ( nameof ( EndInit ) ) ;
+            if ( _typeInfos?.Any ( ) == true )
             {
-                _docs = LoadXmlDoc ( ) ;
+                foreach ( var appTypeInfo in _typeInfos )
+                {
+                    var keyValue = ( string ) appTypeInfo.KeyValue ;
+                    Map2.Dict[ keyValue ] = appTypeInfo ;
+                }
+            }
+            else
+            {
+                foreach ( var keyValuePair in Map2.Dict )
+                {
+                    Map.Dict[ new AppTypeInfoKey ( keyValuePair.Key ) ] = keyValuePair.Value ;
+                }
             }
 
-            if ( Map.Count != 0 )
+                foreach ( var keyValuePair in Map2.Dict )
+                {
+                    var appTypeInfo = keyValuePair.Value;
+                    foreach (var kind in appTypeInfo.Kinds)
+                    {
+                        var v = (SyntaxKind)Enum.Parse(typeof(SyntaxKind), kind);
+                        appTypeInfo.SyntaxKinds.Add(v);
+                    }
+                    foreach(SyntaxFieldInfo f in appTypeInfo.Fields) {
+		    f.Model = this;
+		    }
+                }
+
+var mapCount = Map.Count ;
+            Logger.Info ( $"Map Count {mapCount}" ) ;
+            if ( mapCount != 0 )
             {
-                LoadTypeInfo2 ( ) ;
+                CreateSubtypeLinkages ( ) ;
             }
             else if ( Root                       == null
                       || Root.SubTypeInfos.Count == 0 )
@@ -504,48 +361,203 @@ namespace AnalysisControls.ViewModel
 
             DetailFields ( ) ;
 
-            LoadSyntaxFactoryDocs ( ) ;
+            LoadSyntaxFactoryDocs ( _docs ) ;
 //            StructureRoot = new AppTypeInfoCollection { Map[ typeof ( CompilationUnitSyntax ) ] } ;
-            IsInitialized = true ;
+            IsInitialized          = true ;
+            InitializationDateTime = DateTime.Now ;
         }
 
-        public void DetailFields ( )
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="docs"></param>
+        /// 
+        public void LoadSyntaxFactoryDocs(Dictionary<Type, TypeDocInfo> docs)
         {
-            foreach ( var keyValuePair in Map.dict )
+            // ReSharper disable once AssignNullToNotNullAttribute
+            _docs.TryGetValue(typeof(SyntaxFactory), out var si);
+            var methodInfos = typeof(SyntaxFactory)
+                             .GetMethods(BindingFlags.Static | BindingFlags.Public)
+                             .ToList();
+
+            foreach (var methodInfo in methodInfos.Where(
+                                                           info => typeof(SyntaxNode)
+                                                              .IsAssignableFrom(info.ReturnType)
+                                                          ))
             {
-                foreach ( SyntaxFieldInfo rField in keyValuePair.Value.Fields )
+                var info = Map.Dict[new AppTypeInfoKey(methodInfo.ReturnType)];
+                var appMethodInfo = new AppMethodInfo { MethodInfo = methodInfo };
+                if (si != null
+                     && si.MethodDocumentation.TryGetValue(methodInfo.Name, out var mdoc))
                 {
-                    if ( rField.Type != null
-                         && rField.Type.IsGenericType
-                         && ( rField.Type.GetGenericTypeDefinition ( ) == typeof ( SyntaxList <> )
-                              || rField.Type.GetGenericTypeDefinition ( )
-                              == typeof ( SeparatedSyntaxList <> ) ) )
+                    var p = string.Join(
+                                         ","
+                                       , methodInfo
+                                        .GetParameters()
+                                        .Select(
+                                                 parameterInfo
+                                                     => parameterInfo.ParameterType.FullName
+                                                )
+                                        );
+                    //Debug.WriteLine ( $"xx: {p}" ) ;
+                    foreach (var methodDocumentation in mdoc)
                     {
-                        var tz = rField.Type.GetGenericArguments ( )[ 0 ] ;
-                        if ( Map.Contains ( tz ) )
+                        //  Debug.WriteLine ( methodDocumentation.Parameters ) ;
+                        if (methodDocumentation.Parameters == p)
                         {
-                            var ati = Map.dict[ tz ] ;
-                            var types = new List < AppTypeInfo > ( ) ;
-                            Collect ( ati , types ) ;
-                            foreach ( var appTypeInfo in types )
-                            {
-                                rField.Types.Add ( appTypeInfo ) ;
-                            }
+                            //    Debug.WriteLine ( $"Docs for {methodInfo}" ) ;
+                            appMethodInfo.XmlDoc = methodDocumentation;
+                            CollectDoc(methodDocumentation);
                         }
                     }
-                    else
+                }
+
+                info.FactoryMethods.Add(appMethodInfo);
+                //Logger.Info ( "{methodName}" , methodInfo.ToString ( ) ) ;
+            }
+
+            foreach (var pair in Map.Dict.Where(pair => !pair.Key.Equals( new AppTypeInfoKey(typeof(CSharpSyntaxNode))))
+            )
+            {
+                //}.Where ( pair => pair.Key.IsAbstract == false ) )
+                {
+                    foreach (var propertyInfo in pair.Value.Type.GetProperties(
+                                                                          BindingFlags.DeclaredOnly
+                                                                          | BindingFlags.Instance
+                                                                          | BindingFlags.Public
+                                                                         ))
                     {
-                        if ( rField.Type != null && Map.Contains(rField.Type))
+                        if (propertyInfo.DeclaringType != pair.Value.Type)
                         {
-                            rField.Types.Add ( Map.dict[ rField.Type ] ) ;
+                            continue;
                         }
+
+                        var t = propertyInfo.PropertyType;
+                        // if ( t == typeof ( SyntaxToken ) )
+                        // {
+                        // continue ;
+                        // }
+
+                        AppTypeInfo typeInfo = null;
+                        AppTypeInfo otherTypeInfo = null;
+                        if (t.IsGenericType)
+                        {
+                            var targ = t.GenericTypeArguments[0];
+                            if (typeof(SyntaxNode).IsAssignableFrom(targ)
+                                 && typeof(IEnumerable).IsAssignableFrom(t))
+                            {
+                                // Debug.WriteLine (
+                                // $"{pair.Key.Name} {propertyInfo.Name} list of {targ.Name}"
+                                // ) ;
+                                typeInfo = (AppTypeInfo)Map[targ];
+                            }
+                        }
+                        else
+                        {
+                            if (!Map.Dict.TryGetValue(new AppTypeInfoKey(t), out typeInfo))
+                            {
+                                if (!otherTyps.TryGetValue(t, out otherTypeInfo))
+                                {
+                                    otherTypeInfo = otherTyps[t] = new AppTypeInfo { Type = t };
+                                }
+                            }
+                        }
+
+                        if (typeInfo == null
+                             && otherTypeInfo == null)
+                        {
+                            continue;
+                        }
+
+                        PropertyDocumentation propDoc = null;
+                        if (pair.Value.Type != null
+                             && _docs.TryGetValue(pair.Value.Type, out var info))
+                        {
+                            if (info.PropertyDocumentation.TryGetValue(
+                                                                         propertyInfo.Name
+                                                                       , out propDoc
+                                                                        ))
+                            {
+                            }
+                        }
+
+                        CollectDoc(propDoc);
+                        // pair.Value.Components.Add(
+                        //                            new ComponentInfo
+                        //                            {
+                        //                                XmlDoc = propDoc
+                        //                              ,
+                        //                                IsSelfOwned = true
+                        //                              ,
+                        //                                OwningTypeInfo = pair.Value
+                        //                              ,
+                        //                                IsList = isList
+                        //                              ,
+                        //                                TypeInfo = typeInfo ?? otherTypeInfo
+                        //                              ,
+                        //                                PropertyName = propertyInfo.Name
+                        //                            }
+                        //                           );
+                        //Logger.Info ( t.ToString ( ) ) ;
                     }
                 }
             }
         }
 
-        private void LoadTypeInfo2 ( )
+
+        /// <summary>
+        /// </summary>
+        public void DetailFields ( )
         {
+            foreach ( var rField in Map.Dict.SelectMany (
+                                                         keyValuePair
+                                                             => keyValuePair
+                                                               .Value.Fields
+                                                        ) )
+            {
+                if ( rField.Type == null )
+                {
+                    DebugUtils.WriteLine ( $"type is null for {rField.TypeName}" ) ;
+                }
+
+                if ( rField.Type != null
+                     && rField.Type.IsGenericType
+                     && ( rField.Type.GetGenericTypeDefinition ( ) == typeof ( SyntaxList <> )
+                          || rField.Type.GetGenericTypeDefinition ( )
+                          == typeof ( SeparatedSyntaxList <> ) ) )
+                {
+                    var tz = rField.Type.GetGenericArguments ( )[ 0 ] ;
+                    if ( ! Map.Contains ( tz ) )
+                    {
+                        continue ;
+                    }
+
+                    var ati = Map.Dict[ new AppTypeInfoKey ( tz ) ] ;
+                    var types = new List < AppTypeInfo > ( ) ;
+                    Collect ( ati , types ) ;
+                    foreach ( var appTypeInfo in types )
+                    {
+                        rField.Types.Add ( appTypeInfo ) ;
+                    }
+                }
+                else
+                {
+                    if ( rField.Type != null
+                         && Map.Contains ( rField.Type ) )
+                    {
+                        rField.Types.Add ( Map.Dict[ new AppTypeInfoKey ( rField.Type ) ] ) ;
+                    }
+                }
+            }
+        }
+
+    
+    
+
+
+    private void CreateSubtypeLinkages ( )
+        {
+            DebugUtils.WriteLine ( $"Performing {nameof ( CreateSubtypeLinkages )}" ) ;
             var rootR = typeof ( CSharpSyntaxNode ) ;
             _nodeTypes = rootR.Assembly.GetExportedTypes ( )
                               .Where ( t => typeof ( CSharpSyntaxNode ).IsAssignableFrom ( t ) )
@@ -555,11 +567,12 @@ namespace AnalysisControls.ViewModel
 
         [ NotNull ]
         private AppTypeInfo CollectTypeInfos2 (
-            AppTypeInfo parentTypeInfo
-          , [ NotNull ] Type        rootR
-          , int         level = 0
+            AppTypeInfo      parentTypeInfo
+          , [ NotNull ] Type rootR
+          , int              level = 0
         )
         {
+            DebugUtils.WriteLine ( $"{rootR}" ) ;
             // if (_docs.TryGetValue(
             //                       rootR ?? throw new InvalidOperationException()
             //                     , out var info
@@ -569,13 +582,21 @@ namespace AnalysisControls.ViewModel
             // }
 
 //            CollectDoc(docNode);
-            var r = Map.dict[ rootR ] ;
+            if ( ! Map.Dict.TryGetValue ( new AppTypeInfoKey ( rootR ) , out var curTypeInfo ) )
+            {
+                throw new InvalidOperationException ( ) ;
+            }
+
+            DebugUtils.WriteLine ( $"{curTypeInfo}" ) ;
+            var r = Map.Dict[ new AppTypeInfoKey ( rootR ) ] ;
+            r.AllTypes = GetAppTypeInfos();
+            r.Model = this;
             r.ParentInfo     = parentTypeInfo ;
             r.HierarchyLevel = level ;
             r.ColorValue     = HierarchyColors[ level ] ;
-            foreach ( var type1 in _nodeTypes.Where ( type => type.BaseType == rootR ) )
+            foreach ( var theTypeInfo in _nodeTypes.Where ( type => type.BaseType == rootR ).Select ( type1 => CollectTypeInfos2 ( r , type1 , level + 1 ) ) )
             {
-                r.SubTypeInfos.Add ( CollectTypeInfos2 ( r , type1 , level + 1 ) ) ;
+                r.SubTypeInfos.Add ( theTypeInfo ) ;
             }
 
             PopulateFieldTypes ( r ) ;
@@ -583,13 +604,17 @@ namespace AnalysisControls.ViewModel
             return r ;
         }
 
-        public void PopulateFieldTypes ( AppTypeInfo r )
+        /// <summary>
+        /// </summary>
+        /// <param name="r"></param>
+        public void PopulateFieldTypes ( [ NotNull ] AppTypeInfo r )
         {
+            // find way to eliminate this
             foreach ( SyntaxFieldInfo rField in r.Fields )
             {
                 if ( rField.TypeName == "SyntaxList<SyntaxToken>" )
                 {
-                    rField.TypeName = "SyntaxTokenList" ;
+//                    rField.TypeName = "SyntaxTokenList" ;
                 }
 
                 TypeSyntax typs ;
@@ -606,18 +631,21 @@ namespace AnalysisControls.ViewModel
                 {
                     var id = gns.Identifier.ValueText ;
                     var t0 = typeof ( SyntaxNode ).Assembly.GetType (
-                                                                     "Microsoft.CodeAnalysis." + id + "`1"
+                                                                     "Microsoft.CodeAnalysis."
+                                                                     + id
+                                                                     + "`1"
                                                                     ) ;
                     if ( t0 == null )
                     {
-                        Debug.WriteLine ( "fail" + id ) ;
+                        DebugUtils.WriteLine ( "fail" + id ) ;
                     }
                     else
                     {
                         var s = ( SimpleNameSyntax ) gns.TypeArgumentList.Arguments[ 0 ] ;
                         var t1 = typeof ( CSharpSyntaxNode ).Assembly.GetType (
                                                                                "Microsoft.CodeAnalysis.CSharp.Syntax."
-                                                                               + s.Identifier.ValueText
+                                                                               + s.Identifier
+                                                                                  .ValueText
                                                                               ) ;
                         if ( t1 == null )
                         {
@@ -645,7 +673,7 @@ namespace AnalysisControls.ViewModel
                                                                    ) ;
                         if ( t == null )
                         {
-                            Debug.WriteLine ( rField.TypeName ) ;
+                            //DebugUtils.WriteLine ( rField.TypeName ) ;
                         }
                     }
 
@@ -654,14 +682,14 @@ namespace AnalysisControls.ViewModel
             }
         }
 
-        private void Collect ( [ NotNull ] AppTypeInfo ati , List < AppTypeInfo > types )
+        private static void Collect ( [ NotNull ] AppTypeInfo ati , List < AppTypeInfo > types )
         {
             if ( ! ati.Type.IsAbstract )
             {
                 types.Add ( ati ) ;
             }
 
-            foreach ( AppTypeInfo atiSubTypeInfo in ati.SubTypeInfos )
+            foreach ( var atiSubTypeInfo in ati.SubTypeInfos )
             {
                 Collect ( atiSubTypeInfo , types ) ;
             }
@@ -670,136 +698,79 @@ namespace AnalysisControls.ViewModel
         private void PopulateMap ( [ NotNull ] AppTypeInfo appTypeInfo )
         {
             Map[ appTypeInfo.Type ] = appTypeInfo ;
-            foreach ( AppTypeInfo subTypeInfo in appTypeInfo.SubTypeInfos )
+            foreach ( var subTypeInfo in appTypeInfo.SubTypeInfos )
             {
                 PopulateMap ( subTypeInfo ) ;
             }
         }
 
-        private void LoadTypeInfo ( )
+        /// <summary>
+        /// 
+        /// </summary>
+        public void LoadTypeInfo ( )
         {
-            var rootR = typeof ( CSharpSyntaxNode ) ;
-            _nodeTypes = rootR.Assembly.GetExportedTypes ( )
-                              .Where ( t => typeof ( CSharpSyntaxNode ).IsAssignableFrom ( t ) )
-                              .ToList ( ) ;
-            Root = CollectTypeInfos ( null , rootR ) ;
+            var cSharpRootSyntaxNodeType = typeof ( CSharpSyntaxNode ) ;
+            _nodeTypes = cSharpRootSyntaxNodeType.Assembly.GetExportedTypes ( )
+                                                 .Where (
+                                                         t => typeof ( CSharpSyntaxNode )
+                                                            .IsAssignableFrom ( t )
+                                                        )
+                                                 .ToList ( ) ;
+            Root = CollectTypeInfos ( cSharpRootSyntaxNodeType ) ;
         }
         #endregion
 
         #region Implementation of ISupportInitializeNotification
-        /// <summary>
-        /// 
-        /// </summary>
+        /// <inheritdoc />
         public bool IsInitialized { get ; set ; }
 
         /// <summary>
+        ///     An approximate time as to when the view model was initialized and/or
+        ///     populated with extended information.
         /// </summary>
+        public DateTime InitializationDateTime
+        {
+            [ UsedImplicitly ] get { return _initializationDateTime ; }
+            set { _initializationDateTime = value ; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public TypeMapDictionary2 Map2 { get { return _map2 ; } set { _map2 = value ; } }
+
+        /// <inheritdoc />
         public event EventHandler Initialized ;
         #endregion
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class TypeMapDictionary : IDictionary , ICollection , IEnumerable
-    {
-        internal Dictionary < Type , AppTypeInfo >
-            dict = new Dictionary < Type , AppTypeInfo > ( ) ;
-
-        private IDictionary _dict ;
-        /// <summary>
-        /// 
-        /// </summary>
-        public TypeMapDictionary ( ) { _dict = dict ; }
-        #region Implementation of IEnumerable
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public bool Contains ( object key ) { return _dict.Contains ( key ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        public void Add ( object key , object value ) { _dict.Add ( key , value ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Clear ( ) { _dict.Clear ( ) ; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public IDictionaryEnumerator GetEnumerator ( ) { return _dict.GetEnumerator ( ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
-        public void Remove ( object key ) { _dict.Remove ( key ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
-        public object this [ object key ]
+        [ NotNull ]
+        public IReadOnlyDictionary < string , object > CollectionMap ( )
         {
-            get { return _dict[ key ] ; }
-            set { _dict[ key ] = value ; }
+            DebugUtils.WriteLine ( "Populating collectionMap" ) ;
+            var collectionMap = new Dictionary < string , object > ( ) ;
+            foreach ( var kvp in Map.Dict )
+            {
+                var mapKey = kvp.Key ;
+                var t = ( AppTypeInfo ) Map[ mapKey ] ;
+                var colType = $"{PocoPrefix}{t.Type.Name}{CollectionSuffix}" ;
+                collectionMap[ t.Type.Name ] = colType ;
+            }
+
+            return collectionMap ;
         }
 
         /// <summary>
-        /// 
+        /// Get all app type infos
         /// </summary>
-        public ICollection Keys { get { return _dict.Keys ; } }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ICollection Values { get { return _dict.Values ; } }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool IsReadOnly { get { return _dict.IsReadOnly ; } }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool IsFixedSize { get { return _dict.IsFixedSize ; } }
-
-        IEnumerator IEnumerable.GetEnumerator ( )
+        /// <returns></returns>
+        [ NotNull ]
+        public IEnumerable < AppTypeInfo > GetAppTypeInfos ( )
         {
-            return ( ( IEnumerable ) _dict ).GetEnumerator ( ) ;
+            return ( IEnumerable < AppTypeInfo > ) _typeInfos ?? Map.Dict.Values ;
         }
-        #endregion
-        #region Implementation of ICollection
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="array"></param>
-        /// <param name="index"></param>
-        public void CopyTo ( Array array , int index ) { _dict.CopyTo ( array , index ) ; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public int Count { get { return _dict.Count ; } }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public object SyncRoot { get { return _dict.SyncRoot ; } }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool IsSynchronized { get { return _dict.IsSynchronized ; } }
-        #endregion
     }
 }

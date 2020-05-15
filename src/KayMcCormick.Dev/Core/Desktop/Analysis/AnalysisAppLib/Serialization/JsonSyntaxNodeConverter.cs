@@ -14,8 +14,8 @@ using System.Collections.Generic ;
 using System.Reflection ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
-using AnalysisAppLib.Syntax ;
 using FindLogUsages ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
@@ -25,8 +25,12 @@ namespace AnalysisAppLib.Serialization
     /// <summary>
     /// 
     /// </summary>
-    public class JsonSyntaxNodeConverter : JsonConverterFactory
+    public sealed class JsonSyntaxNodeConverter : JsonConverterFactory
     {
+        public JsonSyntaxNodeConverter()
+        {
+        }
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         #region Overrides of JsonConverter
         /// <summary>
@@ -63,12 +67,15 @@ namespace AnalysisAppLib.Serialization
         }
         #endregion
 
-        private class InnerConverter < T > : JsonConverter < T >
+        private sealed class InnerConverter < T > : JsonConverter < T >
             where T : CSharpSyntaxNode
         {
-            public InnerConverter ( JsonSerializerOptions options ) { }
+            // ReSharper disable once NotAccessedField.Local
+            private readonly JsonSerializerOptions _options ;
+            public InnerConverter ( JsonSerializerOptions options ) { _options = options ; }
 
             #region Overrides of JsonConverter<T>
+            [ CanBeNull ]
             public override T Read (
                 ref Utf8JsonReader    reader
               , Type                  typeToConvert
@@ -77,6 +84,7 @@ namespace AnalysisAppLib.Serialization
             {
                 if ( typeToConvert == typeof ( ThisExpressionSyntax ) )
                 {
+                    // ReSharper disable once UnusedVariable
                     var d =
                         JsonSerializer.Deserialize < Dictionary < string , JsonElement > > (
                                                                                             ref
@@ -86,15 +94,18 @@ namespace AnalysisAppLib.Serialization
                     return ( T ) ( CSharpSyntaxNode ) SyntaxFactory.ThisExpression ( ) ;
                 }
 
-                if ( typeToConvert == typeof ( CompilationUnitSyntax ) )
+                if ( typeToConvert != typeof ( CompilationUnitSyntax ) )
+                {
+                    return null ;
+                }
+
                 {
                     var d = JsonSerializer.Deserialize < PojoCompilationUnit > (
                                                                                 ref reader
                                                                               , options
                                                                                ) ;
 
-                    if ( d                  != null
-                         && d.ExternAliases != null )
+                    if ( d?.ExternAliases != null )
                     {
                         foreach ( var dExternAliase in d.ExternAliases )
                         {
@@ -102,24 +113,24 @@ namespace AnalysisAppLib.Serialization
                         }
                     }
 
-                    if ( d            != null
-                         && d.Members != null )
+                    if ( d?.Members == null )
                     {
-                        foreach ( var xx in d.Members )
-                        {
-                            Logger.Info ( "{x}" , xx ) ;
-                        }
+                        return ( T ) ( CSharpSyntaxNode ) SyntaxFactory.CompilationUnit ( ) ;
+                    }
+
+                    foreach ( var xx in d.Members )
+                    {
+                        Logger.Info ( "{x}" , xx ) ;
                     }
 
                     return ( T ) ( CSharpSyntaxNode ) SyntaxFactory.CompilationUnit ( ) ;
                 }
 
-                return null ;
             }
 
             public override void Write (
-                Utf8JsonWriter        writer
-              , T                     value
+                [ NotNull ] Utf8JsonWriter        writer
+              , [ NotNull ] T                     value
               , JsonSerializerOptions options
             )
             {
@@ -130,7 +141,7 @@ namespace AnalysisAppLib.Serialization
                 // MemoryStream s = new MemoryStream();
                 // value.SerializeTo(s);
                 // writer.WriteBase64StringValue(s.GetBuffer());
-                var transformed = Transforms.TransformSyntaxNode ( value ) ;
+                var transformed = GenTransforms.Transform_CSharp_Node(value);
                 JsonSerializer.Serialize ( writer , transformed , options ) ;
                 writer.WriteEndObject ( ) ;
             }

@@ -13,13 +13,14 @@ using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using System.Windows ;
+using JetBrains.Annotations ;
 
 namespace AnalysisControls
 {
     /// <summary>
     /// 
     /// </summary>
-    public class JsonSimpleFrameworkElementConverterFactory : JsonConverterFactory
+    public sealed class JsonSimpleFrameworkElementConverterFactory : JsonConverterFactory
     {
         #region Overrides of JsonConverter
         /// <summary>
@@ -44,6 +45,7 @@ namespace AnalysisControls
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ NotNull ]
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
@@ -55,6 +57,7 @@ namespace AnalysisControls
         private sealed class JsonSimpleFrameworkElementConverter : JsonConverter < FrameworkElement >
         {
             #region Overrides of JsonConverter<FrameworkElement>
+            [ CanBeNull ]
             public override FrameworkElement Read (
                 ref Utf8JsonReader    reader
               , Type                  typeToConvert
@@ -65,8 +68,8 @@ namespace AnalysisControls
             }
 
             public override void Write (
-                Utf8JsonWriter        writer
-              , FrameworkElement      value
+                [ NotNull ] Utf8JsonWriter        writer
+              , [ NotNull ] FrameworkElement      value
               , JsonSerializerOptions options
             )
             {

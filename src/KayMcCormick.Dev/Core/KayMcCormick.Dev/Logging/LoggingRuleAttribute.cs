@@ -20,7 +20,7 @@ namespace KayMcCormick.Dev.Logging
 
     /// <summary>
     /// </summary>
-    public class LoggingAttributeContext
+    public sealed class LoggingAttributeContext
     {
         /// <summary>
         /// </summary>
@@ -44,7 +44,7 @@ namespace KayMcCormick.Dev.Logging
     /// <summary>
     /// </summary>
     [ AttributeUsage ( AttributeTargets.Class , AllowMultiple = true ) ]
-    public class LoggingRuleAttribute : LoggingAttribute
+    public sealed class LoggingRuleAttribute : LoggingAttribute
     {
         private string _loggerNamePattern ;
 
@@ -52,6 +52,7 @@ namespace KayMcCormick.Dev.Logging
         /// </summary>
         /// <param name="classLoggerType"></param>
         /// <param name="logLevel"></param>
+        // ReSharper disable once UnusedMember.Global
         public LoggingRuleAttribute (
             [ NotNull ] Type   classLoggerType
           , [ NotNull ] string logLevel

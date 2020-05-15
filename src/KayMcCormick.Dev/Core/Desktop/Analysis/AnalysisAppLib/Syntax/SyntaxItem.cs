@@ -35,6 +35,7 @@ namespace AnalysisAppLib.Syntax
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public ushort RawKind { get { return _rawKind ; } set { _rawKind = value ; } }
     }
 }

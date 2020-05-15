@@ -13,12 +13,13 @@ using System ;
 using System.Collections ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
+using JetBrains.Annotations ;
 
 namespace KayMcCormick.Dev.Serialization
 {
     /// <summary>
     /// </summary>
-    public class HashtableConverter : JsonConverter < Hashtable >
+    public sealed class HashtableConverter : JsonConverter < Hashtable >
     {
         #region Overrides of JsonConverter<Hashtable>
         /// <summary>
@@ -27,6 +28,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ CanBeNull ]
         public override Hashtable Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert
@@ -42,8 +44,8 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            Utf8JsonWriter        writer
-          , Hashtable             value
+            [ NotNull ] Utf8JsonWriter        writer
+          , [ NotNull ] Hashtable             value
           , JsonSerializerOptions options
         )
         {

@@ -20,6 +20,7 @@ namespace AnalysisAppLib.Serialization
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class LogInvocationConverter : JsonConverter < ILogInvocation >
     {
         #region Overrides of JsonConverter<ILogInvocation>
@@ -30,6 +31,7 @@ namespace AnalysisAppLib.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ CanBeNull ]
         public override ILogInvocation Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert
@@ -47,7 +49,7 @@ namespace AnalysisAppLib.Serialization
         /// <param name="options"></param>
         /// <exception cref="ArgumentNullException"></exception>
         public override void Write (
-            Utf8JsonWriter             writer
+            [ NotNull ] Utf8JsonWriter             writer
           , [ NotNull ] ILogInvocation value
           , JsonSerializerOptions      options
         )

@@ -1,14 +1,15 @@
 using System ;
 using System.Globalization ;
 using System.Windows.Data ;
-using System.Windows.Media ;
 using System.Windows.Media.Imaging ;
+using JetBrains.Annotations ;
 
 namespace ProjInterface
 {
-    public class ImageSourceConverter : IValueConverter
+    internal sealed class ImageSourceConverter : IValueConverter
     {
         #region Implementation of IValueConverter
+        [ NotNull ]
         public object Convert (
             object      value
           , Type        targetType

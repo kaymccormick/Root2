@@ -18,7 +18,7 @@ namespace KayMcCormick.Dev.Serialization
 {
     /// <summary>
     /// </summary>
-    public class JsonTypeConverter : JsonConverter < Type >
+    public sealed class JsonTypeConverter : JsonConverter < Type >
     {
         #region Overrides of JsonConverter<Type>
         /// <summary>
@@ -27,6 +27,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
+        [ CanBeNull ]
         public override Type Read (
             ref Utf8JsonReader    reader
           , Type                  typeToConvert

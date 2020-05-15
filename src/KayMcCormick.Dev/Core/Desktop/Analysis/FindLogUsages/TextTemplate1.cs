@@ -246,7 +246,8 @@ public static PocoAccessorDeclarationSyntax Transform_Accessor_Declaration ( Acc
 if(node == null) {
 return null;
 }
-	return new PocoAccessorDeclarationSyntax() { 
+	return new PocoAccessorDeclarationSyntax
+           { 
 AttributeLists = node.AttributeLists.Select(Transform_Attribute_List).ToList(), 
 Modifiers = node.Modifiers.Select(v => new PocoSyntaxToken {RawKind = v.RawKind, Kind = v.Kind().ToString(), Value = v.Value, ValueText = v.ValueText }).ToList(), 
 Keyword = new PocoSyntaxToken {RawKind = node.Keyword.RawKind, Kind = node.Keyword.Kind().ToString(), Value = node.Keyword.Value, ValueText = node.Keyword.ValueText }, 

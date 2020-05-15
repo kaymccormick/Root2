@@ -20,10 +20,12 @@ namespace KayMcCormick.Dev.Interfaces
 
     /// <summary>
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class RegisterApplicationInstanceRequest
     {
         /// <summary>
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public Url EndpointUrl { get ; set ; }
     }
 }

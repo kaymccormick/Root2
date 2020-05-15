@@ -2,6 +2,7 @@ using System ;
 using System.Collections.Generic ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
+using JetBrains.Annotations ;
 
 namespace AnalysisAppLib.Dataflow
 {
@@ -11,7 +12,8 @@ namespace AnalysisAppLib.Dataflow
     /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TDest"></typeparam>
     /// <typeparam name="TBlock"></typeparam>
-    public abstract class
+    /// unused
+    internal abstract class
         AnalysisBlockProvider < TSource , TDest , TBlock > : IAnalysisBlockProvider < TSource ,
             TDest , TBlock >
         where TBlock : IPropagatorBlock < TSource , TDest >
@@ -21,6 +23,11 @@ namespace AnalysisAppLib.Dataflow
         /// </summary>
         /// <returns></returns>
         public abstract TBlock GetDataflowBlock ( ) ;
+
+        #region Implementation of IAnalysisBlockProvider1
+        /// <inheritdoc />
+        public abstract IDataflowBlock GetDataflowBlockObj ( ) ;
+        #endregion
     }
 
     /// <summary>
@@ -30,7 +37,7 @@ namespace AnalysisAppLib.Dataflow
     /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TDest"></typeparam>
     /// <typeparam name="TBlock"></typeparam>
-    public delegate TBlock BlockFactory < TSource , TDest , out TBlock > (
+    public delegate TBlock BlockFactory < out TSource , TDest , out TBlock > (
         Func < TSource , Task < IEnumerable < TDest > > > transform
     )
         where TBlock : IPropagatorBlock < TSource , TDest > ;
@@ -41,7 +48,8 @@ namespace AnalysisAppLib.Dataflow
     /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TDest"></typeparam>
     /// <typeparam name="TBlock"></typeparam>
-    public class
+    /// Unused right now
+    internal sealed class
         ConcreteAnalysisBlockProvider < TSource , TDest , TBlock > : AnalysisBlockProvider < TSource
           , TDest , TBlock >
         where TBlock : IPropagatorBlock < TSource , TDest >
@@ -55,8 +63,8 @@ namespace AnalysisAppLib.Dataflow
         /// </summary>
         /// <param name="factory"></param>
         /// <param name="funcProvider"></param>
-        public ConcreteAnalysisBlockProvider (
-            BlockFactory < TSource , TDest , TBlock >          factory
+        private ConcreteAnalysisBlockProvider (
+            [ NotNull ] BlockFactory < TSource , TDest , TBlock >          factory
           , IDataflowTransformFuncProvider < TSource , TDest > funcProvider
         )
         {
@@ -70,6 +78,9 @@ namespace AnalysisAppLib.Dataflow
         /// </summary>
         /// <returns></returns>
         public override TBlock GetDataflowBlock ( ) { return _block ; }
+
+        /// <inheritdoc />
+        public override IDataflowBlock GetDataflowBlockObj ( ) { return _block ; }
         #endregion
 
         #region Overrides of AnalysisBlockProvider<TSource,TDest,TBlock>

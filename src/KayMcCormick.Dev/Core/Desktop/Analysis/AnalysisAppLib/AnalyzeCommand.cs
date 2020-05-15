@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System ;
-using System.Diagnostics ;
 using System.Linq ;
 using System.Text.Json ;
 using System.Threading ;
@@ -19,29 +18,41 @@ using System.Threading.Tasks.Dataflow ;
 using AnalysisAppLib.Project ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Attributes;
 using KayMcCormick.Dev.StackTrace ;
-using NLog ;
+using NLog;
 
 namespace AnalysisAppLib
 {
     /// <summary>
     /// 
     /// </summary>
-    public class AnalyzeCommand : IAnalyzeCommand
+    [TitleMetadata("Find Log Usages")]
+    public sealed class AnalyzeCommand : IAnalyzeCommand
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private readonly Pipeline                      _pipeline ;
+        private Pipeline                      _pipeline ;
+        private readonly IAddRuntimeResource           _add ;
         private          ITargetBlock < RejectedItem > _rejectDestination ;
+        private          ResourceNodeInfo              _resultsNode ;
+        private readonly Lazy<Pipeline> _lazyPipeline;
+
         /// <summary>
-        /// 
+        /// Constructor. Takes pipeline instance.
         /// </summary>
         /// <param name="pipeline"></param>
-        public AnalyzeCommand ( Pipeline pipeline ) { _pipeline = pipeline ; }
+        /// <param name="add"></param>
+        public AnalyzeCommand ( Lazy<Pipeline> pipeline , IAddRuntimeResource add )
+        {
+            _lazyPipeline = pipeline ;
+            _add      = add ;
+        }
 
         #region Implementation of IAnalyzeCommand
         /// <summary>
-        /// 
+        /// Async analyze routine.
         /// </summary>
         /// <param name="projectNode"></param>
         /// <param name="rejectTarget"></param>
@@ -52,41 +63,100 @@ namespace AnalysisAppLib
           , ITargetBlock < RejectedItem > rejectTarget
         )
         {
-            var pipeline = _pipeline ;
-            if ( pipeline == null )
+            var resourceNodeInfo = ResourceNodeInfo.CreateInstance ( ) ;
+            resourceNodeInfo.Key = "Analyze command" ;
+            _add.AddResource ( resourceNodeInfo ) ;
+            using ( MappedDiagnosticsLogicalContext.SetScoped ( "Command" , "AnalyzeCommand" ) )
             {
-                throw new AnalyzeException ( "Pipeline is null" ) ;
-            }
+                Logger.Debug ( "run command" ) ;
+                var pipeline = Pipeline ;
+                if ( pipeline == null )
+                {
+                    throw new AnalyzeException ( "Pipeline is null" ) ;
+                }
 
-            pipeline.BuildPipeline ( ) ;
-            var pInstance = pipeline.PipelineInstance ;
-            if ( pInstance == null )
+                pipeline.BuildPipeline ( ) ;
+                var pInstance = pipeline.PipelineInstance ;
+                var nodeInfo = ResourceNodeInfo.CreateInstance ( ) ;
+                nodeInfo.Key  = "Pipeline" ;
+                nodeInfo.Data =null ;
+                
+                resourceNodeInfo.AddChild ( nodeInfo ) ;
+                
+                if ( pInstance == null )
+                {
+                    throw new AnalyzeException ( "pipeline instance is null" ) ;
+                }
+
+                RejectDestination = rejectTarget ;
+                var actionBlock = new ActionBlock < ILogInvocation > ( LogInvocationAction ) ;
+                if ( RejectDestination != null )
+                {
+                    Pipeline.RejectBlock.LinkTo (
+                                                  RejectDestination
+                                                , new DataflowLinkOptions
+                                                  {
+                                                      PropagateCompletion = true
+                                                  }
+                                                 ) ;
+                }
+
+                pInstance.LinkTo (
+                                  actionBlock
+                                , new DataflowLinkOptions { PropagateCompletion = true }
+                                 ) ;
+                var tcs = new CancellationTokenSource ( ) ;
+                var cancellationToken = tcs.Token ;
+                var t = Task.Run ( Function , cancellationToken ) ;
+                var instance = ResourceNodeInfo.CreateInstance ( ) ;
+                instance.Key  = "Task " + t.Id ;
+                instance.Data = t ;
+                resourceNodeInfo.Children.Add ( instance ) ;
+                _resultsNode     = ResourceNodeInfo.CreateInstance ( ) ;
+                _resultsNode.Key = "Results" ;
+                resourceNodeInfo.Children.Add ( _resultsNode ) ;
+
+                var req = new AnalysisRequest { Info = projectNode } ;
+                if ( ! pInstance.Post ( req ) )
+                {
+                    throw new AnalyzeException ( "Post failed" ) ;
+                }
+
+                DebugUtils.WriteLine ( "await pipeline" ) ;
+                await HandlePipelineResultAsync ( actionBlock ) ;
+
+                if ( cancellationToken.CanBeCanceled )
+                {
+                    tcs.Cancel ( ) ;
+                }
+            }
+        }
+
+        private int Function ( )
+        {
+            for ( ; ; )
             {
-                throw new AnalyzeException ( "pipeline instance is null" ) ;
+                var blockCount = Pipeline.Block.Count ;
+                if ( blockCount != 0 )
+                {
+                    Logger.Info ( blockCount ) ;
+                }
+
+                Logger.Info ( $"{Pipeline.Input.Completion.IsCompleted}" ) ;
+
+                var dataflowBlocks = Pipeline.Blocks.Where ( x => ! x.Completion.IsCompleted ).ToList() ;
+                if ( dataflowBlocks.Any ( ) == false )
+                {
+                    return 1 ;
+                }
+
+                foreach ( var dataflowBlock in dataflowBlocks )
+                {
+                    Logger.Info ( dataflowBlock.ToString ) ;
+                }
+
+                Thread.Sleep ( 100 ) ;
             }
-
-            RejectDestination = rejectTarget ;
-            var actionBlock = new ActionBlock < ILogInvocation > ( LogInvocationAction ) ;
-            if ( RejectDestination != null )
-            {
-                _pipeline.RejectBlock.LinkTo (
-                                              RejectDestination
-                                            , new DataflowLinkOptions { PropagateCompletion = true }
-                                             ) ;
-            }
-
-            pInstance.LinkTo (
-                              actionBlock
-                            , new DataflowLinkOptions { PropagateCompletion = true }
-                             ) ;
-
-            var req = new AnalysisRequest { Info = projectNode } ;
-            if ( ! pInstance.Post ( req ) )
-            {
-                throw new AnalyzeException ( "Post failed" ) ;
-            }
-
-            await HandlePipelineResultAsync ( actionBlock ) ;
         }
 
         private void LogInvocationAction ( [ NotNull ] ILogInvocation invocation )
@@ -96,23 +166,43 @@ namespace AnalysisAppLib
                 throw new ArgumentNullException ( nameof ( invocation ) ) ;
             }
 #if !NETSTANDARD2_0
-            Debug.WriteLine ( JsonSerializer.Serialize ( invocation ) ) ;
+            Console.WriteLine ( JsonSerializer.Serialize ( invocation ) ) ;
 #endif
             LogInvocations.Add ( invocation ) ;
+            var resourceNodeInfo = ResourceNodeInfo.CreateInstance ( ) ;
+            resourceNodeInfo.Key  = invocation ;
+            resourceNodeInfo.Data = invocation ;
+            _resultsNode.Children.Add ( resourceNodeInfo ) ;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public LogInvocationCollection LogInvocations { get ; } = new LogInvocationCollection ( ) ;
+        private LogInvocationCollection LogInvocations { get ; } = new LogInvocationCollection ( ) ;
 
         /// <summary>
         /// 
         /// </summary>
-        public ITargetBlock < RejectedItem > RejectDestination
+        private ITargetBlock < RejectedItem > RejectDestination
         {
             get { return _rejectDestination ; }
             set { _rejectDestination = value ; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Pipeline Pipeline
+        {
+            get
+            {
+                _pipeline = _pipeline switch
+                {
+                    null => _lazyPipeline.Value,
+                    _ => _pipeline
+                };
+                return _pipeline;
+            }
         }
 
 
@@ -121,6 +211,7 @@ namespace AnalysisAppLib
             PipelineResult result ;
             try
             {
+                DebugUtils.WriteLine ( "await completion" ) ;
                 await actionBlock.Completion.ConfigureAwait ( true ) ;
                 result = new PipelineResult ( ResultStatus.Success ) ;
             }
@@ -189,12 +280,12 @@ namespace AnalysisAppLib
                              ) ;
             }
 
-            Logger.Info(
-                          "{id} {result} {count}"
-                        , Thread.CurrentThread.ManagedThreadId
-                        , result.Status
-                        , LogInvocations.Count
-                         ) ;
+            Logger.Info (
+                         "{id} {result} {count}"
+                       , Thread.CurrentThread.ManagedThreadId
+                       , result.Status
+                       , LogInvocations.Count
+                        ) ;
         }
         #endregion
     }

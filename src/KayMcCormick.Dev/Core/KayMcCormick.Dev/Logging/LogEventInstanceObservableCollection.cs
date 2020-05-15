@@ -15,7 +15,7 @@ namespace KayMcCormick.Dev.Logging
 {
     /// <summary>
     /// </summary>
-    public class LogEventInstanceObservableCollection : ObservableCollection < LogEventInstance >
+    public sealed class LogEventInstanceObservableCollection : ObservableCollection < LogEventInstance >
     {
     }
 }

@@ -11,6 +11,7 @@
 #endregion
 namespace ConsoleApp1
 {
+    // ReSharper disable once UnusedType.Global
     public class ElementWrapper < T >
     {
         private T _element ;

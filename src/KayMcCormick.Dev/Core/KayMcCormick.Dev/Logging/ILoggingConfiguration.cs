@@ -28,11 +28,11 @@ namespace KayMcCormick.Dev.Logging
 
         /// <summary>
         /// </summary>
-        bool ? IsEnabledCacheTarget { get ; }
+        bool ? IsEnabledCacheTarget { get ; set ; }
 
         /// <summary>
         /// </summary>
-        [ CanBeNull ] LogLevel MinLogLevel { get ; }
+        [ CanBeNull ] LogLevel MinLogLevel { get ; set ; }
 
         /// <summary>
         /// </summary>
@@ -59,6 +59,7 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         ///     Enable XML File target
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         bool IsEnabledXmlFileTarget { get ; set ; }
     }
 }

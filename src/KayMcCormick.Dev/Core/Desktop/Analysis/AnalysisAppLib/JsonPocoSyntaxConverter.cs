@@ -1,27 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
-using System.Threading.Tasks;
+using JetBrains.Annotations ;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class JsonPocoSyntaxConverter : JsonConverterFactory
     {
         private readonly Type _excludeType ;
+
+        /// <inheritdoc />
         public JsonPocoSyntaxConverter ( Type excludeType ) { _excludeType = excludeType ; }
         #region Overrides of JsonConverter
+        /// <summary>
+        /// 
+        /// </summary>
         public JsonPocoSyntaxConverter ( ) {
         }
 
+        /// <inheritdoc />
         public override bool CanConvert(Type typeToConvert)
         {
             return typeToConvert != _excludeType && typeof(FindLogUsages.PocoCSharpSyntaxNode).IsAssignableFrom(typeToConvert);
         }
         #endregion
         #region Overrides of JsonConverterFactory
+        /// <inheritdoc />
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
@@ -31,14 +38,14 @@ namespace AnalysisAppLib
             return ( JsonConverter ) Activator.CreateInstance ( ty ) ;
         }
 
-        private class SyntaxConverter < T > : JsonConverter<T>
+        private sealed class SyntaxConverter < T > : JsonConverter<T>
         {
             #region Overrides of JsonConverter<T>
             public override T Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { throw new InvalidOperationException(); }
 
             public override void Write (
                 Utf8JsonWriter        writer
-              , T                     value
+              , [ NotNull ] T                     value
               , JsonSerializerOptions options
             )
             {

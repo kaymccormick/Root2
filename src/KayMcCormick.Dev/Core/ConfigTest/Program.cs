@@ -65,12 +65,12 @@ namespace ConfigTest
         }
     }
 
-    internal class Test1
+    internal sealed class Test1
     {
         public Test2 Test2 { get ; set ; }
     }
 
-    internal class Test2
+    internal sealed class Test2
     {
         public string Hello { get ; set ; }
     }

@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System ;
-using System.Diagnostics ;
 using System.IO ;
 using System.Linq ;
 using System.Net ;
@@ -19,42 +18,55 @@ using System.Text ;
 using System.Text.Json ;
 using System.Xml ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Logging ;
+
+// ReSharper disable UnusedParameter.Local
 
 namespace AnalysisAppLib
 {
     /// <summary>
     /// 
     /// </summary>
-    public class LogListener : IDisposable
+    public sealed class LogListener : IDisposable
 
 
     {
-        private const string log4jNsPrefix       = "log4j" ;
-        private const string nlogNsPrefix        = "nlog" ;
-        private const string loggerAttributeName = "logger" ;
+        private const string Log4JNsPrefix      = "log4j" ;
+        private const string NlogNsPrefix        = "nlog" ;
+        private const string LoggerAttributeName = "logger" ;
 
         private readonly int          _port ;
         private readonly LogViewModel _viewModel ;
 
-        private readonly string[] levels =
+        private static readonly string[] Levels =
         {
             "TRACE" , "DEBUG" , "INFO" , "WARN" , "ERROR" , "FATAL"
         } ;
 
-        private JsonSerializerOptions _options ;
-        private UdpClient             _udpClient ;
+        private readonly JsonSerializerOptions _options ;
+        private          UdpClient             _udpClient ;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="port"></param>
         /// <param name="viewModel"></param>
-        public LogListener ( int port , LogViewModel viewModel )
+        /// <param name="options"></param>
+        // ReSharper disable once UnusedMember.Global
+        public LogListener ( int port , LogViewModel viewModel , JsonSerializerOptions options )
         {
             _port      = port ;
             _viewModel = viewModel ;
+            _options   = options ;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="port"></param>
+        /// <param name="logViewModel"></param>
+        public LogListener ( int port , LogViewModel logViewModel ) { }
 
         #region IDisposable
         /// <summary>
@@ -74,16 +86,17 @@ namespace AnalysisAppLib
             }
             catch ( SocketException ex )
             {
-                Debug.WriteLine ( ex.ToString ( ) ) ;
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
             }
 
-            Debug.WriteLine ( "Listening on port " + _port ) ;
+            DebugUtils.WriteLine ( "Listening on port " + _port ) ;
             Listen ( ) ;
         }
 
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once FunctionRecursiveOnAllPaths
         public async void Listen ( )
         {
             var resp = await _udpClient.ReceiveAsync ( ).ConfigureAwait ( false ) ;
@@ -96,43 +109,47 @@ namespace AnalysisAppLib
         private LogEventInstance HandleJsonMessage ( JsonSerializerOptions options , string s )
         {
             var instance = JsonSerializer.Deserialize < LogEventInstance > ( s , options ) ;
-            if ( instance != null )
+            if ( instance == null )
             {
-                instance.SerializedForm = s ;
-                return instance ;
+                throw new InvalidOperationException ( ) ;
             }
 
-            throw new InvalidOperationException ( ) ;
+            instance.SerializedForm = s ;
+            return instance ;
         }
 
         private void PacketReceived ( UdpReceiveResult resp )
         {
             var resultBuffer = resp.Buffer ;
-            Debug.WriteLine ( "received packet" ) ;
+            DebugUtils.WriteLine ( "received packet" ) ;
             var s = Encoding.UTF8.GetString ( resultBuffer ) ;
             try
             {
-                if ( s[ 0 ] == '{' )
+                switch ( s[ 0 ] )
                 {
-                    var instance = HandleJsonMessage ( _options , s ) ;
-                    HandleLogInstance ( instance ) ;
-                }
-                else if ( s[ 0 ] == '<' )
-                {
-                    try
+                    case '{' :
                     {
-                        var instance = HandleXml ( resultBuffer ) ;
+                        var instance = HandleJsonMessage ( _options , s ) ;
                         HandleLogInstance ( instance ) ;
+                        break ;
                     }
-                    catch ( XmlException xmlException )
-                    {
-                        Debug.WriteLine ( xmlException.ToString ( ) ) ;
-                    }
+                    case '<' :
+                        try
+                        {
+                            var instance = HandleXml ( resultBuffer ) ;
+                            HandleLogInstance ( instance ) ;
+                        }
+                        catch ( XmlException xmlException )
+                        {
+                            DebugUtils.WriteLine ( xmlException.ToString ( ) ) ;
+                        }
+
+                        break ;
                 }
             }
             catch ( Exception ex )
             {
-                Debug.WriteLine ( ex.ToString ( ) ) ;
+                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
             }
         }
 
@@ -142,21 +159,21 @@ namespace AnalysisAppLib
         }
 
         [ NotNull ]
-        private LogEventInstance HandleXml ( byte[] resultBuffer )
+        private LogEventInstance HandleXml ( [ NotNull ] byte[] resultBuffer )
         {
             var xmlNameTable = new NameTable ( ) ;
 
-            xmlNameTable.Add ( log4jNsPrefix ) ;
+            xmlNameTable.Add ( Log4JNsPrefix ) ;
             var nameTable = new NameTable ( ) ;
-            nameTable.Add ( log4jNsPrefix ) ;
+            nameTable.Add ( Log4JNsPrefix ) ;
             var xmlNamespaceManager = new XmlNamespaceManager ( xmlNameTable ) ;
             xmlNamespaceManager.AddNamespace (
-                                              log4jNsPrefix
+                                              Log4JNsPrefix
                                             , "http://kaymccormick.com/xmlns/log4j"
                                              ) ;
 
             xmlNamespaceManager.AddNamespace (
-                                              nlogNsPrefix
+                                              NlogNsPrefix
                                             , "http://kaymccormick.com/xmlns/nlog"
                                              ) ;
             var xmlParserContext = new XmlParserContext (
@@ -184,9 +201,9 @@ namespace AnalysisAppLib
                 var elem = document.DocumentElement ;
                 if ( elem != null )
                 {
-                    var logger = elem.GetAttribute ( loggerAttributeName ) ;
+                    var logger = elem.GetAttribute ( LoggerAttributeName ) ;
                     var level = elem.GetAttribute ( "level" ) ;
-                    var levelOrdinal = levels.ToList ( ).IndexOf ( level ) ;
+                    var levelOrdinal = Levels.ToList ( ).IndexOf ( level ) ;
                     var timestamp = elem.GetAttribute ( "timestamp" ) ;
                     var dt = JavaTimeStampToDateTime ( long.Parse ( timestamp ) ) ;
                     instance.LoggerName = logger ;
@@ -200,7 +217,7 @@ namespace AnalysisAppLib
                     {
                         if ( elemChildNode is XmlElement elem2 )
                         {
-                            Debug.WriteLine ( elem2.Name ) ;
+                            DebugUtils.WriteLine ( elem2.Name ) ;
                             switch ( elem2.Name )
                             {
                                 case "log4j:message" :

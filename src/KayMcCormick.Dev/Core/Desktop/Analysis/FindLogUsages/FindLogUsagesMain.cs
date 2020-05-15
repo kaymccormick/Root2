@@ -2,8 +2,6 @@ using System ;
 using System.Collections.Generic ;
 using System.IO ;
 using System.Linq ;
-using System.Reflection.Emit ;
-using System.Text ;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using JetBrains.Annotations ;
@@ -14,12 +12,14 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using PropertyToken = MessageTemplates.Parsing.PropertyToken ;
 
+// ReSharper disable InconsistentNaming
+
 
 namespace FindLogUsages
 {
     /// <summary>
     /// </summary>
-    public class FindLogUsagesMain
+    public sealed class FindLogUsagesMain
     {
 #if DOLOG
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -40,19 +40,21 @@ namespace FindLogUsages
         /// </summary>
         /// <param name="d"></param>
         /// <param name="rejectBlock"></param>
+        /// <param name="invocActions"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        [ItemNotNull]
-        public async Task<IEnumerable<ILogInvocation>> FindUsagesFuncAsync(
-            [NotNull] Document d
-          , BufferBlock<RejectedItem> rejectBlock
+        [ ItemNotNull ]
+        public async Task < IEnumerable < ILogInvocation > > FindUsagesFuncAsync (
+            [ NotNull ] Document                      d
+          , BufferBlock < RejectedItem >              rejectBlock
+          , IEnumerable < Action < ILogInvocation > > invocActions
         )
         {
             using (
 #if DOLOG
                 MappedDiagnosticsLogicalContext.SetScoped("Document", d.FilePath)
 #else
-                new EmptyDisposable()
+                new EmptyDisposable ( )
 #endif
             )
             {
@@ -61,36 +63,38 @@ namespace FindLogUsages
 #if TRACE && DOLOG
                     Logger.Trace (
                                   "[{id}] Entering {funcName}"
-                        , Thread.CurrentThread.ManagedThreadId
-                        , nameof ( FindUsagesFuncAsync )
+                    , Thread.CurrentThread.ManagedThreadId
+                    , nameof ( FindUsagesFuncAsync )
                                  ) ;
 #endif
-                    var tree = await d.GetSyntaxTreeAsync().ConfigureAwait(true);
-                    var root = (tree ?? throw new InvalidOperationException())
-                       .GetCompilationUnitRoot();
-                    var model = await d.GetSemanticModelAsync().ConfigureAwait(true);
+                    var tree = await d.GetSyntaxTreeAsync ( ).ConfigureAwait ( true ) ;
+                    var root = ( tree ?? throw new InvalidOperationException ( ) )
+                       .GetCompilationUnitRoot ( ) ;
+                    var model = await d.GetSemanticModelAsync ( ).ConfigureAwait ( true ) ;
 
-                    if (model != null)
+                    if ( model != null )
                     {
-                        return await Process(
+                        return await Process (
                                               _invocationFactory
                                             , model
                                             , tree
                                             , root
-                       , rejectBlock.Post
-                                             );
+                       ,                      rejectBlock.Post
+                       ,                      invocActions
+                                             ) ;
                     }
                 }
-                catch (Exception ex)
+                // ReSharper disable once RedundantCatchClause
+                catch ( Exception )
                 {
 #if DOLOG
                     Logger.Debug ( ex , ex.ToString ( ) ) ;
 #endif
-                    throw;
+                    throw ;
                 }
             }
 
-            throw new InvalidOperationException();
+            throw new InvalidOperationException ( ) ;
         }
 
         /// <summary>
@@ -99,14 +103,19 @@ namespace FindLogUsages
         /// <param name="model"></param>
         /// <param name="tree"></param>
         /// <param name="root"></param>
-        /// <param name="RejectAction"></param>
+        /// <param name="rejectAction"></param>
+        /// <param name="invocActions"></param>
         /// <returns></returns>
+#pragma warning disable 1998
+        [ ItemNotNull ]
         public static async Task < IEnumerable < ILogInvocation > > Process (
-            Func < ILogInvocation >      invocationFactory
-          , SemanticModel                model
-          , SyntaxTree                   tree
-          , SyntaxNode                   root
-          , Func < RejectedItem , bool > RejectAction
+#pragma warning restore 1998
+            Func < ILogInvocation >                   invocationFactory
+          , [ NotNull ] SemanticModel                 model
+          , SyntaxTree                                tree
+          , SyntaxNode                                root
+          , Func < RejectedItem , bool >              rejectAction
+          , IEnumerable < Action < ILogInvocation > > invocActions
         )
         {
             var exceptionType = model.Compilation.GetTypeByMetadataName ( "System.Exception" ) ;
@@ -123,42 +132,43 @@ namespace FindLogUsages
             }
 
             var logBuilderSymbol = LogUsages.GetLogBuilderSymbol ( model ) ;
-            return Enumerable.OfType < ILogInvocation > (
-                                            (
-                                                from node in root.DescendantNodes ( ) //.AsParallel ( )
-                                                let t_ = t
-                                                let t2_ = t2
-                                                let builderSymbol = logBuilderSymbol
-                                                let tree_ = tree
-                                                let model_ = model
-                                                let exType = exceptionType
-                                                where node.RawKind    == ( ushort ) SyntaxKind.InvocationExpression
-                                                      || node.RawKind == ( ushort ) SyntaxKind.ObjectCreationExpression
-                                                let @out =
-                                                    LogUsages.CheckInvocationExpression (
-                                                                                         node
-                                                                                       , model_
-                                                                                       , builderSymbol
-                                                                                       , t_
-                                                                                       , t2_
-                                                                                        )
-                                                where @out.Item1
-                                                let statement = node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
-                                                let result = new InvocationParams (
-                                                                                   tree_
-                                                                                 , model_
-                                                                                 , statement
-                                                                                 , @out
-                                                                                 , exType
-                                                                                  ).ProcessInvocation ( invocationFactory )
-                                                select result is ILogInvocation inv
-                                                           ? inv
-                                                           : ( object ) RejectAction (
-                                                                                      result is RejectedItem rj
-                                                                                          ? rj
-                                                                                          : new RejectedItem ( statement )
-                                                                                     ) )
-                                           ) ;
+            return (
+                       from node in root.DescendantNodes ( ).AsParallel ( )
+                       let t_ = t
+                       let t2_ = t2
+                       let builderSymbol = logBuilderSymbol
+                       let tree_ = tree
+                       let model_ = model
+                       let exType = exceptionType
+                       where node.RawKind    == ( ushort ) SyntaxKind.InvocationExpression
+                             || node.RawKind == ( ushort ) SyntaxKind.ObjectCreationExpression
+                       let @out =
+                           LogUsages.CheckInvocationExpression (
+                                                                node
+                                                              , model_
+                                                              , builderSymbol
+                                                              , t_
+                                                              , t2_
+                                                               )
+                       where @out.Item1
+                       let statement = node.AncestorsAndSelf ( ).Where ( Predicate ).First ( )
+                       let result = new InvocationParams (
+                                                          tree_
+                                                        , model_
+                                                        , statement
+                                                        , @out
+                                                        , exType
+                                                         ).ProcessInvocation (
+                                                                              invocationFactory
+                                                                            , invocActions
+                                                                             )
+                       select result is ILogInvocation inv
+                                  ? inv
+                                  : ( object ) rejectAction (
+                                                             result is RejectedItem rj
+                                                                 ? rj
+                                                                 : new RejectedItem ( statement )
+                                                            ) ).OfType < ILogInvocation > ( ) ;
         }
 
         private static bool Predicate ( [ NotNull ] SyntaxNode arg1 , int arg2 )
@@ -177,16 +187,16 @@ namespace FindLogUsages
 
         private static class LogUsages
         {
-            public const string LogBuilderClassName     = "LogBuilder" ;
-            public const string LogBuilderNamespaceName = NLogNamespace + ".Fluent" ;
+            private const string LogBuilderClassName     = "LogBuilder" ;
+            private const string LogBuilderNamespaceName = NLogNamespace + ".Fluent" ;
 
-            public const string LogBuilderClassFullName =
+            private const string LogBuilderClassFullName =
                 LogBuilderNamespaceName + "." + LogBuilderClassName ;
 
-            public const string ILoggerClassName = "ILogger" ;
-            public const string LoggerClassName  = "Logger" ;
+            private const string ILoggerClassName = "ILogger" ;
+            private const string LoggerClassName  = "Logger" ;
 
-            public const string ILoggerClassFullName = NLogNamespace + "." + ILoggerClassName ;
+            private const string ILoggerClassFullName = NLogNamespace + "." + ILoggerClassName ;
 
             private const string NLogNamespace = "NLog" ;
 
@@ -233,18 +243,18 @@ namespace FindLogUsages
 #if TRACE && DOLOG
                     Logger.Debug (
                                   "{method} node location is {node}"
-                        , nameof ( CheckInvocationExpression )
-                        , node.GetLocation ( ).ToString ( )
+                    , nameof ( CheckInvocationExpression )
+                    , node.GetLocation ( ).ToString ( )
                                  ) ;
                     Logger.Debug (
                                   "{exprKind}, {expr}"
-                        , node.Expression.Kind ( )
-                        , node.Expression.ToString ( )
+                    , node.Expression.Kind ( )
+                    , node.Expression.ToString ( )
                                  ) ;
 
                     Logger.Info (
                                  "symbol info is {node}"
-                       , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
+                   , symbolInfo.Symbol?.ToDisplayString ( ) ?? "null"
                                 ) ;
                     if ( symbolInfo.Symbol == null )
                     {
@@ -313,7 +323,7 @@ namespace FindLogUsages
             }
         }
 
-        internal class InvocationParams
+        internal sealed class InvocationParams
         {
 #if DOLOG
             private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
@@ -337,8 +347,8 @@ namespace FindLogUsages
 #if TRACE && DOLOG
                     Logger.Debug (
                                   "{id} relevant node is {node}"
-                        , Thread.CurrentThread.ManagedThreadId
-                        , relevantNode.ToString ( )
+                    , Thread.CurrentThread.ManagedThreadId
+                    , relevantNode.ToString ( )
                                  ) ;
 #endif
                     Tree = syntaxTree ?? throw new ArgumentNullException ( nameof ( syntaxTree ) ) ;
@@ -369,13 +379,18 @@ namespace FindLogUsages
             private INamedTypeSymbol NamedTypeSymbol { get ; }
 
             [ CanBeNull ]
-            internal object ProcessInvocation ( Func < ILogInvocation > invocationFactory )
+            // ReSharper disable once FunctionComplexityOverflow
+            internal object ProcessInvocation (
+                Func < ILogInvocation >                   invocationFactory
+              , IEnumerable < Action < ILogInvocation > > invocActions
+            )
             {
+                // ReSharper disable once NotAccessedVariable
                 var exceptionArg = false ;
-                if ( NamedTypeSymbol != null
-                     && MethodSymbol != null
-                     && MethodSymbol.Parameters.Any ( ) )
+                if ( NamedTypeSymbol                     != null
+                     && MethodSymbol?.Parameters.Any ( ) == true )
                 {
+                    // ReSharper disable once RedundantAssignment
                     exceptionArg = IsException (
                                                 NamedTypeSymbol
                                               , MethodSymbol.Parameters.First ( ).Type
@@ -387,19 +402,17 @@ namespace FindLogUsages
                     return null ;
                 }
 
-                var msgParam = Enumerable.Select (
-                                                  MethodSymbol
-                                                     .Parameters
-                                                , ( symbol , i ) => new { symbol , i } )
-                                         .Where ( arg1 => arg1.symbol.Name == "message" ) ;
+                var msgParam = MethodSymbol
+                              .Parameters.Select ( ( symbol , i ) => new { symbol , i } )
+                              .Where ( arg1 => arg1.symbol.Name == "message" ) ;
 #if TRACE && DOLOG
                 if ( ! msgParam.Any ( ) )
                 {
                     Logger.Trace (
                                   "{params}"
-                        , string.Join (
+                    , string.Join (
                                                ", "
-                                     , MethodSymbol.Parameters.Select (
+                                 , MethodSymbol.Parameters.Select (
                                                                                symbol => symbol.Name
                                                                               )
                                               )
@@ -407,14 +420,15 @@ namespace FindLogUsages
                 }
 #endif
 
+                // ReSharper disable twice PossibleMultipleEnumeration
                 var msgI = msgParam.Any ( ) ? ( int ? ) msgParam.First ( ).i : null ;
                 var methodSymbol = MethodSymbol ;
 #if TRACE && DOLOG
                 Logger.Trace (
                               "params = {params}"
-                    , string.Join (
+                , string.Join (
                                            ", "
-                                 , methodSymbol.Parameters.Select ( symbol => symbol.Name )
+                             , methodSymbol.Parameters.Select ( symbol => symbol.Name )
                                           )
                              ) ;
 #endif
@@ -425,19 +439,21 @@ namespace FindLogUsages
                 {
                     var fargs = invocation.ArgumentList.Arguments.Skip ( msgI.Value ).ToList ( ) ;
                     rest = fargs.Skip ( 1 ) ;
-                    var msgarg = fargs.First ( ) ;
-                    var msgArgExpr = msgarg.Expression ;
+                    var msgArg = fargs.First ( ) ;
+                    var msgArgExpr = msgArg.Expression ;
+                    // ReSharper disable once UnusedVariable
                     var msgArgTypeInfo =
                         ModelExtensions.GetTypeInfo ( semanticModel , msgArgExpr ) ;
                     var symbolInfo = ModelExtensions.GetSymbolInfo ( semanticModel , msgArgExpr ) ;
+                    // ReSharper disable once UnusedVariable
                     var arg1sym = symbolInfo.Symbol ;
 #if TRACE && DOLOG
                     if ( arg1sym != null )
                     {
                         Logger.Trace (
                                       "{type} {symb}"
-                            , arg1sym.GetType ( )
-                            , arg1sym?.ToDisplayString ( )
+                        , arg1sym.GetType ( )
+                        , arg1sym?.ToDisplayString ( )
                                      ) ;
                     }
 #endif
@@ -454,18 +470,19 @@ namespace FindLogUsages
 #endif
                         msgval.ConstantMessage = constant.Value ;
                         var m = MessageTemplate.Parse ( ( string ) constant.Value ) ;
+                        // ReSharper disable once CollectionNeverQueried.Local
                         var o = new List < object > ( ) ;
                         msgval.MessageTemplate = m ;
                         foreach ( var messageTemplateToken in m.Tokens )
                         {
                             if ( messageTemplateToken is PropertyToken prop )
                             {
-                                var t = Tuple.Create < bool , string > ( prop.IsPositional , prop.PropertyName ) ;
+                                var t = Tuple.Create ( prop.IsPositional , prop.PropertyName ) ;
                                 o.Add ( t ) ;
                             }
                             else if ( messageTemplateToken is TextToken t )
                             {
-                                var xt = Tuple.Create < string > ( t.Text ) ;
+                                var xt = Tuple.Create ( t.Text ) ;
                                 o.Add ( xt ) ;
                             }
                         }
@@ -475,18 +492,19 @@ namespace FindLogUsages
                     }
                     else
                     {
-                        var t = new StringBuilder ( ) ;
                         //invocation.WithArgumentList(invocation.ArgumentList.)
-                        if ( msgArgExpr is InterpolatedStringExpressionSyntax interp )
+                        if ( msgArgExpr is InterpolatedStringExpressionSyntax interpolated )
                         {
                             var n = 1 ;
-                            foreach ( var s in interp.Contents )
+                            foreach ( var s in interpolated.Contents )
                             {
                                 if ( s is InterpolationSyntax expr )
                                 {
+                                    // ReSharper disable once NotAccessedVariable
                                     var varName = "arg" + n ;
                                     if ( expr.Expression is IdentifierNameSyntax nn )
                                     {
+                                        // ReSharper disable once RedundantAssignment
                                         varName = nn.Identifier.ValueText ;
                                     }
 
@@ -515,45 +533,44 @@ namespace FindLogUsages
                 object t1 ;
                 try
                 {
-                    t1 = GenTransforms.Transform_CSharp_Node (( CSharpSyntaxNode ) relevantNode);         
+                    t1 = GenTransforms.Transform_CSharp_Node ( ( CSharpSyntaxNode ) relevantNode ) ;
                 }
                 catch ( UnsupportedExpressionTypeSyntaxException unsupported )
                 {
                     return new RejectedItem ( relevantNode , unsupported ) ;
                 }
 
-                var debugInvo = invocationFactory ( ) ;
-                debugInvo.Location       = location ;
-                debugInvo.SourceLocation = sourceLocation ;
-                debugInvo.LoggerType     = methodSymbol.ContainingType.MetadataName ;
-                debugInvo.MethodDisplayName = methodSymbol.ContainingType.MetadataName
+                var invocation2 = invocationFactory ( ) ;
+                invocation2.Location       = location ;
+                invocation2.SourceLocation = sourceLocation ;
+                invocation2.LoggerType     = methodSymbol.ContainingType.MetadataName ;
+                invocation2.MethodDisplayName = methodSymbol.ContainingType.MetadataName
                                               + "."
                                               + methodSymbol.MetadataName ;
-                debugInvo.TransformedRelevantNode = t1 ;
-                if ( relevantNode.Parent != null )
-                {
-                    var sourceContext = relevantNode.Parent.ChildNodes ( ).ToList ( ) ;
-                    var i2 = sourceContext.IndexOf ( relevantNode ) ;
-                }
+                invocation2.TransformedRelevantNode = t1 ;
+                var sourceContext = relevantNode.Parent?.ChildNodes ( ).ToList ( ) ;
+                // ReSharper disable once UnusedVariable
+                var i2 = sourceContext?.IndexOf ( relevantNode ) ;
 
                 var p = relevantNode.GetLocation ( ).GetMappedLineSpan ( ).Path ;
                 try
                 {
                     var lines = File.ReadAllLines ( p ) ;
-                    debugInvo.PrecedingCode =
+                    invocation2.PrecedingCode =
                         lines[ relevantNode.GetLocation ( )
                                            .GetMappedLineSpan ( )
                                            .StartLinePosition.Line
                                - 1 ] ;
 
-                    debugInvo.Code = relevantNode.ToFullString ( ) ;
-                    debugInvo.FollowingCode = lines[ relevantNode.GetLocation ( )
+                    invocation2.Code = relevantNode.ToFullString ( ) ;
+                    invocation2.FollowingCode = lines[ relevantNode.GetLocation ( )
                                                                  .GetMappedLineSpan ( )
                                                                  .EndLinePosition.Line
                                                      + 1 ] ;
                 }
-                catch ( Exception ex )
+                catch ( Exception )
                 {
+                    // ignored
 #if DOLOG
                     Logger.Warn ( ex , ex.ToString ( ) ) ;
 #endif
@@ -566,12 +583,20 @@ namespace FindLogUsages
                                               ) ;
                 foreach ( var logInvocationArgument in transformed )
                 {
-                    debugInvo.Arguments.Add ( logInvocationArgument ) ;
+                    invocation2.Arguments.Add ( logInvocationArgument ) ;
                 }
 #if TRACE && DOLOG
                 Logger.Trace ( "{t}" , transformed ) ;
 #endif
-                return debugInvo ;
+                if ( invocActions != null )
+                {
+                    foreach ( var invocAction in invocActions )
+                    {
+                        invocAction ( invocation2 ) ;
+                    }
+                }
+
+                return invocation2 ;
             }
 
             private static bool IsException (
@@ -600,6 +625,7 @@ namespace FindLogUsages
 
             private sealed class LogMessageRepr
             {
+                // ReSharper disable once UnusedMember.Local
                 public LogMessageRepr ( bool isMessageTemplate , object constantMessage )
                 {
                     IsMessageTemplate = isMessageTemplate ;
@@ -616,8 +642,11 @@ namespace FindLogUsages
 
                 public bool IsMessageTemplate { get ; set ; }
 
+                // ReSharper disable once UnusedAutoPropertyAccessor.Local
+                // ReSharper disable once MemberCanBePrivate.Local
                 public object MessageExprPojo { get ; set ; }
 
+                // ReSharper disable once UnusedMember.Local
                 public object PrimaryMessage
                 {
                     get
@@ -626,6 +655,7 @@ namespace FindLogUsages
                     }
                 }
 
+                // ReSharper disable once UnusedAutoPropertyAccessor.Local
                 public object ConstantMessage { get ; set ; }
             }
         }

@@ -2,15 +2,15 @@
 {
     /// <summary>
     /// </summary>
-    public class StackTraceToken
+    public sealed class StackTraceToken
     {
         /// <summary>
         /// </summary>
-        public int Index { get ; set ; }
+        internal int Index { get ; set ; }
 
         /// <summary>
         /// </summary>
-        public int Length { get ; set ; }
+        internal int Length { get ; set ; }
 
         /// <summary>
         /// </summary>

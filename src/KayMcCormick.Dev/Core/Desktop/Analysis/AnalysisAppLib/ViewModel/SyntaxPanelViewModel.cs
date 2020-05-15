@@ -22,8 +22,8 @@ namespace AnalysisAppLib.ViewModel
     /// </summary>
     public sealed class SyntaxPanelViewModel : ISyntaxPanelViewModel , INotifyPropertyChanged
     {
-        private CompilationUnitSyntax compilationUnitSyntax ;
-        private object                selectedItem ;
+        private CompilationUnitSyntax _compilationUnitSyntax ;
+        private object                _selectedItem ;
 
         /// <summary>
         /// 
@@ -67,11 +67,11 @@ namespace AnalysisAppLib.ViewModel
         /// 
         /// </summary>
         /// <param name="compilationUnitSyntax"></param>
-        public SyntaxPanelViewModel ( CompilationUnitSyntax compilationUnitSyntax = null )
+        public SyntaxPanelViewModel ( [ CanBeNull ] CompilationUnitSyntax compilationUnitSyntax = null )
         {
             if ( compilationUnitSyntax != null )
             {
-                this.compilationUnitSyntax = compilationUnitSyntax ;
+                this._compilationUnitSyntax = compilationUnitSyntax ;
             }
         }
 
@@ -80,15 +80,17 @@ namespace AnalysisAppLib.ViewModel
         /// </summary>
         public CompilationUnitSyntax CompilationUnitSyntax
         {
-            get { return compilationUnitSyntax ; }
+            get { return _compilationUnitSyntax ; }
             set
             {
-                if ( ! ReferenceEquals ( compilationUnitSyntax , value ) )
+                if ( ReferenceEquals ( _compilationUnitSyntax , value ) )
                 {
-                    OnPropertyChanging ( ) ;
-                    compilationUnitSyntax = value ;
-                    OnPropertyChanged ( ) ;
+                    return ;
                 }
+
+                OnPropertyChanging ( ) ;
+                _compilationUnitSyntax = value ;
+                OnPropertyChanged ( ) ;
             }
         }
 
@@ -97,15 +99,17 @@ namespace AnalysisAppLib.ViewModel
         /// </summary>
         public object SelectedItem
         {
-            get { return selectedItem ; }
+            get { return _selectedItem ; }
             set
             {
-                if ( ! ReferenceEquals ( selectedItem , value ) )
+                if ( ReferenceEquals ( _selectedItem , value ) )
                 {
-                    OnPropertyChanging ( ) ;
-                    selectedItem = value ;
-                    OnPropertyChanged ( ) ;
+                    return ;
                 }
+
+                OnPropertyChanging ( ) ;
+                _selectedItem = value ;
+                OnPropertyChanged ( ) ;
             }
         }
         #endregion

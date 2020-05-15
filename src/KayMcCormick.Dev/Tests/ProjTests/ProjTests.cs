@@ -44,6 +44,8 @@ using System.Windows.Baml2006;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
+using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -85,10 +87,14 @@ using NLog;
 using Xunit;
 using Xunit.Abstractions;
 using Binding = System.Windows.Data.Binding;
+using Button = System.Windows.Controls.Button;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using Condition = System.Windows.Automation.Condition;
 using File = System.IO.File;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using ListBox = System.Windows.Controls.ListBox;
 using MethodInfo = System.Reflection.MethodInfo;
+using Orientation = System.Windows.Controls.Orientation;
 using Process = System.Diagnostics.Process;
 using RegionInfo = AnalysisControls.RegionInfo;
 
@@ -2420,5 +2426,76 @@ panel.AssemblySource = AppDomain.CurrentDomain.GetAssemblies();
 
             
         }
+        [WpfFact]
+        public void TestProp()
+        {
+            ControlsProvider p = new ControlsProvider(null,
+                new CustomTypes(new List<Type>(new[] {typeof(RibbonModelGroup), typeof(RibbonModelGroupItemCollection) })),
+                type => new AnalysisCustomTypeDescriptor(new UiElementTypeConverter(null), type,
+                    Enumerable.Empty<IPropertiesAdapter>(), null, Logger));
+            foreach (var pType in p.Types)
+            {
+                TypeDescriptor.AddProvider(p.Provider, pType);
+            }
+            var g = new RibbonModelGroup();
+            PropertyGrid grid = new PropertyGrid();
+            grid.SelectedObject = g;
+            var windowsFormsHost = new WindowsFormsHost {Child = grid, Width = 400, Height = 800};
+            var stp = new StackPanel();
+            var uiElement = new Button(){Content="Reset"};
+            stp.Children.Add(uiElement);
+            stp.Children.Add(windowsFormsHost);
+            uiElement.Click += (sender, args) =>
+            {
+                var propertyGrid = new PropertyGrid();
+                propertyGrid.SelectedObject = g;
+                windowsFormsHost.Child = propertyGrid;
+            };
+            Window w = new Window {Content = stp};
+            w.ShowDialog();
+        }
+
+        [WpfFact]
+        public void TestTypeDescriptor1()
+        {
+            using (var instance = new ApplicationInstance(
+                new ApplicationInstance.
+                    ApplicationInstanceConfiguration(
+                        _output
+                            .WriteLine
+                        , ApplicationGuid
+                    )
+            ))
+            {
+                instance.AddModule(new AnalysisControlsModule());
+                instance.AddModule(new AnalysisAppLibModule());
+                instance.Initialize();
+                var lifetimeScope = instance.GetLifetimeScope(builder =>
+                {
+                    builder.RegisterType<AppCommandTypeConverter>().AsSelf();
+                    builder.RegisterInstance(Logger).As<ILogger>();
+                });
+                var cx = lifetimeScope.Resolve<IControlsProvider>();
+                foreach (var cxType in cx.Types)
+                {
+                    TypeDescriptor.AddProvider(cx.Provider, cxType);
+                }
+                var props = TypeDescriptor.GetProperties(typeof(RibbonModelItem));
+                foreach (PropertyDescriptor prop in props)
+                {
+                    if (prop.Name == "AppCommand")
+                    {
+                        var c = TypeDescriptor.GetConverter(prop);
+
+                        ITypeDescriptorContext l = null;
+                        var val = prop.Converter.GetStandardValues(null);
+                        foreach (var o in val)
+                        {
+                            DebugUtils.WriteLine(o.ToString());
+                        }
+                    }
+                }
+            }
+        }
     }
-}
+    }

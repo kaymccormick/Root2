@@ -2,7 +2,6 @@
 using System.CodeDom.Compiler ;
 using System.Collections ;
 using System.Collections.Generic ;
-using System.Diagnostics ;
 using System.Diagnostics.CodeAnalysis ;
 using System.IO ;
 using System.Linq ;
@@ -13,7 +12,6 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Dev.StackTrace ;
-using KayMcCormick.Dev.Tracing ;
 using NLog ;
 using NLog.Fluent ;
 
@@ -25,7 +23,7 @@ namespace KayMcCormick.Dev
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
-        private static readonly BinaryFormatter _binaryFormatter = new BinaryFormatter ( ) ;
+        private static readonly BinaryFormatter BinaryFormatter = new BinaryFormatter ( ) ;
 
 
         /// <summary>
@@ -38,10 +36,11 @@ namespace KayMcCormick.Dev
                             , "CA1031:Do not catch general exception types"
                             , Justification = "<Pending>"
                           ) ]
+        // ReSharper disable once UnusedMember.Global
         public static void HandleInnerExceptions (
-            Exception e
-          , LogLevel  level  = null
-          , ILogger   logger = null
+            [ CanBeNull ] Exception e
+          , [ CanBeNull ] LogLevel  level  = null
+          , [ CanBeNull ] ILogger   logger = null
         )
         {
             using ( var stringWriter = new StringWriter ( ) )
@@ -49,7 +48,7 @@ namespace KayMcCormick.Dev
                 TextWriter s = stringWriter ;
                 try
                 {
-                    void doLog ( Exception exception )
+                    void DoLog ( Exception exception )
                     {
                         new LogBuilder ( logger ?? Logger )
                            .Level ( level ?? LogLevel.Debug )
@@ -58,23 +57,25 @@ namespace KayMcCormick.Dev
                            .Write ( ) ;
                     }
 
-                    if ( e != null )
+                    if ( e == null )
                     {
-                        s.WriteLine ( e.Message ) ;
-                        var inner = e.InnerException ;
-                        var seen = new HashSet < object > ( ) ;
-                        while ( inner != null
-                                && ! seen.Contains ( inner ) )
-                        {
-                            doLog ( inner ) ;
-                            seen.Add ( inner ) ;
-                            inner = inner.InnerException ;
-                        }
+                        return ;
+                    }
+
+                    s.WriteLine ( e.Message ) ;
+                    var inner = e.InnerException ;
+                    var seen = new HashSet < object > ( ) ;
+                    while ( inner != null
+                            && ! seen.Contains ( inner ) )
+                    {
+                        DoLog ( inner ) ;
+                        seen.Add ( inner ) ;
+                        inner = inner.InnerException ;
                     }
                 }
                 catch ( Exception ex )
                 {
-                    Debug.WriteLine ( "Exception: " + ex ) ;
+                    DebugUtils.WriteLine ( "Exception: " + ex ) ;
                 }
             }
         }
@@ -93,7 +94,8 @@ namespace KayMcCormick.Dev
 
         private static void DoDump (
             IndentedTextWriter dumpConfig
-          , IDictionary        doDumpConfig
+          , [ NotNull ] IDictionary        doDumpConfig
+            // ReSharper disable once UnusedParameter.Local
           , int                depth = 0
         )
         {
@@ -134,7 +136,8 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static IEnumerable < StackTraceEntry > ParseStackTrace ( string text )
+        [ NotNull ]
+        public static IEnumerable < StackTraceEntry > ParseStackTrace ( [ NotNull ] string text )
         {
             return StackTraceParser.Parse (
                                            text
@@ -182,10 +185,10 @@ namespace KayMcCormick.Dev
         /// <param name="eException"></param>
         public static void LogParsedExceptions ( [ NotNull ] Exception eException )
         {
-            Debug.WriteLine ( eException.GetType ( ).FullName ) ;
-            Debug.WriteLine ( eException.Message ) ;
-            Debug.WriteLine ( eException.StackTrace ) ;
-            if ( eException is FileNotFoundException fnf )
+            DebugUtils.WriteLine ( eException.GetType ( ).FullName ) ;
+            DebugUtils.WriteLine ( eException.Message ) ;
+            DebugUtils.WriteLine ( eException.StackTrace ) ;
+            if ( eException is FileNotFoundException )
             {
                     return ;
 
@@ -194,8 +197,7 @@ namespace KayMcCormick.Dev
             if ( eException is FileLoadException
                  || eException is TargetInvocationException
                  || eException is FormatException
-                 || eException.StackTrace != null
-                 && eException.StackTrace.Contains ( "CurrentDomain_FirstChanceException" ) )
+                 || eException.StackTrace?.Contains ( "CurrentDomain_FirstChanceException" ) == true )
             {
                 return ;
             }
@@ -203,7 +205,7 @@ namespace KayMcCormick.Dev
             var s = new MemoryStream ( ) ;
             try
             {
-                _binaryFormatter.Serialize ( s , eException ) ;
+                BinaryFormatter.Serialize ( s , eException ) ;
                 s.Flush ( ) ;
                 s.Seek ( 0 , SeekOrigin.Begin ) ;
 
@@ -230,10 +232,11 @@ namespace KayMcCormick.Dev
                                                               , sw.ToString ( )
                                                                ) ;
 #endif
-                Debug.WriteLine ( eException.ToString ( ) ) ;
+                DebugUtils.WriteLine ( eException.ToString ( ) ) ;
             }
-            catch ( Exception ex )
+            catch ( Exception )
             {
+                // ignored
             }
         }
 
@@ -241,6 +244,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="eException"></param>
         /// <returns></returns>
+        [ NotNull ]
         public static ParsedExceptions GenerateParsedException ( Exception eException )
         {
             var parsed = new ParsedExceptions ( ) ;

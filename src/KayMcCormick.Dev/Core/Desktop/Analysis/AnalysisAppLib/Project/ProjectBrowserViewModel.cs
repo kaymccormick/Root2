@@ -3,16 +3,16 @@
 // 
 // KayMcCormick.Dev
 // ProjLib
-// ProjectBrowserViewModoel.cs
+// ProjectBrowserViewModel.cs
 // 
 // 2020-03-01-6:32 PM
 // 
 // ---
 #endregion
 using System ;
+using System.Collections.Generic ;
 using System.Linq ;
 using System.Runtime.Serialization ;
-using AnalysisAppLib.ViewModel ;
 
 namespace AnalysisAppLib.Project
 {
@@ -23,6 +23,7 @@ namespace AnalysisAppLib.Project
     public class ProjectBrowserViewModel : IProjectBrowserViewModel
     {
         private readonly IBrowserNodeCollection _rootCollection ;
+        private List < ProjectInfo > _projects = new List < ProjectInfo > () ;
 
         /// <summary>
         /// 
@@ -31,15 +32,18 @@ namespace AnalysisAppLib.Project
         {
             var browserNodeCollection = new BrowserNodeCollection ( ) ;
             _rootCollection = browserNodeCollection ;
-            var projectBrowserNode = new ProjectBrowserNode
+            // ReSharper disable once CollectionNeverQueried.Local
+            var projectBrowserNode = new ProjectInfo
                                      {
                                          Name          = "LogTest"
                                        , RepositoryUrl = new Uri ( "none:" )
                                        , SolutionPath =
+                                             // ReSharper disable once StringLiteralTypo
                                              @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v2\LogTest\LogTest.sln"
                                      } ;
-            browserNodeCollection.Add ( projectBrowserNode ) ;
-            var projectBrowserNode2 = new ProjectBrowserNode
+            Projects.Add ( projectBrowserNode ) ;
+            //browserNodeCollection.Add ( projectBrowserNode ) ;
+            var projectBrowserNode2 = new ProjectInfo
                                       {
                                           Name = "My Project (root2)"
                                         , RepositoryUrl =
@@ -47,11 +51,14 @@ namespace AnalysisAppLib.Project
                                                        "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev"
                                                       )
                                         , SolutionPath =
+                                              // ReSharper disable once StringLiteralTypo
+
                                               @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\Root2\src\KayMcCormick.Dev\ManagedProd.sln"
                                         , Platform = "x86"
                                       } ;
-            browserNodeCollection.Add ( projectBrowserNode2 ) ;
-            var projectBrowserNode3 = new ProjectBrowserNode
+            //browserNodeCollection.Add ( projectBrowserNode2 ) ;
+            Projects.Add ( projectBrowserNode2 ) ;
+            var projectBrowserNode3 = new ProjectInfo
                                       {
                                           Name = "My Project (root)"
                                         , RepositoryUrl =
@@ -59,10 +66,13 @@ namespace AnalysisAppLib.Project
                                                        "https://kaymccormick@dev.azure.com/kaymccormick/KayMcCormick.Dev/_git/KayMcCormick.Dev"
                                                       )
                                         , SolutionPath =
+                                              // ReSharper disable once StringLiteralTypo
+
                                               @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\v3\work2\src\KayMcCormick.Dev\ManagedProd.sln"
                                         , Platform = "x86"
                                       } ;
-            browserNodeCollection.Add ( projectBrowserNode3 ) ;
+            //browserNodeCollection.Add ( projectBrowserNode3 ) ;
+            Projects.Add (projectBrowserNode3  );
         }
 
         #region Implementation of IProjectBrowserViewModoel
@@ -70,6 +80,15 @@ namespace AnalysisAppLib.Project
         /// 
         /// </summary>
         public IBrowserNodeCollection RootCollection { get { return _rootCollection ; } }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public List < ProjectInfo > Projects
+        {
+            get { return _projects ; }
+            set { _projects = value ; }
+        }
         #endregion
         #region Implementation of ISerializable
         /// <summary>

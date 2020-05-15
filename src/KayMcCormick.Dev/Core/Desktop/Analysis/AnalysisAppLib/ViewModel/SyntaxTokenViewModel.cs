@@ -13,6 +13,7 @@ using System ;
 using System.Collections.ObjectModel ;
 using System.Runtime.Serialization ;
 using AnalysisAppLib.Syntax ;
+using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using NLog ;
@@ -22,6 +23,7 @@ namespace AnalysisAppLib.ViewModel
     /// <summary>
     /// 
     /// </summary>
+    [ UsedImplicitly ]
     public sealed class SyntaxTokenViewModel : ISyntaxTokenViewModel
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;

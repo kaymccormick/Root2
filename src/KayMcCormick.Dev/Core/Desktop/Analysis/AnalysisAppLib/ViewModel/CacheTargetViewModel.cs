@@ -10,7 +10,6 @@
 // ---
 #endregion
 using System ;
-using System.Diagnostics ;
 using System.Linq ;
 using System.Reactive.Concurrency ;
 using System.Reactive.Linq ;
@@ -23,6 +22,7 @@ namespace AnalysisAppLib.ViewModel
     /// <summary>
     /// 
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public sealed class CacheTargetViewModel
     {
         private readonly MyCacheTarget2 _cacheTarget ;
@@ -44,6 +44,7 @@ namespace AnalysisAppLib.ViewModel
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public void Attach ( )
         {
             _cacheTarget?.Cache.SubscribeOn ( Scheduler.Default )
@@ -52,24 +53,14 @@ namespace AnalysisAppLib.ViewModel
                          .ObserveOnDispatcher ( DispatcherPriority.Background )
                          .Subscribe (
                                      infos => {
-                                         foreach ( var json in infos )
+                                         foreach ( var i in infos.Select ( json => JsonSerializer
+                                                                              .Deserialize < LogEventInstance > (
+                                                                                                                 json
+                                                                                                               , new
+                                                                                                                     JsonSerializerOptions ( )
+                                                                                                                ) ) )
                                          {
-                                             try
-                                             {
-                                                 var i = JsonSerializer
-                                                    .Deserialize < LogEventInstance > (
-                                                                                       json
-                                                                                     , new
-                                                                                           JsonSerializerOptions ( )
-                                                                                      ) ;
-
-                                                 Events.Add ( i ) ;
-                                             }
-                                             catch ( Exception ex )
-                                             {
-                                                 throw ;
-                                                 Debug.WriteLine ( ex.ToString ( ) ) ;
-                                             }
+                                             Events.Add ( i ) ;
                                          }
                                      }
                                     ) ;

@@ -11,6 +11,10 @@
 // ---
 #endregion
 using System ;
+using System.Collections.Generic;
+using System.IO;
+using AnalysisAppLib.Properties ;
+using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
@@ -19,21 +23,21 @@ using NLog ;
 namespace AnalysisAppLib
 {
     /// <summary>
-    /// 
+    /// Generic analysis service.
     /// </summary>
     public static class AnalysisService
     {
         /// <summary>
-        /// 
+        /// Create a compilation.
         /// </summary>
         /// <param name="assemblyName"></param>
         /// <param name="syntaxTree"></param>
+        /// <param name="extraRefs"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static CSharpCompilation CreateCompilation (
-            [ NotNull ] string     assemblyName
-          , [ NotNull ] SyntaxTree syntaxTree
-        )
+        [ NotNull ]
+        public static CSharpCompilation CreateCompilation([NotNull] string assemblyName
+            , [NotNull] SyntaxTree syntaxTree, bool extraRefs = true)
         {
             if ( assemblyName == null )
             {
@@ -45,33 +49,39 @@ namespace AnalysisAppLib
                 throw new ArgumentNullException ( nameof ( syntaxTree ) ) ;
             }
 
+            var refs = new List<MetadataReference>();
+            var sysPe = MetadataReference.CreateFromFile(
+                typeof
+                    (string
+                    ).Assembly
+                    .Location
+            );
+
+            refs.Add(sysPe);
+            if (extraRefs)
+            {
+                refs.Add(MetadataReference.CreateFromFile(
+                    typeof
+                        (Logger
+                        ).Assembly
+                        .Location
+                ));
+            }
             var compilation = CSharpCompilation.Create ( assemblyName )
-                                               .AddReferences (
-                                                               MetadataReference.CreateFromFile (
-                                                                                                 typeof
-                                                                                                     ( string
-                                                                                                     ).Assembly
-                                                                                                      .Location
-                                                                                                )
-                                                             , MetadataReference.CreateFromFile (
-                                                                                                 typeof
-                                                                                                     ( Logger
-                                                                                                     ).Assembly
-                                                                                                      .Location
-                                                                                                )
-                                                              )
+                                               .AddReferences (refs)
                                                .AddSyntaxTrees ( syntaxTree ) ;
 
             return compilation ;
         }
 
         /// <summary>
-        /// 
+        /// Create a context from a compilation.
         /// </summary>
         /// <param name="syntaxTree"></param>
         /// <param name="compilation"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
+        [ NotNull ]
         public static ICodeAnalyseContext CreateFromCompilation (
             [ NotNull ] SyntaxTree        syntaxTree
           , [ NotNull ] CSharpCompilation compilation
@@ -87,6 +97,7 @@ namespace AnalysisAppLib
                 throw new ArgumentNullException ( nameof ( compilation ) ) ;
             }
 
+            // ReSharper disable once UnusedVariable
             var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot ( ) ;
             return new CodeAnalyseContext (
                                            compilation.GetSemanticModel ( syntaxTree )
@@ -94,21 +105,22 @@ namespace AnalysisAppLib
                                          , syntaxTree.GetRoot ( )
                                          , syntaxTree
                                          , ""
+                                           , compilation
                                           ) ;
         }
 
         /// <summary>
-        /// 
+        /// Create a context from code to parse.
         /// </summary>
         /// <param name="code"></param>
         /// <param name="assemblyName"></param>
+        /// <param name="extraRefs"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static ICodeAnalyseContext Parse (
-            [ NotNull ] string code
-          , [ NotNull ] string assemblyName
-        )
+        [ NotNull ]
+        public static ICodeAnalyseContext Parse([NotNull] string code
+            , [NotNull] string assemblyName, bool extraRefs = true)
         {
             if ( code == null )
             {
@@ -117,7 +129,7 @@ namespace AnalysisAppLib
 
             if ( string.IsNullOrWhiteSpace ( code ) )
             {
-                throw new ArgumentOutOfRangeException ( nameof ( code ) , "Empty code supplied" ) ;
+                throw new ArgumentOutOfRangeException ( nameof ( code ) , Resources.AnalysisService_Parse_Empty_code_supplied ) ;
             }
 
             if ( assemblyName == null )
@@ -126,8 +138,31 @@ namespace AnalysisAppLib
             }
 
             var syntaxTree = CSharpSyntaxTree.ParseText ( code ) ;
-            var compilation = CreateCompilation ( assemblyName , syntaxTree ) ;
+            var compilation = CreateCompilation ( assemblyName , syntaxTree, extraRefs) ;
             return CreateFromCompilation ( syntaxTree , compilation ) ;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="assemblyName"></param>
+        /// <param name="extraRefs"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static ICodeAnalyseContext Load([NotNull] string filename
+            , [NotNull] string assemblyName, bool extraRefs = true)
+        {
+
+            if (assemblyName == null)
+            {
+                throw new ArgumentNullException(nameof(assemblyName));
+            }
+
+            var code = File.ReadAllText(filename);
+            var syntaxTree = CSharpSyntaxTree.ParseText(code);
+            var compilation = CreateCompilation(assemblyName, syntaxTree, extraRefs);
+            return CreateFromCompilation(syntaxTree, compilation);
+        }
+
     }
 }

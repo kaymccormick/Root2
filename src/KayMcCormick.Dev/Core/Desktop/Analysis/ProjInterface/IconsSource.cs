@@ -14,6 +14,7 @@ using System.Collections ;
 using System.IO ;
 using System.Windows.Controls ;
 using System.Windows.Media ;
+using JetBrains.Annotations ;
 
 namespace ProjInterface
 {
@@ -30,7 +31,7 @@ namespace ProjInterface
             get { return _iconsResources ; }
             set
             {
-                if ( _iconsResources != value )
+                if ( ! Equals ( _iconsResources , value ) )
                 {
                     _iconsResources = value ;
                 }
@@ -46,18 +47,20 @@ namespace ProjInterface
             }
         }
 
-        public Image ProjectDirectoryIcon
+        [ CanBeNull ] public Image ProjectDirectoryIcon
         {
             get
             {
-                if ( _projectDirectoryIcon == null
-                     && IconsResources.Contains ( nameof ( ProjectDirectoryIcon ) ) )
+                if ( _projectDirectoryIcon != null
+                     || ! IconsResources.Contains ( nameof ( ProjectDirectoryIcon ) ) )
                 {
-                    var resource = IconsResources[ nameof ( ProjectDirectoryIcon ) ] ;
-                    var imageSource = ( ImageSource ) resource ;
-                    ProjectDirectoryIconImageSource = imageSource ;
-                    _projectDirectoryIcon           = new Image { Source = imageSource } ;
+                    return _projectDirectoryIcon ;
                 }
+
+                var resource = IconsResources[ nameof ( ProjectDirectoryIcon ) ] ;
+                var imageSource = ( ImageSource ) resource ;
+                ProjectDirectoryIconImageSource = imageSource ;
+                _projectDirectoryIcon           = new Image { Source = imageSource } ;
 
                 return _projectDirectoryIcon ;
             }
@@ -68,13 +71,9 @@ namespace ProjInterface
         {
             get
             {
-                if ( _directoryIconImageSource == null )
-                {
-                    _directoryIconImageSource =
-                        ( ImageSource ) IconsResources[ typeof ( Directory ) ] ;
-                }
-
-                return _directoryIconImageSource ;
+                return _directoryIconImageSource
+                       ?? ( _directoryIconImageSource =
+                                ( ImageSource ) IconsResources[ typeof ( Directory ) ] ) ;
             }
             set { _directoryIconImageSource = value ; }
         }
@@ -87,8 +86,7 @@ namespace ProjInterface
 
         public ImageSource GetIconForFileExtension ( object extension )
         {
-            if ( IconsResources != null
-                 && IconsResources.Contains ( extension ) )
+            if ( IconsResources?.Contains ( extension ) == true )
             {
                 return ( ImageSource ) IconsResources[ extension ] ;
             }

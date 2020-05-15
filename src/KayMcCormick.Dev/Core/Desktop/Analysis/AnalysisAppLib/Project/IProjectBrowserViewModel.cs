@@ -3,7 +3,7 @@
 // 
 // KayMcCormick.Dev
 // ProjLib
-// IProjectBrowserViewModoel.cs
+// IProjectBrowserViewModel.cs
 // 
 // 2020-03-01-6:32 PM
 // 
