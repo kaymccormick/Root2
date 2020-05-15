@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using AnalysisControls;
+
 using AnalysisControls.RibbonModel;
 using Autofac;
 using Autofac.Core;

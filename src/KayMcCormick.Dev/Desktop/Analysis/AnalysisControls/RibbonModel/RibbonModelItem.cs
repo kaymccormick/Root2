@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using AnalysisControls.Converters;
+using DocumentFormat.OpenXml.Presentation;
 using JetBrains.Annotations;
 using KayMcCormick.Lib.Wpf.Command;
 
@@ -111,6 +113,8 @@ namespace AnalysisControls.RibbonModel
         /// </summary>
         public double? Height { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public string StringLabel => Label?.ToString();
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

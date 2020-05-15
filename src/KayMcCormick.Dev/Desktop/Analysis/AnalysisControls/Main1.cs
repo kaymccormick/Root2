@@ -295,7 +295,11 @@ namespace AnalysisControls
 
         private void OnDragOver(object sender, DragEventArgs e)
         {
-            e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.All : DragDropEffects.None;
+            if (!e.Handled)
+            {
+                e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.All : DragDropEffects.None;
+            }
+            
         }
 
         /// <summary>

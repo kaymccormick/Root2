@@ -2,165 +2,171 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:AnalysisControls"
                     xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonModel"
-                    xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-                    xmlns:global="clr-namespace:">
-  <local:TestConverter2 x:Key="TestConverter2"/>
-  <kmWpf:GetTypeConverter x:Key="GetTypeConverter"/>
+                    xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf">
+  <local:TestConverter2 x:Key="TestConverter2" />
+  <kmWpf:GetTypeConverter x:Key="GetTypeConverter" />
   <Style TargetType="{x:Type RibbonContextualTabGroupItemsControl}">
     <Setter Property="ItemTemplate">
       <Setter.Value>
         <DataTemplate DataType="{x:Type ribbonModel:RibbonModelContextualTabGroup}">
-          <TextBlock Text="{Binding Header}"/>
+          <TextBlock Text="{Binding Header}" />
         </DataTemplate>
       </Setter.Value>
     </Setter>
   </Style>
-    <Style TargetType="{x:Type RibbonContextualTabGroup}">
-		    <Setter Property="Header" Value="{Binding Header}"/>
-        <Setter Property="Visibility" Value="{Binding Visibility}"/>
-		    </Style>
-		    <Style TargetType="{x:Type RibbonGroup}">
-<Setter Property="ItemsSource" Value="{Binding Items}"/>
-</Style>
+  <Style TargetType="{x:Type RibbonContextualTabGroup}">
+    <Setter Property="Header" Value="{Binding Header}" />
+    <Setter Property="Visibility" Value="{Binding Visibility}" />
+  </Style>
+  <Style TargetType="{x:Type RibbonGroup}">
+    <Setter Property="ItemsSource" Value="{Binding Items}" />
+  </Style>
   <Style TargetType="{x:Type local:MyRibbonTab}">
-    <Setter Property="ContextualTabGroupHeader" Value="{Binding ContextualTabGroupHeader,Converter={StaticResource TestConverter2},ConverterParameter=CTXT}"/>
-    <Setter Property="Visibility" Value="{Binding Visibility,Converter={StaticResource TestConverter2},ConverterParameter=CTXT1}"/>
+    <Setter Property="ContextualTabGroupHeader"
+            Value="{Binding ContextualTabGroupHeader,Converter={StaticResource TestConverter2},ConverterParameter=CTXT}" />
+    <Setter Property="Visibility"
+            Value="{Binding Visibility,Converter={StaticResource TestConverter2},ConverterParameter=CTXT1}" />
 
   </Style>
   <Style TargetType="{x:Type RibbonMenuItem}">
-        <Setter Property="Header" Value="{Binding Header}" />
-        <Setter Property="ImageSource" Value="{Binding Image}" />
-        <Setter Property="RibbonControlService.ToolTipTitle" Value="{Binding ToolTipTitle}" />
-        <Setter Property="RibbonControlService.ToolTipDescription" Value="{Binding ToolTipDescription}" />
-        <Setter Property="RibbonControlService.ToolTipImageSource" Value="{Binding ToolTipImage}" />
-        <Setter Property="RibbonControlService.ToolTipFooterTitle" Value="{Binding ToolTipFooterTitle}" />
-        <Setter Property="RibbonControlService.ToolTipFooterDescription" Value="{Binding ToolTipFooterDescription}" />
-        <Setter Property="RibbonControlService.ToolTipFooterImageSource" Value="{Binding ToolTipFooterImage}" />
-        <Setter Property="KeyTipService.KeyTip" Value="{Binding KeyTip}" />
-        <Setter Property="CommandParameter" Value="{Binding CommandParameter}" />
-        <Setter Property="Command" Value="{Binding Command}" />
-        <Setter Property="IsCheckable" Value="{Binding IsCheckable}" />
-        <Setter Property="IsChecked" Value="{Binding IsChecked}" />
-        <Setter Property="CanUserResizeVertically" Value="{Binding IsVerticallyResizable}" />
-        <Setter Property="CanUserResizeHorizontally" Value="{Binding IsHorizontallyResizable}" />
-        <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>
-        <Setter Property="ItemsSource" Value="{Binding Items}" />
+    <Setter Property="Header" Value="{Binding Header}" />
+    <Setter Property="ImageSource" Value="{Binding Image}" />
+    <Setter Property="RibbonControlService.ToolTipTitle" Value="{Binding ToolTipTitle}" />
+    <Setter Property="RibbonControlService.ToolTipDescription" Value="{Binding ToolTipDescription}" />
+    <Setter Property="RibbonControlService.ToolTipImageSource" Value="{Binding ToolTipImage}" />
+    <Setter Property="RibbonControlService.ToolTipFooterTitle" Value="{Binding ToolTipFooterTitle}" />
+    <Setter Property="RibbonControlService.ToolTipFooterDescription" Value="{Binding ToolTipFooterDescription}" />
+    <Setter Property="RibbonControlService.ToolTipFooterImageSource" Value="{Binding ToolTipFooterImage}" />
+    <Setter Property="KeyTipService.KeyTip" Value="{Binding KeyTip}" />
+    <Setter Property="CommandParameter" Value="{Binding CommandParameter}" />
+    <Setter Property="Command" Value="{Binding Command}" />
+    <Setter Property="IsCheckable" Value="{Binding IsCheckable}" />
+    <Setter Property="IsChecked" Value="{Binding IsChecked}" />
+    <Setter Property="CanUserResizeVertically" Value="{Binding IsVerticallyResizable}" />
+    <Setter Property="CanUserResizeHorizontally" Value="{Binding IsHorizontallyResizable}" />
+    <Setter Property="IsEnabled" Value="{Binding IsEnabled}" />
+    <Setter Property="ItemsSource" Value="{Binding Items}" />
 
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding Command}" Value="{x:Null}">
-                <Setter Property="Command" Value="{x:Null}" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding CommandParameter}" Value="{x:Null}">
-                <Setter Property="CommandParameter" Value="{x:Null}" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding Image}" Value="{x:Null}">
-                <Setter Property="ImageSource" Value="{x:Null}" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding ToolTipImage}" Value="{x:Null}">
-                <Setter Property="RibbonControlService.ToolTipImageSource" Value="{x:Null}" />
-            </DataTrigger>
-            <DataTrigger Binding="{Binding ToolTipFooterImage}" Value="{x:Null}">
-                <Setter Property="RibbonControlService.ToolTipFooterImageSource" Value="{x:Null}" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-		    
+    <Style.Triggers>
+      <DataTrigger Binding="{Binding Command}" Value="{x:Null}">
+        <Setter Property="Command" Value="{x:Null}" />
+      </DataTrigger>
+      <DataTrigger Binding="{Binding CommandParameter}" Value="{x:Null}">
+        <Setter Property="CommandParameter" Value="{x:Null}" />
+      </DataTrigger>
+      <DataTrigger Binding="{Binding Image}" Value="{x:Null}">
+        <Setter Property="ImageSource" Value="{x:Null}" />
+      </DataTrigger>
+      <DataTrigger Binding="{Binding ToolTipImage}" Value="{x:Null}">
+        <Setter Property="RibbonControlService.ToolTipImageSource" Value="{x:Null}" />
+      </DataTrigger>
+      <DataTrigger Binding="{Binding ToolTipFooterImage}" Value="{x:Null}">
+        <Setter Property="RibbonControlService.ToolTipFooterImageSource" Value="{x:Null}" />
+      </DataTrigger>
+    </Style.Triggers>
+  </Style>
+
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelItemButton}">
-    <RibbonButton Label="{Binding Label}" Command="{Binding Command}" CommandParameter="{Binding CommandParameter}" CommandTarget="{Binding CommandTarget}"></RibbonButton>
+    <RibbonButton Label="{Binding Label}" Command="{Binding Command}" CommandParameter="{Binding CommandParameter}"
+                  CommandTarget="{Binding CommandTarget}" />
   </HierarchicalDataTemplate>
 
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelItemSplitButton}">
-    <RibbonSplitButton Label="{Binding Label}" ItemsSource="{Binding Items}"
-            ></RibbonSplitButton>
+    <RibbonSplitButton Label="{Binding Label}" ItemsSource="{Binding Items}" />
   </HierarchicalDataTemplate>
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelItemTextBox}">
-    <RibbonTextBox Text="{Binding Value}" Label="{Binding Label}"></RibbonTextBox>
+    <RibbonTextBox Text="{Binding Value}" Label="{Binding Label}" />
   </HierarchicalDataTemplate>
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelTwoLineText}">
-    <RibbonTwoLineText Text="{Binding Text}" PathData="{Binding PathData}" PathFill="{Binding PathFill}" PathStroke="{Binding PathStroke}" HasTwoLines="{Binding HasTwoLines}"></RibbonTwoLineText>
+    <RibbonTwoLineText Text="{Binding Text}" PathData="{Binding PathData}" PathFill="{Binding PathFill}"
+                       PathStroke="{Binding PathStroke}" HasTwoLines="{Binding HasTwoLines}" />
   </HierarchicalDataTemplate>
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelToggleButton}">
-    <RibbonToggleButton Label="{Binding Label}" LargeImageSource="{Binding LargeImageSource}" IsChecked="{Binding IsChecked,Mode=TwoWay}"
-                        Command="{Binding Command}"></RibbonToggleButton>
+    <RibbonToggleButton Label="{Binding Label}" LargeImageSource="{Binding LargeImageSource}"
+                        IsChecked="{Binding IsChecked,Mode=TwoWay}"
+                        Command="{Binding Command}" />
   </HierarchicalDataTemplate>
-    <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelItemComboBox}">
-    <local:MyRibbonComboBox  Label="{Binding Label}" ItemsSource="{Binding Items}" 
-    >
+  <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelItemComboBox}">
+    <local:MyRibbonComboBox Label="{Binding Label}" ItemsSource="{Binding Items}">
       <local:MyRibbonComboBox.Resources>
         <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGallery}" ItemsSource="{Binding Items}">
-          <TextBlock Text="{Binding Header}"></TextBlock>
+          <TextBlock Text="{Binding Header}" />
         </HierarchicalDataTemplate>
-        <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGalleryCategory}" ItemsSource="{Binding Items}">
-          <TextBlock Text="{Binding Header}"></TextBlock>
+        <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGalleryCategory}"
+                                  ItemsSource="{Binding Items}">
+          <TextBlock Text="{Binding Header}" />
         </HierarchicalDataTemplate>
         <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGalleryItem}">
-          <ContentControl Content="{Binding Content}"></ContentControl>
+          <ContentControl Content="{Binding Content}" />
         </HierarchicalDataTemplate>
       </local:MyRibbonComboBox.Resources>
     </local:MyRibbonComboBox>
   </HierarchicalDataTemplate>
   <DataTemplate DataType="{x:Type local:ModelDatePicker}">
-    <DatePicker SelectedDate="{Binding SelectedDate}"></DatePicker>
+    <DatePicker SelectedDate="{Binding SelectedDate}" />
   </DataTemplate>
   <DataTemplate DataType="{x:Type local:ModelCalendar}">
-    <Calendar SelectedDate="{Binding SelectedDate}"></Calendar>
+    <Calendar SelectedDate="{Binding SelectedDate}" />
   </DataTemplate>
   <local:MenuTemplateSelector x:Key="MenuTemplateSelector" />
-  <local:GuidConverter x:Key="GuidConverter"/>
+  <local:GuidConverter x:Key="GuidConverter" />
   <DataTemplate DataType="{x:Type ribbonModel:RibbonModelItemMenuButton}">
-    <local:MyRibbonMenuButton ItemContainerTemplateSelector="{StaticResource MenuTemplateSelector}" Foreground="Crimson" Label="{Binding Label}" ItemsSource="{Binding Items}"
-            >
+    <local:MyRibbonMenuButton ItemContainerTemplateSelector="{StaticResource MenuTemplateSelector}"
+                              Foreground="Crimson" Label="{Binding Label}" ItemsSource="{Binding Items}">
       <local:MyRibbonMenuButton.ToolTip>
         <StackPanel>
-          <TextBlock Text="**"/>
-          <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource GuidConverter}}"/>
+          <TextBlock Text="**" />
+          <TextBlock
+            Text="{Binding RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource GuidConverter}}" />
 
         </StackPanel>
       </local:MyRibbonMenuButton.ToolTip>
     </local:MyRibbonMenuButton>
   </DataTemplate>
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelControlGroup}">
-    <RibbonControlGroup BorderBrush="BlueViolet" Padding="10" Margin="5" BorderThickness="4" ItemsSource="{Binding Items}"/>
+    <RibbonControlGroup BorderBrush="BlueViolet" Padding="10" Margin="5" BorderThickness="4"
+                        ItemsSource="{Binding Items}" />
   </HierarchicalDataTemplate>
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelMenuItem}" ItemsSource="{Binding Items}">
-    <ContentControl Content="{Binding Header}"/>
+    <ContentControl Content="{Binding Header}" />
   </HierarchicalDataTemplate>
   <DataTemplate DataType="{x:Type local:RibbonModelRadioButton}">
-    <RibbonRadioButton Label="{Binding Label}" IsChecked="{Binding IsChecked}"
-    ></RibbonRadioButton>
+    <RibbonRadioButton Label="{Binding Label}" IsChecked="{Binding IsChecked}" />
   </DataTemplate>
   <DataTemplate DataType="{x:Type ribbonModel:RibbonModelDropZone}">
-    <Rectangle AllowDrop="True" MaxWidth="{Binding MaxWidth}" MaxHeight="{Binding MaxHeight}" Fill="{Binding Fill}" MinWidth="{Binding MinWidth}" MinHeight="{Binding MinHeight}" Width="{Binding Width}" Height="{Binding Height}"/>
+    <Rectangle AllowDrop="True" MaxWidth="{Binding MaxWidth}" MaxHeight="{Binding MaxHeight}" Fill="{Binding Fill}"
+               MinWidth="{Binding MinWidth}" MinHeight="{Binding MinHeight}" Width="{Binding Width}"
+               Height="{Binding Height}" />
   </DataTemplate>
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGalleryCategory}" ItemsSource="{Binding Items}">
-    <TextBlock Text="{Binding Label}"/>
+    <TextBlock Text="{Binding Label}" />
   </HierarchicalDataTemplate>
 
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGalleryItem}">
-    <TextBlock Text="{Binding Content}"/>
+    <TextBlock Text="{Binding Content}" />
   </HierarchicalDataTemplate>
 
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGallery}" ItemsSource="{Binding Items}">
-    <RibbonGallery>
-    </RibbonGallery>
+    <RibbonGallery />
   </HierarchicalDataTemplate>
 
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGroup}" ItemsSource="{Binding Items}">
-    <TextBlock Foreground="White" Background="BlueViolet" Text="{Binding Header}"/>
+    <TextBlock Foreground="White" Background="BlueViolet" Text="{Binding Header}" />
   </HierarchicalDataTemplate>
-  <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelAppMenuItem}" ItemsSource="{Binding Items}" x:Key="app1">
+  <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelAppMenuItem}" ItemsSource="{Binding Items}"
+                            x:Key="app1">
     <RibbonApplicationMenuItem Header="{Binding Header}" ImageSource="{Binding ImageSource}"
-                                       KeyTip="{Binding KeyTip}"></RibbonApplicationMenuItem>
+                               KeyTip="{Binding KeyTip}" />
   </HierarchicalDataTemplate>
-  <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelAppMenuItem}" >
-    <TextBlock Text="{Binding Header}"></TextBlock>
+  <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelAppMenuItem}">
+    <TextBlock Text="{Binding Header}" />
   </HierarchicalDataTemplate>
 
-  <HierarchicalDataTemplate  DataType="{x:Type ribbonModel:RibbonModelAppSplitMenuItem}" ItemsSource="{Binding Items}">
-    <TextBlock FontSize="14"  FontStyle="Italic"  Text="{Binding Header}"></TextBlock>
+  <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelAppSplitMenuItem}" ItemsSource="{Binding Items}">
+    <TextBlock FontSize="14" FontStyle="Italic" Text="{Binding Header}" />
   </HierarchicalDataTemplate>
- <DataTemplate DataType="{x:Type ribbonModel:RibbonModelGallery}" x:Key="GalleryMenuContainer">
-   <RibbonGallery/>
- </DataTemplate>
+  <DataTemplate DataType="{x:Type ribbonModel:RibbonModelGallery}" x:Key="GalleryMenuContainer">
+    <RibbonGallery />
+  </DataTemplate>
 
 </ResourceDictionary>

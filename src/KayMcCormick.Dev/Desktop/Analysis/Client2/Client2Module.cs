@@ -23,6 +23,7 @@ using System.Windows;
 using AnalysisAppLib;
 using AnalysisControls;
 using AnalysisControls.Commands;
+using AnalysisControls.Converters;
 using AnalysisControls.Ribb.Definition;
 using AnalysisControls.RibbonModel;
 using AnalysisControls.RibbonModel.ContextualTabGroups;

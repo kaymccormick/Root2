@@ -182,17 +182,10 @@
     <Compile Include="TypeInfoConverter.cs" />
     <Compile Include="UiElementTypeConverter.cs" />
     <Compile Include="ViewModel\AllResourcesTreeViewModel.cs" />
-    <Compile Include="ViewModel\EventLogViewModel.cs" />
-    <Compile Include="View\EventLogView.xaml.cs">
-      <DependentUpon>EventLogView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="WpfAppCommands.cs" />
     <Compile Include="WpfInstanceInfoConverter.cs" />
     <Compile Include="Xaml\AppCommandConverter.cs" />
     <Compile Include="Xaml\XamlXmlDocumentConverter.cs" />
-    <Compile Include="XmlViewer.xaml.cs">
-      <DependentUpon>XmlViewer.xaml</DependentUpon>
-    </Compile>
     <Page Include="AllResourcesTree.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -246,14 +239,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="TypeInfoControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\EventLogView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="XmlViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -749,6 +734,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="View\" />
     <Folder Include="WpfLib\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

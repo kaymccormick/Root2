@@ -64,6 +64,10 @@ namespace AnalysisControls
         // ReSharper disable once AnnotateNotNullParameter
         protected override void Load(ContainerBuilder builder)
         {
+
+            builder.RegisterType<AssemblyResourceTree>().AsSelf().AsImplementedInterfaces();
+            builder.RegisterType<FormattedTextControl>().AsSelf().AsImplementedInterfaces();
+            builder.RegisterType<AssembliesControl>().AsSelf().AsImplementedInterfaces();
             builder.RegisterType<SyntaxNodeProperties>().AsImplementedInterfaces();
             builder.RegisterType<MiscInstanceInfoProvider>()
                 .AsSelf()

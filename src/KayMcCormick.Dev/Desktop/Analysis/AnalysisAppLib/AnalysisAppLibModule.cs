@@ -111,6 +111,7 @@ namespace AnalysisAppLib
         /// <param name="builder"></param>
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
+
             builder.RegisterType<AppDbContext>().As<IAppDbContext1>().AsSelf().WithCallerMetadata().SingleInstance();
             builder.RegisterInstance(_activations);            
             builder.RegisterType<ResourceNodeInfo>().As<IHierarchicalNode>();

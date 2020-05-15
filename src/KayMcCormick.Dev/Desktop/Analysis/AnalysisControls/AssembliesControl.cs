@@ -5,17 +5,29 @@ using System.Windows.Controls;
 
 namespace AnalysisControls
 {
-    public class AssembliesControl : Control
+    /// <summary>
+    /// 
+    /// </summary>
+    public class AssembliesControl : Control, IAppCustomControl
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty AssemblySourceProperty = DependencyProperty.Register(
             "AssemblySource", typeof(IEnumerable<Assembly>), typeof(AssembliesControl), new PropertyMetadata(default(IEnumerable<Assembly>)));
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IEnumerable<Assembly> AssemblySource
         {
             get { return (IEnumerable<Assembly>) GetValue(AssemblySourceProperty); }
             set { SetValue(AssemblySourceProperty, value); }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly DependencyProperty SelectedAssemblyProperty = DependencyProperty.Register(
             "SelectedAssembly", typeof(Assembly), typeof(AssembliesControl), new PropertyMetadata(default(Assembly)));
 

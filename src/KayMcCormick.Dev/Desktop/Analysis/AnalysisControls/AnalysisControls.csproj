@@ -125,8 +125,10 @@
     <Compile Include="Commands\OpenFileCommand.cs" />
     <Compile Include="CompilationError.cs" />
     <Compile Include="ControlsProvider.cs" />
+    <Compile Include="ControlView.cs" />
     <Compile Include="Converters\HierarchyConverter.cs" />
     <Compile Include="Converters\LocationConverter.cs" />
+    <Compile Include="Converters\ObjectStringTypeConverter.cs" />
     <Compile Include="Converters\SymbolInfoConverter.cs" />
     <Compile Include="Converters\SyntaxNodeInfo.cs" />
     <Compile Include="Converters\SyntaxTokenConverter.cs" />
@@ -140,7 +142,11 @@
     <Compile Include="CustomTextEndOfLine.cs" />
     <Compile Include="CustomTextSource2.cs" />
     <Compile Include="CustomTextSource3.cs" />
+    <Compile Include="CustomToggleButton.cs" />
+    <Compile Include="CustomTreeView.cs" />
+    <Compile Include="CustomTreeViewItem.cs" />
     <Compile Include="CustomTypes.cs" />
+    <Compile Include="DataLoadStrategy.cs" />
     <Compile Include="DefaultTypefaceManager.cs" />
     <Compile Include="DevTypeControl.cs" />
     <Compile Include="DiagnosticError.cs" />
@@ -169,11 +175,14 @@
     <Compile Include="GenericTextParagraphProperties.cs" />
     <Compile Include="GenericTextRunProperties.cs" />
     <Compile Include="GuidConverter.cs" />
+    <Compile Include="IAppControl.cs" />
+    <Compile Include="IAppCustomControl.cs" />
     <Compile Include="IAppRibbon.cs" />
     <Compile Include="IAppRibbonTab.cs" />
     <Compile Include="IClientModel.cs" />
     <Compile Include="ICodeGenCommand.cs" />
     <Compile Include="ICustomSpan.cs" />
+    <Compile Include="INodeData.cs" />
     <Compile Include="InputBindingsManager.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
@@ -198,10 +207,16 @@
     <Compile Include="MyRibbonComboBox.cs" />
     <Compile Include="MyRibbonControl.cs" />
     <Compile Include="MyRibbonGallery.cs" />
+    <Compile Include="MyRibbonGalleryCategory.cs" />
+    <Compile Include="MyRibbonGalleryItem.cs" />
     <Compile Include="MyRibbonGroup.cs" />
     <Compile Include="MyRibbonMenuButton.cs" />
     <Compile Include="MyRibbonTab.cs" />
     <Compile Include="MyXDescriptor.cs" />
+    <Compile Include="NodeBase.cs" />
+    <Compile Include="NodeDataLoadState.cs" />
+    <Compile Include="NodeExpandedState.cs" />
+    <Compile Include="NodesPlaceHolder.cs" />
     <Compile Include="PageFunction1.xaml.cs">
       <DependentUpon>PageFunction1.xaml</DependentUpon>
     </Compile>
@@ -225,7 +240,6 @@
     <Compile Include="RibbonModel\AppCommandTypeConverter.cs" />
     <Compile Include="RibbonModel\ControlKind.cs" />
     <Compile Include="RibbonModel\Definition\InfrastructureTab.cs" />
-    <Compile Include="RibbonModel\ObjectStringTypeConverter.cs" />
     <Compile Include="RibbonModel\RibbonModelControlGroup.cs" />
     <Compile Include="FunTabProvider.cs" />
     <Compile Include="RibbonModel\RibbonModelDropZone.cs" />
@@ -234,14 +248,17 @@
     <Compile Include="RibbonViewGroupProviderBase.cs" />
     <Compile Include="RibbonViewGroupProviderBaseImpl.cs" />
     <Compile Include="Ribb\Definition\SuperGRoup.cs" />
+    <Compile Include="RootNode.cs" />
+    <Compile Include="Subnode.cs" />
+    <Compile Include="SubnodeData.cs" />
     <Compile Include="SuperGRoup.cs" />
     <Compile Include="RibbonModel\ContextualTabGroups\CodeAnalysis.cs" />
     <Compile Include="RibbonModel\Definition\AssembliesTypesGroup.cs" />
     <Compile Include="Ribbon\PrimaryRibbonModel.cs" />
-    <Compile Include="Ribbon\RibbonModelApplicationMenu.cs" />
+    <Compile Include="RibbonModel\RibbonModelApplicationMenu.cs" />
     <Compile Include="Ribbon\RibbonModelAppMenuElement.cs" />
-    <Compile Include="Ribbon\RibbonModelAppMenuItem.cs" />
-    <Compile Include="Ribbon\RibbonModelAppSplitMenuItem.cs" />
+    <Compile Include="RibbonModel\RibbonModelAppMenuItem.cs" />
+    <Compile Include="RibbonModel\RibbonModelAppSplitMenuItem.cs" />
     <Compile Include="Ribbon\RibbonModelContextualTabGroup.cs" />
     <Compile Include="Ribbon\RibbonModelGallery.cs" />
     <Compile Include="RibbonModel\RibbonModelGalleryCategory.cs" />
@@ -253,7 +270,7 @@
     <Compile Include="Ribbon\RibbonModelItemComboBox.cs" />
     <Compile Include="Ribbon\RibbonModelItemMenuButton.cs" />
     <Compile Include="Ribbon\RibbonModelItemSplitButton.cs" />
-    <Compile Include="Ribbon\RibbonModelItemTextBox.cs" />
+    <Compile Include="RibbonModel\RibbonModelItemTextBox.cs" />
     <Compile Include="Ribbon\RibbonModelMenuItem.cs" />
     <Compile Include="RibbonModel\RibbonModelTab.cs" />
     <Compile Include="RibbonModel\RibbonModelGroup.cs" />
@@ -284,9 +301,11 @@
     <Compile Include="SyntaxTypeComboBox.cs" />
     <Compile Include="SyntaxWalker2.cs" />
     <Compile Include="SyntaxWalkerF.cs" />
+    <Compile Include="TaskState.cs" />
     <Compile Include="TemplateWindow.xaml.cs">
       <DependentUpon>TemplateWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TempLoadData.cs" />
     <Compile Include="Test.cs" />
     <Compile Include="TestConverter1.cs" />
     <Compile Include="TestConverter2.cs" />

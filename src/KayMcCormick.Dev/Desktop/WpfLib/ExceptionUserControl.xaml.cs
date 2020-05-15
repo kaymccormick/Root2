@@ -11,6 +11,7 @@ namespace KayMcCormick.Lib.Wpf
     {
         /// <summary>
         /// 
+        /// 
         /// </summary>
         public ExceptionUserControl ( ) { InitializeComponent ( ) ; }
     }

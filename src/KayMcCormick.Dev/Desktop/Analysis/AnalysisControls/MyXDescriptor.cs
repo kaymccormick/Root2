@@ -180,8 +180,26 @@ namespace AnalysisControls
                     if (_typeConverterType != null)
                     {
 
-                        _converter = (TypeConverter) _context.Resolve(_typeConverterType);
-                        //_converter = (TypeConverter) Activator.CreateInstance(_typeConverterType);
+                        try
+                        {
+                            _converter = (TypeConverter) _context.ResolveOptional(_typeConverterType);
+                        }
+                        catch
+                        {
+
+                        }
+
+                        if (_converter == null)
+                        {
+                            try
+                            {
+                                _converter = (TypeConverter) Activator.CreateInstance(_typeConverterType);
+                            }
+                            catch
+                            {
+                                // ignored
+                            }
+                        }
                     } else
                     {
                     }

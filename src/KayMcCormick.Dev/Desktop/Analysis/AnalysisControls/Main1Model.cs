@@ -172,9 +172,98 @@ namespace AnalysisControls
         /// </summary>
         public Main1Model()
         {
+            AddInitialDocuments();
+
+            AddInitialAnchorables();
+        }
+
+        private void AddInitialDocuments()
+        {
+            AddModelDoc();
+            AddAssembliesDoc();
+            AddPropertiesGridDoc();
+            AddControlsDoc();
+        }
+
+        private void AddControlsDoc()
+        {
+            Documents.Add(new DocModel {Title = "Controls", Content = new ControlView()});
+        }
+
+        private void AddPropertiesGridDoc()
+        {
+            var userControl1 = new UserControl1();
+            var x = new Grid
+            {
+                VerticalAlignment = VerticalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch
+            };
+            x.RowDefinitions.Add(new RowDefinition() {Height = GridLength.Auto});
+            x.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(1, GridUnitType.Star)});
+            x.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(1, GridUnitType.Star)});
+            var rectangle = new Rectangle {Width = 100, Height = 50, Fill = Brushes.Red, AllowDrop = true};
+            x.Children.Add(rectangle);
+            rectangle.SetValue(Grid.RowProperty, 0);
+            rectangle.SetValue(Grid.ColumnProperty, 0);
+            rectangle.DragOver += (sender, e) =>
+            {
+                DebugUtils.WriteLine("Drag over");
+                e.Effects = DragDropEffects.Copy;
+                e.Handled = true;
+            };
+            rectangle.Drop += (sender, args) =>
+            {
+                var d = args.Data;
+                object o = null;
+                if (d.GetDataPresent("ModelObject"))
+                {
+                    o = d.GetData("ModelObject");
+                }
+                else
+                {
+                    foreach (var format in d.GetFormats())
+                    {
+                        var oo = d.GetData(format);
+                        if (oo.GetType().IsPrimitive)
+                        {
+                        }
+                        else
+                        {
+                            o = oo;
+                            break;
+                        }
+                    }
+                }
+
+                userControl1.propertyGrid1.SelectedObject = o;
+                args.Effects = DragDropEffects.Copy;
+                args.Handled = true;
+            };
+
+            var windowsFormsHost = new WindowsFormsHost() {Child = userControl1};
+            windowsFormsHost.SetValue(Grid.RowProperty, 1);
+            windowsFormsHost.SetValue(Grid.ColumnProperty, 0);
+
+            x.Children.Add(windowsFormsHost);
+            Documents.Add(new DocModel {Content = x});
+        }
+
+        private void AddAssembliesDoc()
+        {
+            var assembliesDoc = new DocModel
+            {
+                Title = "Assemblies",
+                Content = new AssembliesControl {AssemblySource = AppDomain.CurrentDomain.GetAssemblies()}
+            };
+            assembliesDoc.ContextualTabGroupHeaders.Add("Assemblies");
+            Documents.Add(assembliesDoc);
+        }
+
+        private void AddModelDoc()
+        {
             TablePanel t1 = new TablePanel();
             TypeControl dev = new TypeControl();
-            dev.SetBinding(AttachedProperties.RenderedTypeProperty, new Binding("ActiveContent.Content") {Source = this, Converter = new GetTypeConverter()});
+            dev.SetBinding(AttachedProperties.RenderedTypeProperty,
+                new Binding("ActiveContent.Content") {Source = this, Converter = new GetTypeConverter()});
             TextBlock h1 = new TextBlock {Text = "Active Document"};
             t1.Children.Add(h1);
             t1.Children.Add(dev);
@@ -183,7 +272,7 @@ namespace AnalysisControls
             lv1.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(ContextualTabGroups)) {Source = this});
             t1.Children.Add(h2);
             t1.Children.Add(lv1);
-            var uiElement = new Button() {};
+            var uiElement = new Button() { };
             uiElement.Click += (sender, args) =>
             {
                 var prop = typeof(Ribbon).GetProperty("ContextualTabGroupItemsControl",
@@ -195,47 +284,18 @@ namespace AnalysisControls
 
             //b.SetBinding(TextBlock.TextProperty, new Binding("ActiveDocument.Content") {Source = this});
 
-            Documents.Add(new DocModel { Title = "Model", Content = t1});
-            var assembliesDoc = new DocModel
-            {
-                Title = "Assemblies",
-                Content = new AssembliesControl {AssemblySource = AppDomain.CurrentDomain.GetAssemblies()}
-            };
-            assembliesDoc.ContextualTabGroupHeaders.Add("Assemblies");
-            Documents.Add(assembliesDoc);
-            _userControl1 = new UserControl1();
-            var x = new Grid();
-            x.VerticalAlignment = VerticalAlignment.Stretch;
-            x.HorizontalAlignment = HorizontalAlignment.Stretch;
-            x.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            x.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star)});
-            x.ColumnDefinitions.Add(new ColumnDefinition(){Width=new GridLength(1, GridUnitType.Star)});
-            var rectangle = new Rectangle {Width=100, Height = 50, Fill = Brushes.Red, AllowDrop = true};
-            x.Children.Add(rectangle);
-            rectangle.SetValue(Grid.RowProperty, 0);
-            rectangle.SetValue(Grid.ColumnProperty, 0);
+            Documents.Add(new DocModel {Title = "Model", Content = t1});
+        }
 
-            rectangle.Drop += (sender, args) =>
-            {
-                _userControl1.propertyGrid1.SelectedObject = args.Data.GetData(args.Data.GetFormats()[0]);
-                args.Effects = DragDropEffects.Copy;
-                args.Handled = true;
-            };
-            
-            var windowsFormsHost = new WindowsFormsHost() {Child = _userControl1};
-            windowsFormsHost.SetValue(Grid.RowProperty, 1);
-            windowsFormsHost.SetValue(Grid.ColumnProperty, 0);
-
-            x.Children.Add(windowsFormsHost);
-            Documents.Add(new DocModel {Content = x});
-
+        private void AddInitialAnchorables()
+        {
             var tv = new TreeView()
             {
                 DisplayMemberPath = "Header"
             };
             tv.SetBinding(ItemsControl.ItemsSourceProperty,
                 new Binding("ClientViewModel.PrimaryRibbon.RibbonItems")
-                    {Source = this });
+                    {Source = this});
             Anchorables.Add(new AnchorableModel() {Title = "PrimaryRibbon Tabs", Content = tv});
 
             var lv = new ListBox();
@@ -301,7 +361,6 @@ namespace AnalysisControls
         }
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private UserControl1 _userControl1;
         private IClientModel _clientViewModel;
 
         private void WorkspaceOnDocumentClosed(object sender, DocumentEventArgs e)
@@ -716,7 +775,7 @@ namespace AnalysisControls
             set
             {
                 _clientViewModel = value;
-                _userControl1.propertyGrid1.SelectedObject = _clientViewModel.PrimaryRibbon;
+                new UserControl1().propertyGrid1.SelectedObject = _clientViewModel.PrimaryRibbon;
             }
         }
 

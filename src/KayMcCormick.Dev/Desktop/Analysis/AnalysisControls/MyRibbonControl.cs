@@ -20,6 +20,13 @@ namespace AnalysisControls
             ControlId = Guid.NewGuid();
         }
 
+static MyRibbonControl() {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbonControl),
+                new FrameworkPropertyMetadata(typeof(MyRibbonControl)));
+}
+
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -137,14 +144,5 @@ namespace AnalysisControls
             base.OnContentTemplateChanged(oldContentTemplate, newContentTemplate);
         }
 
-    }
-
-    public interface IAppControl
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
-        Guid ControlId { get; }
     }
 }

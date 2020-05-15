@@ -11,7 +11,7 @@
   <windows:Style TargetType="{x:Type ribbon:RibbonControl}">
     <windows:Style.Triggers>
       <windows:DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.MinWidth.RibbonControlLengthUnitType}"
-                           Value="Pixel">
+ĥValue="Pixel">
         <windows:Setter Property="windows:FrameworkElement.MinWidth"
                         Value="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.MinWidth.Value}"/>
       </windows:DataTrigger>

@@ -49,7 +49,7 @@ using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.Metadata ;
 using KayMcCormick.Lib.Wpf ;
 using KayMcCormick.Lib.Wpf.Command ;
-using KayMcCormick.Lib.Wpf.View ;
+
 using KayMcCormick.Lib.Wpf.ViewModel ;
 using Microsoft.Extensions.Logging ;
 using NLog ;
@@ -252,8 +252,8 @@ namespace ProjInterface
                    .AsImplementedInterfaces ( )
                    .WithCallerMetadata ( ) ;
 
-            builder.RegisterType < EventLogView > ( ).AsSelf ( ).WithCallerMetadata ( ) ;
-            builder.RegisterType < EventLogViewModel > ( ).WithCallerMetadata ( ) ;
+            // builder.RegisterType < EventLogView > ( ).AsSelf ( ).WithCallerMetadata ( ) ;
+            // builder.RegisterType < EventLogViewModel > ( ).WithCallerMetadata ( ) ;
 #if PYTHON
             builder.RegisterBuildCallback (
                                            scope => {

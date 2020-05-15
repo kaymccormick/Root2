@@ -4,12 +4,15 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Input;
+using System.Windows.Shapes;
 using AnalysisControls.RibbonModel;
 using Autofac;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
 using NLog;
 using NLog.Fluent;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
 
 namespace AnalysisControls
 {
@@ -22,10 +25,28 @@ namespace AnalysisControls
         protected readonly Logger Logger;
         private Regex _r = new Regex(@"[\. ;'""]");
         private string _loggerName;
+        private Brush _originalBorderBrush;
+        private Thickness _originalBorderThickness;
+        private Grid _mainGrid;
+        private Rectangle _overlayRect;
 
         static MyRibbonTab()
         {
-            // UIElement.VisibilityProperty.OverrideMetadata(typeof(MyRibbonTab), (PropertyMetadata)new FrameworkPropertyMetadata((object)Visibility.Visible, new PropertyChangedCallback(MyRibbonTab.OnVisibilityChanged), new CoerceValueCallback(MyRibbonTab.CoerceVisibility)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbonTab),
+                new FrameworkPropertyMetadata(typeof(MyRibbonTab)));
+        }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            _mainGrid = GetTemplateChild("MainGrid") as Grid;
+            _overlayRect = GetTemplateChild("OverlayRect") as Rectangle;
+            if (_mainGrid != null)
+                _mainGrid.LayoutUpdated += (sender, args) =>
+                {
+                    var grid = _mainGrid;
+                    DebugUtils.WriteLine($"{this} LAyout updated: {grid?.ActualWidth} {grid?.ActualHeight}");
+                };
         }
 
         private static object CoerceVisibility(DependencyObject d, object value)
@@ -41,13 +62,25 @@ namespace AnalysisControls
             else if (flag)
                 visibility2 = Visibility.Collapsed;
             return visibility1 != Visibility.Visible || visibility2 != Visibility.Visible ? (object)Visibility.Collapsed : (object)Visibility.Visible;
-
         }
 
         private static void OnVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             
         }
+
+        protected override void OnMouseUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseUp(e);
+            DebugUtils.WriteLine("Mouse up");
+        }
+
+        protected override void OnPreviewDrop(DragEventArgs e)
+        {
+            DebugUtils.WriteLine($"{e.OriginalSource} {e.Source}");
+            base.OnPreviewDrop(e);
+        }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
@@ -55,6 +88,17 @@ namespace AnalysisControls
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
+                    if (_overlayRect != null)
+                    {
+                        var val = _overlayRect.GetValue(Shape.StrokeProperty);
+                    var src = DependencyPropertyHelper.GetValueSource(_overlayRect, Shape.StrokeProperty);
+                    
+                    DebugUtils.WriteLine($"{src.BaseValueSource}");
+                    _overlayRect.SetCurrentValue(Shape.StrokeProperty, Brushes.Yellow);
+                    _overlayRect.SetCurrentValue(Shape.StrokeThicknessProperty, 5.0);
+                    }
+
+
                     DragDrop.DoDragDrop(this, ParentItemsControl.ItemContainerGenerator.ItemFromContainer(this),
                         DragDropEffects.Copy);
                 }

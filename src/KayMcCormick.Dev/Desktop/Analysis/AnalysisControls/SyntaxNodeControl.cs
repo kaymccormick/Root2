@@ -9,7 +9,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class CompilationControl : Control
+    public class CompilationControl : Control, IAppCustomControl
     {
         /// <summary>
         /// 
