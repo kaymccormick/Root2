@@ -3,19 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
+// ReSharper disable UnusedParameter.Local
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -48,10 +44,8 @@ namespace KayMcCormick.Lib.Wpf
     ///     <MyNamespace:GradientEditorControl/>
     ///
     /// </summary>
-    public class GradientEditorControl : Control, INotifyPropertyChanged
+    public sealed class GradientEditorControl : Control, INotifyPropertyChanged
     {
-        private GradientStopCollection _stopCol;
-
         public GradientEditorControl()
         {
             SetBinding(StartPointProperty, new Binding("LinearGradientBrush.StartPoint") { Source = this, Mode=BindingMode.TwoWay });
@@ -68,6 +62,7 @@ namespace KayMcCormick.Lib.Wpf
             c.OnStartPointXUpdated((double) e.OldValue, (double) e.NewValue);
         }
 
+        // ReSharper disable once UnusedParameter.Local
         private void OnStartPointXUpdated(double eOldValue, double eNewValue)
         {
             StartPoint = new Point(eNewValue, StartPoint.Y);
@@ -137,11 +132,6 @@ namespace KayMcCormick.Lib.Wpf
             EndPointX = eNewValue.X;
             EndPointY = eNewValue.Y;
         }
-        private static void OnStartPointUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var c = (GradientEditorControl)d;
-            c.OnStartPointUpdated((Point)e.OldValue, (Point)e.NewValue);
-        }
 
         private void OnStartPointUpdated(Point eOldValue, Point eNewValue)
         {
@@ -170,22 +160,17 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         public static readonly DependencyProperty StartPointProperty = DependencyProperty.Register(
-            "StartPoint", typeof(Point), typeof(GradientEditorControl), new PropertyMetadata(default(Point)));
+            "StartPoint", typeof(Point), typeof(GradientEditorControl), new PropertyMetadata(default(Point), OnStartPointUpdated));
+
+        private static void OnStartPointUpdated(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ((GradientEditorControl)sender).OnStartPointUpdated((Point) e.OldValue, (Point) e.NewValue);
+        }
 
         public Point StartPoint
         {
             get { return (Point) GetValue(StartPointProperty); }
             set { SetValue(StartPointProperty, value); }
-        }
-
-        public override void BeginInit()
-        {
-            base.BeginInit();
-        }
-
-        public override void EndInit()
-        {
-            base.EndInit();
         }
 
         protected override void OnInitialized(EventArgs e)
@@ -198,23 +183,21 @@ namespace KayMcCormick.Lib.Wpf
         private void CanNewExecute
             (object sender, CanExecuteRoutedEventArgs e)
         {
-            if(_listView == null || _listView.ItemsSource == null)
+            if(_listView?.ItemsSource == null)
                 return;
             var view = CollectionViewSource.GetDefaultView(_listView.ItemsSource);
             if (view == null)
                 return;
             switch (view)
             {
-                case BindingListCollectionView bindingListCollectionView:
+                case BindingListCollectionView _:
                     break;
-                case ItemCollection itemCollection:
+                case ItemCollection _:
                     break;
                 case ListCollectionView listCollectionView:
                     e.CanExecute = listCollectionView.CanAddNew;
                     break;
-                case CollectionView collectionView:
-                    break;
-                default:
+                case CollectionView _:
                     break;
             }
         }
@@ -226,15 +209,13 @@ namespace KayMcCormick.Lib.Wpf
             var view = CollectionViewSource.GetDefaultView(_listView.ItemsSource) as ListCollectionView;
             if (view == null)
                 return;
-            var newItem = view?.AddNew() as GradientStop;
+            _ = view.AddNew() as GradientStop;
         }
 
         public override void OnApplyTemplate()
         {
-            _stopCol = (GradientStopCollection) GetTemplateChild("StopCol");
             _listView = (ListView) GetTemplateChild("ListView");
             _rectangle = (Rectangle) GetTemplateChild("Rectangle");
-            _drawingGroup = (DrawingGroup) GetTemplateChild("DrawingGroup");
             _startPointGeometryDrawing = (GeometryDrawing) GetTemplateChild("StartPointGeometryDrawing");
             _endPointGeometryDrawing = (GeometryDrawing)GetTemplateChild("EndPointGeometryDrawing");
             _debugPanel = (Panel)GetTemplateChild("DebugPanel");
@@ -251,7 +232,6 @@ namespace KayMcCormick.Lib.Wpf
 
         private ListView _listView;
         private Rectangle _rectangle;
-        private DrawingGroup _drawingGroup;
         private GeometryDrawing _startPointGeometryDrawing;
         private GeometryDrawing _dragging;
         private GeometryDrawing _endPointGeometryDrawing;
@@ -271,19 +251,19 @@ namespace KayMcCormick.Lib.Wpf
             set { SetValue(LinearGradientBrushProperty, value); }
         }
 
-        protected Point StartPos
+        private Point StartPos
         {
             get { return _startPos; }
             set { _startPos = value; }
         }
 
-        protected TranslateTransform Translate
+        private TranslateTransform Translate
         {
             get { return _translate; }
             set { _translate = value; }
         }
 
-        protected GeometryDrawing Dragging
+        private GeometryDrawing Dragging
         {
             get { return _dragging; }
             set { _dragging = value; }
@@ -318,14 +298,7 @@ namespace KayMcCormick.Lib.Wpf
             {
                 if (value == _debugMode) return;
                 _debugMode = value;
-                if (_debugMode)
-                {
-                    _debugPanel.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    _debugPanel.Visibility = Visibility.Collapsed;
-                }
+                _debugPanel.Visibility = _debugMode ? Visibility.Visible : Visibility.Collapsed;
                 OnPropertyChanged();
             }
         }
@@ -337,10 +310,7 @@ namespace KayMcCormick.Lib.Wpf
                 return;
             
             var pos = e.GetPosition(_rectangle);
-            var b = _startPointGeometryDrawing.Bounds;
-            var s = _drawingGroup.Bounds.Size;
             var relX = pos.X / _rectangle.ActualWidth;
-            var ratio = relX;
             var relY = pos.Y / _rectangle.ActualHeight;
             MouseInRectX = relX;
             MouseInRectY = relY;
@@ -402,9 +372,6 @@ namespace KayMcCormick.Lib.Wpf
             {
                 IsMouseDown = true;
                 var pos = e.GetPosition(_rectangle);
-                var b = _startPointGeometryDrawing.Bounds;
-                var s = _drawingGroup.Bounds.Size;
-                var ratio = (pos.X / _rectangle.ActualWidth);
                 var newPos = new Point(pos.X / _rectangle.ActualWidth, pos.Y / _rectangle.ActualHeight);
 
                 if (_startPointGeometryDrawing.Bounds.Contains(newPos))
@@ -424,8 +391,8 @@ namespace KayMcCormick.Lib.Wpf
                     if (curDepth > maxDepth)
                         return Enumerable.Empty<Transform>();
                     return t is TransformGroup tg
-                        ? ((IEnumerable<Transform>) tg.Children).SelectMany(x => Flatten(x, curDepth + 1, maxDepth))
-                        : Enumerable.Repeat<Transform>(t, 1);
+                        ? tg.Children.SelectMany(x => Flatten(x, curDepth + 1, maxDepth))
+                        : Enumerable.Repeat(t, 1);
 
                 }
 
@@ -444,7 +411,7 @@ namespace KayMcCormick.Lib.Wpf
                         gr.Children.Add(tr);
                         LinearGradientBrush.RelativeTransform = gr;
                     }
-                    else if (tg1 != null)
+                    else
                     {
                         tg1.Children.Add(tr);
                     }
@@ -459,41 +426,13 @@ namespace KayMcCormick.Lib.Wpf
         }
 
         // Determine if a geometry within the visual was hit.
-        static public void HitTestGeometryInVisual(Visual visual, Point pt)
-        {
-            // Retrieve the group of drawings for the visual.
-            DrawingGroup drawingGroup = VisualTreeHelper.GetDrawing(visual);
-            EnumDrawingGroup(drawingGroup, pt);
-        }
 
         // Enumerate the drawings in the DrawingGroup.
-        static public void EnumDrawingGroup(DrawingGroup drawingGroup, Point pt)
-        {
-            DrawingCollection drawingCollection = drawingGroup.Children;
-
-            // Enumerate the drawings in the DrawingCollection.
-            foreach (Drawing drawing in drawingCollection)
-            {
-                // If the drawing is a DrawingGroup, call the function recursively.
-                if (drawing.GetType() == typeof(DrawingGroup))
-                {
-                    EnumDrawingGroup((DrawingGroup)drawing, pt);
-                }
-                else if (drawing.GetType() == typeof(GeometryDrawing))
-                {
-                    // Determine whether the hit test point falls within the geometry.
-                    if (((GeometryDrawing)drawing).Geometry.FillContains(pt))
-                    {
-                        // Perform action based on hit test on geometry.
-                    }
-                }
-            }
-        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

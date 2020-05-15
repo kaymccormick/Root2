@@ -20,7 +20,7 @@ using KayMcCormick.Dev.Container ;
 using KayMcCormick.Lib.Wpf.Command ;
 using Module = Autofac.Module ;
 
-namespace ConsoleApp1
+namespace ConsoleAnalysis
 {
     /// <inheritdoc />
     internal sealed class ConsoleAnalyzeAppModule : Module

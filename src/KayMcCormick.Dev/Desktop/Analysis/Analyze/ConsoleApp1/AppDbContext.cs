@@ -16,7 +16,7 @@ using AnalysisAppLib.Syntax ;
 using KayMcCormick.Dev ;
 using Microsoft.EntityFrameworkCore ;
 
-namespace ConsoleApp1
+namespace ConsoleAnalysis
 {
     public class AppDbContext : DbContext, IAppDbContext1
     {

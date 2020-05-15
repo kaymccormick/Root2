@@ -49,7 +49,7 @@ using ProjectInfo = Microsoft.CodeAnalysis.ProjectInfo ;
 
 // ReSharper disable AnnotateNotNullParameter
 
-namespace ConsoleApp1
+namespace ConsoleAnalysis
 {
     internal sealed class Program
     {

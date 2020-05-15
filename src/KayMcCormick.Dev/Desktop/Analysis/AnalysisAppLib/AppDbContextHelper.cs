@@ -9,6 +9,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
+    [UsedImplicitly]
     public class AppDbContextHelper
     {
         /// <summary>
