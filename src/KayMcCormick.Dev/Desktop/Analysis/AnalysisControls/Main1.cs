@@ -9,6 +9,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using AnalysisAppLib;
+using AnalysisControls.Properties;
+using Autofac.Features.Metadata;
 using AvalonDock;
 using AvalonDock.Layout;
 using KayMcCormick.Dev;
@@ -123,8 +125,20 @@ namespace AnalysisControls
             CommandBindings.Add(new CommandBinding(WpfAppCommands.BrowseSymbols, OnBrowseSymbolsExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewDetails, OnViewDetailsExecutedAsync));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewResources, OnViewResourcesExecuted));
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpenExecuted));
 
             //Documents.Add(new DocInfo { Description = "test", Content = Properties.Resources.Program_Parse});
+        }
+
+        private void OnOpenExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (e.Parameter is Meta<Lazy<IAppCustomControl>> controlItem)
+            {
+                var control = controlItem.Value.Value;
+                var doc = new DocModel() {Content = control};
+                ViewModel.Documents.Add(doc);
+                ViewModel.ActiveContent = doc;
+            }
         }
 
         private void OnViewResourcesExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -255,7 +269,7 @@ namespace AnalysisControls
 
         private async void LoadSolutionExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            await ViewModel.LoadSolution((string) e.Parameter);
+            await ViewModel.LoadSolutionAsync((string) e.Parameter);
         }
 
         private void DockingManagerOnActiveContentChanged(object sender, EventArgs e)
@@ -309,64 +323,56 @@ namespace AnalysisControls
         protected override async void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            var docPath = (string[]) e.Data.GetData(DataFormats.FileDrop);
+            if (docPath == null) return;
+            foreach (var file in docPath)
             {
-                var docPath = (string[]) e.Data.GetData(DataFormats.FileDrop);
-                if (docPath != null)
+                if (file.ToLowerInvariant().EndsWith(".cs") || file.EndsWith(".vb"))
                 {
-                    var file = docPath[0];
-                    if (file.EndsWith(".cs") || file.EndsWith(".vb"))
+                    if (ViewModel.SelectedProject != null)
                     {
-                        if (ViewModel.SelectedProject != null)
-                        {
-                            ViewModel.AddDocument(ViewModel.SelectedProject, file);
-                            return;
-                        }
-
-                        Compilation compilation = null;
-                        SyntaxTree tree;
-                        if (file.EndsWith(".vb"))
-                        {
-                            tree = SyntaxFactory.ParseSyntaxTree(File.ReadAllText(docPath[0]),
-                                new VisualBasicParseOptions(),
-                                docPath[0]);
-
-                            compilation = VisualBasicCompilation.Create("x", new[] {tree});
-                        }
-                        else
-                        {
-                            var context = AnalysisService.Load(file, "x", false);
-                            var cSharpCompilation = context.Compilation;
-                            compilation = cSharpCompilation;
-                            DebugUtils.WriteLine(string.Join("\n", cSharpCompilation.GetDiagnostics()));
-
-                            tree = context.SyntaxTree;
-                        }
-
-                        var doc = CodeDoc(tree, compilation, file);
-                        ViewModel.Documents.Add(doc);
+                        ViewModel.AddDocument(ViewModel.SelectedProject, file);
+                        continue;
                     }
-                    else if (file.EndsWith(".sln"))
+
+                    Compilation compilation = null;
+                    SyntaxTree tree;
+                    if (file.ToLowerInvariant().EndsWith(".vb"))
                     {
-                        await ViewModel.LoadSolution(file);
+                        var s = new StreamReader(file);
+                        string code = await s.ReadToEndAsync();
+                        tree = SyntaxFactory.ParseSyntaxTree(code,
+                            new VisualBasicParseOptions(),
+                            file);
+
+                        compilation = VisualBasicCompilation.Create("x", new[] {tree});
                     }
+                    else
+                    {
+                        var context = await AnalysisService.LoadAsync(file, "x", false);
+                        var cSharpCompilation = context.Compilation;
+                        compilation = cSharpCompilation;
+                        DebugUtils.WriteLine(string.Join("\n", cSharpCompilation.GetDiagnostics()));
+
+                        tree = context.SyntaxTree;
+                    }
+
+                    var doc = Main1Model.CodeDoc(tree, compilation, file);
+                    ViewModel.Documents.Add(doc);
+                    ViewModel.ActiveContent = doc;
                 }
-            }
-        }
-
-        private static DocModel CodeDoc(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)
-        {
-            var doc = new DocModel()
-            {
-                // Content = "Beep",
-                Content = new FormattedTextControl()
+                else if (file.ToLowerInvariant().EndsWith(".sln"))
                 {
-                    SyntaxTree = contextSyntaxTree,
-                    Compilation = cSharpCompilation
-                },
-                Title = Path.GetFileNameWithoutExtension(file)
-            };
-            return doc;
+                    await ViewModel.LoadSolutionAsync(file);
+                }
+                else if (file.ToLowerInvariant().EndsWith(".csproj") || file.EndsWith(".vbproj"))
+                {
+                    await ViewModel.LoadProjectAsync(file);
+                }
+
+            }
         }
 
         /// <inheritdoc />

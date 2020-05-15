@@ -2,12 +2,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using KayMcCormick.Dev.Attributes;
 
 namespace AnalysisControls
 {
     /// <summary>
     /// 
     /// </summary>
+    [TitleMetadata("Assemblies Control")]
     public class AssembliesControl : Control, IAppCustomControl
     {
         /// <summary>

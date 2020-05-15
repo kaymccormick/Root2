@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using KayMcCormick.Dev.Attributes;
 
 namespace AnalysisControls
 {
@@ -44,6 +45,7 @@ namespace AnalysisControls
     ///     <MyNamespace:EnhancedCodeControl/>
     ///
     /// </summary>
+    [TitleMetadata("Enhanced Code Control")]
     public class EnhancedCodeControl : SyntaxNodeControl
     {
         protected override Size MeasureOverride(Size constraint)

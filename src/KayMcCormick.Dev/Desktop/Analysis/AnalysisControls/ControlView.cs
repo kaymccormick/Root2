@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using AnalysisAppLib;
 using Autofac;
 using Autofac.Features.Metadata;
+using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
 
 namespace AnalysisControls
@@ -60,8 +61,9 @@ namespace AnalysisControls
 
         private void Target(object sender, RoutedPropertyChangedEventArgs<ILifetimeScope> e)
         {
-            
-            Controls.Clear();
+            if (!ReferenceEquals(e.OriginalSource, this)) return;
+
+            DebugUtils.WriteLine(e.NewValue);
             Dispatcher.InvokeAsync(() =>
             {
                 var items = e.NewValue.Resolve<IEnumerable<Meta<Lazy<IAppCustomControl>>>>();
@@ -69,7 +71,11 @@ namespace AnalysisControls
                 {
                     var props = MetaHelper.GetMetadataProps(item.Metadata);
 
-                    Controls.Add(new ControlInfo() {Metadata = item.Metadata, MetadataProps = props});
+                    Controls.Add(new ControlInfo()
+                    {
+                        Metadata = item.Metadata, MetadataProps = props,
+                        Item = item
+                    });
 
                 }
             }, DispatcherPriority.DataBind);
@@ -120,5 +126,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public object TabHeader => MetadataProps.TabHeader;
+
+        public Meta<Lazy<IAppCustomControl>> Item { get; set; }
     }
 }

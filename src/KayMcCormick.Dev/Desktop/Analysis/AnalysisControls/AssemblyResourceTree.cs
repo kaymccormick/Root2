@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using KayMcCormick.Dev;
+using KayMcCormick.Dev.Attributes;
 using KayMcCormick.Lib.Wpf;
 
 // ReSharper disable RedundantOverriddenMember
@@ -19,6 +20,7 @@ namespace AnalysisControls
     /// 
     /// </summary>
     [DefaultProperty("Assembly")]
+    [TitleMetadata("Assembly Resource Tree")]
     public class AssemblyResourceTree : Control, IAppCustomControl
     {
         /// <summary>

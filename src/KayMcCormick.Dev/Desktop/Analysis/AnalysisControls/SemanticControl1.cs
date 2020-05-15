@@ -1,12 +1,14 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using KayMcCormick.Dev;
+using KayMcCormick.Dev.Attributes;
 
 namespace AnalysisControls
 {
     /// <summary>
     /// 
     /// </summary>
+    [TitleMetadata("Semantic Control 1")]
     public class SemanticControl1 : SyntaxNodeControl
     {
         private TreeView _treeView;

@@ -3,12 +3,14 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 using KayMcCormick.Dev;
+using KayMcCormick.Dev.Attributes;
 
 namespace AnalysisControls
 {
     /// <summary>
     /// 
     /// </summary>
+    [TitleMetadata("Code Control 2")]
     public class CodeControl2 : FormattedTextControl
     {
         static CodeControl2()

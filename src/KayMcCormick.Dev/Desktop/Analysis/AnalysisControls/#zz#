@@ -11377,10 +11377,3 @@
     </windows:Style.Triggers>
   </windows:Style>
 </windows:ResourceDictionary>
-
-
-            foreach (DictionaryEntry environmentVariable in Environment.GetEnvironmentVariables())
-            {
-                panel.Children.Add(new TextBlock {Text = environmentVariable.Key.ToString()});
-                panel.Children.Add(new TextBlock {Text = environmentVariable.Value.ToString()});
-            }

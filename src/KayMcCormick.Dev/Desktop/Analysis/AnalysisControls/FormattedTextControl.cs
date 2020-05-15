@@ -14,6 +14,7 @@ using System.Windows.Media.TextFormatting;
 using System.Windows.Shapes;
 using AnalysisAppLib;
 using KayMcCormick.Dev;
+using KayMcCormick.Dev.Attributes;
 using KayMcCormick.Lib.Wpf;
 using Microsoft.CodeAnalysis;
 using Border = System.Windows.Controls.Border;
@@ -25,6 +26,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
+    [TitleMetadata("Formatted Code Control")]
     public class FormattedTextControl : SyntaxNodeControl
     {
         /// <summary>

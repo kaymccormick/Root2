@@ -123,6 +123,7 @@
     <Compile Include="CommandProgress.cs" />
     <Compile Include="Commands\DatabasePopulateCommand.cs" />
     <Compile Include="Commands\OpenFileCommand.cs" />
+    <Compile Include="CompilationControl.cs" />
     <Compile Include="CompilationError.cs" />
     <Compile Include="ControlsProvider.cs" />
     <Compile Include="ControlView.cs" />
@@ -202,9 +203,12 @@
     <Compile Include="Main1Model.cs" />
     <Compile Include="MenuTemplateSelector.cs" />
     <Compile Include="MessagesModel.cs" />
+    <Compile Include="MetaLazyTypeConverter.cs" />
     <Compile Include="MiscCommands.cs" />
     <Compile Include="MyRibbon.cs" />
     <Compile Include="MyRibbonComboBox.cs" />
+    <Compile Include="MyRibbonContextualTabGroup.cs" />
+    <Compile Include="MyRibbonContextualTabGroupItemsControl.cs" />
     <Compile Include="MyRibbonControl.cs" />
     <Compile Include="MyRibbonGallery.cs" />
     <Compile Include="MyRibbonGalleryCategory.cs" />

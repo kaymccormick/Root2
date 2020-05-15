@@ -144,5 +144,6 @@ static MyRibbonControl() {
             base.OnContentTemplateChanged(oldContentTemplate, newContentTemplate);
         }
 
+        
     }
 }

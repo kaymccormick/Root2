@@ -56,7 +56,7 @@ namespace AnalysisControls
                         ContextualTabGroups.Add(header);
                         foreach (var primaryRibbonContextualTabGroup in ClientViewModel.PrimaryRibbon.ContextualTabGroups)
                         {
-                            if (object.Equals(primaryRibbonContextualTabGroup.Header, header))
+                            if (Equals(primaryRibbonContextualTabGroup.Header, header))
                             {
                                 primaryRibbonContextualTabGroup.Visibility = Visibility.Visible;
                             }
@@ -133,7 +133,7 @@ namespace AnalysisControls
 
             var versions = visualStudioInstances.Select(x => x.Version.Major).Distinct().OrderByDescending(i => i)
                 .ToList();
-            DebugUtils.WriteLine(string.Join(", ", versions));
+            DebugUtils.WriteLine(String.Join(", ", versions));
             var inst = versions.FirstOrDefault();
 
 
@@ -469,7 +469,7 @@ namespace AnalysisControls
                                 d.Project.Diag.Add(docs);
                             }
 
-                            DebugUtils.WriteLine(string.Join("\n", diagnostics));
+                            DebugUtils.WriteLine(String.Join("\n", diagnostics));
                             if (diagnostics.Any())
                             {
                                 compilation = null;
@@ -706,7 +706,7 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="file"></param>
         /// <returns></returns>
-        public async Task LoadSolution(string file)
+        public async Task LoadSolutionAsync(string file)
         {
             TrySelectVsInstance();
             IDictionary<string, string> props = new Dictionary<string, string>();
@@ -719,6 +719,21 @@ namespace AnalysisControls
             CurrentOperation = null;
             DebugUtils.WriteLine(r.ToString());
         }
+
+        public async Task LoadProjectAsync(string file)
+        {
+            TrySelectVsInstance();
+            IDictionary<string, string> props = new Dictionary<string, string>();
+            props["Platform"] = "x86";
+            var msBuildWorkspace = MSBuildWorkspace.Create(props);
+            Workspace = msBuildWorkspace;
+            CurrentOperation = new CurrentOperation() { Description = "load solution" };
+            var r = await msBuildWorkspace.OpenProjectAsync(file,
+                new ProgressWithCompletion<ProjectLoadProgress>(Handler));
+            CurrentOperation = null;
+            DebugUtils.WriteLine(r.ToString());
+        }
+
 
         /// <summary>
         /// 
@@ -808,7 +823,7 @@ namespace AnalysisControls
                         var errs = compilation.GetDiagnostics()
                             .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error);
                         var diagnostics = errs.ToList();
-                        DebugUtils.WriteLine(string.Join("\n", diagnostics));
+                        DebugUtils.WriteLine(String.Join("\n", diagnostics));
                         if (diagnostics.Any())
                         {
                             compilation = null;
@@ -893,6 +908,23 @@ namespace AnalysisControls
         private void OnDocumentAddedEvent(DocumentAddedEventArgs e)
         {
             DocumentAddedEvent?.Invoke(this, e);
+        }
+
+        public static DocModel CodeDoc(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)
+        {
+            var doc = new DocModel()
+            {
+                // Content = "Beep",
+                Content = new FormattedTextControl()
+                {
+                    SyntaxTree = contextSyntaxTree,
+                    Compilation = cSharpCompilation
+                },
+                Title = Path.GetFileNameWithoutExtension(file)
+            };
+            doc.ContextualTabGroupHeaders.Add(RibbonResources.ContextualTabGroupHeader_CodeAnalysis);
+
+            return doc;
         }
     }
 

@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using KayMcCormick.Dev.Attributes;
 
 namespace AnalysisControls
 {
@@ -36,6 +37,7 @@ namespace AnalysisControls
     ///     <MyNamespace:CodeDiagnostics/>
     ///
     /// </summary>
+    [TitleMetadata("Code Diagnostics Control")]
     public class CodeDiagnostics : SyntaxNodeControl
     {
         private ListView _regions;
