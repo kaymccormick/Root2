@@ -15,7 +15,7 @@ using System.Linq ;
 using JetBrains.Annotations ;
 using Terminal.Gui ;
 
-namespace ConsoleApp1
+namespace ConsoleAnalysis
 {
     internal class ListView2Base < T > : ListView
         where T : class , IEnumerable < T >

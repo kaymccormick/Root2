@@ -12,7 +12,7 @@ using KayMcCormick.Lib.Wpf.Command ;
 using Terminal.Gui ;
 using Attribute = Terminal.Gui.Attribute ;
 
-namespace ConsoleApp1
+namespace ConsoleAnalysis
 {
     internal sealed class TermUi
     {

@@ -91,7 +91,6 @@ namespace AnalysisControls
         }
 
         private Main1Model _viewModel;
-        private LayoutDocumentPaneGroup _layoutDocumentPaneGroup;
         private DockingManager _dockingManager;
 
         /// <summary>
@@ -211,6 +210,8 @@ namespace AnalysisControls
         /// </summary>
         public override void OnApplyTemplate()
         {
+            base.OnApplyTemplate();
+            DockingManagerLayoutRoot = (LayoutRoot) GetTemplateChild("LayoutRoot");
             // CommandManager.AddPreviewCanExecuteHandler(this, PreviewCanExecute);
             CommandManager.AddPreviewExecutedHandler(this, PreviewExecuted);
             _dockingManager = (DockingManager) GetTemplateChild("DockingManager");
@@ -218,8 +219,6 @@ namespace AnalysisControls
             
             AllowDrop = true;
             DragOver += OnDragOver;
-            _layoutDocumentPaneGroup =
-                (LayoutDocumentPaneGroup) GetTemplateChild("LayoutDocumentPaneGroup");
 
             var listBox = new ListView();
             listBox.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("ViewModel.Messages") {Source = this});
@@ -238,6 +237,11 @@ namespace AnalysisControls
                 ViewModel.Documents.Add(anchorableModel);
             }
         }
+
+        /// <summary>
+        /// Provides access to DockingManager's <see cref="LayoutRoot"/> model object.
+        /// </summary>
+        public LayoutRoot DockingManagerLayoutRoot { get; set; }
 
         private void PreviewExecuted(object sender, ExecutedRoutedEventArgs e)
         {

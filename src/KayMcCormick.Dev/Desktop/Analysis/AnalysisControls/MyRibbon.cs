@@ -20,10 +20,21 @@ namespace AnalysisControls
     public class MyRibbon : Ribbon, IContainItemStorage
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private RibbonContextualTabGroupItemsControl _contextualTabGroupItemsControl;
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            MyContextualTabGroupItemsControl = GetTemplateChild("PART_ContextualTabGroupItemsControl") as MyRibbonContextualTabGroupItemsControl;
+            _contextualTabGroupItemsControl =
+                GetTemplateChild("PART_ContextualTabGroupItemsControl") as RibbonContextualTabGroupItemsControl;
+        }
 
         static MyRibbon()
        {
-           ItemsPanelProperty.OverrideMetadata(typeof(MyRibbon), new FrameworkPropertyMetadata(new ItemsPanelTemplate(new FrameworkElementFactory(typeof(MyRibbonTabsPanel)))));
+           DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbon),
+               new FrameworkPropertyMetadata(typeof(MyRibbon)));
+            ItemsPanelProperty.OverrideMetadata(typeof(MyRibbon), new FrameworkPropertyMetadata(new ItemsPanelTemplate(new FrameworkElementFactory(typeof(MyRibbonTabsPanel)))));
 		    
             AttachedProperties.LifetimeScopeProperty.OverrideMetadata(typeof(MyRibbon), new FrameworkPropertyMetadata(null,FrameworkPropertyMetadataOptions.Inherits, null, CoerceLifetimeScope));
         }
@@ -143,6 +154,11 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public bool EnableProxy { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public MyRibbonContextualTabGroupItemsControl MyContextualTabGroupItemsControl { get; set; }
 
         private void UseLogMethod(string message)
         {

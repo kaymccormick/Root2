@@ -27,6 +27,8 @@ namespace AnalysisControls.RibbonModel
             }
         }
 
+        public PrimaryRibbonModel RibbonModel { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

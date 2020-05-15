@@ -13,7 +13,7 @@ using System.Threading.Tasks ;
 using AnalysisAppLib;
 using KayMcCormick.Dev ;
 
-namespace ConsoleApp1
+namespace ConsoleAnalysis
 {
     internal static class Util
     {

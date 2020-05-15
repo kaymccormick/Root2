@@ -17,7 +17,7 @@ using JetBrains.Annotations ;
 using NStack ;
 using Terminal.Gui ;
 
-namespace ConsoleApp1
+namespace ConsoleAnalysis
 {
     public sealed class ListWrapper < T > : IListDataSource
     {

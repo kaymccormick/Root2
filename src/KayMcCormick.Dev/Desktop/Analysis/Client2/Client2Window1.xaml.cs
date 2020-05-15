@@ -297,6 +297,7 @@ namespace Client2
             foreach (var tg in c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>())
             {
                 DebugUtils.WriteLine("Adding contextual tab group " + tg);
+                tg.RibbonModel = r;
                 r.ContextualTabGroups.Add(tg);
             }
 
@@ -306,12 +307,23 @@ namespace Client2
             {
                 var ribbonModelTab = meta.Value.Value;
                 r.RibbonItems.Add(ribbonModelTab);
+                if (ribbonModelTab.ContextualTabGroupHeader != null)
+                {
+                    ribbonModelTab.Visibility = Visibility.Collapsed;
+                }
+
+                ribbonModelTab.RibbonModel = r;
             }
 
             var tabProviders = c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>();
             foreach (var ribbonModelProvider in tabProviders)
             {
                 var item = ribbonModelProvider.ProvideModelItem(c);
+                item.RibbonModel = r;
+                if (item.ContextualTabGroupHeader != null)
+                {
+                    item.Visibility = Visibility.Collapsed;
+                }
                 r.RibbonItems.Add(item);
             }
 

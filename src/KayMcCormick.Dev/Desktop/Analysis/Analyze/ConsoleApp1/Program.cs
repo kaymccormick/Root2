@@ -199,7 +199,7 @@ namespace ConsoleApp1
             using ( _appInstance )
 
             {
-                _appInstance.AddModule ( new AppModule ( ) ) ;
+                _appInstance.AddModule ( new ConsoleAnalyzeAppModule ( ) ) ;
                 _appInstance.AddModule ( new AnalysisAppLibModule ( ) ) ;
                 _appInstance.AddModule ( new AnalysisControlsModule ( ) ) ;
                 PopulateJsonConverters ( false ) ;

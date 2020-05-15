@@ -5,7 +5,7 @@
                     xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf">
   <local:TestConverter2 x:Key="TestConverter2" />
   <kmWpf:GetTypeConverter x:Key="GetTypeConverter" />
-  <Style TargetType="{x:Type RibbonContextualTabGroupItemsControl}">
+  <Style x:Key="old" TargetType="{x:Type local:MyRibbonContextualTabGroupItemsControl}">
     <Setter Property="ItemTemplate">
       <Setter.Value>
         <DataTemplate DataType="{x:Type ribbonModel:RibbonModelContextualTabGroup}">
@@ -14,9 +14,9 @@
       </Setter.Value>
     </Setter>
   </Style>
-  <Style TargetType="{x:Type RibbonContextualTabGroup}">
+  <Style TargetType="{x:Type local:MyRibbonContextualTabGroup}">
     <Setter Property="Header" Value="{Binding Header}" />
-    <Setter Property="Visibility" Value="{Binding Visibility}" />
+    <Setter Property="Visibility" Value="{Binding Visibility,Mode=TwoWay}" />
   </Style>
   <Style TargetType="{x:Type RibbonGroup}">
     <Setter Property="ItemsSource" Value="{Binding Items}" />
@@ -25,7 +25,7 @@
     <Setter Property="ContextualTabGroupHeader"
             Value="{Binding ContextualTabGroupHeader,Converter={StaticResource TestConverter2},ConverterParameter=CTXT}" />
     <Setter Property="Visibility"
-            Value="{Binding Visibility,Converter={StaticResource TestConverter2},ConverterParameter=CTXT1}" />
+            Value="{Binding Visibility,Mode=TwoWay}" />
 
   </Style>
   <Style TargetType="{x:Type RibbonMenuItem}">

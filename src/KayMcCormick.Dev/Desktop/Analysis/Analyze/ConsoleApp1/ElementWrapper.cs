@@ -9,7 +9,7 @@
 // 
 // ---
 #endregion
-namespace ConsoleApp1
+namespace ConsoleAnalysis
 {
     // ReSharper disable once UnusedType.Global
     public class ElementWrapper < T >

@@ -11,7 +11,7 @@
 #endregion
 using System ;
 
-namespace ConsoleApp1
+namespace ConsoleAnalysis
 {
     internal class MenuWrapper < T >
     {

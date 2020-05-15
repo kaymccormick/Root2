@@ -15,7 +15,7 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using Terminal.Gui ;
 
-namespace ConsoleApp1
+namespace ConsoleAnalysis
 {
     internal sealed class ListView2 : ListView2Base < ResourceNodeInfo >
     {

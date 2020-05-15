@@ -3,7 +3,7 @@
 // 
 // Analysis
 // ConsoleApp1
-// AppModule.cs
+// ConsoleAnalyzeAppModule.cs
 // 
 // 2020-04-08-5:32 AM
 // 
@@ -23,7 +23,7 @@ using Module = Autofac.Module ;
 namespace ConsoleApp1
 {
     /// <inheritdoc />
-    internal sealed class AppModule : Module
+    internal sealed class ConsoleAnalyzeAppModule : Module
     {
         // ReSharper disable once AnnotateNotNullParameter
         protected override void Load ( ContainerBuilder builder )

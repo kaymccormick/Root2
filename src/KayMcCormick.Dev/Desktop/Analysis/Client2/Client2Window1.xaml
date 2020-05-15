@@ -71,7 +71,6 @@
       <anal:MyRibbon.ContextualTabGroupStyle>
         <Style TargetType="RibbonContextualTabGroup">
           <Setter Property="TextElement.FontFamily" Value="Lucida Sans"/>
-          <Setter Property="Visibility" Value="{Binding ElementName=Main1.ViewItem,Path=ViewModel. Visibility}"/>
         </Style>
       </anal:MyRibbon.ContextualTabGroupStyle>
       <anal:MyRibbon.ItemContainerStyle>

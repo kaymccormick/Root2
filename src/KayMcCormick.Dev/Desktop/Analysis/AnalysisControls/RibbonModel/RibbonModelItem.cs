@@ -2,7 +2,6 @@
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using AnalysisControls.Converters;
-using DocumentFormat.OpenXml.Presentation;
 using JetBrains.Annotations;
 using KayMcCormick.Lib.Wpf.Command;
 
@@ -20,6 +19,7 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+        // ReSharper disable once MemberCanBeProtected.Global
         public abstract ControlKind Kind { get; }
         /// <summary>
         /// 
@@ -31,6 +31,7 @@ namespace AnalysisControls.RibbonModel
         /// 
         /// </summary>
         [TypeConverter(typeof(AppCommandTypeConverter))]
+        // ReSharper disable once UnusedMember.Global
         public IAppCommand AppCommand
         {
             get { return _appCommand; }
@@ -112,11 +113,22 @@ namespace AnalysisControls.RibbonModel
         /// 
         /// </summary>
         public double? Height { get; set; }
+
+        /// <inheritdoc />
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
         public string StringLabel => Label?.ToString();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
         [NotifyPropertyChangedInvocator]
+        // ReSharper disable once VirtualMemberNeverOverridden.Global
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

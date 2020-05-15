@@ -12,6 +12,14 @@
   xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
   xmlns:classic="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
   xmlns:primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon">
+
+  <LinearGradientBrush x:Key="Ù" StartPoint="0.5,0.0" EndPoint="0.5,1.0">
+    <GradientStop Color="#EEFFFFFF" Offset="0.0"/>
+    <GradientStop Color="#BBFFFFFF" Offset="0.1"/>
+    <GradientStop Color="#05FFFFFF" Offset="0.5"/>
+    <GradientStop Color="#20FFFFFF" Offset="1.0"/>
+  </LinearGradientBrush>
+
   <Style TargetType="{x:Type local:MyRibbonControl}">
     <Style.Triggers>
       <DataTrigger
@@ -83,12 +91,6 @@
     <GradientStop Color="#88FFFFFF" Offset="0.0" />
     <GradientStop Color="#88DBE7F4" Offset="1.0" />
   </LinearGradientBrush>
-  <LinearGradientBrush x:Key="Ù" StartPoint="0.5,0.0" EndPoint="0.5,1.0">
-    <GradientStop Color="#EEFFFFFF" Offset="0.0" />
-    <GradientStop Color="#BBFFFFFF" Offset="0.1" />
-    <GradientStop Color="#05FFFFFF" Offset="0.5" />
-    <GradientStop Color="#20FFFFFF" Offset="1.0" />
-  </LinearGradientBrush>
   <system:Int32 x:Key="Í">900</system:Int32>
   <system:Int32 x:Key="Î">20000</system:Int32>
   <system:Int32 x:Key="Ï">0</system:Int32>
@@ -134,6 +136,384 @@
       </DrawingGroup>
     </DrawingBrush.Drawing>
   </DrawingBrush>
+  <LinearGradientBrush x:Key="Ĭ" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Color="#AAFFFFFF" Offset="0"/>
+    <GradientStop Color="#FFFFFF" Offset="1.0"/>
+  </LinearGradientBrush>
+
+  <Style TargetType="{x:Type local:MyRibbonTabHeader}">
+    <Setter Property="FrameworkElement.Margin" Value="0,1,0,0"/>
+    <Setter Property="Control.Padding" Value="9,1,9,0"/>
+    <Setter Property="FrameworkElement.MinHeight" Value="22"/>
+    <Setter Property="Control.Background"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.Background}"/>
+    <Setter Property="Control.BorderBrush" Value="Transparent"/>
+    <Setter Property="RibbonTabHeader.CheckedBorderBrush"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.BorderBrush}"/>
+    <Setter Property="RibbonTabHeader.CheckedBackground" Value="{StaticResource Ĭ}"/>
+    <Setter Property="RibbonTabHeader.MouseOverBorderBrush"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.MouseOverBorderBrush}"/>
+    <Setter Property="RibbonTabHeader.FocusedBorderBrush"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.FocusedBorderBrush}"/>
+    <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}"/>
+    <Setter Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:MyRibbonTabHeader}">
+          <Grid x:Name="MainGrid" SnapsToDevicePixels="true">
+            <Border x:Name="PART_OuterBorder" Background="{TemplateBinding Control.Background}"
+                    BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="1,1,1,0"
+                    CornerRadius="3,3,0,0" Margin="2,-1,2.5,0">
+              <Border x:Name="InnerBorder" RenderOptions.ClearTypeHint="Enabled" BorderThickness="1,1,1,0"
+                      CornerRadius="3,3,0,0" Padding="{TemplateBinding Control.Padding}">
+                <ContentPresenter ContentSource="Content" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+              </Border>
+            </Border>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="UIElement.IsEnabled" Value="false">
+              <Setter TargetName="MainGrid" Value="{StaticResource Ë}" Property="TextElement.Foreground"/>
+            </Trigger>
+            <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
+              <Setter TargetName="PART_OuterBorder" Property="Border.CornerRadius" Value="0"/>
+              <Setter TargetName="PART_OuterBorder" Property="Border.Background" Value="Transparent"/>
+              <Setter TargetName="PART_OuterBorder" Property="Border.BorderBrush" Value="Transparent"/>
+              <Setter TargetName="InnerBorder" Property="Border.CornerRadius" Value="0"/>
+              <Setter TargetName="MainGrid"
+                              Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
+                              Property="TextElement.Foreground"/>
+            </DataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="False"/>
+                <Condition Binding="{Binding ElementName=MainGrid, Path=IsMouseOver}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsContextualTab}" Value="False"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CheckedBorderBrush}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{x:Null}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsDropDownOpen}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsContextualTab}" Value="False"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CheckedBorderBrush}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{x:Null}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsDropDownOpen}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{x:Null}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="False"/>
+                <Condition Binding="{Binding ElementName=MainGrid, Path=IsMouseOver}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="False"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{x:Null}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="False"/>
+                <Condition Binding="{Binding ElementName=MainGrid, Path=IsMouseOver}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsContextualTab}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBorderBrush}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{StaticResource ī}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="False"/>
+                <Condition Binding="{Binding ElementName=MainGrid, Path=IsMouseOver}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsContextualTab}" Value="False"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBorderBrush}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{StaticResource ī}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsDropDownOpen}" Value="False"/>
+                <Condition Binding="{Binding ElementName=MainGrid, Path=IsMouseOver}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsContextualTab}" Value="False"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBorderBrush}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{StaticResource ī}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsContextualTab}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FocusedBorderBrush}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{StaticResource ī}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsContextualTab}" Value="False"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FocusedBorderBrush}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{StaticResource ī}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsDropDownOpen}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsContextualTab}" Value="False"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FocusedBorderBrush}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{StaticResource ī}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsContextualTab}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsDropDownOpen}" Value="False"/>
+                <Condition Binding="{Binding ElementName=MainGrid, Path=IsMouseOver}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ContextualTabGroup.Background}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{StaticResource ī}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsContextualTab}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsDropDownOpen}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ContextualTabGroup.Background}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{StaticResource ī}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsContextualTab}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsDropDownOpen}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ContextualTabGroup.Background}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{StaticResource ī}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsContextualTab}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="False"/>
+                <Condition Binding="{Binding ElementName=MainGrid, Path=IsMouseOver}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ContextualTabGroup.Background}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{StaticResource ī}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsContextualTab}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="False"/>
+                <Condition Binding="{Binding ElementName=MainGrid, Path=IsMouseOver}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="False"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ContextualTabGroup.Background}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="InnerBorder" Value="{StaticResource ī}" Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+                <Condition Binding="{Binding ElementName=MainGrid, Path=IsMouseOver}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                              Property="Border.Background"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                              Property="Border.Background"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsDropDownOpen}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                              Property="Border.Background"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                              Property="Border.Background"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=CheckedBackground}"
+                              Property="Border.Background"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+                <Condition Binding="{Binding ElementName=MainGrid, Path=IsMouseOver}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsDropDownOpen}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="False"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder" Property="Border.Background" Value="Transparent"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsDropDownOpen}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="False"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder" Property="Border.Background" Value="Transparent"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsMinimized}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.IsDropDownOpen}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_OuterBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Background}"
+                              Property="Border.Background"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+                <Condition Binding="{Binding ElementName=MainGrid, Path=IsMouseOver}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="MainGrid"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                              Property="TextElement.Foreground"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="MainGrid"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                              Property="TextElement.Foreground"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsRibbonTabSelected}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="MainGrid"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                              Property="TextElement.Foreground"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding ElementName=MainGrid, Path=IsMouseOver}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="InnerBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBackground}"
+                              Property="Border.Background"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="InnerBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FocusedBackground}"
+                              Property="Border.Background"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="False"/>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="MainGrid"
+                              Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                              Property="TextElement.Foreground"/>
+            </MultiDataTrigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="RibbonTabHeader.IsRibbonTabSelected" Value="true">
+        <Setter Property="Control.TabIndex" Value="-1"/>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
   <!-- ReSharper disable once InconsistentNaming -->
   <Style x:Key="ĭ" TargetType="{x:Type RepeatButton}">
     <Setter Property="OverridesDefaultStyle" Value="true" />
@@ -263,6 +643,24 @@
     <Setter Property="CanContentScroll" Value="true" />
     <Setter Property="Template" Value="{StaticResource į}" />
   </Style>
+
+  <SolidColorBrush x:Key="Ú" Color="#FFFFB700"/>
+  <LinearGradientBrush x:Key="Û" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#FFFEFBF4"/>
+    <GradientStop Offset="0.19" Color="#FFFDE7CE"/>
+    <GradientStop Offset="0.39" Color="#FFFDDEB8"/>
+    <GradientStop Offset="0.39" Color="#FFFFCE6B"/>
+    <GradientStop Offset="0.79" Color="#FFFFDE9A"/>
+    <GradientStop Offset="1" Color="#FFFFEBAA"/>
+  </LinearGradientBrush>
+  <LinearGradientBrush x:Key="Ý" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#FFE3C085"/>
+    <GradientStop Offset="0.19" Color="#FFF4CC89"/>
+    <GradientStop Offset="0.36" Color="#FFF5C777"/>
+    <GradientStop Offset="0.36" Color="#FFF5BB56"/>
+    <GradientStop Offset="0.79" Color="#FFF4CE9A"/>
+    <GradientStop Offset="1" Color="#FFF3E28D"/>
+  </LinearGradientBrush>
 
   <Style x:Key="Õ" TargetType="{x:Type Thumb}">
     <Setter Property="Width" Value="11" />
@@ -1759,50 +2157,7 @@
       </MultiDataTrigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
-  <Style TargetType="{x:Type local:MyRibbonContextualTabGroup}">
-    <Setter Property="FrameworkElement.Height"
-            Value="{Binding Path=(SystemParameters.WindowCaptionHeight)}" />
-    <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}" />
-    <Setter Property="UIElement.Focusable" Value="false" />
-    <Setter Property="TextBlock.TextAlignment" Value="Center" />
-    <Setter Property="Control.Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type local:MyRibbonContextualTabGroup}">
-          <FrameworkTemplate.Resources>
-            <DataTemplate DataType="{x:Type system:String}">
-              <TextBlock Text="{TemplateBinding ContentPresenter.Content}" TextTrimming="CharacterEllipsis" />
-            </DataTemplate>
-          </FrameworkTemplate.Resources>
-          <Border x:Name="OuterBorder" Padding="{TemplateBinding Control.Padding}"
-                  Background="{TemplateBinding Control.Background}"
-                  BorderBrush="{TemplateBinding Control.BorderBrush}"
-                  BorderThickness="{TemplateBinding Control.BorderThickness}" CornerRadius="2,2,0,0"
-                  RenderOptions.ClearTypeHint="Enabled">
-            <Border x:Name="InnerBorder" Background="{StaticResource Đ}"
-                    BorderBrush="{TemplateBinding Control.Background}" BorderThickness="1,1,1,2"
-                    CornerRadius="2,2,0,0">
-              <ContentPresenter ContentSource="Header" VerticalAlignment="Center" Margin="2,0,2,0" />
-            </Border>
-          </Border>
-          <ControlTemplate.Triggers>
-            <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
-              <Setter TargetName="InnerBorder" Property="Border.BorderThickness" Value="2,2,2,3" />
-              <Setter TargetName="InnerBorder" Property="Border.Background" Value="Transparent" />
-              <Setter TargetName="InnerBorder" Property="Border.CornerRadius" Value="0" />
-              <Setter TargetName="OuterBorder"
-                      Value="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}"
-                      Property="Border.Background" />
-              <Setter TargetName="OuterBorder" Property="Border.BorderBrush" Value="Transparent" />
-              <Setter TargetName="OuterBorder" Property="Border.CornerRadius" Value="0" />
-              <Setter Value="{DynamicResource {x:Static SystemColors.ActiveCaptionTextBrushKey}}"
-                      Property="TextElement.Foreground" />
-            </DataTrigger>
-          </ControlTemplate.Triggers>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-
+ 
   <WindowChrome
     x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:MyRibbon}, ResourceId=WindowChromeGeneric}"
     x:Shared="false" />
@@ -2166,7 +2521,374 @@
       </Trigger>
     </Style.Triggers>
   </Style>
+  <Style TargetType="{x:Type local:MyRibbonContextualTabGroupItemsControl}">
+    <Setter Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:MyRibbonContextualTabGroupItemsControl}">
+          <Border Background="{TemplateBinding Control.Background}">
+            <ItemsPresenter/>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <RadialGradientBrush x:Key="Đ" GradientOrigin="0.5,1" Center="0.5,1" RadiusY="1">
+    <GradientStop Offset="0" Color="#FFFFFFFF"/>
+    <GradientStop Offset="1" Color="#77FFFFFF"/>
+  </RadialGradientBrush>
 
+  <Style TargetType="{x:Type local:MyRibbonContextualTabGroup}">
+    <Setter Property="FrameworkElement.Height"
+                    Value="{Binding Path=(SystemParameters.WindowCaptionHeight)}"/>
+    <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}"/>
+    <Setter Property="UIElement.Focusable" Value="false"/>
+    <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+    <Setter Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:MyRibbonContextualTabGroup}">
+          <FrameworkTemplate.Resources>
+            <DataTemplate DataType="{x:Type system:String}">
+              <TextBlock Text="{TemplateBinding ContentPresenter.Content}" TextTrimming="CharacterEllipsis"/>
+            </DataTemplate>
+          </FrameworkTemplate.Resources>
+          <Border x:Name="OuterBorder" Padding="{TemplateBinding Control.Padding}"
+                  Background="{TemplateBinding Control.Background}"
+                  BorderBrush="{TemplateBinding Control.BorderBrush}"
+                  BorderThickness="{TemplateBinding Control.BorderThickness}" CornerRadius="2,2,0,0"
+                  RenderOptions.ClearTypeHint="Enabled">
+            <Border x:Name="InnerBorder" Background="{StaticResource Đ}"
+                    BorderBrush="{TemplateBinding Control.Background}" BorderThickness="1,1,1,2"
+                    CornerRadius="2,2,0,0">
+              <ContentPresenter ContentSource="Header" VerticalAlignment="Center" Margin="2,0,2,0"/>
+            </Border>
+          </Border>
+          <ControlTemplate.Triggers>
+            <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
+              <Setter TargetName="InnerBorder" Property="Border.BorderThickness" Value="2,2,2,3"/>
+              <Setter TargetName="InnerBorder" Property="Border.Background" Value="Transparent"/>
+              <Setter TargetName="InnerBorder" Property="Border.CornerRadius" Value="0"/>
+              <Setter TargetName="OuterBorder"
+                              Value="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}"
+                              Property="Border.Background"/>
+              <Setter TargetName="OuterBorder" Property="Border.BorderBrush" Value="Transparent"/>
+              <Setter TargetName="OuterBorder" Property="Border.CornerRadius" Value="0"/>
+              <Setter Value="{DynamicResource {x:Static SystemColors.ActiveCaptionTextBrushKey}}"
+                              Property="TextElement.Foreground"/>
+            </DataTrigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <SolidColorBrush x:Key="È" Color="#DFE9F5"/>
+  <SolidColorBrush x:Key="É" Color="#B9C9DA"/>
+  <SolidColorBrush x:Key="Ü" Color="#FFC29B29"/>
+  <LinearGradientBrush x:Key="Þ" StartPoint="0,0" EndPoint="0,1">
+    <GradientStop Offset="0" Color="#FFFFDCA0"/>
+    <GradientStop Offset="0.18" Color="#FFFFD692"/>
+    <GradientStop Offset="0.39" Color="#FFFFC45D"/>
+    <GradientStop Offset="1" Color="#FFFFD178"/>
+  </LinearGradientBrush>
+  <system:Double x:Key="á">94.0</system:Double>
+
+  <Style TargetType="{x:Type local:MyRibbon}">
+    <Style.Resources>
+      <PopupAnimation x:Key="{x:Static SystemParameters.MenuPopupAnimationKey}">Fade</PopupAnimation>
+    </Style.Resources>
+    <Setter Property="Control.HorizontalContentAlignment" Value="Left"/>
+    <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}"/>
+    <Setter Property="Control.Background" Value="{StaticResource È}"/>
+    <Setter Property="Control.BorderBrush" Value="{StaticResource É}"/>
+    <Setter Property="Ribbon.MouseOverBorderBrush" Value="{StaticResource Ú}"/>
+    <Setter Property="Ribbon.MouseOverBackground" Value="{StaticResource Û}"/>
+    <Setter Property="Ribbon.PressedBorderBrush" Value="{StaticResource Ü}"/>
+    <Setter Property="Ribbon.PressedBackground" Value="{StaticResource Ý}"/>
+    <Setter Property="Ribbon.CheckedBorderBrush" Value="{StaticResource Ü}"/>
+    <Setter Property="Ribbon.CheckedBackground" Value="{StaticResource Þ}"/>
+    <Setter Property="Ribbon.FocusedBorderBrush" Value="{StaticResource Ú}"/>
+    <Setter Property="Ribbon.FocusedBackground" Value="{StaticResource Û}"/>
+    <Setter Property="Control.FontSize"
+                    Value="{DynamicResource {x:Static SystemFonts.MenuFontSizeKey}}"/>
+    <Setter Property="Control.FontStyle"
+                    Value="{DynamicResource {x:Static SystemFonts.MenuFontStyleKey}}"/>
+    <Setter Property="Control.FontWeight"
+                    Value="{DynamicResource {x:Static SystemFonts.MenuFontWeightKey}}"/>
+    <Setter Property="Control.FontFamily"
+                    Value="{DynamicResource {x:Static SystemFonts.MenuFontFamilyKey}}"/>
+    <Setter Property="Control.Foreground"
+                    Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"/>
+    <Setter Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:MyRibbon}">
+          <Grid SnapsToDevicePixels="true">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto"/>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto"/>
+              <RowDefinition Height="Auto"/>
+              <RowDefinition Height="Auto"/>
+              <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Border Name="BackgroundBorder" Grid.Row="1" Grid.ColumnSpan="3" Grid.RowSpan="3"
+                    Background="{TemplateBinding Control.Background}"
+                    BorderBrush="{TemplateBinding Control.BorderBrush}"/>
+            <Border Grid.ColumnSpan="3" Grid.Row="1">
+              <Popup x:Name="PART_ITEMSPRESENTERPOPUP" AllowsTransparency="true"
+                     PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
+                     IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}">
+                <classic:SystemDropShadowChrome FrameworkElement.Name="Shdw" UIElement.Focusable="true" Color="Transparent"
+                                                FrameworkElement.Margin="0,0,5,5" RenderOptions.ClearTypeHint="Enabled"
+                                                FrameworkElement.FocusVisualStyle="{x:Null}">
+                  <Border Name="CollapsedPopupBackgroundBorder" Background="{TemplateBinding Control.Background}">
+                    <ContentControl x:Name="popupItemsPresenterHost" Margin="0,1,0,0" Focusable="false"
+                                    KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                  </Border>
+                </classic:SystemDropShadowChrome>
+              </Popup>
+            </Border>
+            <ContentControl x:Name="mainItemsPresenterHost" Grid.ColumnSpan="3" Grid.Row="2" Focusable="false">
+              <Border x:Name="groupsBorder" Background="{StaticResource Ù}"
+                      BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="1,0,1,1"
+                      Height="{StaticResource ß}" SnapsToDevicePixels="true">
+                <Border BorderThickness="0,0,0,1" Margin="0,0,0,1" BorderBrush="{StaticResource Ø}"
+                        SnapsToDevicePixels="true">
+                  <ItemsPresenter Name="ItemsPresenter"/>
+                </Border>
+              </Border>
+            </ContentControl>
+            <Border x:Name="QatBottomHost" Grid.Row="3" Grid.ColumnSpan="3"
+                    BorderBrush="{TemplateBinding Control.BorderBrush}">
+              <ContentPresenter x:Name="QatBottomHostContentPresenter" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                IsHitTestVisible="true"/>
+            </Border>
+            <Border Name="titleBarBackground" Grid.ColumnSpan="3" Background="{StaticResource Ù}"
+                    BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="0,0,0,1"
+                    Visibility="Collapsed"/>
+            <DockPanel Grid.Column="0" Grid.ColumnSpan="3" LastChildFill="true"
+                       Height="{Binding Path=(SystemParameters.WindowCaptionHeight)}">
+              <ContentControl x:Name="windowButtonPlaceHolder" IsHitTestVisible="false" DockPanel.Dock="Right" Focusable="false"
+                              Margin="3,0,0,0" Width="{Binding Path=(SystemParameters.WindowCaptionButtonWidth)}"
+                              Visibility="{TemplateBinding IsHostedInRibbonWindow, Converter={StaticResource à}}"/>
+              <ContentControl x:Name="windowIconPadding" Margin="0,0,3,0" IsHitTestVisible="false" DockPanel.Dock="Left"
+                              Focusable="false" Width="{Binding Path=(SystemParameters.SmallIconWidth)}"/>
+              <primitives:RibbonTitlePanel x:Name="PART_TitlePanel">
+                <Grid x:Name="QatTopHost">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                  </Grid.ColumnDefinitions>
+                  <Border x:Name="QatTopHostLeftBorder" Grid.Column="0" Margin="8,2,0,2" Width="3" Background="#77222222"
+                          BorderBrush="#66CCCCCC" BorderThickness="1,0,1,0.9" CornerRadius="0,0,2,2"/>
+                  <ContentPresenter x:Name="QatTopHostContentPresenter" Grid.Column="1"
+                                    Content="{TemplateBinding Ribbon.QuickAccessToolBar}" IsHitTestVisible="true"/>
+                  <Border x:Name="QatTopHostRightBorder" Grid.Column="2" Margin="0,2,1,2" Width="3" Background="#77222222"
+                          BorderBrush="#66CCCCCC" BorderThickness="1,0,1,0.9" CornerRadius="0,0,2,2"/>
+                </Grid>
+                <ContentPresenter x:Name="PART_TitleHost" ContentSource="Title"
+                                  ContentTemplate="{TemplateBinding Ribbon.TitleTemplate}"
+                                  TextBlock.FontSize="{DynamicResource {x:Static SystemFonts.CaptionFontSizeKey}}"
+                                  TextBlock.FontFamily="{DynamicResource {x:Static SystemFonts.CaptionFontFamilyKey}}"
+                                  TextBlock.FontWeight="{DynamicResource {x:Static SystemFonts.CaptionFontWeightKey}}"
+                                  TextElement.Foreground="{DynamicResource {x:Static SystemColors.ActiveCaptionTextBrushKey}}"
+                                  HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" Margin="3,0"
+                                  MinWidth="75" IsHitTestVisible="false"
+                                  MinHeight="{Binding Path=(SystemParameters.WindowCaptionHeight)}">
+                  <FrameworkElement.Resources>
+                    <DataTemplate DataType="{x:Type system:String}">
+                      <TextBlock x:Name="titleTextBlock" Margin="0,-2,0,0" Text="{TemplateBinding ContentPresenter.Content}"
+                                 TextTrimming="CharacterEllipsis"
+                                 HorizontalAlignment="{TemplateBinding FrameworkElement.HorizontalAlignment}"/>
+                      <DataTemplate.Triggers>
+                        <MultiDataTrigger>
+                          <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Path=(SystemParameters.IsGlassEnabled)}" Value="True"/>
+                            <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Ribbon}, Path=IsHostedInRibbonWindow}"
+                                               Value="True"/>
+                          </MultiDataTrigger.Conditions>
+                          <Setter TargetName="titleTextBlock" Property="UIElement.Effect">
+                            <Setter.Value>
+                              <DropShadowEffect Color="White" BlurRadius="5.0" ShadowDepth="0"/>
+                            </Setter.Value>
+                          </Setter>
+                        </MultiDataTrigger>
+                        <DataTrigger Value="False" Binding="{Binding Path=(SystemParameters.IsGlassEnabled)}">
+                          <Setter TargetName="titleTextBlock" Property="FrameworkElement.Margin" Value="0"/>
+                          <Setter TargetName="titleTextBlock" Property="FrameworkElement.VerticalAlignment" Value="Center"/>
+                        </DataTrigger>
+                        <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
+                          <Setter TargetName="titleTextBlock" Property="FrameworkElement.Margin" Value="0,1,0,0"/>
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                          <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Path=(SystemParameters.UxThemeName)}" Value="AeroLite"/>
+                            <Condition Binding="{Binding Path=(SystemParameters.IsGlassEnabled)}" Value="False"/>
+                            <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Ribbon}, Path=IsHostedInRibbonWindow}"
+                                               Value="True"/>
+                            <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=RibbonWindow}, Path=WindowState}"
+                                               Value="Normal"/>
+                          </MultiDataTrigger.Conditions>
+                          <Setter TargetName="titleTextBlock" Property="FrameworkElement.Margin" Value="0,0,0,7"/>
+                        </MultiDataTrigger>
+                      </DataTemplate.Triggers>
+                    </DataTemplate>
+                  </FrameworkElement.Resources>
+                </ContentPresenter>
+                <local:MyRibbonContextualTabGroupItemsControl x:Name="PART_ContextualTabGroupItemsControl" IsHitTestVisible="true"
+                                                             WindowChrome.IsHitTestVisibleInChrome="true" HorizontalAlignment="Center"/>
+              </primitives:RibbonTitlePanel>
+            </DockPanel>
+            <ContentPresenter x:Name="applicationMenu" Grid.Row="1"
+                              Content="{TemplateBinding Ribbon.ApplicationMenu}" VerticalAlignment="Top"/>
+            <local:MyRibbonTabHeaderItemsControl x:Name="TabHeaderItemsControl" VerticalAlignment="Top" HorizontalAlignment="Left" Grid.Row="1"
+                                                Grid.Column="1" Margin="1,1,1,0"/>
+            <ContentPresenter x:Name="PART_HelpPane" ContentSource="HelpPaneContent"
+                              ContentTemplate="{TemplateBinding Ribbon.HelpPaneContentTemplate}" Grid.Column="2"
+                              Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="Ribbon.IsCollapsed" Value="true">
+              <Setter TargetName="applicationMenu" Property="UIElement.Visibility" Value="Collapsed"/>
+              <Setter TargetName="QatBottomHost" Property="UIElement.Visibility" Value="Collapsed"/>
+              <Setter TargetName="QatTopHost" Property="UIElement.Visibility" Value="Collapsed"/>
+              <Setter TargetName="mainItemsPresenterHost" Property="UIElement.Visibility" Value="Collapsed"/>
+              <Setter TargetName="TabHeaderItemsControl" Property="UIElement.Visibility" Value="Collapsed"/>
+              <Setter TargetName="PART_HelpPane" Property="UIElement.Visibility" Value="Collapsed"/>
+              <Setter TargetName="PART_ContextualTabGroupItemsControl" Property="UIElement.Visibility" Value="Collapsed"/>
+              <Setter TargetName="PART_TitleHost" Property="FrameworkElement.MinWidth" Value="0"/>
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="Ribbon.IsCollapsed" Value="true"/>
+                <Condition Property="Ribbon.IsHostedInRibbonWindow" Value="false"/>
+              </MultiTrigger.Conditions>
+              <Setter Property="UIElement.Visibility" Value="Collapsed"/>
+            </MultiTrigger>
+            <Trigger Property="Ribbon.ShowQuickAccessToolBarOnTop" Value="false">
+              <Setter TargetName="QatTopHostContentPresenter" Value="{x:Null}" Property="ContentPresenter.Content"/>
+              <Setter TargetName="QatTopHost" Property="UIElement.Visibility" Value="Collapsed"/>
+              <Setter TargetName="QatBottomHostContentPresenter"
+                              Value="{Binding Path=QuickAccessToolBar, RelativeSource={RelativeSource TemplatedParent}}"
+                              Property="ContentPresenter.Content"/>
+              <Setter TargetName="BackgroundBorder" Property="Border.BorderThickness" Value="0,0,0,1"/>
+            </Trigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=QuickAccessToolBar.HasItems}"
+                                   Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=QuickAccessToolBar.CustomizeMenuButton}"
+                                   Value="{x:Null}"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="QatTopHost" Property="UIElement.Visibility" Value="Collapsed"/>
+              <Setter TargetName="QatBottomHost" Property="UIElement.Visibility" Value="Collapsed"/>
+            </MultiDataTrigger>
+            <Trigger Property="Ribbon.IsMinimized" Value="true">
+              <Setter TargetName="mainItemsPresenterHost" Value="{x:Null}" Property="ContentControl.Content"/>
+              <Setter TargetName="mainItemsPresenterHost" Property="UIElement.Visibility" Value="Collapsed"/>
+              <Setter TargetName="popupItemsPresenterHost" Value="{Binding ElementName=groupsBorder}"
+                              Property="ContentControl.Content"/>
+              <Setter TargetName="BackgroundBorder" Property="Border.BorderThickness" Value="0,0,0,1"/>
+            </Trigger>
+            <Trigger Property="Ribbon.WindowIconVisibility" Value="Collapsed">
+              <Setter TargetName="windowIconPadding" Property="UIElement.Visibility" Value="Collapsed"/>
+              <Setter TargetName="QatTopHostLeftBorder" Property="UIElement.Visibility" Value="Collapsed"/>
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="Ribbon.IsMinimized" Value="true"/>
+                <Condition Property="Ribbon.ShowQuickAccessToolBarOnTop" Value="false"/>
+              </MultiTrigger.Conditions>
+              <Setter TargetName="QatBottomHost" Property="Border.BorderThickness" Value="0,1,0,0"/>
+            </MultiTrigger>
+            <Trigger Property="Ribbon.IsHostedInRibbonWindow" Value="false">
+              <Setter TargetName="BackgroundBorder" Property="Grid.Row" Value="0"/>
+              <Setter TargetName="BackgroundBorder" Property="Grid.RowSpan" Value="4"/>
+              <Setter TargetName="titleBarBackground" Property="UIElement.Visibility" Value="Visible"/>
+              <Setter TargetName="windowIconPadding" Property="UIElement.Visibility" Value="Collapsed"/>
+              <Setter TargetName="QatTopHostLeftBorder" Property="UIElement.Visibility" Value="Collapsed"/>
+            </Trigger>
+            <Trigger Property="Ribbon.IsDropDownOpen" Value="true">
+              <Setter TargetName="BackgroundBorder" Property="Border.BorderThickness" Value="0"/>
+            </Trigger>
+            <Trigger SourceName="PART_ITEMSPRESENTERPOPUP" Property="Popup.HasDropShadow" Value="true">
+              <Setter TargetName="Shdw" Value="{StaticResource Ö}"
+                              Property="classic:SystemDropShadowChrome.Color"/>
+            </Trigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=RibbonWindow}, Path=IsActive}"
+                                   Value="False"/>
+                <Condition Binding="{Binding Path=(SystemParameters.IsGlassEnabled)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsHostedInRibbonWindow}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="PART_TitleHost"
+                              Value="{DynamicResource {x:Static SystemColors.InactiveCaptionTextBrushKey}}"
+                              Property="TextElement.Foreground"/>
+            </MultiDataTrigger>
+            <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
+              <Setter TargetName="BackgroundBorder"
+                              Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                              Property="Border.Background"/>
+              <Setter TargetName="BackgroundBorder"
+                              Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="groupsBorder" Property="Border.Background" Value="Transparent"/>
+              <Setter TargetName="groupsBorder"
+                              Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="groupsBorder" Value="{StaticResource á}"
+                              Property="FrameworkElement.Height"/>
+              <Setter TargetName="QatBottomHost"
+                              Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="titleBarBackground" Property="Border.Background" Value="Transparent"/>
+              <Setter TargetName="titleBarBackground"
+                              Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="CollapsedPopupBackgroundBorder"
+                              Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                              Property="Border.Background"/>
+              <Setter TargetName="PART_ITEMSPRESENTERPOPUP" Property="Popup.PopupAnimation" Value="None"/>
+              <Setter TargetName="QatTopHostLeftBorder" Property="FrameworkElement.Margin" Value="10,1,2,2"/>
+              <Setter TargetName="QatTopHostLeftBorder" Property="FrameworkElement.Width" Value="1"/>
+              <Setter TargetName="QatTopHostLeftBorder" Property="Border.BorderThickness" Value="0"/>
+              <Setter TargetName="QatTopHostLeftBorder" Property="Border.CornerRadius" Value="0"/>
+              <Setter TargetName="QatTopHostLeftBorder"
+                              Value="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+                              Property="Border.Background"/>
+              <Setter TargetName="QatTopHostRightBorder" Property="FrameworkElement.Margin" Value="0,1,2,2"/>
+              <Setter TargetName="QatTopHostRightBorder" Property="FrameworkElement.Width" Value="1"/>
+              <Setter TargetName="QatTopHostRightBorder" Property="Border.BorderThickness" Value="0"/>
+              <Setter TargetName="QatTopHostRightBorder" Property="Border.CornerRadius" Value="0"/>
+              <Setter TargetName="QatTopHostRightBorder"
+                              Value="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+                              Property="Border.Background"/>
+            </DataTrigger>
+            <DataTrigger Value="Aero" Binding="{Binding Path=(SystemParameters.UxThemeName)}">
+              <Setter TargetName="QatTopHost" Property="FrameworkElement.Margin" Value="0,-3,0,0"/>
+              <Setter TargetName="QatTopHostLeftBorder" Property="FrameworkElement.Margin" Value="3,3,0,5"/>
+              <Setter TargetName="QatTopHostLeftBorder" Property="Border.Background" Value="#81444444"/>
+              <Setter TargetName="QatTopHostLeftBorder" Property="Border.BorderBrush" Value="#69EEEEEE"/>
+              <Setter TargetName="QatTopHostRightBorder" Property="FrameworkElement.Margin" Value="0,3,1,5"/>
+              <Setter TargetName="QatTopHostRightBorder" Property="Border.Background" Value="#81444444"/>
+              <Setter TargetName="QatTopHostRightBorder" Property="Border.BorderBrush" Value="#69EEEEEE"/>
+            </DataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.UxThemeName)}" Value="Aero"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=RibbonWindow}, Path=WindowState}"
+                                   Value="Maximized"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="QatTopHost" Property="FrameworkElement.Margin" Value="0"/>
+            </MultiDataTrigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
   <Style TargetType="{x:Type local:CustomControl1}">
     <Setter Property="Template">
@@ -3118,7 +3840,7 @@
                       </StackPanel>
                     </DataTemplate>
                   </avalondock:DockingManager.AnchorableHeaderTemplate>
-                  <avalondock:LayoutRoot>
+                  <avalondock:LayoutRoot x:Name="LayoutRoot">
                     <avalondock:LayoutPanel>
                       <avalondock:LayoutDocumentPaneGroup x:Name="LayoutDocumentPaneGroup" />
                     </avalondock:LayoutPanel>

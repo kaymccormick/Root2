@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace ConsoleApp1.Migrations
+namespace ConsoleAnalysis.Migrations
 {
     public partial class SyntaxFields : Migration
     {

@@ -1,7 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Controls.Ribbon;
-using System.Windows.Shapes;
-using AnalysisControls.RibbonModel;
 
 namespace AnalysisControls.RibbonModel
 {
@@ -29,14 +27,6 @@ namespace AnalysisControls.RibbonModel
         public static object CreateGallery()
         {
             return new MyRibbonGallery();
-        }
-
-        private RibbonModelTab CreateTab(string header
-        )
-        {
-            var tab = new RibbonModelTab {Header = header};
-            RibbonItems.Add(tab);
-            return tab;
         }
 
 

@@ -216,6 +216,8 @@
     <Compile Include="MyRibbonGroup.cs" />
     <Compile Include="MyRibbonMenuButton.cs" />
     <Compile Include="MyRibbonTab.cs" />
+    <Compile Include="MyRibbonTabHeader.cs" />
+    <Compile Include="MyRibbonTabHeaderItemsControl.cs" />
     <Compile Include="MyXDescriptor.cs" />
     <Compile Include="NodeBase.cs" />
     <Compile Include="NodeDataLoadState.cs" />
@@ -258,7 +260,7 @@
     <Compile Include="SuperGRoup.cs" />
     <Compile Include="RibbonModel\ContextualTabGroups\CodeAnalysis.cs" />
     <Compile Include="RibbonModel\Definition\AssembliesTypesGroup.cs" />
-    <Compile Include="Ribbon\PrimaryRibbonModel.cs" />
+    <Compile Include="RibbonModel\PrimaryRibbonModel.cs" />
     <Compile Include="RibbonModel\RibbonModelApplicationMenu.cs" />
     <Compile Include="Ribbon\RibbonModelAppMenuElement.cs" />
     <Compile Include="RibbonModel\RibbonModelAppMenuItem.cs" />

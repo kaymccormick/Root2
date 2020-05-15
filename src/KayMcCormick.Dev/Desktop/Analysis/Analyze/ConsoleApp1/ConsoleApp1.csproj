@@ -74,7 +74,7 @@
       <Link>PythonViewModel.cs</Link>
     </Compile>
     <Compile Include="AppDbContext.cs" />
-    <Compile Include="AppModule.cs" />
+    <Compile Include="ConsoleAnalyzeAppModule.cs" />
     <Compile Include="ElementWrapper.cs" />
     <Compile Include="ListView2.cs" />
     <Compile Include="ListView2Base.cs" />
