@@ -68,6 +68,7 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         [JsonIgnore]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
         public AppClrType AppClrType { get; set; }
 
         /// <summary>
@@ -149,6 +150,7 @@ namespace AnalysisAppLib.Syntax
         /// <summary>
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
         public ObservableCollection<AppMethodInfo> FactoryMethods
         {
             get { return _factoryMethods; }
@@ -163,6 +165,7 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [JsonIgnore]
+        [Browsable(false)]
         public AppTypeInfo ParentInfo
         {
             get { return _parentInfo; }
@@ -194,6 +197,7 @@ namespace AnalysisAppLib.Syntax
         /// <summary>
         /// </summary>
         [NotMapped]
+        [Browsable(false)]
         public ICodeElementDocumentation DocInfo { get; set; }
 
         /// <summary>
@@ -268,11 +272,18 @@ namespace AnalysisAppLib.Syntax
         /// <summary>
         /// 
         /// </summary>
+        [Browsable(false)]
+        [JsonIgnore]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IEnumerable<AppTypeInfo> AllTypes { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
+                [Browsable(false)]
+        [JsonIgnore]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+
         public ITypesViewModel Model { get; set; }
 
         /// <summary>
@@ -672,6 +683,7 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         [JsonIgnore]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Browsable(false)]
         public List<AppTypeInfo> Types { get; } = new List<AppTypeInfo>();
 
         /// <summary>
@@ -746,6 +758,7 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [JsonIgnore]
+        [Browsable(false)]
         public AppTypeInfo AppTypeInfo
         {
             get { return _appTypeInfo; }
@@ -755,6 +768,10 @@ namespace AnalysisAppLib.Syntax
         /// <summary>
         /// 
         /// </summary>
+        [Browsable(false)]
+        [JsonIgnore]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+
         public ITypesViewModel Model { get; set; }
 
         /// <inheritdoc />
@@ -1060,6 +1077,9 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         [JsonIgnore]
         [NotMapped]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+
         public System.Reflection.MethodInfo MethodInfo
         {
             get { return _methodInfo; }
@@ -1121,6 +1141,8 @@ namespace AnalysisAppLib.Syntax
         /// </summary>
         [JsonIgnore]
         [NotMapped]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ICodeElementDocumentation XmlDoc { get; set; }
 
         /// <summary>

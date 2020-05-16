@@ -9,6 +9,8 @@
 // 
 // ---
 #endregion
+
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 
 namespace AnalysisAppLib
@@ -22,5 +24,7 @@ namespace AnalysisAppLib
         /// 
         /// </summary>
         CompilationUnitSyntax CompilationUnit { get ; }
+
+        SyntaxNode Node { get; }
     }
 }

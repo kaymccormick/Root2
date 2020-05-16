@@ -18,9 +18,12 @@ using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
 using NLog ;
 
-namespace AnalysisAppLib.XmlDoc
+namespace AnalysisAppLib
 {
-    internal sealed class CodeAnalyseContext : ICodeAnalyseContext
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class CodeAnalyseContext : ICodeAnalyseContext
     {
         public delegate ISyntaxTreeContext Factory1 ( string code , string assemblyName ) ;
 
@@ -38,7 +41,15 @@ namespace AnalysisAppLib.XmlDoc
 
         private SyntaxNode _node ;
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="currentModel"></param>
+        /// <param name="statement"></param>
+        /// <param name="node"></param>
+        /// <param name="syntaxTree"></param>
+        /// <param name="assemblyName"></param>
+        /// <param name="compilation"></param>
         public CodeAnalyseContext(SemanticModel currentModel
             , StatementSyntax statement
             , SyntaxNode node

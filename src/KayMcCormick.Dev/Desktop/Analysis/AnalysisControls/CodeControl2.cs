@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 using KayMcCormick.Dev;
@@ -29,10 +29,10 @@ namespace AnalysisControls
             var currentRendering = CurrentRendering;
             var maxX = MaxX;
             
-            double pixelsPerDip = PixelsPerDip;
+            var pixelsPerDip = PixelsPerDip;
             FormattingHelper.UpdateFormattedText(OutputWidth, ref currentRendering, EmSize, Typeface, _textDest,
                 TextSource,
-                pixelsPerDip, LineInfos, Infos, ref maxX, out var maxY, null, new GenericTextParagraphProperties(currentRendering, pixelsPerDip));
+                pixelsPerDip, LineInfos, RegionInfoList, ref maxX, out var maxY, null, new GenericTextParagraphProperties(currentRendering, pixelsPerDip));
             MaxX = maxX;
             MaxY = maxY;
             _rectangle.Width = maxX;
@@ -41,9 +41,20 @@ namespace AnalysisControls
             
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<RegionInfo> RegionInfoList { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+
+        /// <summary>
+        /// 
+        /// </summary>
+
         private System.Windows.Shapes.Rectangle _rectangle;
-        private ScrollViewer _scrollViewer;
-        private DrawingBrush _myDrawingBrush;
         private DrawingGroup _textDest;
 
         /// <summary>
@@ -51,9 +62,10 @@ namespace AnalysisControls
         /// </summary>
         public override void OnApplyTemplate()
         {
-            _scrollViewer = (ScrollViewer) GetTemplateChild("ScrollViewer");
             _rectangle = (System.Windows.Shapes.Rectangle) GetTemplateChild("Rectangle");
-            OutputWidth = _rectangle.ActualWidth;
+            if (_rectangle != null)
+            {
+                OutputWidth = _rectangle.ActualWidth;
 #if false
             var dpd = DependencyPropertyDescriptor.FromProperty(TextElement.FontSizeProperty, typeof(Rectangle));
             var dpd2 = DependencyPropertyDescriptor.FromProperty(TextElement.FontFamilyProperty, typeof(Rectangle));
@@ -65,13 +77,14 @@ namespace AnalysisControls
             }
 #endif
 
-            SetFontFamily();
+                SetFontFamily();
 
-            _myDrawingBrush = (DrawingBrush) GetTemplateChild("DrawingBrush");
-            _textDest = (DrawingGroup) GetTemplateChild("TextDest");
+                _textDest = (DrawingGroup) GetTemplateChild("TextDest");
 
-            UiLoaded = true;
-            EmSize = (double) _rectangle.GetValue(TextElement.FontSizeProperty);
+                UiLoaded = true;
+                EmSize = (double) _rectangle.GetValue(TextElement.FontSizeProperty);
+            }
+
             UpdateTextSource();
             UpdateFormattedText();
         }

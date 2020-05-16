@@ -125,9 +125,9 @@ namespace KayMcCormick.Lib.Wpf
         #endregion
     }
 
-    public class ComponentRegistrationTypeConverter : UiElementTypeConverter
+    public class ComponentRegistrationTypeConverter : TypeConverter
     {
-        public ComponentRegistrationTypeConverter ( ILifetimeScope scope ):base(scope) { }
+        public ComponentRegistrationTypeConverter ( ILifetimeScope scope ):base() { }
         #region Overrides of TypeConverter
         public override bool CanConvertTo ( ITypeDescriptorContext context , Type destinationType ) { return base.CanConvertTo ( context , destinationType ) ; }
 

@@ -10,6 +10,7 @@
 // ---
 #endregion
 using System ;
+using System.ComponentModel;
 using System.Threading.Tasks ;
 using System.Windows.Input ;
 using JetBrains.Annotations ;
@@ -75,6 +76,7 @@ namespace KayMcCormick.Lib.Wpf.Command
 
         /// <summary>
         /// </summary>
+        [Browsable(false)]
         [ NotNull ] public ICommand Command { get { return this ; } }
 
         /// <summary>

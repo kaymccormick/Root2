@@ -68,7 +68,7 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
-        [JsonIgnore]
+        [JsonIgnore][Browsable(false)]
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public PrimaryRibbonModel RibbonModel { get; set; }
 

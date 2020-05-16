@@ -5,13 +5,12 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
 using System.Windows.Threading;
-using AnalysisControls;
 using AnalysisControls.RibbonModel;
 using JetBrains.Annotations;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
 
-namespace Client2
+namespace AnalysisControls
 {
     public sealed class ClientModel : INotifyPropertyChanged, IClientModel
     {
@@ -42,7 +41,7 @@ namespace Client2
             get { return _primaryRibbon; }
             set
             {
-                if (Equals(value, _primaryRibbon)) return;
+                if (Object.Equals(value, _primaryRibbon)) return;
                 _primaryRibbon = value;
                 OnPropertyChanged();
             }
@@ -55,7 +54,7 @@ namespace Client2
             get { return _hoverElement; }
             set
             {
-                if (Equals(value, _hoverElement)) return;
+                if (Object.Equals(value, _hoverElement)) return;
                 _hoverElement = value;
                 OnPropertyChanged();
             }

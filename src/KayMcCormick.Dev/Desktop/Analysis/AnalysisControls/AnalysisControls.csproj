@@ -113,12 +113,14 @@
     <Compile Include="BasicTextRunProperties.cs" />
     <Compile Include="CategoryInfo.cs" />
     <Compile Include="CharacterCell.cs" />
+    <Compile Include="ClientModel.cs" />
     <Compile Include="CodeControl1.xaml.cs">
       <DependentUpon>CodeControl1.xaml</DependentUpon>
     </Compile>
     <Compile Include="CodeControl2.cs" />
     <Compile Include="CodeDiagnostics.cs" />
     <Compile Include="CodeProps.cs" />
+    <Compile Include="CodeRenderer.cs" />
     <Compile Include="CodeToolTipContent.cs" />
     <Compile Include="CommandProgress.cs" />
     <Compile Include="Commands\DatabasePopulateCommand.cs" />
@@ -162,6 +164,7 @@
     <Compile Include="DragTargetPropertyGrid.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DummyResourceAdder.cs" />
     <Compile Include="DynamicObservableCollection.cs" />
     <Compile Include="EnhancedCodeControl.cs" />
     <Compile Include="EnhancedCodeWindow.xaml.cs">
@@ -241,6 +244,7 @@
     <Compile Include="RectConverter.cs" />
     <Compile Include="RegionInfo.cs" />
     <Compile Include="RibbonBuilder.cs" />
+    <Compile Include="RibbonBuilder1.cs" />
     <Compile Include="RibbonDebugUtils.cs" />
     <Compile Include="RibbonModelRadioButton.cs" />
     <Compile Include="RibbonModel\AppCommandTypeConverter.cs" />
@@ -265,7 +269,7 @@
     <Compile Include="Ribbon\RibbonModelAppMenuElement.cs" />
     <Compile Include="RibbonModel\RibbonModelAppMenuItem.cs" />
     <Compile Include="RibbonModel\RibbonModelAppSplitMenuItem.cs" />
-    <Compile Include="Ribbon\RibbonModelContextualTabGroup.cs" />
+    <Compile Include="RibbonModel\RibbonModelContextualTabGroup.cs" />
     <Compile Include="Ribbon\RibbonModelGallery.cs" />
     <Compile Include="RibbonModel\RibbonModelGalleryCategory.cs" />
     <Compile Include="Ribbon\RibbonModelGalleryItem.cs" />
@@ -317,8 +321,10 @@
     <Compile Include="TestConverter2.cs" />
     <Compile Include="TextCaret.cs" />
     <Compile Include="TextPropertiesManager.cs" />
+    <Compile Include="TextSourceService.cs" />
     <Compile Include="TypesViewModelFactory.cs" />
     <Compile Include="UiConverter.cs" />
+    <Compile Include="UiElementTypeConverter.cs" />
     <Compile Include="UserControl1.cs">
       <SubType>UserControl</SubType>
     </Compile>

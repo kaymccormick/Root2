@@ -22,7 +22,7 @@ namespace KayMcCormick.Lib.Wpf.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace KayMcCormick.Lib.Wpf.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("KayMcCormick.Lib.Wpf.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace KayMcCormick.Lib.Wpf.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace KayMcCormick.Lib.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} must be of type ResolveExtension.
         /// </summary>
-        internal static string ResolveTypeConverter_ConvertTo__0__must_be_of_type_ResolveExtension {
+        public static string ResolveTypeConverter_ConvertTo__0__must_be_of_type_ResolveExtension {
             get {
                 return ResourceManager.GetString("ResolveTypeConverter_ConvertTo__0__must_be_of_type_ResolveExtension", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace KayMcCormick.Lib.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Property Name.
         /// </summary>
-        internal static string UiElementTypeConverter__ControlForValue_Property_Name {
+        public static string UiElementTypeConverter__ControlForValue_Property_Name {
             get {
                 return ResourceManager.GetString("UiElementTypeConverter__ControlForValue_Property_Name", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace KayMcCormick.Lib.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Property Type.
         /// </summary>
-        internal static string UiElementTypeConverter__ControlForValue_Property_Type {
+        public static string UiElementTypeConverter__ControlForValue_Property_Type {
             get {
                 return ResourceManager.GetString("UiElementTypeConverter__ControlForValue_Property_Type", resourceCulture);
             }

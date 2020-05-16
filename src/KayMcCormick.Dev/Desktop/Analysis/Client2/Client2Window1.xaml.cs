@@ -7,6 +7,7 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Windows;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
@@ -87,7 +88,9 @@ namespace Client2
                 {
                     _viewModel.Main1Model = Main1.ViewModel;
                     Main1.ViewModel.ClientViewModel = _viewModel;
-                    DumpRibbon(myRibbon);
+                    // var jsonOut = JsonSerializer.Serialize(myRibbon);
+                    // DebugUtils.WriteLine(jsonOut);
+                    // DumpRibbon(myRibbon);
                 
 
                 foreach (var o in myRibbon.ItemsSource)
@@ -291,44 +294,6 @@ namespace Client2
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public static PrimaryRibbonModel RibbonModelBuilder(IComponentContext c, IEnumerable<Parameter> o)
-        {
-            var r = new PrimaryRibbonModel {AppMenu = c.Resolve<RibbonModelApplicationMenu>()};
-            foreach (var tg in c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>())
-            {
-                DebugUtils.WriteLine("Adding contextual tab group " + tg);
-                tg.RibbonModel = r;
-                r.ContextualTabGroups.Add(tg);
-            }
-
-            r.AppMenu.Items.Add(new RibbonModelAppMenuItem {Header = "test"});
-            var tabs = c.Resolve<IEnumerable<Meta<Lazy<RibbonModelTab>>>>();
-            foreach (var meta in tabs)
-            {
-                var ribbonModelTab = meta.Value.Value;
-                r.RibbonItems.Add(ribbonModelTab);
-                if (ribbonModelTab.ContextualTabGroupHeader != null)
-                {
-                    ribbonModelTab.Visibility = Visibility.Collapsed;
-                }
-
-                ribbonModelTab.RibbonModel = r;
-            }
-
-            var tabProviders = c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>();
-            foreach (var ribbonModelProvider in tabProviders)
-            {
-                var item = ribbonModelProvider.ProvideModelItem(c);
-                item.RibbonModel = r;
-                if (item.ContextualTabGroupHeader != null)
-                {
-                    item.Visibility = Visibility.Collapsed;
-                }
-                r.RibbonItems.Add(item);
-            }
-
-            return r;
-        }
         private LogBuilder CreateLogBuilder()
         {
             return new LogBuilder(Logger).Level(LogLevel);
@@ -353,7 +318,7 @@ namespace Client2
 
         protected override void OnPreviewMouseMove(MouseEventArgs e)
         {
-            CreateLogBuilder().Message("MouseMove: " + e.OriginalSource).Write();
+            // CreateLogBuilder().Message("MouseMove: " + e.OriginalSource).Write();
             ViewModel.HoverElement = e.OriginalSource;
             base.OnPreviewMouseMove(e);
         }

@@ -139,7 +139,7 @@ namespace AnalysisControls
             }
 
             //var it = typeof(GetDelegate<,>).MakeGenericType(propertyInfo.PropertyType, propertyInfo.DeclaringType);
-            _getValue = (GetDelegate) propertyInfo.GetMethod.CreateDelegate(typeof(GetDelegate));
+            //_getValue = (GetDelegate) propertyInfo.GetMethod.CreateDelegate(typeof(GetDelegate));
             //_setValue = (SetDelegate)propertyInfo.SetMethod.CreateDelegate(typeof(SetDelegate));
             _type = typeof(TReturn);
             _intype = typeof(TInput);

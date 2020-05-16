@@ -25,6 +25,7 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// <summary>
         /// Access to the ICommand interface provided by the command.
         /// </summary>
+        [Browsable(false)]
         ICommand Command { get ; }
     }
 }

@@ -54,6 +54,7 @@ namespace KayMcCormick.Lib.Wpf.Command
 
         /// <summary>
         /// </summary>
+        [Browsable(false)]
         public Func < LambdaAppCommand , Task < IAppCommandResult > > CommandFunc
         {
             get { return _commandFunc ; }
@@ -106,6 +107,7 @@ namespace KayMcCormick.Lib.Wpf.Command
 
         /// <summary>
         /// </summary>
+        [Browsable(false)]
         public Action < AggregateException > OnFaultDelegate
         {
             get { return _onFaultDelegate ; }

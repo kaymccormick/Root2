@@ -8,6 +8,7 @@
               xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
               xmlns:primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon"
               xmlns:ribbon="clr-namespace:AnalysisControls.RibbonModel;assembly=AnalysisControls"
+              xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
               mc:Ignorable="d"
               DataContext="{Binding RelativeSource={RelativeSource Self}}"
               Title="Client2Window1" Height="900" Width="1600">
@@ -69,12 +70,12 @@
         </DataTemplate>
       </anal:MyRibbon.ContextualTabGroupHeaderTemplate>
       <anal:MyRibbon.ContextualTabGroupStyle>
-        <Style TargetType="RibbonContextualTabGroup">
+        <Style TargetType="anal:MyRibbonContextualTabGroup">
           <Setter Property="TextElement.FontFamily" Value="Lucida Sans"/>
         </Style>
       </anal:MyRibbon.ContextualTabGroupStyle>
       <anal:MyRibbon.ItemContainerStyle>
-        <Style TargetType="RibbonTab">
+        <Style TargetType="anal:MyRibbonTab">
           <Style.Triggers>
             <Trigger Property="ContextualTabGroup" Value="{x:Null}">
               <Setter Property="TextElement.FontFamily" Value="Calibri"/>
@@ -86,12 +87,23 @@
           <Setter Property="ItemsSource" Value="{Binding Items}"/>
         </Style>
       </anal:MyRibbon.ItemContainerStyle>
-      <anal:MyRibbon.ItemsPanel><ItemsPanelTemplate><primitives:RibbonTabsPanel Opacity="0.5"/></ItemsPanelTemplate></anal:MyRibbon.ItemsPanel>
+      <anal:MyRibbon.ItemsPanel><ItemsPanelTemplate><anal:MyRibbonTabsPanel Opacity="0.9"/></ItemsPanelTemplate></anal:MyRibbon.ItemsPanel>
       <anal:MyRibbon.ApplicationMenu>
         <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" />
       </anal:MyRibbon.ApplicationMenu>
     </anal:MyRibbon>
-    <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1" ViewModel="{kmWpf:Resolve anal:Main1Model,Throw=false}" />
+      <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1">
+        <anal:Main1.Resources>
+         
+        </anal:Main1.Resources>
+        <anal:Main1.ViewModel><anal:Main1Model>
+          <anal:Main1Model.Documents>
+            <avalondock:LayoutDocument>
+              <anal:AssembliesControl></anal:AssembliesControl>
+            </avalondock:LayoutDocument>
+            </anal:Main1Model.Documents>
+        </anal:Main1Model></anal:Main1.ViewModel>
+      </anal:Main1>
   </Grid>
     </Grid>
 

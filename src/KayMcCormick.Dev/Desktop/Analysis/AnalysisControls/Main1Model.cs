@@ -61,13 +61,13 @@ namespace AnalysisControls
                                 primaryRibbonContextualTabGroup.Visibility = Visibility.Visible;
                             }
                         }
-                        foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
-                        {
-                            if (Object.Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, header))
-                            {
-                                primaryRibbonRibbonItem.Visibility = Visibility.Visible;
-                            }
-                        }
+                        // foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
+                        // {
+                            // if (Object.Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, header))
+                            // {
+                                // primaryRibbonRibbonItem.Visibility = Visibility.Visible;
+                            // }
+                        // }
                         
                     }
                 }
@@ -880,7 +880,7 @@ namespace AnalysisControls
                     var diagnostics = errs.ToList();
                     if (diagnostics.Any())
                     {
-                        DebugUtils.WriteLine("Errors");
+                        DebugUtils.WriteLine("ErrorsList");
                         foreach (var diagnostic in diagnostics) DebugUtils.WriteLine(diagnostic.ToString());
                     }
                 }

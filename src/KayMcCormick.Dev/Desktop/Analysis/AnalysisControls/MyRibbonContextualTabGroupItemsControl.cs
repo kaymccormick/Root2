@@ -10,6 +10,15 @@ namespace AnalysisControls
     /// </summary>
     public class MyRibbonContextualTabGroupItemsControl : RibbonContextualTabGroupItemsControl, IAppControl
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            MyRibbon = (MyRibbon)TemplatedParent;
+        }
+
         internal MyRibbonContextualTabGroup FindHeader(object content)
         {
             int count = this.Items.Count;
@@ -37,8 +46,11 @@ namespace AnalysisControls
 
         protected override DependencyObject GetContainerForItemOverride()
         {
-            return new MyRibbonContextualTabGroup();
+            return new MyRibbonContextualTabGroup() {MyRibbon = MyRibbon};
         }
+
+        public MyRibbon MyRibbon { get; set; }
+
         public Guid ControlId { get; } = Guid.NewGuid();
 
     }

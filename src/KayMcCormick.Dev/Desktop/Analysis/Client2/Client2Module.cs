@@ -176,7 +176,7 @@ namespace Client2
                         c.ResolveOptional<MyCacheTarget2>()))
                 .As<Window>().WithCallerMetadata();
             
-            builder.Register(Client2Window1.RibbonModelBuilder);
+            builder.Register(RibbonBuilder1.RibbonModelBuilder);
             builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
             builder.RegisterType<ClientModel>().AsSelf().SingleInstance().AsImplementedInterfaces().WithCallerMetadata();
             builder.RegisterType<RibbonModelApplicationMenu>();
@@ -215,13 +215,5 @@ namespace Client2
                 .OrderByDescending(x => x.TargetConstructor.GetParameters().Length).FirstOrDefault();
         }
 
-    }
-
-    public class DummyResourceAdder : IAddRuntimeResource
-    {
-        public void AddResource(ResourceNodeInfo node)
-        {
-            
-        }
     }
 }

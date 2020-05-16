@@ -40,7 +40,7 @@ namespace AnalysisControls
         )
         {
             Types       = customTypes.CustomTypeList ;
-            DebugUtils.WriteLine($"{nameof(ControlsProvider)} providing custom type descriptors for {customTypes.CustomTypeList.Count()} types.");
+            // DebugUtils.WriteLine($"{nameof(ControlsProvider)} providing custom type descriptors for {customTypes.CustomTypeList.Count()} types.");
             _componentContext   = componentContext ;
             _customTypes = customTypes;
             _customFunc = customFunc ;
@@ -60,7 +60,7 @@ namespace AnalysisControls
 
         public override ICustomTypeDescriptor GetExtendedTypeDescriptor(object instance)
         {
-            DebugUtils.WriteLine(nameof(GetExtendedTypeDescriptor));
+            // DebugUtils.WriteLine(nameof(GetExtendedTypeDescriptor));
             return base.GetExtendedTypeDescriptor(instance);
         }
 
@@ -78,7 +78,7 @@ namespace AnalysisControls
 
         public override Type GetReflectionType(Type objectType, object instance)
         {
-            DebugUtils.WriteLine(nameof(GetReflectionType));
+            // DebugUtils.WriteLine(nameof(GetReflectionType));
             return base.GetReflectionType(objectType, instance);
         }
 
@@ -96,13 +96,13 @@ namespace AnalysisControls
             , object instance
         )
         {
-            DebugUtils.WriteLine($"{nameof(GetTypeDescriptor)} - {objectType.FullName} - {instance}");
+            // DebugUtils.WriteLine($"{nameof(GetTypeDescriptor)} - {objectType.FullName} - {instance}");
             if (_cache.TryGetValue(objectType, out var desc))
             {
-                DebugUtils.WriteLine($"Found in cache for {objectType}");
+                // DebugUtils.WriteLine($"Found in cache for {objectType}");
                 return desc;
             }
-            DebugUtils.WriteLine($"Type descriptor for {objectType.FullName} ({instance})");
+            // DebugUtils.WriteLine($"Type descriptor for {objectType.FullName} ({instance})");
             //TypeDescriptionProvider tyd = TypeDescriptor.GetProvider(objectType);
             //var parent = tyd.GetTypeDescriptor(objectType);
             var customTypeDescriptor = _customFunc ( objectType ) ;

@@ -1,4 +1,5 @@
 ﻿using System ;
+using System.ComponentModel;
 using System.Threading ;
 using System.Threading.Tasks ;
 using System.Windows.Input ;
@@ -40,6 +41,7 @@ namespace KayMcCormick.Lib.Wpf.Command
 
         /// <summary>
         /// </summary>
+        [Browsable(false)]
         [ NotNull ] public ICommand Command { get { return this ; } }
         #endregion
         #region Implementation of ICommand

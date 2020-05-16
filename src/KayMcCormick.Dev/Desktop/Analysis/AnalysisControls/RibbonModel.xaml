@@ -18,7 +18,7 @@
     <Setter Property="Header" Value="{Binding Header}" />
     <Setter Property="Visibility" Value="{Binding Visibility,Mode=TwoWay}" />
   </Style>
-  <Style TargetType="{x:Type RibbonGroup}">
+  <Style TargetType="{x:Type local:MyRibbonGroup}">
     <Setter Property="ItemsSource" Value="{Binding Items}" />
   </Style>
   <Style TargetType="{x:Type local:MyRibbonTab}">

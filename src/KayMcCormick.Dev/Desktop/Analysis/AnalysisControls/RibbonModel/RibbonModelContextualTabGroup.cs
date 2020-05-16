@@ -6,7 +6,10 @@ using KayMcCormick.Dev;
 
 namespace AnalysisControls.RibbonModel
 {
-    public class RibbonModelContextualTabGroup : INotifyPropertyChanged
+    /// <summary>
+    /// 
+    /// </summary>
+    public class RibbonModelContextualTabGroup : DependencyObject, INotifyPropertyChanged
     {
         private Visibility _visibility = Visibility.Collapsed;
         public string Header { get; set; }
@@ -26,7 +29,8 @@ namespace AnalysisControls.RibbonModel
                 OnPropertyChanged();
             }
         }
-
+        
+        [Browsable(false)]
         public PrimaryRibbonModel RibbonModel { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;

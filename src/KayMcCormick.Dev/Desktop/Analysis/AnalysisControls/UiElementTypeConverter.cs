@@ -1,25 +1,14 @@
-#region header
-
-// Kay McCormick (mccor)
-// 
-// Analysis
-// WpfLib
-// UiElementTypeConverter.cs
-// 
-// 2020-04-23-9:09 AM
-// 
-// ---
-
-#endregion
-
-using System;
+﻿using System;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,21 +18,28 @@ using System.Windows.Media;
 using Autofac;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
+using KayMcCormick.Lib.Wpf;
 using KayMcCormick.Lib.Wpf.Properties;
-using NLog;
-using Task = System.Threading.Tasks.Task;
 
-namespace KayMcCormick.Lib.Wpf
+namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class UiElementTypeConverter : TypeConverter
     {
         private ILifetimeScope _scope;
-	private static Logger Logger = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="scope"></param>
         public UiElementTypeConverter(ILifetimeScope scope)
         {
             _scope = scope;
         }
 
+        /// <inheritdoc />
         public override object ConvertTo(
             ITypeDescriptorContext context
             , CultureInfo culture
@@ -54,8 +50,181 @@ namespace KayMcCormick.Lib.Wpf
             DebugUtils.WriteLine(
                 $"{context?.Instance} {context?.PropertyDescriptor?.Name} {context?.Container} {value} {destinationType.FullName}");
             if (destinationType == typeof(UIElement)) return ConvertToUiElement(value);
+            if (destinationType == typeof(string))
+            {
+                StringBuilder sb = new StringBuilder();
+                return DoConvertToString(value, sb, true).ToString();
+            }
 
+            throw new InvalidOperationException();
             return base.ConvertTo(context, culture, value, destinationType);
+        }
+
+        private static HashSet<object> seen = new HashSet<object>();
+
+        public static StringBuilder DoConvertToString(object value, StringBuilder sb, bool useTypeConverters = true,
+            HashSet<object> hashSet = null)
+        {
+            if (value == null)
+            {
+                return sb.Append("null/converted");
+            }
+
+            switch (value)
+            {
+                case DateTime dt:
+                    return sb.Append(dt.ToString());
+                case SyntaxNode sn:
+                    return sb.Append($"SyntaxNode{{{sn.RawKind};{sn.GetType().Name}}}");
+                case Type tt:
+                    sb.Append("Type{");
+                    TypeToText(tt, sb);
+                    return sb.Append('}');
+                case string ss:
+                    return sb.Append(ss);
+            }
+
+            if (hashSet != null && !value.GetType().IsValueType)
+            {
+                if (hashSet.Contains(value)) throw new InvalidOperationException(value.ToString());
+
+                hashSet.Add(value);
+            }
+
+            switch (value)
+            {
+                case IEnumerable vv:
+                {
+                    var i = 0;
+                    foreach (var o in vv)
+                    {
+                        sb.AppendFormat("[{0}]", i);
+                        sb.Append(DoConvertToString(o, sb, useTypeConverters, hashSet));
+                        sb.Append("n");
+                        i++;
+                    }
+
+                    return sb;
+                }
+            }
+
+            var t = value.GetType();
+            if (t.IsGenericType && t.IsConstructedGenericType)
+            {
+                var args = t.GenericTypeArguments;
+                if (args.Length == 2)
+                {
+                    var t2 = typeof(IDictionary<,>).MakeGenericType(args);
+                    if (t2.IsAssignableFrom(t))
+                    {
+                        var conv = typeof(DictConverter<,>).MakeGenericType(t2);
+                        var c = Activator.CreateInstance(conv);
+                        var method = conv.GetMethod("DumpInstance", BindingFlags.Instance | BindingFlags.Public);
+                        var strval = method.Invoke(c, new object[] {value})?.ToString() ?? "null";
+                        return sb.Append(strval);
+                    }
+                }
+            }
+
+            if ((bool) value?.GetType().IsPrimitive)
+            {
+                sb.Append(value).Append("{");
+                TypeToText(value.GetType(), sb);
+                return sb.Append("}");
+            }
+
+            var coll = TypeDescriptor.GetProperties(value.GetType());
+            if (coll.Count != 0)
+            {
+                foreach (PropertyDescriptor property in coll)
+                {
+                    if (!property.IsBrowsable)
+                    {
+                        DebugUtils.WriteLine($"{property.Name} unbrowsable");
+                        continue;
+                    }
+
+                    sb.Append(property.Name);
+                    sb.Append('(');
+                    TypeToText(property.PropertyType, sb);
+                    sb.Append(")\t = ");
+                    var val = property.GetValue(value);
+                    // DebugUtils.WriteLine($"{property.Name} = {val}");
+                    string convval = null;
+                    if (val is string sss)
+                        convval = sss;
+                    else if (val is byte[]) convval = "byte[]";
+
+                    if (val == null)
+                    {
+                        convval = "null/converted";
+                    }
+                    else
+                    {
+                        if (useTypeConverters)
+                        {
+                            var conv = property.Converter;
+
+                            if (conv != null && conv.CanConvertTo(typeof(string)))
+                                convval = conv.ConvertTo(val, typeof(string))?.ToString() ?? "null";
+                        }
+
+                        if (convval == null && (!useTypeConverters || !(val is string) && val is IEnumerable))
+                        {
+                            DoConvertToString(val, sb, useTypeConverters, hashSet);
+                            sb.Append("\n");
+                            continue;
+                        }
+
+                        if (convval == null)
+                        {
+                            var conv = TypeDescriptor.GetConverter(val.GetType());
+                            convval = conv.CanConvertTo(typeof(string))
+                                ? conv.ConvertTo(val, typeof(string))?.ToString() ?? "null"
+                                : val.ToString() + " {" + val.GetType().FullName + "}";
+                        }
+
+                    }
+
+                    sb.Append(convval);
+                    sb.Append("\n");
+                }
+            }
+            else
+            {
+                return sb.Append(value);
+            }
+
+            return sb;
+        }
+
+        private static StringBuilder TypeToText(Type tt, StringBuilder sb)
+        {
+            if(!string.IsNullOrEmpty(tt.Namespace)) {
+                
+                    sb.Append(tt.Namespace);
+                    sb.Append('.');
+            }
+
+            sb.Append(tt.Name);
+            if (tt.IsGenericType)
+            {
+                if (!tt.IsConstructedGenericType)
+                {
+                    throw new InvalidOperationException(tt.ToString());
+                }
+
+                sb.Append('<');
+                foreach (var ttarg in tt.GenericTypeArguments)
+                {
+                    TypeToText(ttarg, sb);
+                }
+
+                sb.Append('>');
+            }
+
+            return sb;
+
         }
 
         public virtual UIElement ConvertToUiElement(object value)
@@ -425,7 +594,7 @@ namespace KayMcCormick.Lib.Wpf
 
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
-            Logger.Info(
+            DebugUtils.WriteLine(
                 $"{context?.Instance} {context?.PropertyDescriptor?.Name} {context?.Container} {destinationType?.FullName}");
             if (destinationType == typeof(UIElement)) return true;
 

@@ -13,6 +13,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -121,11 +122,27 @@ namespace AnalysisControls
                 )
                 .SelectMany(az => az.GetTypes())
                 .ToList();
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+
+                if (assembly.IsDynamic)
+                    continue;
+                foreach (var exportedType in assembly.GetExportedTypes())
+                {
+                    if (typeof(IDictionary).IsAssignableFrom(exportedType) ||
+                        typeof(IEnumerable).IsAssignableFrom(exportedType))
+                    {
+                        kayTypes.Add(exportedType);
+                        // DebugUtils.WriteLine(exportedType.FullName);
+                    }
+                }
+            }
             kayTypes.Add(typeof(IInstanceLookup));
             kayTypes.Add(typeof(Container));
             kayTypes.Add(typeof(IResolveOperation));
             kayTypes.Add(typeof(Type));
             kayTypes.Add(typeof(MethodInfo));
+            kayTypes.Add(typeof(PropertyPath));
             kayTypes.Add(typeof(PropertyInfo));
             kayTypes.Add(typeof(MemberInfo));
             var collection = typeof(CSharpSyntaxNode).Assembly.GetExportedTypes()

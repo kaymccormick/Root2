@@ -255,5 +255,13 @@ namespace AnalysisControls
 
         /// <inheritdoc />
         public Guid ControlId { get; }
+
+        internal bool IsContextualTab
+        {
+            get
+            {
+                return this.ContextualTabGroupHeader != null;
+            }
+        }
     }
 }

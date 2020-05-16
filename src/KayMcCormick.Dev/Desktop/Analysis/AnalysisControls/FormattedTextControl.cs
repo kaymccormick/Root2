@@ -27,7 +27,7 @@ namespace AnalysisControls
     /// 
     /// </summary>
     [TitleMetadata("Formatted Code Control")]
-    public class FormattedTextControl : SyntaxNodeControl, IDocumentPaginatorSource
+    public class FormattedTextControl : SyntaxNodeControl
     {
         /// <summary>
         /// 
@@ -1269,123 +1269,6 @@ namespace AnalysisControls
             }
         }
 
-        public DocumentPaginator DocumentPaginator
-        {
-            get
-            {
-
-                return _documentPaginator ?? (_documentPaginator = new CodePaginator());
-            }
-        }
-    }
-
-    public class CodePaginator : DynamicDocumentPaginator
-    {
-        private readonly Size _pageSize;
-        private readonly FormattedTextControl _source;
-
-        /// <inheritdoc />
-        public CodePaginator(Size pageSize, FormattedTextControl source, bool isBackgroundPaginationEnabled)
-        {
-            _pageSize = pageSize;
-            _source = source;
-            Source = source;
-        }
-
-        public override DocumentPage GetPage(int pageNumber)
-        {
-            var page = new DocumentPage();
-        }
-
-        public override void GetPageAsync(int pageNumber)
-        {
-            base.GetPageAsync(pageNumber);
-        }
-
-        public override void GetPageAsync(int pageNumber, object userState)
-        {
-            base.GetPageAsync(pageNumber, userState);
-        }
-
-        public override void ComputePageCount()
-        {
-            base.ComputePageCount();
-        }
-
-        public override void ComputePageCountAsync()
-        {
-            base.ComputePageCountAsync();
-        }
-
-        public override void ComputePageCountAsync(object userState)
-        {
-            base.ComputePageCountAsync(userState);
-        }
-
-        public override void CancelAsync(object userState)
-        {
-            base.CancelAsync(userState);
-        }
-
-        protected override void OnGetPageCompleted(GetPageCompletedEventArgs e)
-        {
-            base.OnGetPageCompleted(e);
-        }
-
-        protected override void OnComputePageCountCompleted(AsyncCompletedEventArgs e)
-        {
-            base.OnComputePageCountCompleted(e);
-        }
-
-        protected override void OnPagesChanged(PagesChangedEventArgs e)
-        {
-            base.OnPagesChanged(e);
-        }
-
-        public override bool IsPageCountValid { get; }
-        public override int PageCount { get; }
-        public override Size PageSize { get; set; }
-        public override IDocumentPaginatorSource Source { get; }
-        public override int GetPageNumber(ContentPosition contentPosition)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void GetPageNumberAsync(ContentPosition contentPosition)
-        {
-            base.GetPageNumberAsync(contentPosition);
-        }
-
-        public override void GetPageNumberAsync(ContentPosition contentPosition, object userState)
-        {
-            base.GetPageNumberAsync(contentPosition, userState);
-        }
-
-        public override ContentPosition GetPagePosition(DocumentPage page)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override ContentPosition GetObjectPosition(object value)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void OnGetPageNumberCompleted(GetPageNumberCompletedEventArgs e)
-        {
-            base.OnGetPageNumberCompleted(e);
-        }
-
-        protected override void OnPaginationProgress(PaginationProgressEventArgs e)
-        {
-            base.OnPaginationProgress(e);
-        }
-
-        protected override void OnPaginationCompleted(EventArgs e)
-        {
-            base.OnPaginationCompleted(e);
-        }
-
-        public override bool IsBackgroundPaginationEnabled { get; set; }
+       
     }
 }
