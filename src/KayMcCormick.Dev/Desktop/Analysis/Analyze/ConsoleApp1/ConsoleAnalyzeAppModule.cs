@@ -29,6 +29,7 @@ namespace ConsoleAnalysis
         protected override void Load ( ContainerBuilder builder )
         {
             base.Load ( builder ) ;
+            builder.RegisterType<AppDbContextHelper>().WithCallerMetadata();
             var actionBlock = new ActionBlock < ILogInvocation > ( Action ) ;
             builder.RegisterInstance ( actionBlock )
                    .As < ActionBlock < ILogInvocation > > ( )

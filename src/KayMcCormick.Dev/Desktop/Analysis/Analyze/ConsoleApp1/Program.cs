@@ -625,7 +625,7 @@ namespace ConsoleAnalysis
                                                                   DiscoveryType.VisualStudioSetup
                                                           }
                                                          )
-                             .First ( inst => inst.Version.Major == 15 ) ;
+                             .First ( inst => inst.Version.Major == 16 ) ;
             MSBuildLocator.RegisterInstance ( vsInstances ) ;
 #if CONSOLEMENU
             var menu = new Menu ( "VS Instance" ) ;
