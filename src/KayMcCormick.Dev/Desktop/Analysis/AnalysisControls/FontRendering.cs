@@ -6,11 +6,36 @@ using JetBrains.Annotations;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class FontRendering
     {
-        #region Constructors
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emSize"></param>
+        /// <param name="alignment"></param>
+        /// <param name="decorations"></param>
+        /// <param name="textColor"></param>
+        /// <param name="face"></param>
+        /// <returns></returns>
+        public static FontRendering CreateInstance(double emSize, TextAlignment alignment, TextDecorationCollection decorations, Brush textColor, Typeface face)
+        {
+            return new FontRendering(emSize, alignment, decorations, textColor, face);
+        }
 
-        public FontRendering(
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emSize"></param>
+        /// <param name="alignment"></param>
+        /// <param name="decorations"></param>
+        /// <param name="textColor"></param>
+        /// <param name="face"></param>
+        /// <exception cref="InvalidEnumArgumentException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        private FontRendering(
             double emSize,
             TextAlignment alignment,
             TextDecorationCollection decorations,
@@ -27,20 +52,10 @@ namespace AnalysisControls
             _typeface = face ?? throw new ArgumentNullException(nameof(face));
         }
 
-        public FontRendering()
-        {
-            _fontSize = 12.0f;
-            _alignment = TextAlignment.Left;
-            _textDecorations = new TextDecorationCollection();
-            _textColor = Brushes.Black;
-            _typeface = new Typeface(new FontFamily("Arial"),
-                FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
-        }
-
-        #endregion
-
-        #region Properties
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public double FontSize
         {
             get { return _fontSize; }
@@ -54,40 +69,46 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TextAlignment TextAlignment
         {
             get { return _alignment; }
             set { _alignment = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TextDecorationCollection TextDecorations
         {
             get { return _textDecorations; }
             set { _textDecorations = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Brush TextColor
         {
             get { return _textColor; }
             set { _textColor = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Typeface Typeface
         {
             get { return _typeface; }
             set { _typeface = value; }
         }
 
-        #endregion
-
-        #region Private Fields
-
         private double _fontSize;
         private TextAlignment _alignment;
         private TextDecorationCollection _textDecorations;
         private Brush _textColor;
         private Typeface _typeface;
-
-        #endregion
     }
 }

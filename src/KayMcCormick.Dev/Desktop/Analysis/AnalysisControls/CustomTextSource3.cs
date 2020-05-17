@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using KayMcCormick.Dev;
@@ -135,9 +136,11 @@ namespace AnalysisControls
             PixelsPerDip = pixelsPerDip;
             _typeface = typefaceManager.GetDefaultTypeface();
 
-            Rendering = typefaceManager.GetRendering(EmSize, TextAlignment.Left, new TextDecorationCollection(), Brushes.Black,
+            Rendering = typefaceManager.GetRendering(EmSize, TextAlignment.Left, new TextDecorationCollection(),
+                Brushes.Black,
                 _typeface);
-            BaseProps = TextPropertiesManager.GetBasicTextRunProperties(PixelsPerDip, Rendering);
+            BaseProps = TextPropertiesManager.GetBasicTextRunProperties(
+                PixelsPerDip, Rendering);
         }
 
         /// <summary>
@@ -159,10 +162,21 @@ namespace AnalysisControls
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public override TextRun GetTextRun(int textSourceCharacterIndex)
         {
+            DebugUtils.WriteLine($"{nameof(GetTextRun)}: {textSourceCharacterIndex}");
             // Make sure text source index is in bounds.
             if (textSourceCharacterIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(textSourceCharacterIndex), "Value must be greater than 0.");
-            if (textSourceCharacterIndex >= Length) return new TextEndOfParagraph(2);
+            {
+                DebugUtils.WriteLine($"out of bounds");
+                throw new ArgumentOutOfRangeException(nameof(textSourceCharacterIndex),
+                    "Value must be greater than 0.");
+            }
+
+            if (textSourceCharacterIndex >= Length)
+            {
+                DebugUtils.WriteLine($"past text source length");
+                return new TextEndOfParagraph(2);
+            }
+
 
             // Create TextCharacters using the current font rendering properties.
             if (textSourceCharacterIndex < Length)
@@ -175,6 +189,9 @@ namespace AnalysisControls
                     var zz = tc.Length - z;
 
                     var tf = tc.Properties.Typeface;
+                    var name = tf.FaceNames[XmlLanguage.GetLanguage("en-US")];
+                    DebugUtils.WriteLine($"Typeface: {name}");
+                    DebugUtils.WriteLine("Typeface FontFamily: " + tf.FontFamily.ToString());
                     return tc;
                 }
 
@@ -255,10 +272,8 @@ namespace AnalysisControls
         {
             var r = BasicProps();
             DebugUtils.WriteLine($"{CSharpExtensions.Kind(trivia)}");
-            if(CSharpExtensions.Kind(trivia) == SyntaxKind.SingleLineCommentTrivia)
-            {
+            if (CSharpExtensions.Kind(trivia) == SyntaxKind.SingleLineCommentTrivia)
                 r.SetForegroundBrush(Brushes.YellowGreen);
-            }
             // r.SyntaxTrivia = trivia;
             // r.Text = text;
             return r;
@@ -277,15 +292,12 @@ namespace AnalysisControls
         public SyntaxNode Node
         {
             get { return _node; }
-            set
-            {
-                _node = value;
-            }
+            set { _node = value; }
         }
 
         public void GenerateText()
         {
-            if (this.Tree is VisualBasicSyntaxTree tree1)
+            if (Tree is VisualBasicSyntaxTree tree1)
             {
                 var f1 = new SyntaxTalkVb(col, this, TakeTextRun, MakeProperties);
                 if (Node != null) f1.DefaultVisit(Node);
@@ -293,7 +305,10 @@ namespace AnalysisControls
             else
             {
                 var f = new SyntaxWalkerF(col, this, TakeTextRun, MakeProperties);
-                if (Node != null) f.DefaultVisit(Node);
+                if (Node != null)
+                    f.DefaultVisit(Node);
+                else
+                    f.DefaultVisit(Tree.GetRoot());
             }
 
             var i = 0;
@@ -323,7 +338,6 @@ namespace AnalysisControls
 
         public void TakeTextRun(TextRun obj)
         {
-            
             if (obj is CustomTextCharacters c)
             {
                 if (c.Index.HasValue == false) throw new InvalidOperationException("no index");
@@ -365,22 +379,13 @@ namespace AnalysisControls
                 var syntaxKind = CSharpExtensions.Kind(token.Parent);
 
                 DebugUtils.WriteLine(syntaxKind.ToString());
-                if(SyntaxFacts.IsName(syntaxKind))
-                {
+                if (SyntaxFacts.IsName(syntaxKind))
                     pp.SetForegroundBrush(Brushes.Pink);
-                } else 
-                if (SyntaxFacts.IsTypeSyntax(syntaxKind))
-                {
-                    pp.SetForegroundBrush(Brushes.Crimson);
-                }
+                else if (SyntaxFacts.IsTypeSyntax(syntaxKind)) pp.SetForegroundBrush(Brushes.Crimson);
 
                 if (syntaxKind == SyntaxKind.MethodDeclaration)
-                {
                     if (SyntaxFacts.IsAccessibilityModifier(kind))
-                    {
                         pp.SetForegroundBrush(Brushes.Aqua);
-                    }
-                }
             }
 
             // pp.SyntaxToken = trivia;
@@ -455,14 +460,11 @@ namespace AnalysisControls
                 if (x is CustomTextCharacters ch)
                 {
                     var prev = ch.Text.Substring(0, InsertionPoint - ch.Index.Value);
-                    var next = ch.Text.Substring((ch.Index.Value + ch.Length) - InsertionPoint);
+                    var next = ch.Text.Substring(ch.Index.Value + ch.Length - InsertionPoint);
                     var t = prev + text + next;
                     Length += text.Length;
                     var customTextCharacters = new CustomTextCharacters(t, BaseProps, new TextSpan());
-                    if (ch.PrevTextRun is CustomTextCharacters cc0)
-                    {
-                        cc0.NextTextRun = customTextCharacters;
-                    }
+                    if (ch.PrevTextRun is CustomTextCharacters cc0) cc0.NextTextRun = customTextCharacters;
 
                     ch.PrevTextRun = null;
                     ch.NextTextRun = null;
@@ -501,7 +503,6 @@ namespace AnalysisControls
                     //DebugUtils.WriteLine(gp.SyntaxToken.ToString());
                 }
             }
-
         }
     }
 }

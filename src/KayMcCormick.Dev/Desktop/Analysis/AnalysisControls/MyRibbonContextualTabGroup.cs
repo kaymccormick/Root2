@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using KayMcCormick.Dev;
+using NLog;
 
 namespace AnalysisControls
 {
@@ -15,6 +16,14 @@ namespace AnalysisControls
     {
         private TabsEnumerable _tabs;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public Visibility Visibility
+        {
+            get { return (Visibility) GetValue(VisibilityProperty); }
+            set { SetValue(VisibilityProperty, value);}
+        }
         static MyRibbonContextualTabGroup()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbonContextualTabGroup),
@@ -71,17 +80,15 @@ namespace AnalysisControls
         public MyRibbon MyRibbon { get; set; }
 
 
-        private static void OnVisibilityChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-        {
+        // private static void OnVisibilityChan?ged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        // {
 
-            DebugUtils.WriteLine("In onvisibilitychanged from " + e.OldValue + " to " + e.NewValue);
-            ((MyRibbonContextualTabGroup)sender).CoerceTabsVisibility();
-        }
+        // }
 
         private void CoerceTabsVisibility()
         {
             RibbonDebugUtils.DumpPropertySource(this, VisibilityProperty);
-            DebugUtils.WriteLine("Coerce tabs visibility");
+            Logger?.Info("Coerce tabs visibility");
             IEnumerable<MyRibbonTab> tabs = this.Tabs;
             if (tabs == null)
                 return;
@@ -144,6 +151,14 @@ namespace AnalysisControls
         /// <inheritdoc />
         public Guid ControlId { get; } = Guid.NewGuid();
 
+        public Logger Logger { get; set; }
 
+
+        private static void OnVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            DebugUtils.WriteLine("In onvisibilitychanged from " + e.OldValue + " to " + e.NewValue);
+            ((MyRibbonContextualTabGroup)d).CoerceTabsVisibility();
+
+        }
     }
 }

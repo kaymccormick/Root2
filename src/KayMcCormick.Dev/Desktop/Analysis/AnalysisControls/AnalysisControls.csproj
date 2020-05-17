@@ -114,6 +114,7 @@
     <Compile Include="CategoryInfo.cs" />
     <Compile Include="CharacterCell.cs" />
     <Compile Include="ClientModel.cs" />
+    <Compile Include="CodeAnalysisProperties.cs" />
     <Compile Include="CodeControl1.xaml.cs">
       <DependentUpon>CodeControl1.xaml</DependentUpon>
     </Compile>
@@ -121,6 +122,7 @@
     <Compile Include="CodeDiagnostics.cs" />
     <Compile Include="CodeProps.cs" />
     <Compile Include="CodeRenderer.cs" />
+    <Compile Include="CodeRendererVisual.cs" />
     <Compile Include="CodeToolTipContent.cs" />
     <Compile Include="CommandProgress.cs" />
     <Compile Include="Commands\DatabasePopulateCommand.cs" />
@@ -516,6 +518,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\AvalonDock\source\Components\AvalonDock\AvalonDock.csproj">
+      <Project>{11221345-bc85-488c-8e5c-395c0f848682}</Project>
+      <Name>AvalonDock</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</Project>
       <Name>KayMcCormick.Dev</Name>
@@ -529,7 +535,7 @@
       <Name>AnalysisAppLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\FindLogUsages\FindLogUsages.csproj">
-      <Project>{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}</Project>
+      <Project>{bcc116d4-a7b9-4bb8-ae90-5d95e60b41cc}</Project>
       <Name>FindLogUsages</Name>
     </ProjectReference>
   </ItemGroup>
@@ -539,9 +545,6 @@
     </PackageReference>
     <PackageReference Include="CsvHelper.Excel">
       <Version>1.0.6</Version>
-    </PackageReference>
-    <PackageReference Include="Dirkster.AvalonDock">
-      <Version>4.10.0</Version>
     </PackageReference>
     <PackageReference Include="EPPlus">
       <Version>5.1.1</Version>
@@ -589,7 +592,7 @@
       <Version>4.7.1</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
-      <Version>4.7.1</Version>
+      <Version>4.7.2</Version>
     </PackageReference>
     <PackageReference Include="System.Threading.Tasks.Extensions">
       <Version>4.5.4</Version>

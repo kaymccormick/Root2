@@ -27,7 +27,7 @@ namespace AnalysisControls
             PixelsPerDip = pixelsPerDip;
             _typeface = new Typeface(Family, _fontStyle, _fontWeight,
                 _fontStretch);
-            _fontRendering = new FontRendering(EmSize, TextAlignment.Left, new TextDecorationCollection(), Brushes.Blue,
+            _fontRendering = FontRendering.CreateInstance(EmSize, TextAlignment.Left, new TextDecorationCollection(), Brushes.Blue,
                 _typeface);
             BaseProps = new GenericTextRunProperties(
                 _fontRendering,

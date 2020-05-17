@@ -81,6 +81,7 @@
     <Compile Include="AppContext.cs" />
     <Compile Include="AppDbContext.cs" />
     <Compile Include="AppDbContextHelper.cs" />
+    <Compile Include="AppTypeInfoTypeConverter.cs" />
     <Compile Include="CallerInfo.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="CategoryMetadataAttribute.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Props.cs" />
     <Compile Include="Serialization\JsonSymbolConverterFactory.cs" />
     <Compile Include="SToken.cs" />
+    <Compile Include="SyntaxFieldInfoTypeConverter.cs" />
     <Compile Include="SyntaxInfo.cs" />
     <Compile Include="SyntaxTypesService.cs" />
     <Compile Include="TestModel.cs" />
@@ -141,8 +143,6 @@
     <Compile Include="X.cs" />
     <Compile Include="Xaml\TypeMapDictionary.cs" />
     <Compile Include="Xaml\TypeMapDictionary2.cs" />
-    <Compile Include="XmlDoc\AppTypeInfoTypeConverter.cs" />
-    <Compile Include="XmlDoc\AppTypeInfoTypeDescriptionProvider.cs" />
     <Compile Include="ComponentInfo.cs" />
     <Compile Include="Dataflow\AnalysisBlockProvider.cs" />
     <Compile Include="Dataflow\DataflowTransformFuncProvider.cs" />
@@ -185,11 +185,10 @@
     <Compile Include="Span\TokenSpanObject.cs" />
     <Compile Include="Span\TriviaSpanObject.cs" />
     <Compile Include="Syntax\Ext.cs" />
-    <Compile Include="XmlDoc\SyntaxFieldInfoTypeConverter.cs" />
     <Compile Include="TypeWriter.cs" />
     <Compile Include="UnrecognizedElementException.cs" />
     <Compile Include="ViewModel\CacheTargetViewModel.cs" />
-    <Compile Include="XmlDoc\CodeAnalyseContext.cs" />
+    <Compile Include="CodeAnalyseContext.cs" />
     <Compile Include="ICodeAnalyseContext.cs" />
     <Compile Include="ICompilationUnitRootContext.cs" />
     <Compile Include="ISemanticModelContext.cs" />
@@ -222,7 +221,7 @@
       <Name>KayMcCormick.Dev</Name>
     </ProjectReference>
     <ProjectReference Include="..\FindLogUsages\FindLogUsages.csproj">
-      <Project>{BCC116D4-A7B9-4BB8-AE90-5D95E60B41CC}</Project>
+      <Project>{bcc116d4-a7b9-4bb8-ae90-5d95e60b41cc}</Project>
       <Name>FindLogUsages</Name>
     </ProjectReference>
   </ItemGroup>
@@ -279,7 +278,7 @@
       <Version>1.7.0</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
-      <Version>4.7.1</Version>
+      <Version>4.7.2</Version>
     </PackageReference>
     <PackageReference Include="System.Threading.Tasks.Dataflow">
       <Version>4.11.0</Version>

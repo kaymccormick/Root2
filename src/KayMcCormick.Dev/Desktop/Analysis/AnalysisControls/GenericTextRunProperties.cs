@@ -59,7 +59,8 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="newRender"></param>
         /// <param name="pixelsPerDip"></param>
-        public GenericTextRunProperties(FontRendering newRender, double pixelsPerDip)
+        public GenericTextRunProperties(FontRendering newRender, 
+            double pixelsPerDip)
         {
             _typeface = newRender.Typeface;
             _emSize = newRender.FontSize;

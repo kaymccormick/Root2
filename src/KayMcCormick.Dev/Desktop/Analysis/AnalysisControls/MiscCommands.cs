@@ -11,7 +11,6 @@ using System.Xml;
 using System.Xml.Linq;
 using AnalysisAppLib;
 using AnalysisAppLib.Syntax;
-using AnalysisAppLib.XmlDoc;
 using AnalysisControls.ViewModel;
 using Autofac;
 using Autofac.Core;

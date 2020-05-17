@@ -1186,8 +1186,8 @@ namespace ConsoleAnalysis
                     DebugUtils.WriteLine (
                                           "\n***\n"
                                           + classContainerDecl
-                                           .NormalizeWhitespace ( )
-                                           .ToFullString ( )
+                                              .NormalizeWhitespace ( )
+                                              .ToFullString ( )
                                           + "\n****\n"
                                          ) ;
                 }
@@ -1472,8 +1472,8 @@ namespace ConsoleAnalysis
                                                                         ) ;
                     DebugUtils.WriteLine (
                                           propertyDeclarationSyntax
-                                             .NormalizeWhitespace ( )
-                                             .ToFullString ( )
+                                              .NormalizeWhitespace ( )
+                                              .ToFullString ( )
                                          ) ;
                     members = members.Add ( propertyDeclarationSyntax ) ;
                 }

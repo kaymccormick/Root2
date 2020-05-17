@@ -32,7 +32,7 @@ namespace AnalysisControls
             var pixelsPerDip = PixelsPerDip;
             FormattingHelper.UpdateFormattedText(OutputWidth, ref currentRendering, EmSize, Typeface, _textDest,
                 TextSource,
-                pixelsPerDip, LineInfos, RegionInfoList, ref maxX, out var maxY, null, new GenericTextParagraphProperties(currentRendering, pixelsPerDip));
+                pixelsPerDip, LineInfos, RegionInfoList, ref maxX, out var maxY, null, new GenericTextParagraphProperties(currentRendering, pixelsPerDip), null);
             MaxX = maxX;
             MaxY = maxY;
             _rectangle.Width = maxX;

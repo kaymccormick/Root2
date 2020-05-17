@@ -254,8 +254,7 @@ namespace AnalysisControls
             get
             {
                 if (_currentRendering == null)
-                    _currentRendering = new FontRendering(
-                        EmSize,
+                    _currentRendering = FontRendering.CreateInstance(EmSize,
                         TextAlignment.Left,
                         null,
                         Brushes.Black,
@@ -597,7 +596,7 @@ namespace AnalysisControls
 
                 myTextLine.Draw(dc, lineCtx.LineOriginPoint, InvertAxes.None);
                 var regions = new List<RegionInfo>();
-                FormattingHelper.HandleTextLine(regions, ref lineCtx, dc, out var lineI);
+                FormattingHelper.HandleTextLine(regions, ref lineCtx, out var lineI, null);
                 InsertionLine = lineI;
             }
 
@@ -707,8 +706,7 @@ namespace AnalysisControls
             if (CurrentRendering == null)
             {
                 EmSize = (double) _rectangle.GetValue(TextElement.FontSizeProperty);
-                CurrentRendering = new FontRendering(
-                    EmSize,
+                CurrentRendering = FontRendering.CreateInstance(EmSize,
                     TextAlignment.Left,
                     null,
                     Brushes.Black,

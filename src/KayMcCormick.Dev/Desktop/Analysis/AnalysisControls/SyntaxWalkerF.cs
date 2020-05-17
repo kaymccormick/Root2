@@ -68,7 +68,7 @@ namespace AnalysisControls
 
         private void DoTrivia(SyntaxTrivia syntaxTrivia)
         {
-            DebugUtils.WriteLine("At " + CSharpExtensions.Kind(syntaxTrivia).ToString());
+            DebugUtils.WriteLine("At " + CSharpExtensions.Kind(syntaxTrivia).ToString(), DebugCategory.Syntax);
             if (syntaxTrivia.HasStructure)
             {
                 var w = new TriviaWalker(_lrun, _source3, _takeTextRun, _propertiesFunc,
@@ -158,18 +158,18 @@ namespace AnalysisControls
             // {
                 // DoTrivia(syntaxTrivia);
             // }
-            DebugUtils.WriteLine($"At {CSharpExtensions.Kind(node)}");
+            DebugUtils.WriteLine($"At {CSharpExtensions.Kind(node)}", DebugCategory.Syntax);
             var l = node.GetLocation();
             var s1 = l.SourceSpan.Start;
             var pos = CurPos;
 
             if (s1 < CurPos)
             {
-                DebugUtils.WriteLine($"Skipping {CurPos - s1} characters");
+                DebugUtils.WriteLine($"Skipping {CurPos - s1} characters", DebugCategory.Syntax);
             }
             if (CurPos > s1)
             {
-                DebugUtils.WriteLine("Position mismatch");
+                DebugUtils.WriteLine("Position mismatch", DebugCategory.Syntax);
                 int end = 0;
                 for (int i = 0; i < _lrun.Count; i++)
                 {
@@ -182,7 +182,7 @@ namespace AnalysisControls
                         span = ctc.Span;
                         if (end != span.Start)
                         {
-                            DebugUtils.WriteLine($"{end} !- {span.Start}");
+                            DebugUtils.WriteLine($"{end} !- {span.Start}", DebugCategory.Syntax);
                             throw new InvalidOperationException();
                         }
                         
@@ -193,7 +193,7 @@ namespace AnalysisControls
                         throw new InvalidOperationException();
                     }
                     
-                    DebugUtils.WriteLine($"{index} [{span}] " + textRun.Length.ToString() + $" {textRun}");
+                    DebugUtils.WriteLine($"{index} [{span}] " + textRun.Length.ToString() + $" {textRun}", DebugCategory.Syntax);
                 }   
 
                 throw new InvalidOperationException($"{CurPos} is not {s1}");
@@ -351,7 +351,7 @@ namespace AnalysisControls
 
         private void DoTrivia(SyntaxTrivia syntaxTrivia)
         {
-            DebugUtils.WriteLine("At " + CSharpExtensions.Kind(syntaxTrivia).ToString());
+            DebugUtils.WriteLine("At " + CSharpExtensions.Kind(syntaxTrivia).ToString(), DebugCategory.Syntax);
             if (syntaxTrivia.HasStructure)
             {
                 var w = new TriviaWalkerVb(_lrun, _source3, _takeTextRun, _propertiesFunc,
@@ -441,18 +441,18 @@ namespace AnalysisControls
             // {
             // DoTrivia(syntaxTrivia);
             // }
-            DebugUtils.WriteLine($"At {CSharpExtensions.Kind(node)}");
+            DebugUtils.WriteLine($"At {CSharpExtensions.Kind(node)}", DebugCategory.Syntax);
             var l = node.GetLocation();
             var s1 = l.SourceSpan.Start;
             var pos = CurPos;
 
             if (s1 < CurPos)
             {
-                DebugUtils.WriteLine($"Skipping {CurPos - s1} characters");
+                DebugUtils.WriteLine($"Skipping {CurPos - s1} characters", DebugCategory.Syntax);
             }
             if (CurPos > s1)
             {
-                DebugUtils.WriteLine("Position mismatch");
+                DebugUtils.WriteLine("Position mismatch", DebugCategory.Syntax);
                 int end = 0;
                 for (int i = 0; i < _lrun.Count; i++)
                 {
@@ -465,7 +465,7 @@ namespace AnalysisControls
                         span = ctc.Span;
                         if (end != span.Start)
                         {
-                            DebugUtils.WriteLine($"{end} !- {span.Start}");
+                            DebugUtils.WriteLine($"{end} !- {span.Start}", DebugCategory.Syntax);
                             throw new InvalidOperationException();
                         }
 
@@ -476,7 +476,7 @@ namespace AnalysisControls
                         throw new InvalidOperationException();
                     }
 
-                    DebugUtils.WriteLine($"{index} [{span}] " + textRun.Length.ToString() + $" {textRun}");
+                    DebugUtils.WriteLine($"{index} [{span}] " + textRun.Length.ToString() + $" {textRun}", DebugCategory.Syntax);
                 }
 
                 throw new InvalidOperationException($"{CurPos} is not {s1}");

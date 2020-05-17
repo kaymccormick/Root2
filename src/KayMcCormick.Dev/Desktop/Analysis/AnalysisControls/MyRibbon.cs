@@ -26,6 +26,7 @@ namespace AnalysisControls
         {
             base.OnApplyTemplate();
             MyContextualTabGroupItemsControl = GetTemplateChild("PART_ContextualTabGroupItemsControl") as MyRibbonContextualTabGroupItemsControl;
+            MyContextualTabGroupItemsControl.Logger = Logger;
             _contextualTabGroupItemsControl =
                 GetTemplateChild("PART_ContextualTabGroupItemsControl") as RibbonContextualTabGroupItemsControl;
         }

@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows.Markup;
 using AnalysisAppLib;
 using AnalysisAppLib.Syntax;
-using AnalysisAppLib.XmlDoc;
 using AnalysisControls.ViewModel;
 using Autofac;
 using JetBrains.Annotations;

@@ -303,7 +303,7 @@ namespace AnalysisControls
             var tf =
                 new Typeface(_fontFamily, _fontStyle, _fontWeight,
                     _fontStretch);
-            var fontRendering = new FontRendering(_emSize, TextAlignment.Left, new TextDecorationCollection(), Brushes.Blue, tf);
+            var fontRendering = FontRendering.CreateInstance(_emSize, TextAlignment.Left, new TextDecorationCollection(), Brushes.Blue, tf);
             var xx = new GenericTextRunProperties(
                 fontRendering,
                 PixelsPerDip);

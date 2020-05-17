@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using AnalysisAppLib;
 using AnalysisAppLib.Syntax;
-using AnalysisAppLib.XmlDoc;
 using AnalysisControls;
 using AnalysisControls.ViewModel;
 using Autofac;

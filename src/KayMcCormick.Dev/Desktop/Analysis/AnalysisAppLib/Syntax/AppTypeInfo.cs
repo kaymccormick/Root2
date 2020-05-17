@@ -10,7 +10,6 @@ using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Windows.Markup;
-using AnalysisAppLib.XmlDoc;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -20,7 +19,6 @@ namespace AnalysisAppLib.Syntax
     ///     <para>Represents a Syntax Node type in the application.</para>
     ///     <para></para>
     /// </summary>
-    [TypeDescriptionProvider(typeof(AppTypeInfoTypeDescriptionProvider))]
     [TypeConverter(typeof(AppTypeInfoTypeConverter))]
     public sealed class AppTypeInfo : INotifyPropertyChanged
 

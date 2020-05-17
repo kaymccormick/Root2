@@ -32,8 +32,7 @@ namespace AnalysisControls
 
                 if (_currentRendering == null)
                 {
-                    _currentRendering = new FontRendering(
-                        EmSize,
+                    _currentRendering = FontRendering.CreateInstance(EmSize,
                         TextAlignment.Left,
                         null,
                         Brushes.Black,
@@ -195,7 +194,7 @@ namespace AnalysisControls
             double pixelsPerDip = PixelsPerDip;
             FormattingHelper.UpdateFormattedText(OutputWidth, ref currentRendering, EmSize, Typeface, _textDest,
                 Store,
-                pixelsPerDip, LineInfos, Infos, ref maxX, out var maxY, null, new GenericTextParagraphProperties(currentRendering, pixelsPerDip));
+                pixelsPerDip, LineInfos, Infos, ref maxX, out var maxY, null, new GenericTextParagraphProperties(currentRendering, pixelsPerDip), null);
             MaxX = maxX;
             MaxY = maxY;
             _rectangle.Width = maxX;

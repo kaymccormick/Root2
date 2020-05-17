@@ -10,41 +10,55 @@
 // ---
 #endregion
 
-using System ;
-using System.Linq ;
-using Microsoft.CodeAnalysis ;
-using Microsoft.CodeAnalysis.CSharp ;
-using Microsoft.CodeAnalysis.CSharp.Syntax ;
-using NLog ;
+using System;
+using System.Linq;
+using JetBrains.Annotations;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NLog;
 
 namespace AnalysisAppLib
 {
-    internal class CodeAnalyseContext : ICodeAnalyseContext
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class CodeAnalyseContext : ICodeAnalyseContext
     {
         public delegate ISyntaxTreeContext Factory1 ( string code , string assemblyName ) ;
 
-        private static Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        // ReSharper disable once UnusedMember.Local
+        private static Logger _logger = LogManager.GetCurrentClassLogger ( ) ;
 
         private readonly string                         _assemblyName ;
         private readonly Lazy < CompilationUnitSyntax > _lazy ;
 
-        protected SemanticModel _currentModel ;
+        private SemanticModel _currentModel ;
 
-        protected StatementSyntax _statement ;
+        // ReSharper disable once NotAccessedField.Local
+        private StatementSyntax _statement ;
+        public CSharpCompilation Compilation { get; }
 
-        protected SyntaxNode node ;
+        private SyntaxNode _node ;
 
-
-        public CodeAnalyseContext (
-            SemanticModel   currentModel
-          , StatementSyntax statement
-          , SyntaxNode      node
-          , SyntaxTree      syntaxTree
-          , string          assemblyName
-        ) : this ( assemblyName )
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="currentModel"></param>
+        /// <param name="statement"></param>
+        /// <param name="node"></param>
+        /// <param name="syntaxTree"></param>
+        /// <param name="assemblyName"></param>
+        /// <param name="compilation"></param>
+        public CodeAnalyseContext(SemanticModel currentModel
+            , StatementSyntax statement
+            , SyntaxNode node
+            , SyntaxTree syntaxTree
+            , string assemblyName, CSharpCompilation compilation) : this ( assemblyName )
         {
             _currentModel = currentModel ;
             _statement    = statement ;
+            Compilation = compilation;
             Node          = node ;
 
             SyntaxTree = syntaxTree ;
@@ -57,13 +71,7 @@ namespace AnalysisAppLib
             _lazy         = new Lazy < CompilationUnitSyntax > ( ValueFactory ) ;
         }
 
-        public StatementSyntax Statement
-        {
-            get { return _statement ; }
-            set { _statement = value ; }
-        }
-
-        public SyntaxNode Node { get { return node ; } set { node = value ; } }
+        public SyntaxNode Node { get { return _node ; } set { _node = value ; } }
 
 
         public SemanticModel CurrentModel
@@ -91,20 +99,22 @@ namespace AnalysisAppLib
                 $"{nameof ( _assemblyName )}: {_assemblyName}, {nameof ( _currentModel )}: {_currentModel}, {nameof ( CompilationUnit )}: {CompilationUnit.DescendantNodes ( ).Count ( )} nodes" ;
         }
 
+        [ NotNull ]
         public static ISyntaxTreeContext FromSyntaxTree (
-            SyntaxTree               tree
-          , string                   assemblyName
+            [ NotNull ] SyntaxTree               tree
+          , [ NotNull ] string                   assemblyName
           , CSharpCompilationOptions opts = null
         )
         {
-            var comp = AnalysisService.CreateCompilation ( assemblyName , tree ) ;
+            var comp = AnalysisService.CreateCompilation ( assemblyName , tree, true) ;
             return AnalysisService.CreateFromCompilation ( tree , comp ) ;
             // return new CodeAnalyseContext(comp.GetSemanticModel(tree), tree.GetCompilationUnitRoot(), null, tree.GetRoot(), new CodeSource("memory"), tree);
         }
 
+        [ NotNull ]
         public static ISyntaxTreeContext FromSyntaxNode (
-            SyntaxNode               node
-          , string                   assemblyName
+            [ NotNull ] SyntaxNode               node
+          , [ NotNull ] string                   assemblyName
           , CSharpCompilationOptions opts = null
         )
         {
@@ -118,6 +128,7 @@ namespace AnalysisAppLib
 
         public CompilationUnitSyntax Lazy { get { return _lazy.Value ; } }
 
+        [ NotNull ]
         private CompilationUnitSyntax ValueFactory ( )
         {
             return SyntaxTree.GetCompilationUnitRoot ( ) ;

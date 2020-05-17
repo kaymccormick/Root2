@@ -263,5 +263,6 @@ namespace AnalysisControls
                 return this.ContextualTabGroupHeader != null;
             }
         }
+
     }
 }

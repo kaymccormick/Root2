@@ -249,8 +249,7 @@ namespace AnalysisControls
             //Set up the initial render state of the drawn text.
             if (_currentRendering == null)
             {
-                _currentRendering = new FontRendering(
-                    (double)12,//fontSizeCB.SelectedItem,
+                _currentRendering = FontRendering.CreateInstance((double)12,//fontSizeCB.SelectedItem,
                     TextAlignment.Left,
                     null,
                     System.Windows.Media.Brushes.Black,

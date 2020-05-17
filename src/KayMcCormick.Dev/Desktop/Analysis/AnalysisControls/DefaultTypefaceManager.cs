@@ -86,7 +86,7 @@ namespace AnalysisControls
         public FontRendering GetRendering(double emSize, TextAlignment left, TextDecorationCollection textDecorationCollection,
             Brush brush, Typeface typeface)
         {
-            return new FontRendering();
+            return FontRendering.CreateInstance(emSize, left, textDecorationCollection, brush, typeface);
         }
     }
 }

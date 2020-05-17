@@ -9,32 +9,43 @@ namespace AnalysisControls.RibbonModel
     /// <summary>
     /// 
     /// </summary>
-    public class RibbonModelContextualTabGroup : DependencyObject, INotifyPropertyChanged
+    public class RibbonModelContextualTabGroup : INotifyPropertyChanged
     {
-        private Visibility _visibility = Visibility.Collapsed;
-        public string Header { get; set; }
+        private Visibility _visibility;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Visibility Visibility
         {
-            get
-            {
-                DebugUtils.WriteLine("requested visiblity");
-                return _visibility;
-            }
+            get { return _visibility; }
             set
             {
+                DebugUtils.WriteLine("Visibility setter (value = " + value +   ")");
                 if (value == _visibility) return;
-                DebugUtils.WriteLine($"Setting visibility to {value}");
                 _visibility = value;
                 OnPropertyChanged();
             }
         }
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Header { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         [Browsable(false)]
         public PrimaryRibbonModel RibbonModel { get; set; }
 
+        /// <inheritdoc />
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="propertyName"></param>
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

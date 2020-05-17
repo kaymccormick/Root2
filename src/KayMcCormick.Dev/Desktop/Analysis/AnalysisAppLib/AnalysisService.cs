@@ -15,7 +15,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using AnalysisAppLib.Properties ;
-using AnalysisAppLib.XmlDoc ;
 using JetBrains.Annotations ;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;

@@ -80,7 +80,7 @@ namespace AnalysisControls
                 Typeface, iterationDrawingGroup,
                 Store,
                 pixelsPerDip, lineInfos, null, ref maxX, out var maxY, TextLineAction, _myDrawingBrush,
-                new Rect(0, 0, maxX, MaxY), _textFormatter, _lineContext, ParaProps);
+                new Rect(0, 0, maxX, MaxY), _textFormatter, _lineContext, ParaProps, null);
             _textDest.Children.Add(iterationDrawingGroup);
             if (_updatedTabs)
             {
@@ -231,8 +231,7 @@ namespace AnalysisControls
 
                 if (_currentRendering == null)
                 {
-                    _currentRendering = new FontRendering(
-                        EmSize,
+                    _currentRendering = FontRendering.CreateInstance(EmSize,
                         TextAlignment.Left,
                         null,
                         Brushes.Black,
@@ -406,7 +405,7 @@ namespace AnalysisControls
 
             _lineContext = FormattingHelper.UpdateFormattedText(OutputWidth, ref currentRendering, EmSize, Typeface, _textDest,
                 Store,
-                pixelsPerDip, LineInfos, Infos, ref maxX, out var maxY, TextLineAction, genericTextParagraphPropertiesImpl);
+                pixelsPerDip, LineInfos, Infos, ref maxX, out var maxY, TextLineAction, genericTextParagraphPropertiesImpl, null);
 
             if (!updatedTabs && _updatedTabs)
             {

@@ -17,8 +17,10 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class FormattingHelper
+    public static class FormattingHelper
     {
+        private static TextFormatter Formatter = TextFormatter.Create();
+
         /// <summary>
         /// 
         /// </summary>
@@ -36,28 +38,54 @@ namespace AnalysisControls
         /// <param name="maxY"></param>
         /// <param name="textLineAction"></param>
         /// <param name="paragraphProperties"></param>
-        public static LineContext UpdateFormattedText(double width, ref FontRendering currentRendering, double emSize,
-            [NotNull] Typeface typeface, DrawingGroup textDest, AppTextSource textStore, double pixelsPerDip,
-            IList<LineInfo> lineInfos, List<RegionInfo> infos, ref double maxX, out double maxY,
-            Action<TextLine, LineContext> textLineAction, TextParagraphProperties paragraphProperties)
+        /// <param name="drawer"></param>
+        public static LineContext UpdateFormattedText(double width,
+            [NotNull] ref FontRendering currentRendering,
+            double emSize,
+            [NotNull] Typeface typeface,
+            DrawingGroup textDest,
+            AppTextSource textStore,
+            double pixelsPerDip,
+            IList<LineInfo> lineInfos,
+            List<RegionInfo> infos,
+            ref double maxX,
+            out double maxY,
+            Action<TextLine, LineContext> textLineAction,
+            TextParagraphProperties paragraphProperties, [NotNull] ILineDrawer drawer)
         {
-            if (typeface == null) throw new ArgumentNullException(nameof(typeface));
+            if (currentRendering == null) throw new ArgumentNullException(nameof(currentRendering));
+            if (drawer == null) throw new ArgumentNullException(nameof(drawer));
+            DebugUtils.WriteLine(nameof(UpdateFormattedText));
+            if (typeface == null)
+            {
+                DebugUtils.WriteLine($"Null argument typeface");
+                throw new ArgumentNullException(nameof(typeface));
+            }
+
             if (currentRendering == null)
-                currentRendering = new FontRendering(
-                    emSize,
+            {
+                DebugUtils.WriteLine($"Current rendering null, initializing new");
+                currentRendering = FontRendering.CreateInstance(emSize,
                     TextAlignment.Left,
                     null,
                     Brushes.Black,
                     typeface);
+            }
 
-            var dc0 = textDest.Open();
+            var lineContext = new LineContext();
 
-            var formatter = TextFormatter.Create();
+            drawer.PrepareDrawLines(lineContext);
+            //var dc0 = textDest.Open();
+            DebugUtils.WriteLine("Opened drawing group");
+
+            var formatter = Formatter;
 
             // Format each line of text from the text store and draw it.
             TextLineBreak prev = null;
             var pos = new Point(0, 0);
-            var lineContext = new LineContext();
+
+
+            DebugUtils.WriteLine($"Text source length is {textStore.Length}");
 
             while (lineContext.TextStorePosition < textStore.Length)
             {
@@ -72,12 +100,13 @@ namespace AnalysisControls
                     textLineAction?.Invoke(myTextLine, lineContext);
                     lineContext.LineParts.Clear();
                     lineContext.MyTextLine = myTextLine;
-                    HandleTextLine(infos, ref lineContext, dc0, out var lineInfo);
+                    HandleTextLine(infos, ref lineContext, out var lineInfo, drawer);
                     lineInfos.Add(lineInfo);
                 }
             }
 
-            dc0.Close();
+            drawer.EndDrawLines(lineContext);
+
             maxX = lineContext.MaxX;
             maxY = lineContext.MaxY;
             return lineContext;
@@ -109,13 +138,13 @@ namespace AnalysisControls
             double emSize,
             [NotNull] Typeface typeface, DrawingGroup textDest, AppTextSource textStore, double pixelsPerDip,
             IList<LineInfo> lineInfos, List<RegionInfo> infos, ref double maxX, out double maxY,
-            Action<TextLine, LineContext> textLineAction, DrawingBrush brush, Rect existingRect, TextFormatter formatter,
-            LineContext lineContext, TextParagraphProperties paragraphProperties)
+            Action<TextLine, LineContext> textLineAction, DrawingBrush brush, Rect existingRect,
+            TextFormatter formatter,
+            LineContext lineContext, TextParagraphProperties paragraphProperties, ILineDrawer lineDrawer)
         {
             if (typeface == null) throw new ArgumentNullException(nameof(typeface));
             if (currentRendering == null)
-                currentRendering = new FontRendering(
-                    emSize,
+                currentRendering = FontRendering.CreateInstance(emSize,
                     TextAlignment.Left,
                     null,
                     Brushes.Black,
@@ -145,7 +174,7 @@ namespace AnalysisControls
                     textLineAction?.Invoke(myTextLine, lineContext);
                     lineContext.LineParts.Clear();
                     lineContext.MyTextLine = myTextLine;
-                    HandleTextLine(infos, ref lineContext, dc0, out var lineInfo);
+                    HandleTextLine(infos, ref lineContext, out var lineInfo, lineDrawer);
                     lineInfos.Add(lineInfo);
                 }
             }
@@ -156,16 +185,15 @@ namespace AnalysisControls
             return lineContext;
         }
 
-     
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="infos"></param>
         /// <param name="lineContext"></param>
-        /// <param name="dc"></param>
         /// <param name="lineInfo"></param>
-        public static void HandleTextLine(List<RegionInfo> infos, ref LineContext lineContext, DrawingContext dc,
-            out LineInfo lineInfo)
+        public static void HandleTextLine(List<RegionInfo> infos, ref LineContext lineContext,
+            out LineInfo lineInfo, ILineDrawer drawer)
         {
             lineContext.LineParts.Clear();
             lineContext.TextLineAction?.Invoke(lineContext.MyTextLine);
@@ -190,11 +218,11 @@ namespace AnalysisControls
             var regionOffset = lineContext.TextStorePosition;
 
             var eol = lineContext.MyTextLine.GetTextRunSpans().Select(xx => xx.Value).OfType<TextEndOfLine>();
-            if (eol.Any())
-                dc.DrawRectangle(Brushes.Aqua, null,
-                    new Rect(
-                        lineContext.LineOriginPoint.X + lineContext.MyTextLine.WidthIncludingTrailingWhitespace + 2,
-                        lineContext.LineOriginPoint.Y + 2, 10, 10));
+            // if (eol.Any())
+            // dc.DrawRectangle(Brushes.Aqua, null,
+            // new Rect(
+            // lineContext.LineOriginPoint.X + lineContext.MyTextLine.WidthIncludingTrailingWhitespace + 2,
+            // lineContext.LineOriginPoint.Y + 2, 10, 10));
             DebugUtils.WriteLine("no end of line");
             CharacterCell prevCell = null;
             foreach (var textRunSpan in lineContext.MyTextLine.GetTextRunSpans())
@@ -232,15 +260,15 @@ namespace AnalysisControls
                     var cellBounds =
                         new List<CharacterCell>();
                     var renderingEmSize = rectGlyphRun.FontRenderingEmSize;
-                    
+
                     for (var i = 0; i < rectGlyphRun.Characters.Count; i++)
                     {
                         var advanceWidth = rectGlyphRun.AdvanceWidths[i];
                         size.Width += advanceWidth;
                         var gi = rectGlyphRun.GlyphIndices[i];
                         var c = rectGlyphRun.Characters[i];
-			DebugUtils.WriteLine($"[{characterOffset}] char: " + c);
-                        
+                        DebugUtils.WriteLine($"[{characterOffset}] char: " + c);
+
                         var advWidth = rectGlyphRun.GlyphTypeface.AdvanceWidths[gi];
                         var advHeight = rectGlyphRun.GlyphTypeface.AdvanceHeights[gi];
 
@@ -297,6 +325,7 @@ namespace AnalysisControls
                             SyntaxToken = token,
                             Trivia = trivia
                         };
+
                         DebugUtils.WriteLine(tuple.ToString());
                         lineRegions.Add(tuple);
                         infos?.Add(tuple);
@@ -310,8 +339,11 @@ namespace AnalysisControls
             DebugUtils.WriteLine("Handled line of text: " + lineInfo.Text);
             lineInfo.Regions = lineRegions;
 
+
             DebugUtils.WriteLine($"Drawing text line at origin {lineContext.LineOriginPoint}");
-            lineContext.MyTextLine.Draw(dc, lineContext.LineOriginPoint, InvertAxes.None);
+            drawer.DrawLine(lineContext);
+            //lineContext.MyTextLine.Draw(dc, lineContext.LineOriginPoint, InvertAxes.None);
+
             // ReSharper disable once UnusedVariable
             var p = new Point(lineContext.LineOriginPoint.X + lineContext.MyTextLine.WidthIncludingTrailingWhitespace,
                 lineContext.LineOriginPoint.Y);
@@ -321,7 +353,7 @@ namespace AnalysisControls
             lineContext.LineNumber++;
 
             // Update the index position in the text store.
-	    DebugUtils.WriteLine("line is length " + lineContext.MyTextLine.Length);
+            DebugUtils.WriteLine("line is length " + lineContext.MyTextLine.Length);
             lineContext.TextStorePosition += lineContext.MyTextLine.Length;
             DebugUtils.WriteLine($"New text store position {lineContext.TextStorePosition}");
             // Update the line position coordinate for the displayed line.
@@ -411,5 +443,14 @@ namespace AnalysisControls
             store.Init();
             return store;
         }
+    }
+
+    public interface ILineDrawer
+    {
+        void PrepareDrawLines(LineContext lineContext);
+        void PrepareDrawLine(LineContext lineContext);
+        void DrawLine(LineContext lineContext);
+
+        void EndDrawLines(LineContext lineContext);
     }
 }

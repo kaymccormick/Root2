@@ -47,9 +47,12 @@ using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
+using System.Windows.Markup;
+using System.Windows.Markup.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.TextFormatting;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xaml;
 using System.Xml;
@@ -58,10 +61,16 @@ using AnalysisAppLib;
 using AnalysisAppLib.Serialization;
 using AnalysisAppLib.Syntax;
 using AnalysisControls;
+using AnalysisControls.Commands;
+using AnalysisControls.Converters;
 using AnalysisControls.Properties;
+using AnalysisControls.Ribb.Definition;
 using AnalysisControls.RibbonModel;
+using AnalysisControls.RibbonModel.ContextualTabGroups;
+using AnalysisControls.RibbonModel.Definition;
 using AnalysisControls.ViewModel;
 using Autofac;
+using Autofac.Features.AttributeFilters;
 using AvalonDock;
 using AvalonDock.Layout;
 using Castle.DynamicProxy;
@@ -71,13 +80,13 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Application;
 using KayMcCormick.Dev.Command;
+using KayMcCormick.Dev.Container;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Dev.TestLib;
 using KayMcCormick.Dev.TestLib.Fixtures;
 using KayMcCormick.Lib.Wpf;
 using KayMcCormick.Lib.Wpf.Command;
 using KayMcCormick.Lib.Wpf.JSON;
-using KayMcCormick.Lib.Wpf.View;
 using KayMcCormick.Lib.Wpf.ViewModel;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -86,6 +95,7 @@ using Moq;
 using NLog;
 using Xunit;
 using Xunit.Abstractions;
+using static AnalysisControls.UiElementTypeConverter;
 using Binding = System.Windows.Data.Binding;
 using Button = System.Windows.Controls.Button;
 using ColorConverter = System.Windows.Media.ColorConverter;
@@ -97,7 +107,7 @@ using MethodInfo = System.Reflection.MethodInfo;
 using Orientation = System.Windows.Controls.Orientation;
 using Process = System.Diagnostics.Process;
 using RegionInfo = AnalysisControls.RegionInfo;
-
+using String = System.String;
 using TextBlock = System.Windows.Controls.TextBlock;
 using Window = System.Windows.Window;
 using XamlReader = System.Windows.Markup.XamlReader;
@@ -155,7 +165,9 @@ namespace ProjTests
 #pragma warning restore 169
 
         private JsonSerializerOptions _testJsonSerializerOptions;
-        private string solutionPath = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\ManagedProd.sln";
+
+        private string solutionPath =
+            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\ManagedProd.sln";
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests(
@@ -544,15 +556,7 @@ namespace ProjTests
                     >();
 
 
-                var m = new DockingManager();
-
-                var pane = new LayoutDocumentPane();
-
-                var group = new LayoutDocumentPaneGroup(pane);
-
-                var mLayoutRootPanel = new LayoutPanel(group);
-                var layout = new LayoutRoot {RootPanel = mLayoutRootPanel};
-                m.Layout = layout;
+                var m = CreateDockingManager(out var pane, out var @group, out var mLayoutRootPanel, out var layout);
                 Window w = new AppWindow(lifetimeScope);
                 w.Content = m;
 
@@ -590,6 +594,22 @@ namespace ProjTests
                 // Task.WaitAll ( x.TCS.Task ) ;
                 // DebugUtils.WriteLine ( source.Task.Result ) ;
             }
+        }
+
+        private static DockingManager CreateDockingManager(out LayoutDocumentPane pane,
+            out LayoutDocumentPaneGroup @group,
+            out LayoutPanel mLayoutRootPanel, out LayoutRoot layout)
+        {
+            var m = new DockingManager();
+
+            pane = new LayoutDocumentPane();
+
+            @group = new LayoutDocumentPaneGroup(pane);
+
+            mLayoutRootPanel = new LayoutPanel(@group);
+            layout = new LayoutRoot {RootPanel = mLayoutRootPanel};
+            m.Layout = layout;
+            return m;
         }
 
         [WpfFact]
@@ -1093,10 +1113,10 @@ namespace ProjTests
                 // ReSharper disable once UnusedVariable
                 var read = s.Read(bytes, 0, sLength);
 
-                var view = scope.Resolve<EventLogView>();
-                Assert.NotNull(view.ViewModel);
-                var w = new Window {Content = view};
-                w.ShowDialog();
+                // var view = scope.Resolve<EventLogView>();
+                // Assert.NotNull(view.ViewModel);
+                // var w = new Window {Content = view};
+                // w.ShowDialog();
             }
         }
 
@@ -1734,17 +1754,16 @@ namespace ProjTests
             var OutputWidth = 800;
             var Typeface = new Typeface("Courier New");
 
-            var CurrentRendering = new FontRendering(
-                EmSize,
+            var CurrentRendering = FontRendering.CreateInstance(EmSize,
                 TextAlignment.Left,
                 null,
                 Brushes.Black,
                 Typeface);
             double maxX = 0;
-            
+
             var line = 0;
-            
-            
+
+
             var group = new DrawingGroup();
             var dc = group.Open();
 
@@ -1759,11 +1778,10 @@ namespace ProjTests
                     new GenericTextParagraphProperties(CurrentRendering, PixelsPerDip),
                     null))
                 {
-
                     var infos = new List<RegionInfo>();
                     context.MyTextLine = myTextLine;
-                    FormattingHelper.HandleTextLine(infos, ref context, dc, out var lineInfo);
-                    
+                    FormattingHelper.HandleTextLine(infos, ref context, out var lineInfo, null);
+
                     allLineInfos.Add(lineInfo);
                 }
 
@@ -1809,17 +1827,19 @@ namespace ProjTests
         {
             ProjTestsHelper.TestSyntaxControl(new FormattedTextControl());
         }
+
         [WpfFact]
         public void TestFormattedControlVb()
         {
             ProjTestsHelper.TestSyntaxControlVb(new FormattedTextControl());
         }
+
         [WpfFact]
         public void TestSymbolControl()
         {
             Main1Model.SelectVsInstance();
-            Main1Model model  = new Main1Model();
-            model.LoadSolution(solutionPath).ContinueWith(async task =>
+            var model = new Main1Model();
+            model.LoadSolutionAsync(solutionPath).ContinueWith(async task =>
             {
                 var resources = ProjTestsHelper.ControlsResources();
                 // var control = new SymbolTextControl();
@@ -1829,21 +1849,17 @@ namespace ProjTests
                 // control.HorizontalAlignment = HorizontalAlignment.Stretch;
                 //                var tree = ProjTestsHelper.SetupSyntaxParams(out var compilation);
 
-                List<ISymbol> symbols= new List<ISymbol>();
+                var symbols = new List<ISymbol>();
                 foreach (var proj in model.Workspace.CurrentSolution.Projects)
                 {
                     var comp = await proj.GetCompilationAsync();
-                    foreach (var symbol in comp.GetSymbolsWithName(x => true))
-                    {
-                        
-                        symbols.Add(symbol);
-                    }
+                    foreach (var symbol in comp.GetSymbolsWithName(x => true)) symbols.Add(symbol);
                 }
                 // var q = sm.Select(z => Tuple.Create(z, z.ToDisplayParts(SymbolDisplayFormat.MinimallyQualifiedFormat)))
                 // .OrderByDescending(zz => zz.Item2.Length);
                 // control.DisplaySymbol = q.First().Item1;
 
-                ListBox listBox = new ListBox() {ItemsSource = symbols};
+                var listBox = new ListBox() {ItemsSource = symbols};
 
                 var w = new Window {Content = listBox, ShowActivated = true, Resources = resources};
                 w.ShowDialog();
@@ -1856,12 +1872,12 @@ namespace ProjTests
             var c = new LogEventInstancesControl();
 
             var l = new LogEventInstanceObservableCollection();
-            l.Add(new LogEventInstance() { Level = 1, LoggerName = "foo", FormattedMessage = "test 123"});
+            l.Add(new LogEventInstance() {Level = 1, LoggerName = "foo", FormattedMessage = "test 123"});
             c.EventsSource = l;
-                var resources = ProjTestsHelper.ControlsResources();
-            
-                var w = new Window { Content = c, ShowActivated = true, Resources = resources };
-                w.ShowDialog();
+            var resources = ProjTestsHelper.ControlsResources();
+
+            var w = new Window {Content = c, ShowActivated = true, Resources = resources};
+            w.ShowDialog();
         }
 
 
@@ -1876,15 +1892,15 @@ namespace ProjTests
         {
             Main1Model.SelectVsInstance();
             var r = ProjTestsHelper.ControlsResources();
-            Main1 mainw = new Main1();
+            var mainw = new Main1();
             mainw.Resources = r;
-            Window w = new Window()
+            var w = new Window()
             {
                 Content = mainw
             };
-            TaskCompletionSource<int> t = new TaskCompletionSource<int>();
-            
-            ReplaySubject<Workspace> replay = new ReplaySubject<Workspace>();
+            var t = new TaskCompletionSource<int>();
+
+            var replay = new ReplaySubject<Workspace>();
             mainw.ViewModel = new Main1Model(replay);
             mainw.AddHandler(WorkspaceView.SelectedProjectChangedEvent,
                 new RoutedPropertyChangedEventHandler<ProjectModel>(Target), true);
@@ -1901,7 +1917,7 @@ namespace ProjTests
                             (sender2, args2) =>
                             {
                                 DebugUtils.WriteLine(args2.NewValue.Name + $" {args2.NewValue.Documents.Count}" + " [" +
-                                                     String.Join(", ",
+                                                     string.Join(", ",
                                                          args2.NewValue.RootPathInfo.Entries.Values
                                                              .Select(x => x.Path)) +
                                                      "]");
@@ -1912,26 +1928,21 @@ namespace ProjTests
                         throw new InvalidOperationException();
                     }
 
-                    await mainw.ViewModel.LoadSolution(solutionPath);
+                    await mainw.ViewModel.LoadSolutionAsync(solutionPath);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     DebugUtils.WriteLine(ex.ToString());
                 }
             };
 
-            w.Closed += (sender, args) =>
-            {
-                t.SetResult(0);
-            };
+            w.Closed += (sender, args) => { t.SetResult(0); };
             w.ShowDialog();
             //Task.WaitAll(t.Task);
-
         }
 
         private void Target(object sender, RoutedPropertyChangedEventArgs<ProjectModel> e)
         {
-            
         }
 
 
@@ -1967,26 +1978,27 @@ namespace ProjTests
                     DebugUtils.WriteLine($"{props.Title} - {props.Category}");
                     // foreach (var keyValuePair in meta.Metadata)
                     // {
-                        // DebugUtils.WriteLine($"{keyValuePair.Key} = {keyValuePair.Value}");
+                    // DebugUtils.WriteLine($"{keyValuePair.Key} = {keyValuePair.Value}");
                     // }
                 }
-                var e = allCommands.GetComponent();
 
+                var e = allCommands.GetComponent();
             }
         }
+
         [WpfFact]
         public void TestWorkspaceView()
         {
             var c = new WorkspaceView();
-            System.Reactive.Subjects.ReplaySubject<Workspace> replay= new ReplaySubject<Workspace>();
-            Main1Model model = new Main1Model(replay);
+            var replay = new ReplaySubject<Workspace>();
+            var model = new Main1Model(replay);
             model.CreateWorkspace();
             c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierarchyRoot") {Source = model});
             model.CreateProject();
             model.AddDocument(model.HierarchyRoot[0].Projects[0], @"C:\temp\program.cs");
-            
+
 //            model.Workspace.AddProject("test", LanguageNames.CSharp);
-            Window w = new Window() {Content = c};
+            var w = new Window() {Content = c};
             w.ShowDialog();
         }
 
@@ -1996,53 +2008,44 @@ namespace ProjTests
             AppDomain.CurrentDomain.AssemblyLoad +=
                 (sender, args) => DebugUtils.WriteLine(args.LoadedAssembly.FullName);
             var c = new WorkspaceView();
-            System.Reactive.Subjects.ReplaySubject<Workspace> replay = new ReplaySubject<Workspace>();
-            Main1Model model = new Main1Model(replay);
-            model.LoadSolution(
+            var replay = new ReplaySubject<Workspace>();
+            var model = new Main1Model(replay);
+            model.LoadSolutionAsync(
                 solutionPath);
-            c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierarchyRoot") { Source = model });
-            Window w = new Window() { Content = c };
+            c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierarchyRoot") {Source = model});
+            var w = new Window() {Content = c};
             w.ShowDialog();
         }
 
         [WpfFact]
         public void TestWorkspaceModel()
         {
-            
-            System.Reactive.Subjects.ReplaySubject<Workspace> replay = new ReplaySubject<Workspace>();
-            Main1Model model = new Main1Model(replay);
-            model.LoadSolution(
+            var replay = new ReplaySubject<Workspace>();
+            var model = new Main1Model(replay);
+            model.LoadSolutionAsync(
                 solutionPath).ContinueWith(
                 task =>
                 {
                     var sol = model.HierarchyRoot.FirstOrDefault();
                     foreach (var projectModel in sol.Projects)
-                    {
-                        foreach (var projectModelDocument in projectModel.Documents)
-                        {
-                            DebugUtils.WriteLine(projectModelDocument.Name);
-                        }
-                    }
+                    foreach (var projectModelDocument in projectModel.Documents)
+                        DebugUtils.WriteLine(projectModelDocument.Name);
                 });
-            
         }
-        
+
         [WpfFact]
         public void TestMain1_()
         {
             Assert.True(MSBuildLocator.CanRegister);
-            ProjectModel m = new ProjectModel(null);
-            m.Documents.Add(new DocumentModel(m, null){FilePath = "test\\one\\tewo"});
-            foreach (var kv in m.RootPathInfo.Entries)
-            {
-                DebugUtils.WriteLine(kv.Value.ToString());
-            }
+            var m = new ProjectModel(null);
+            m.Documents.Add(new DocumentModel(m, null) {FilePath = "test\\one\\tewo"});
+            foreach (var kv in m.RootPathInfo.Entries) DebugUtils.WriteLine(kv.Value.ToString());
         }
 
         [WpfFact]
         public void TestTypeAdapter()
         {
-            string code = "namespace foo.bar { public class foo { class bar { } } }";
+            var code = "namespace foo.bar { public class foo { class bar { } } }";
             var tree = ProjTestsHelper.SetupSyntaxParams(out var comp, code);
             foreach (var typeSymbol in comp.GetSymbolsWithName(n => true).OfType<ITypeSymbol>())
             {
@@ -2055,8 +2058,8 @@ namespace ProjTests
                     case IErrorTypeSymbol errorTypeSymbol:
                         break;
                     case INamedTypeSymbol namedTypeSymbol:
- 		    
-                DebugUtils.WriteLine(namedTypeSymbol.ConstructedFrom.ToString());
+
+                        DebugUtils.WriteLine(namedTypeSymbol.ConstructedFrom.ToString());
                         break;
                     case IPointerTypeSymbol pointerTypeSymbol:
                         break;
@@ -2065,14 +2068,14 @@ namespace ProjTests
                     default:
                         throw new ArgumentOutOfRangeException(nameof(typeSymbol));
                 }
-                
-                TypeInfoProvider2 prov = new TypeInfoProvider2(typeSymbol);
+
+                var prov = new TypeInfoProvider2(typeSymbol);
                 DebugUtils.WriteLine(typeSymbol.ToDisplayString());
                 DebugUtils.WriteLine(prov.IsNested.ToString());
                 DebugUtils.WriteLine(prov.Assembly.Name.ToString());
                 DebugUtils.WriteLine(typeof(string).AssemblyQualifiedName);
-                CustomControl2 cc = new CustomControl2() {TypeInfoProvider = prov};
-                Window w = new Window {Content = cc};
+                var cc = new CustomControl2() {TypeInfoProvider = prov};
+                var w = new Window {Content = cc};
                 w.ShowDialog();
             }
         }
@@ -2080,73 +2083,54 @@ namespace ProjTests
         [WpfFact]
         public void TestMdodel1()
         {
-            Main1Model model = new Main1Model();
+            var model = new Main1Model();
             model.CreateWorkspace();
 
-            TaskCompletionSource<object> tcs = new TaskCompletionSource<object>();
+            var tcs = new TaskCompletionSource<object>();
             model.Documents.CollectionChanged += (sender, e) =>
-            {
-                if (e.Action == NotifyCollectionChangedAction.Add)
                 {
-                    foreach (var eNewItem in e.NewItems)
-                    {
-                        if (eNewItem is DocModel d)
-                        {
-                            if (d.Content is FormattedTextControl fmt)
-                            {
-                                tcs.SetResult(fmt.SyntaxTree);
-                                
-                            }
-                        }
-                    }
+                    if (e.Action == NotifyCollectionChangedAction.Add)
+                        foreach (var eNewItem in e.NewItems)
+                            if (eNewItem is DocModel d)
+                                if (d.Content is FormattedTextControl fmt)
+                                    tcs.SetResult(fmt.SyntaxTree);
                 }
-            }
-            ;
+                ;
             model.ProjectedAddedEvent += (sender, args) => { model.AddDocument(args.Model, @"C:\temp\program.cs"); };
-            model.DocumentAddedEvent += async (sender, args) =>
-            {
-                await model.OpenSolutionItem(args.Document);
-            };
-            var p = model.CreateProject(); ;
+            model.DocumentAddedEvent += async (sender, args) => { await model.OpenSolutionItem(args.Document); };
+            var p = model.CreateProject();
+            ;
             tcs.Task.Wait(5000);
-            if (tcs.Task.Result is SyntaxTree t)
-            {
-                DebugUtils.WriteLine(t.Length.ToString());
-            }
-
-
+            if (tcs.Task.Result is SyntaxTree t) DebugUtils.WriteLine(t.Length.ToString());
         }
 
         [WpfFact]
         public void TestRibbonModel()
         {
-            PrimaryRibbonModel m = new PrimaryRibbonModel();
-            FunTabProvider p = new FunTabProvider();
+            var m = new PrimaryRibbonModel();
+            var p = new FunTabProvider();
             var t = p.ProvideModelItem(null);
             m.RibbonItems.Add(t);
-            RibbonViewGroupProviderBaseImpl x = new RibbonViewGroupProviderBaseImpl();
+            var x = new RibbonViewGroupProviderBaseImpl();
             t.Items.Add(x.ProvideModelItem(null));
-            TemplateWindow window = new TemplateWindow();
+            var window = new TemplateWindow();
             window.Content = new Ribbon {ItemsSource = m.RibbonItems};
             window.ShowDialog();
-
         }
-
 
 
         private void Documents_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-         
         }
+
         [WpfFact]
         public void TestCodeEntry()
         {
-
-            FormattedTextControl  c = new FormattedTextControl();
-            Window w = new Window {Content = c};
+            var c = new FormattedTextControl();
+            var w = new Window {Content = c};
             w.Loaded += (sender, args) =>
             {
-                Queue<string> texts = new Queue<string>();
+                var texts = new Queue<string>();
                 texts.Enqueue("public ");
                 texts.Enqueue("class {\n ");
                 texts.Enqueue("}");
@@ -2162,7 +2146,6 @@ namespace ProjTests
 
                 async Task DoTexts(Task t)
                 {
-                    
                     if (texts.Any())
                     {
                         var text = texts.Dequeue();
@@ -2204,43 +2187,43 @@ namespace ProjTests
                 }
             }
         }
+
         [WpfFact]
         public void TestC1()
         {
             var model = this.model();
             // model.BeginInit();
             // model.EndInit();
-            Random r = new Random();
-            var tt=model.GetAppTypeInfos().Where(t=>t.Fields.Count>0).Skip(r.Next(100)).First();
-            var c = new SyntaxPanel(){SyntaxTypeInfo = tt};
-            Window w = new Window(){Content=c};
+            var r = new Random();
+            var tt = model.GetAppTypeInfos().Where(t => t.Fields.Count > 0).Skip(r.Next(100)).First();
+            var c = new SyntaxPanel() {SyntaxTypeInfo = tt};
+            var w = new Window() {Content = c};
             w.ShowDialog();
         }
+
         [WpfFact]
         public void TestGradient()
         {
             var model = this.model();
             // model.BeginInit();
             // model.EndInit();
-            Random r = new Random();
+            var r = new Random();
             var tt = model.GetAppTypeInfos().Where(t => t.Fields.Count > 0).Skip(r.Next(100)).First();
             var c = new GradientEditorControl();
-            Window w = new Window() { Content = c };
+            var w = new Window() {Content = c};
             w.ShowDialog();
         }
 
         [WpfFact]
-        void TestParseXaml()
+        private void TestParseXaml()
         {
-            var DESKTOPdIR = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\Desktop";
+            var DESKTOPdIR =
+                @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\Desktop";
             var analysisDir = $@"{DESKTOPdIR}\Analysis\";
             var s = $@"{analysisDir}AnalysisControls\Themes\Generic.xaml";
             var s2 = $@"{analysisDir}AnalysisControls\EnhancedCodeWindow.xaml";
             var s1 = $@"{DESKTOPdIR}\TestApp\MainTestWindow.xaml";
-            foreach(var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
-{
-Assembly.Load(name);
-}
+            foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies()) Assembly.Load(name);
             XamlFuncs.ParseXaml(
                 s);
         }
@@ -2249,7 +2232,7 @@ Assembly.Load(name);
         public void TestPanel()
         {
             var c = new WrapPanel();
-            TablePanel panel = new TablePanel() {RowSpacing = 3, ColumnSpacing = 10, NumColumns = 3};
+            var panel = new TablePanel() {RowSpacing = 3, ColumnSpacing = 10, NumColumns = 3};
             c.Children.Add(panel);
             foreach (DictionaryEntry environmentVariable in Environment.GetEnvironmentVariables())
             {
@@ -2257,7 +2240,7 @@ Assembly.Load(name);
                 panel.Children.Add(new TextBlock {Text = environmentVariable.Value.ToString()});
             }
 
-            Window w = new Window {Content = c};
+            var w = new Window {Content = c};
             w.ShowDialog();
         }
 
@@ -2265,7 +2248,7 @@ Assembly.Load(name);
         public void TestPanel2()
         {
             var c = new WrapPanel();
-            TablePanel panel = new TablePanel() { RowSpacing = 3, ColumnSpacing = 10, NumColumns = 3 };
+            var panel = new TablePanel() {RowSpacing = 3, ColumnSpacing = 10, NumColumns = 3};
             c.Children.Add(panel);
             foreach (DictionaryEntry environmentVariable in Environment.GetEnvironmentVariables())
             {
@@ -2274,29 +2257,29 @@ Assembly.Load(name);
                 // row.Children.Add(new TextBlock { Text = environmentVariable.Value.ToString() });
             }
 
-            Window w = new Window { Content = c };
+            var w = new Window {Content = c};
             w.ShowDialog();
         }
         // [WpfFact]
         // public void TestPanel3()
         // {
-            // var c = new WrapPanel();
-            // TablePanel panel = new TablePanel() { RowSpacing = 3, ColumnSpacing = 10, NumColumns = 2 };
-            // var x = VisualTreeHelper.GetChildrenCount(panel);
-            // DebugUtils.WriteLine(x.ToString());
-            // panel.Children.Add(new TextBlock { Text = "foo" });
-            // panel.Children.Add(new TextBlock { Text = "foo2" });
-            // var uiElement = new TableRow();
-            // uiElement.Children.Add(new TextBlock { Text = "bar" });
-            // var textBlock = new TextBlock { Text = "bar2" };
-            // uiElement.Children.Add(textBlock);
+        // var c = new WrapPanel();
+        // TablePanel panel = new TablePanel() { RowSpacing = 3, ColumnSpacing = 10, NumColumns = 2 };
+        // var x = VisualTreeHelper.GetChildrenCount(panel);
+        // DebugUtils.WriteLine(x.ToString());
+        // panel.Children.Add(new TextBlock { Text = "foo" });
+        // panel.Children.Add(new TextBlock { Text = "foo2" });
+        // var uiElement = new TableRow();
+        // uiElement.Children.Add(new TextBlock { Text = "bar" });
+        // var textBlock = new TextBlock { Text = "bar2" };
+        // uiElement.Children.Add(textBlock);
 
-            // DebugUtils.WriteLine(VisualTreeHelper.GetParent(textBlock));
-            // panel.Children.Add(uiElement);
-            // c.Children.Add(panel);
-            // Window w = new Window { Content = c };
-            // w.Loaded += (sender, args) => DebugUtils.WriteLine(VisualTreeHelper.GetChildrenCount(panel).ToString());
-            // w.ShowDialog();
+        // DebugUtils.WriteLine(VisualTreeHelper.GetParent(textBlock));
+        // panel.Children.Add(uiElement);
+        // c.Children.Add(panel);
+        // Window w = new Window { Content = c };
+        // w.Loaded += (sender, args) => DebugUtils.WriteLine(VisualTreeHelper.GetChildrenCount(panel).ToString());
+        // w.ShowDialog();
         // }
 
         [WpfFact]
@@ -2304,42 +2287,43 @@ Assembly.Load(name);
         {
             var c = new WrapPanel();
             var panel = new AssembliesControl();
-panel.AssemblySource = AppDomain.CurrentDomain.GetAssemblies();
+            panel.AssemblySource = AppDomain.CurrentDomain.GetAssemblies();
             c.Children.Add(panel);
 
-            Window w = new Window {Content = c};
+            var w = new Window {Content = c};
             w.ShowDialog();
         }
-       [WpfFact]
+
+        [WpfFact]
         public void TestMethod1()
         {
             var c = new WrapPanel();
             var model = TypesViewModelFactory.CreateModel();
-            var panel = new SyntaxFactoryPanel() { AppMethodInfo = model.GetAppTypeInfos().SelectMany(x=>x.FactoryMethods).First() };
+            var panel = new SyntaxFactoryPanel()
+                {AppMethodInfo = model.GetAppTypeInfos().SelectMany(x => x.FactoryMethods).First()};
             c.Children.Add(panel);
 
-            Window w = new Window {Content = c};
+            var w = new Window {Content = c};
             w.ShowDialog();
         }
+
         [WpfFact]
         public void TestAR1()
         {
             var c = new WrapPanel();
-            
-            var panel = new AssemblyResourceTree() { Assembly = typeof(AssemblyResourceTree).Assembly };
+
+            var panel = new AssemblyResourceTree() {Assembly = typeof(AssemblyResourceTree).Assembly};
             c.Children.Add(panel);
 
-            Window w = new Window { Content = c };
+            var w = new Window {Content = c};
             w.ShowDialog();
         }
+
         [WpfFact]
         public void TestAR2()
         {
             var c = new StackPanel() {Orientation = Orientation.Horizontal};
-            foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
-            {
-                Assembly.Load(name);
-            }
+            foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies()) Assembly.Load(name);
 
             var left = new AssembliesControl {AssemblySource = AppDomain.CurrentDomain.GetAssemblies(), MaxWidth = 400};
             var panel = new AssemblyResourceTree();
@@ -2351,7 +2335,7 @@ panel.AssemblySource = AppDomain.CurrentDomain.GetAssemblies();
                 c.Children.Add(hexa);
 
                 panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
-                Window w = new Window {Content = c};
+                var w = new Window {Content = c};
                 w.ShowDialog();
             }
         }
@@ -2369,34 +2353,29 @@ panel.AssemblySource = AppDomain.CurrentDomain.GetAssemblies();
                 }
             };
 
-                Window w = new Window { Content = c };
-                w.ShowDialog();
-            
+            var w = new Window {Content = c};
+            w.ShowDialog();
         }
 
 
         [WpfFact]
         public void TestAR3()
         {
-            var c = new StackPanel() { Orientation = Orientation.Horizontal };
-            foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
-            {
-                Assembly.Load(name);
-            }
+            var c = new StackPanel() {Orientation = Orientation.Horizontal};
+            foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies()) Assembly.Load(name);
 
             var assemblySource = AppDomain.CurrentDomain.GetAssemblies();
             var model = new AssemblyResourceModel();
-            foreach (var assembly in assemblySource)
-            {
-                model.Assemblies.Add(assembly);
-            }
+            foreach (var assembly in assemblySource) model.Assemblies.Add(assembly);
 
             var left = new AssembliesControl();
-            left.SetBinding(AssembliesControl.AssemblySourceProperty, new Binding("Assemblies") { Source = model });
-            left.SetBinding(AssembliesControl.SelectedAssemblyProperty, new Binding("SelectedAssembly") { Source = model, Mode=BindingMode.TwoWay });
+            left.SetBinding(AssembliesControl.AssemblySourceProperty, new Binding("Assemblies") {Source = model});
+            left.SetBinding(AssembliesControl.SelectedAssemblyProperty,
+                new Binding("SelectedAssembly") {Source = model, Mode = BindingMode.TwoWay});
             left.MaxWidth = 400;
             var panel = new AssemblyResourceTree();
-            panel.SetBinding(AssemblyResourceTree.AssemblyProperty, new Binding("SelectedAssembly") { Source = model, Mode=BindingMode.OneWay});
+            panel.SetBinding(AssemblyResourceTree.AssemblyProperty,
+                new Binding("SelectedAssembly") {Source = model, Mode = BindingMode.OneWay});
             c.Children.Add(left);
             c.Children.Add(panel);
             using (var hexa = new WpfHexaEditor.HexEditor())
@@ -2404,45 +2383,40 @@ panel.AssemblySource = AppDomain.CurrentDomain.GetAssemblies();
                 c.Children.Add(hexa);
 
                 panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
-                
-                var w = new Window { Content = c };
-                w.Loaded += (sender, args) =>
-                {
-                    model.SelectedAssembly = typeof(AnalysisControlsModule).Assembly;
-                };
+
+                var w = new Window {Content = c};
+                w.Loaded += (sender, args) => { model.SelectedAssembly = typeof(AnalysisControlsModule).Assembly; };
                 w.ShowDialog();
             }
         }
 
-        private static async void OnPanelOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> args)
+        private static async void OnPanelOnSelectedItemChanged(object sender,
+            RoutedPropertyChangedEventArgs<object> args)
         {
             // var node = args.NewValue;
             // var subnodeData = ((NodeBase) node);
             // var result = subnodeData.CheckLoadItems(out var state);
             // if (state == NodeDataLoadState.RequiresAsync)
             // {
-                // var data = await subnodeData.CheckLoadItemsAsync();
+            // var data = await subnodeData.CheckLoadItemsAsync();
             // }
-
-            
         }
+
         [WpfFact]
         public void TestProp()
         {
-            ControlsProvider p = new ControlsProvider(null,
-                new CustomTypes(new List<Type>(new[] {typeof(RibbonModelGroup), typeof(RibbonModelGroupItemCollection) })),
+            var p = new ControlsProvider(null,
+                new CustomTypes(
+                    new List<Type>(new[] {typeof(RibbonModelGroup), typeof(RibbonModelGroupItemCollection)})),
                 type => new AnalysisCustomTypeDescriptor(new UiElementTypeConverter(null), type,
                     Enumerable.Empty<IPropertiesAdapter>(), null, Logger));
-            foreach (var pType in p.Types)
-            {
-                TypeDescriptor.AddProvider(p.Provider, pType);
-            }
+            foreach (var pType in p.Types) TypeDescriptor.AddProvider(p.Provider, pType);
             var g = new RibbonModelGroup();
-            PropertyGrid grid = new PropertyGrid();
+            var grid = new PropertyGrid();
             grid.SelectedObject = g;
             var windowsFormsHost = new WindowsFormsHost {Child = grid, Width = 400, Height = 800};
             var stp = new StackPanel();
-            var uiElement = new Button(){Content="Reset"};
+            var uiElement = new Button() {Content = "Reset"};
             stp.Children.Add(uiElement);
             stp.Children.Add(windowsFormsHost);
             uiElement.Click += (sender, args) =>
@@ -2451,7 +2425,7 @@ panel.AssemblySource = AppDomain.CurrentDomain.GetAssemblies();
                 propertyGrid.SelectedObject = g;
                 windowsFormsHost.Child = propertyGrid;
             };
-            Window w = new Window {Content = stp};
+            var w = new Window {Content = stp};
             w.ShowDialog();
         }
 
@@ -2476,26 +2450,219 @@ panel.AssemblySource = AppDomain.CurrentDomain.GetAssemblies();
                     builder.RegisterInstance(Logger).As<ILogger>();
                 });
                 var cx = lifetimeScope.Resolve<IControlsProvider>();
-                foreach (var cxType in cx.Types)
-                {
-                    TypeDescriptor.AddProvider(cx.Provider, cxType);
-                }
+                foreach (var cxType in cx.Types) TypeDescriptor.AddProvider(cx.Provider, cxType);
                 var props = TypeDescriptor.GetProperties(typeof(RibbonModelItem));
                 foreach (PropertyDescriptor prop in props)
-                {
                     if (prop.Name == "AppCommand")
                     {
                         var c = TypeDescriptor.GetConverter(prop);
 
                         ITypeDescriptorContext l = null;
-                        var val = prop.Converter.GetStandardValues(null);
-                        foreach (var o in val)
+                        if (prop.Converter != null)
                         {
-                            DebugUtils.WriteLine(o.ToString());
+                            var val = prop.Converter.GetStandardValues(null);
+                            foreach (var o in val)
+                            {
+                                var conv = TypeDescriptor.GetConverter(o.GetType());
+                                DebugUtils.WriteLine(conv.ToString());
+                                string v;
+                                if (conv.CanConvertTo(typeof(string)))
+                                    v = conv.ConvertTo(o, typeof(string)) as string ??
+                                        "conversion resulted in non string value";
+                                else
+                                    v = o.ToString();
+
+                                DebugUtils.WriteLine(v);
+                            }
                         }
                     }
+            }
+        }
+
+        [WpfFact]
+        public void TestTypeDescriptor2()
+        {
+            Debug.WriteLine(string.Join(", ",
+                typeof(object).Assembly.GetExportedTypes().Where(t => t.IsPrimitive && !t.IsGenericType)
+                    .Select(t => t.FullName)));
+            var loaded = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.FullName).ToHashSet();
+
+            void RecursiveLoad(AssemblyName name)
+            {
+                if (loaded.Contains(name.FullName))
+                    return;
+                loaded.Add(name.FullName);
+                Assembly a;
+                try
+                {
+                    a = Assembly.Load(name);
+                }
+                catch
+                {
+                    return;
+                }
+
+                foreach (var assemblyName in a.GetReferencedAssemblies().Where(x => !loaded.Contains(x.FullName)))
+                    RecursiveLoad(assemblyName);
+            }
+
+            foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies()) RecursiveLoad(name);
+
+
+            using (var instance = new ApplicationInstance(
+                new ApplicationInstance.
+                    ApplicationInstanceConfiguration(
+                        _output
+                            .WriteLine
+                        , ApplicationGuid
+                    )
+            ))
+            {
+                instance.AddModule(new AnalysisControlsModule());
+                instance.AddModule(new AnalysisAppLibModule());
+                instance.Initialize();
+                var lifetimeScope = instance.GetLifetimeScope(builder =>
+                {
+                    builder.Register(RibbonBuilder1.RibbonModelBuilder);
+                    builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
+                    builder.RegisterType<ClientModel>().AsSelf().SingleInstance().AsImplementedInterfaces()
+                        .WithCallerMetadata();
+                    builder.RegisterType<RibbonModelApplicationMenu>();
+                    builder.RegisterType<FunTabProvider>().As<IRibbonModelProvider<RibbonModelTab>>().SingleInstance()
+                        .WithAttributeFiltering();
+                    ;
+                    builder.RegisterType<RibbonViewGroupProviderBaseImpl>().AsImplementedInterfaces()
+                        .WithCallerMetadata().SingleInstance().WithAttributeFiltering();
+                    ;
+                    builder.RegisterType<SuperGRoup>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance()
+                        .WithAttributeFiltering();
+                    ;
+                    builder.RegisterType<InfrastructureTab>().As<RibbonModelTab>().SingleInstance()
+                        .WithAttributeFiltering()
+                        // .OnActivated(args => args.Instance.ClientModel = args.Context.Resolve<IClientModel>())
+                        ;
+                    builder.RegisterType<ManagementTab>().As<RibbonModelTab>().SingleInstance()
+                        .WithAttributeFiltering();
+                    builder.RegisterType<AssembliesRibbonTab>().As<RibbonModelTab>().SingleInstance()
+                        .WithAttributeFiltering();
+                    ;
+                    builder.RegisterType<DerpTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
+                    ;
+                    builder.RegisterType<AssembliesTypesGroup>().As<RibbonModelGroup>().SingleInstance()
+                        .WithAttributeFiltering();
+                    ;
+                    builder.RegisterType<DisplayableAppCommandGroup>().As<RibbonModelGroup>().SingleInstance()
+                        .WithAttributeFiltering();
+                    ;
+                    builder.RegisterType<BaseLibCommandGroup>().As<RibbonModelGroup>().SingleInstance()
+                        .WithAttributeFiltering();
+                    ;
+                    builder.RegisterType<CodeAnalysis>().As<RibbonModelContextualTabGroup>().SingleInstance()
+                        .WithAttributeFiltering();
+                    ;
+                    builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering();
+                    ;
+                    builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering();
+                    ;
+                    builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces().WithAttributeFiltering();
+                    ;
+                    builder.RegisterType<AppCommandTypeConverter>().AsSelf();
+                    builder.RegisterType<ObjectStringTypeConverter>().AsSelf();
+                    builder.RegisterType<ClientModel>().AsSelf().AsImplementedInterfaces();
+                    builder.RegisterType<AppCommandTypeConverter>().AsSelf();
+                    builder.RegisterInstance(Logger).As<ILogger>();
+                });
+                var cx = lifetimeScope.Resolve<IControlsProvider>();
+                foreach (var cxType in cx.Types) TypeDescriptor.AddProvider(cx.Provider, cxType);
+
+                var model1 = lifetimeScope.Resolve<TypesViewModel>();
+                var line = DoConvertToString(model1.GetAppTypeInfos().First(), new StringBuilder(), false);
+                DebugUtils.WriteLine(line.Length.ToString());
+                return;
+                DebugUtils.WriteLine(line);
+                var model = lifetimeScope.Resolve<ClientModel>();
+                foreach (var primaryRibbonRibbonItem in model.PrimaryRibbon.RibbonItems)
+                {
+                    var conv = TypeDescriptor.GetConverter(primaryRibbonRibbonItem);
+                    DebugUtils.WriteLine(DoConvertToString(primaryRibbonRibbonItem, new StringBuilder(), false)
+                        .ToString());
+//conv.CanConvertTo(typeof(string)) ? conv.ConvertTo(primaryRibbonRibbonItem, typeof(string))?.ToString() ?? "null" : primaryRibbonRibbonItem.ToString());
                 }
             }
         }
+
+        [WpfFact]
+        public void TestCodeRenderer()
+        {
+            var code = new CodeRenderer
+            {
+
+                FontFamily = new FontFamily("Lucida Console"), FontSize = 16.0, Foreground = Brushes.Pink
+            };
+            code.BeginInit();
+            code.EndInit();
+
+//	    var cBounds = code.VisualContentBounds;
+//	    DebugUtils.WriteLine(cBounds.ToString());
+            var tree = ProjTestsHelper.SetupSyntaxParams(out var comp);
+            CodeAnalysisProperties.SetCompilation(code, comp);
+            CodeAnalysisProperties.SetSyntaxTree(code, tree);
+            code.UpdateFormattedText();
+
+            var clip = VisualTreeHelper.GetClip(code);
+            DebugUtils.WriteLine(clip?.ToString() ?? "");
+            var contentBounds = VisualTreeHelper.GetContentBounds(code);
+            DebugUtils.WriteLine(contentBounds.ToString());
+            var dg = VisualTreeHelper.GetDrawing(code);
+            if (dg != null)
+            {
+                DebugUtils.WriteLine("have drawing group");
+                DebugUtils.WriteLine(dg.ToString());
+                DebugUtils.WriteLine(dg.Children.Count.ToString());
+            }
+            else
+            {
+                DebugUtils.WriteLine("no drawing group");
+            }
+
+
+//	    Image theImage = new Image();
+//            DrawingImage dImageSource = new DrawingImage(dGroup);
+//            theImage.Source = dImageSource;
+
+
+            var vb = new VisualBrush(code);
+            var width = 800;
+            var height = 600;
+            var r = new Rectangle {Width = width, Height = height, Fill = vb};
+            var renderTargetBitmap = new RenderTargetBitmap(
+                (int) width
+                , (int) height
+                , 96
+                , 96
+                , PixelFormats.Pbgra32
+            );
+            renderTargetBitmap.Render(code);
+
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+            object filePrefix = "renderedCode";
+            var fname = $"{filePrefix}.png";
+            using (var s = File.Create("C:\\OUTPUT\\" + fname))
+            {
+                encoder.Save(s);
+            }
+        }
+
+        [WpfFact]
+        public void TestSerializer()
+        {
+            var w = MarkupWriter.GetMarkupObjectFor(this);
+            
+	var writer = XmlWriter.Create(new StringWriter());
+        var s = new XamlDesignerSerializationManager(writer);
+        
+        }
+
     }
-    }
+}

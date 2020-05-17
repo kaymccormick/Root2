@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls.Ribbon;
 using KayMcCormick.Dev;
+using NLog;
 
 namespace AnalysisControls
 {
@@ -44,14 +45,18 @@ namespace AnalysisControls
             RibbonDebugUtils.OnPropertyChanged(this.ToString(), this, e);
         }
 
+        public MyRibbonContextualTabGroupItemsControl()
+        {
+        }
+
         protected override DependencyObject GetContainerForItemOverride()
         {
-            return new MyRibbonContextualTabGroup() {MyRibbon = MyRibbon};
+            return new MyRibbonContextualTabGroup() {MyRibbon = MyRibbon, Logger = Logger};
         }
 
         public MyRibbon MyRibbon { get; set; }
 
         public Guid ControlId { get; } = Guid.NewGuid();
-
+        public Logger Logger { get; set; }
     }
 }
