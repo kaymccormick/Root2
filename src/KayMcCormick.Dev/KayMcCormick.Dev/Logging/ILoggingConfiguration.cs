@@ -36,7 +36,7 @@ namespace KayMcCormick.Dev.Logging
 
         /// <summary>
         /// </summary>
-        bool ? IsEnabledDebuggerTarget { get ; }
+        bool ? IsEnabledDebuggerTarget { get ; set; }
 
         /// <summary>
         /// </summary>

@@ -33,7 +33,7 @@ namespace KayMcCormick.Dev
             Debug.WriteLine ( $"<KM> [{id};{taskId}]{fn}:{lineno}[{callerMemberName}] {line}" ) ;
         }
 
-        public static DebugCategory DisplayCatgories { get; set; } = DebugCategory.Misc;
+        public static DebugCategory DisplayCatgories { get; set; } = DebugCategory.Misc | DebugCategory.DataBinding;
 
         /// <summary>Debugs the format.</summary>
         /// <param name="reg">The reg.</param>

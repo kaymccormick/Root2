@@ -37,7 +37,9 @@ namespace KayMcCormick.Dev.Serialization
             jsonSerializerOptions.Converters.Add ( new JsonIViewModelConverterFactory ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonLazyConverterFactory ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonTypeConverterFactory ( ) ) ;
+#if RESOURCENODETREE
             jsonSerializerOptions.Converters.Add(new JsonResourceNodeConverterFactory());
+#endif
         }
     }
 
@@ -48,7 +50,7 @@ namespace KayMcCormick.Dev.Serialization
     [ ConvertsTypeMetadata ( typeof ( IViewModel ) ) ]
     public sealed class JsonIViewModelConverterFactory : JsonConverterFactory
     {
-        #region Overrides of JsonConverter
+#region Overrides of JsonConverter
         /// <summary>
         /// 
         /// </summary>
@@ -61,8 +63,8 @@ namespace KayMcCormick.Dev.Serialization
                        .GetCustomAttributes ( typeof ( NoJsonConverterAttribute ) , true )
                        .Any ( ) ;
         }
-        #endregion
-        #region Overrides of JsonConverterFactory
+#endregion
+#region Overrides of JsonConverterFactory
         /// <summary>
         /// 
         /// </summary>
@@ -80,7 +82,7 @@ namespace KayMcCormick.Dev.Serialization
 
         private sealed class JsonIViewModelConverter : JsonConverter < IViewModel >
         {
-            #region Overrides of JsonConverter<IViewModel>
+#region Overrides of JsonConverter<IViewModel>
             [ CanBeNull ]
             public override IViewModel Read (
                 ref Utf8JsonReader    reader
@@ -99,9 +101,9 @@ namespace KayMcCormick.Dev.Serialization
             {
                 writer.WriteStringValue ( value.ToString ( ) ) ;
             }
-            #endregion
+#endregion
         }
-        #endregion
+#endregion
     }
 
     /// <summary>
@@ -118,7 +120,7 @@ namespace KayMcCormick.Dev.Serialization
     [ ConvertsTypeMetadata ( typeof ( IComponentRegistration ) ) ]
     public sealed class JsonComponentRegistrationConverterFactory : JsonConverterFactory
     {
-        #region Overrides of JsonConverter
+#region Overrides of JsonConverter
         /// <summary>
         /// 
         /// </summary>
@@ -133,8 +135,8 @@ namespace KayMcCormick.Dev.Serialization
 
             return false ;
         }
-        #endregion
-        #region Overrides of JsonConverterFactory
+#endregion
+#region Overrides of JsonConverterFactory
         /// <summary>
         /// 
         /// </summary>
@@ -149,7 +151,7 @@ namespace KayMcCormick.Dev.Serialization
         {
             return new JsonComponentRegistrationConverter ( ) ;
         }
-        #endregion
+#endregion
     }
 
     /// <summary>
@@ -160,7 +162,7 @@ namespace KayMcCormick.Dev.Serialization
     public sealed class
         JsonComponentRegistrationConverter : JsonConverter < IComponentRegistration >
     {
-        #region Overrides of JsonConverter<ComponentRegistration>
+#region Overrides of JsonConverter<ComponentRegistration>
         /// <summary>
         /// 
         /// </summary>
@@ -207,7 +209,7 @@ namespace KayMcCormick.Dev.Serialization
             writer.WriteEndArray ( ) ;
             writer.WriteEndObject ( ) ;
         }
-        #endregion
+#endregion
     }
 
     /// <inheritdoc />
@@ -215,7 +217,7 @@ namespace KayMcCormick.Dev.Serialization
     [ ConvertsTypeMetadata ( typeof ( LifetimeScope ) ) ]
     public sealed class JsonLifetimeScopeConverter : JsonConverter < LifetimeScope >
     {
-        #region Overrides of JsonConverter<LifetimeScope>
+#region Overrides of JsonConverter<LifetimeScope>
         /// <summary>
         /// 
         /// </summary>
@@ -274,6 +276,6 @@ namespace KayMcCormick.Dev.Serialization
             writer.WriteEndObject ( ) ;
             ConverterUtil.WriteTerminal ( writer ) ;
         }
-        #endregion
+#endregion
     }
 }

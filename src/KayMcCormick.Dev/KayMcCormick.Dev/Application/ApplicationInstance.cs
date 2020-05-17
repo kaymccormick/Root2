@@ -404,17 +404,17 @@ namespace KayMcCormick.Dev.Application
             builder.RegisterMetadataRegistrationSources ( ) ;
             builder.RegisterModule < NouveauAppModule > ( ) ;
 
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                DebugUtils.WriteLine(assembly.GetName().ToString());
-            }
+            // foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            // {
+                // DebugUtils.WriteLine(assembly.GetName().ToString());
+            // }
 
             Assembly loaded = null;
             var entryAssembly = Assembly.GetEntryAssembly();
             if (entryAssembly != null)
                 foreach (var assembly in entryAssembly.GetReferencedAssemblies())
                 {
-                    DebugUtils.WriteLine("ref:" + assembly.Name);
+                    //DebugUtils.WriteLine("ref:" + assembly.Name);
                     if (assembly.Name == "AnalysisAppLib")
                     {
                         loaded = Assembly.Load(assembly);
