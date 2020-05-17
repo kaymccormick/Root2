@@ -22,6 +22,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing.Design;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -2346,12 +2347,10 @@ namespace ProjTests
         {
             var c = new DocumentView
             {
-                Document = new DocModel
-                {
-                    Title = "test",
-                    Content = new Frame {Content = new Page {Content = new TextBlock {Text = "Test", FontSize = 40.0}}}
-                }
+                Document = DocModel.CreateInstance()
             };
+            c.Document.Title = "test";
+            c.Document.Content = new Frame {Content = new Page {Content = new TextBlock {Text = "Test", FontSize = 40.0}}};
 
             var w = new Window {Content = c};
             w.ShowDialog();
@@ -2378,16 +2377,16 @@ namespace ProjTests
                 new Binding("SelectedAssembly") {Source = model, Mode = BindingMode.OneWay});
             c.Children.Add(left);
             c.Children.Add(panel);
-            using (var hexa = new WpfHexaEditor.HexEditor())
-            {
-                c.Children.Add(hexa);
+            // using (var hexa = new WpfHexaEditor.HexEditor())
+            // {
+                // c.Children.Add(hexa);
 
-                panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
+                // panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
 
                 var w = new Window {Content = c};
                 w.Loaded += (sender, args) => { model.SelectedAssembly = typeof(AnalysisControlsModule).Assembly; };
                 w.ShowDialog();
-            }
+            // }
         }
 
         private static async void OnPanelOnSelectedItemChanged(object sender,
@@ -2452,6 +2451,7 @@ namespace ProjTests
                 var cx = lifetimeScope.Resolve<IControlsProvider>();
                 foreach (var cxType in cx.Types) TypeDescriptor.AddProvider(cx.Provider, cxType);
                 var props = TypeDescriptor.GetProperties(typeof(RibbonModelItem));
+                
                 foreach (PropertyDescriptor prop in props)
                     if (prop.Name == "AppCommand")
                     {
@@ -2576,7 +2576,28 @@ namespace ProjTests
                 foreach (var cxType in cx.Types) TypeDescriptor.AddProvider(cx.Provider, cxType);
 
                 var model1 = lifetimeScope.Resolve<TypesViewModel>();
-                var line = DoConvertToString(model1.GetAppTypeInfos().First(), new StringBuilder(), false);
+                Action<string> x = (m) => DebugUtils.WriteLine(m);
+                var props = TypeDescriptor.GetProperties(typeof(CompilationUnitSyntax));
+                foreach (PropertyDescriptor prop in props)
+                    
+                {
+                    DebugUtils.WriteLine("Name: "+ prop.Name);
+                    x($"Type: {ConversionUtils.TypeToText(prop.PropertyType)}");
+                    x($"ComponentType {prop.ComponentType}");
+                    x($"IsReadonly {prop.IsReadOnly}");
+                    x($"Serialization visibility {prop.SerializationVisibility}");
+                    x($"Caategory {prop.Category}");
+                    x($"Description {prop.Description}");
+                    x($"Child properties {prop.GetChildProperties()}");
+                    foreach (Attribute propAttribute in prop.Attributes)
+                    {
+                        DebugUtils.WriteLine($"{propAttribute.GetType()}");
+                    }
+
+                    var editor = prop.GetEditor(typeof(UITypeEditor));
+                    DebugUtils.WriteLine(editor?.GetType().ToString());
+                }
+                var line = ConversionUtils.DoConvertToString(model1.GetAppTypeInfos().First(), new StringBuilder(), false);
                 DebugUtils.WriteLine(line.Length.ToString());
                 return;
                 DebugUtils.WriteLine(line);
@@ -2584,7 +2605,7 @@ namespace ProjTests
                 foreach (var primaryRibbonRibbonItem in model.PrimaryRibbon.RibbonItems)
                 {
                     var conv = TypeDescriptor.GetConverter(primaryRibbonRibbonItem);
-                    DebugUtils.WriteLine(DoConvertToString(primaryRibbonRibbonItem, new StringBuilder(), false)
+                    DebugUtils.WriteLine(ConversionUtils.DoConvertToString(primaryRibbonRibbonItem, new StringBuilder(), false)
                         .ToString());
 //conv.CanConvertTo(typeof(string)) ? conv.ConvertTo(primaryRibbonRibbonItem, typeof(string))?.ToString() ?? "null" : primaryRibbonRibbonItem.ToString());
                 }
