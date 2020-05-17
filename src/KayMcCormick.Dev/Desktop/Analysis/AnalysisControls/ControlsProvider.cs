@@ -48,13 +48,13 @@ namespace AnalysisControls
 
         public override object CreateInstance(IServiceProvider provider, Type objectType, Type[] argTypes, object[] args)
         {
-            DebugUtils.WriteLine(nameof(CreateInstance));
+            // DebugUtils.WriteLine(nameof(CreateInstance));
             return base.CreateInstance(provider, objectType, argTypes, args);
         }
 
         public override IDictionary GetCache(object instance)
         {
-            DebugUtils.WriteLine(nameof(GetCache));
+            // DebugUtils.WriteLine(nameof(GetCache));
             return base.GetCache(instance);
         }
 
@@ -66,13 +66,13 @@ namespace AnalysisControls
 
         protected override IExtenderProvider[] GetExtenderProviders(object instance)
         {
-            DebugUtils.WriteLine(nameof(GetExtenderProviders));
+            // DebugUtils.WriteLine(nameof(GetExtenderProviders));
             return base.GetExtenderProviders(instance);
         }
 
         public override string GetFullComponentName(object component)
         {
-            DebugUtils.WriteLine(nameof(GetFullComponentName));
+            // DebugUtils.WriteLine(nameof(GetFullComponentName));
             return base.GetFullComponentName(component);
         }
 
@@ -84,7 +84,7 @@ namespace AnalysisControls
 
         public override Type GetRuntimeType(Type reflectionType)
         {
-            DebugUtils.WriteLine(nameof(GetRuntimeType));
+            // DebugUtils.WriteLine(nameof(GetRuntimeType));
             return base.GetRuntimeType(reflectionType);
         }
 
@@ -113,7 +113,7 @@ namespace AnalysisControls
         /// <inheritdoc />
         public override bool IsSupportedType(Type type)
         {
-            DebugUtils.WriteLine($"{nameof(IsSupportedType)}: {type.FullName}");
+            // DebugUtils.WriteLine($"{nameof(IsSupportedType)}: {type.FullName}");
             return Types.Contains ( type ) ;
         }
         #endregion

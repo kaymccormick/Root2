@@ -1,20 +1,24 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Data;
 using KayMcCormick.Dev;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using Microsoft.Graph;
 using NLog;
 using NLog.Fluent;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class RibbonDebugUtils
     {
-        private static Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="LoggingIdentifier"></param>
+        /// <param name="o"></param>
+        /// <param name="e"></param>
         public static void OnPropertyChanged(string LoggingIdentifier, DependencyObject o,
             DependencyPropertyChangedEventArgs e)
         {
@@ -24,6 +28,11 @@ namespace AnalysisControls
                 .Write();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="do"></param>
+        /// <param name="prop"></param>
         public static void DumpPropertySource(DependencyObject @do, DependencyProperty prop)
         {
             var s = DependencyPropertyHelper.GetValueSource(@do, prop);
@@ -35,11 +44,11 @@ namespace AnalysisControls
             {
                 if (@do is FrameworkElement fe)
                 {
-                    DebugUtils.WriteLine($"datacontext = {fe.DataContext}");
+                    DebugUtils.WriteLine($"Data Context = {fe.DataContext}");
                 }
                 
                 var binding = BindingOperations.GetBinding(@do, prop);
-                DumpBinding(@do, prop, binding);
+                // DumpBinding(@do, prop, binding);
             }
         }
 

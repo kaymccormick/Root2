@@ -23,6 +23,11 @@ namespace KayMcCormick.Lib.Wpf
                 return a.GetName();
             }
 
+            if ((string) parameter == "Location")
+            {
+                return a.IsDynamic ? null : a.Location;
+            }
+
             if ((String) parameter == "Company")
             {
                 return a.GetCustomAttribute < AssemblyCompanyAttribute>()?.Company;

@@ -128,8 +128,8 @@ namespace AnalysisControls
         {
             AddHandler(TreeViewItem.ExpandedEvent, new RoutedEventHandler(OnExpanded) );
             RootNodes = new ObservableCollection<NodeBase>();
-            CommandBindings.Add(new CommandBinding(WpfAppCommands.ExpandNode, OnExpandNodeExecutedAsync,
-                OnExpandNodeCanExecute));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.ToggleNodeIsExpanded, OnExpandNodeExecutedAsync,
+                OnToggleNodeCanExecute));
         }
 
         private void OnExpanded(object sender, RoutedEventArgs e)
@@ -165,7 +165,7 @@ namespace AnalysisControls
             }
         }
 
-        private void OnExpandNodeCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void OnToggleNodeCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             try
             {

@@ -572,7 +572,7 @@ var mapCount = Map.Count ;
           , int              level = 0
         )
         {
-            DebugUtils.WriteLine ( $"{rootR}" ) ;
+            // DebugUtils.WriteLine ( $"{rootR}" ) ;
             // if (_docs.TryGetValue(
             //                       rootR ?? throw new InvalidOperationException()
             //                     , out var info
@@ -587,7 +587,7 @@ var mapCount = Map.Count ;
                 throw new InvalidOperationException ( ) ;
             }
 
-            DebugUtils.WriteLine ( $"{curTypeInfo}" ) ;
+            // DebugUtils.WriteLine ( $"{curTypeInfo}" ) ;
             var r = Map.Dict[ new AppTypeInfoKey ( rootR ) ] ;
             r.AllTypes = GetAppTypeInfos();
             r.Model = this;

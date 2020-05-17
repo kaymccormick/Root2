@@ -57,12 +57,14 @@ namespace AnalysisControls
             base.OnApplyTemplate();
             _mainGrid = GetTemplateChild("MainGrid") as Grid;
             _overlayRect = GetTemplateChild("OverlayRect") as Rectangle;
+#if false
             if (_mainGrid != null)
                 _mainGrid.LayoutUpdated += (sender, args) =>
                 {
                     var grid = _mainGrid;
                     DebugUtils.WriteLine($"{this} LAyout updated: {grid?.ActualWidth} {grid?.ActualHeight}");
                 };
+#endif
         }
 
         private static object CoerceVisibility(DependencyObject d, object value)
@@ -70,26 +72,26 @@ namespace AnalysisControls
             if (_parentCoerce != null)
             {
                 var result = _parentCoerce.Invoke(null, new object[] {d, value});
-                DebugUtils.WriteLine("parent coerce resulted in " + result + " for " + d);
+                // DebugUtils.WriteLine("parent coerce resulted in " + result + " for " + d);
             }
         
             Visibility visibility1 = (Visibility)value;
-            DebugUtils.WriteLine($"visibility1 = {visibility1}");
+            // DebugUtils.WriteLine($"visibility1 = {visibility1}");
             Visibility visibility2 = Visibility.Visible;
             MyRibbonTab ribbonTab = (MyRibbonTab)d;
-            DebugUtils.WriteLine($"myRibbonTab = {ribbonTab}");
+            // DebugUtils.WriteLine($"myRibbonTab = {ribbonTab}");
             bool flag = ribbonTab.ContextualTabGroupHeader != null;
-            DebugUtils.WriteLine($"flag = {flag} ({ribbonTab.ContextualTabGroupHeader}");
+            // DebugUtils.WriteLine($"flag = {flag} ({ribbonTab.ContextualTabGroupHeader}");
             if (ribbonTab.MyContextualTabGroup == null & flag && ribbonTab.MyRibbon != null && ribbonTab.MyRibbon.MyContextualTabGroupItemsControl != null)
                 ribbonTab.MyContextualTabGroup = ribbonTab.MyRibbon.MyContextualTabGroupItemsControl.FindHeader(ribbonTab.ContextualTabGroupHeader);
             if (ribbonTab.MyContextualTabGroup != null)
             {
                 visibility2 = ribbonTab.MyContextualTabGroup.Visibility;
-                DebugUtils.WriteLine($"visibility2 = {visibility2}");
+                // DebugUtils.WriteLine($"visibility2 = {visibility2}");
             }
             else if (flag)
             {
-                DebugUtils.WriteLine("setting based on flag to collapsed");
+                // DebugUtils.WriteLine("setting based on flag to collapsed");
                 visibility2 = Visibility.Collapsed;
             }
             var coerceVisibility = visibility1 != Visibility.Visible || visibility2 != Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
@@ -101,6 +103,9 @@ namespace AnalysisControls
             return (object)coerceVisibility;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public MyRibbonContextualTabGroup MyContextualTabGroup
         {
             get
@@ -113,6 +118,9 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public MyRibbon MyRibbon => Ribbon as MyRibbon;
 
         private static void OnVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

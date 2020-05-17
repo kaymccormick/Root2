@@ -61,6 +61,10 @@ namespace AnalysisControls
                             foreach (var dictionaryEntry in reader.Cast<DictionaryEntry>())
                             {
                                 var value = dictionaryEntry.Value;
+                                if (((string) dictionaryEntry.Key).EndsWith(".png"))
+                                {
+                                    DebugUtils.WriteLine(dictionaryEntry.Value.ToString());
+                                }
                                 try
                                 {
                                     var data = new SubnodeData

@@ -46,6 +46,9 @@ namespace Client2
 
         public Client2Window1(ILifetimeScope scope, ClientModel viewModel, MyCacheTarget2 myCacheTarget)
         {
+            AddHandler(Binding.SourceUpdatedEvent, new EventHandler<DataTransferEventArgs>(OnSourceUpdated));
+            AddHandler(Binding.TargetUpdatedEvent, new EventHandler<DataTransferEventArgs>(OnTargetUpdated));
+
             SetValue(AttachedProperties.LifetimeScopeProperty, scope);
             InitializeComponent();
             ViewModel = viewModel;
@@ -74,6 +77,42 @@ namespace Client2
             var logControl = new LogEventInstancesControl();
             logControl.SetBinding(LogEventInstancesControl.EventsSourceProperty,
                 new Binding("ViewModel.LogEntries") {Source = this});
+        }
+
+        private void OnTargetUpdated(object sender, DataTransferEventArgs e)
+        {
+            var t = e.TargetObject;
+            var customDesc = AttachedProperties.GetCustomDescription(t);
+            BindingExpression expr = null;
+            Binding binding = null;
+            try
+            {
+                binding = BindingOperations.GetBinding(t, e.Property);
+                expr = BindingOperations.GetBindingExpression(t, e.Property);
+            }
+            catch (Exception ex)
+            { }
+
+            var desc = $"{customDesc ?? t}({ConversionUtils.TypeToText(t.GetType())}";
+
+            var propVal = t.GetValue(e.Property);
+            DebugUtils.WriteLine($"{nameof(OnTargetUpdated)}{e.Property.Name};{e.Property.OwnerType.FullName};[ {desc} ] = {propVal}",
+                DebugCategory.DataBinding);
+        }
+
+        private void OnSourceUpdated(object sender, DataTransferEventArgs e)
+        {
+            var t = e.TargetObject;
+            var customDesc = AttachedProperties.GetCustomDescription(t);
+            try
+            {
+                var expr = BindingOperations.GetBindingExpression(t, e.Property);
+            } catch(Exception ex)
+            {}
+
+            var propVal = t.GetValue(e.Property);
+            DebugUtils.WriteLine($"{e.Property.Name};{e.Property.OwnerType.FullName};[{customDesc ?? t}] = {propVal}" ,
+                DebugCategory.DataBinding);
         }
 
         public ClientModel ViewModel
@@ -321,6 +360,11 @@ namespace Client2
             // CreateLogBuilder().Message("MouseMove: " + e.OriginalSource).Write();
             ViewModel.HoverElement = e.OriginalSource;
             base.OnPreviewMouseMove(e);
+        }
+
+        private void Client2Window1_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            DebugUtils.WriteLine("Window OnLoaded");
         }
     }
 }

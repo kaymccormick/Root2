@@ -46,12 +46,41 @@ namespace AnalysisControls
             set
             {
                 if (Equals(value, _activeContent)) return;
+                var old = _activeContent;
                 _activeContent = value;
                 if (value is DocModel d)
                 {
-                    ContextualTabGroups.Clear();
+                    if (old is DocModel dd)
+                    {
+                        foreach (var xx in dd.ContextualTabGroupHeaders.Where(x =>
+                            !d.ContextualTabGroupHeaders.Contains(x)))
+                        {
+                            ContextualTabGroups.Remove(xx);
+                            foreach (var primaryRibbonContextualTabGroup in ClientViewModel.PrimaryRibbon.ContextualTabGroups)
+                            {
+                                if (Equals(primaryRibbonContextualTabGroup.Header, xx))
+                                {
+                                    primaryRibbonContextualTabGroup.Visibility = Visibility.Collapsed;
+                                }
+                            }
+                            foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
+                            {
+                                if (Object.Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, xx))
+                                {
+                                    primaryRibbonRibbonItem.Visibility = Visibility.Collapsed;
+                                }
+                            }
+
+
+                        }
+                    }
+
                     foreach (var header in d.ContextualTabGroupHeaders)
                     {
+                        if (ContextualTabGroups.Contains(header))
+                        {
+                            continue;
+                        }
                         DebugUtils.WriteLine("Adding group " + header);
                         ContextualTabGroups.Add(header);
                         foreach (var primaryRibbonContextualTabGroup in ClientViewModel.PrimaryRibbon.ContextualTabGroups)
@@ -61,13 +90,13 @@ namespace AnalysisControls
                                 primaryRibbonContextualTabGroup.Visibility = Visibility.Visible;
                             }
                         }
-                        // foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
-                        // {
-                            // if (Object.Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, header))
-                            // {
-                                // primaryRibbonRibbonItem.Visibility = Visibility.Visible;
-                            // }
-                        // }
+                        foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
+                        {
+                            if (Object.Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, header))
+                            {
+                                primaryRibbonRibbonItem.Visibility = Visibility.Visible;
+                            }
+                        }
                         
                     }
                 }
@@ -714,12 +743,26 @@ namespace AnalysisControls
             var msBuildWorkspace = MSBuildWorkspace.Create(props);
             Workspace = msBuildWorkspace;
             CurrentOperation = new CurrentOperation() {Description = "load solution"};
-            var r = await msBuildWorkspace.OpenSolutionAsync(file,
-                new ProgressWithCompletion<ProjectLoadProgress>(Handler));
+            Solution r = null;
+            try
+            {
+                r = await msBuildWorkspace.OpenSolutionAsync(file,
+                    new ProgressWithCompletion<ProjectLoadProgress>(Handler));
+            }
+            catch (Exception ex)
+            {
+                DebugUtils.WriteLine(ex.ToString());
+            }
+
             CurrentOperation = null;
-            DebugUtils.WriteLine(r.ToString());
+            DebugUtils.WriteLine(r?.ToString() ?? "");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public async Task LoadProjectAsync(string file)
         {
             TrySelectVsInstance();

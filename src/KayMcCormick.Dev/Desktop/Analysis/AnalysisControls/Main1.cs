@@ -35,8 +35,8 @@ namespace AnalysisControls
         protected override Size MeasureOverride(Size constraint)
         {
             var size = base.MeasureOverride(constraint);
-            DebugUtils.WriteLine($"Constraint is {constraint}");
-            DebugUtils.WriteLine($"Size is {size}");
+            // DebugUtils.WriteLine($"Constraint is {constraint}");
+            // DebugUtils.WriteLine($"Size is {size}");
             return size;
         }
 
@@ -44,15 +44,15 @@ namespace AnalysisControls
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
             var outv = base.ArrangeOverride(arrangeBounds);
-            DebugUtils.WriteLine($"Arrange input {arrangeBounds} out {outv}");
+            // DebugUtils.WriteLine($"Arrange input {arrangeBounds} out {outv}");
             return outv;
         }
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
-            if (e.Property.Name == "ActualWidth" || e.Property.Name == "ActualHeight")
-                DebugUtils.WriteLine($"Property update {e.Property.Name} from {e.OldValue} to {e.NewValue}");
+            // if (e.Property.Name == "ActualWidth" || e.Property.Name == "ActualHeight")
+                // DebugUtils.WriteLine($"Property update {e.Property.Name} from {e.OldValue} to {e.NewValue}");
         }
 
         /// <summary>

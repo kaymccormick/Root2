@@ -61,9 +61,9 @@ namespace AnalysisAppLib
         )
         {
             var svc = String.Join ( "; " , registration.Services.Select ( s => s.ToString ( ) ) ) ;
-            DebugUtils.WriteLine (
-                                  $"{nameof ( AttachToComponentRegistration )}: {registration.Id} {registration.Lifetime} {svc}"
-                                 ) ;
+            // DebugUtils.WriteLine (
+                                  // $"{nameof ( AttachToComponentRegistration )}: {registration.Id} {registration.Lifetime} {svc}"
+                                 // ) ;
 
             registration.Activated += (sender, args) =>
             {
@@ -78,7 +78,7 @@ namespace AnalysisAppLib
             };
             registration.Activating += ( sender , args ) => {
                 var inst = args.Instance ;
-                DebugUtils.WriteLine ( $"activating {inst} {registration.Lifetime}" ) ;
+                // DebugUtils.WriteLine ( $"activating {inst} {registration.Lifetime}" ) ;
                 if ( ! ( inst is IViewModel ) )
                 {
                     return ;

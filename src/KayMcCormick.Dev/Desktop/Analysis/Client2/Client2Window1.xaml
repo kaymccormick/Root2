@@ -10,6 +10,7 @@
               xmlns:ribbon="clr-namespace:AnalysisControls.RibbonModel;assembly=AnalysisControls"
               xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
               mc:Ignorable="d"
+              Loaded="Client2Window1_OnLoaded"
               DataContext="{Binding RelativeSource={RelativeSource Self}}"
               Title="Client2Window1" Height="900" Width="1600">
   <RibbonWindow.Resources>
@@ -52,15 +53,15 @@
     </Grid.RowDefinitions>
     <anal:MyRibbon x:Name="myRibbon" ContextualTabGroupsSource="{Binding ContextualTabGroups}"  ItemTemplateSelector="{StaticResource TabItemTemplateSelector}" DataContext="{Binding ViewModel.PrimaryRibbon}" ItemsSource="{Binding RibbonItems}">
       <anal:MyRibbon.TabHeaderStyle>
-        <Style TargetType="RibbonTabHeader">
-          <Setter Property="Content" Value="xx"/>
+        <Style TargetType="anal:MyRibbonTabHeader">
+            <Setter Property="Content" Value="xx,NotifyOnTargetUpdated=True"/>
           <Setter Property="Background" Value="BlueViolet"/>
         </Style>
       </anal:MyRibbon.TabHeaderStyle>
       <anal:MyRibbon.TabHeaderTemplate>
         <DataTemplate DataType="{x:Type ribbon:RibbonModelTab}">
           <WrapPanel>
-            <TextBlock Text="{Binding Header}"/>
+              <TextBlock Text="{Binding Header,NotifyOnTargetUpdated=True}"/>
           </WrapPanel>
         </DataTemplate>
         </anal:MyRibbon.TabHeaderTemplate>
@@ -69,11 +70,6 @@
           <TextBlock Foreground="Aquamarine" Text="{Binding Header}"/>
         </DataTemplate>
       </anal:MyRibbon.ContextualTabGroupHeaderTemplate>
-      <anal:MyRibbon.ContextualTabGroupStyle>
-        <Style TargetType="anal:MyRibbonContextualTabGroup">
-          <Setter Property="TextElement.FontFamily" Value="Lucida Sans"/>
-        </Style>
-      </anal:MyRibbon.ContextualTabGroupStyle>
       <anal:MyRibbon.ItemContainerStyle>
         <Style TargetType="anal:MyRibbonTab">
           <Style.Triggers>
@@ -81,7 +77,8 @@
               <Setter Property="TextElement.FontFamily" Value="Calibri"/>
             </Trigger>
             </Style.Triggers>
-          <Setter Property="Visibility" Value="{Binding Visibility}"></Setter>
+          <Setter Property="kmWpf:AttachedProperties.CustomDescription" Value="MyTibbonTab style in window XAML"/>
+          <Setter Property="Visibility" Value="{Binding Visibility,Mode=TwoWay,NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True}"></Setter>
           <Setter Property="ContextualTabGroupHeader" Value="{Binding ContextualTabGroupHeader}"></Setter>
           <Setter Property="TextElement.FontFamily" Value="Showcard Gothic"/>
           <Setter Property="ItemsSource" Value="{Binding Items}"/>

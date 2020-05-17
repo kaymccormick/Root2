@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Baml2006;
 using System.Windows.Markup;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using KayMcCormick.Dev;
 
@@ -86,6 +87,7 @@ namespace AnalysisControls
         {
             var st = (TaskState<Subnode>) state;
             var subnode = st.Node;
+            DebugUtils.WriteLine($"{nameof(TempLoadData)}: {subnode}");
             var stream = subnode.Assembly.GetManifestResourceStream(subnode.ResourceName.ToString());
             if (stream == null) return null;
             using (var reader = new ResourceReader(stream))
@@ -97,7 +99,7 @@ namespace AnalysisControls
                     case "ResourceTypeCode.String":
                         var binaryReader = new BinaryReader(new MemoryStream(data));
                         var binData = binaryReader.ReadString();
-                        DebugUtils.WriteLine("   Recreated Value: {binData}");
+                        DebugUtils.WriteLine($"   Recreated Value: {binData}");
                         return new TempLoadData() {Value = binData};
 
                     case "ResourceTypeCode.Int32":
@@ -113,9 +115,10 @@ namespace AnalysisControls
 
                         var size = BitConverter.ToInt32(data, 0);
                         var memoryStream = new MemoryStream(data, offset, size);
-
-                        if (subnode.Name.ToString().EndsWith(".baml"))
+                        var ext = Path.GetExtension(subnode.Name.ToString()).ToLowerInvariant();
+                        switch (ext)
                         {
+                            case ".baml":
                             var object2 = subnode.Dispatcher.Invoke(() =>
                             {
                                 var reader1 = new Baml2006Reader(memoryStream);
@@ -134,6 +137,21 @@ namespace AnalysisControls
                             {
                                 subnode.Dispatcher.Invoke(() => { });
                             }
+
+                            break;
+                            case ".png":
+                                var png = new PngBitmapDecoder(memoryStream, BitmapCreateOptions.None,
+                                    BitmapCacheOption.Default);
+                                BitmapSource src = png.Frames[0];
+                                subnode.Value = src;
+                                break;
+
+                            case ".jpg":
+                            case ".jpeg":
+                            case ".gif":
+                            case ".ico":
+
+                                break;
                         }
 
                         var load = new TempLoadData()

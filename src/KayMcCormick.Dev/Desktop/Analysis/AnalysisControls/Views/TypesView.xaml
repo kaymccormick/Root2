@@ -218,7 +218,7 @@
                     </VisualStateManager.VisualStateGroups>
                     <ToggleButton x:Name="Expander"
                                   Style="{StaticResource ExpandCollapseToggleStyle}"
-                                  Command="kmWpf:WpfAppCommands.ExpandNode"
+                                  Command="kmWpf:WpfAppCommands.ToggleNodeIsExpanded"
                                   ClickMode="Press"
                                   IsChecked="{Binding IsExpanded, 
             RelativeSource={RelativeSource TemplatedParent}}" />

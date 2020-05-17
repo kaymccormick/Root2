@@ -11,7 +11,7 @@ namespace AnalysisControls.RibbonModel
     /// </summary>
     public class RibbonModelContextualTabGroup : INotifyPropertyChanged
     {
-        private Visibility _visibility;
+        private Visibility _visibility = Visibility.Collapsed;
 
         /// <summary>
         /// 
@@ -40,7 +40,18 @@ namespace AnalysisControls.RibbonModel
         public PrimaryRibbonModel RibbonModel { get; set; }
 
         /// <inheritdoc />
-        public event PropertyChangedEventHandler PropertyChanged;
+        private event PropertyChangedEventHandler PropertyChanged;
+
+        /// <inheritdoc />
+        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
+        {
+            add
+            {
+                DebugUtils.WriteLine($"{nameof(PropertyChanged)}: add: {value}");
+                this.PropertyChanged += value;
+            }
+            remove { this.PropertyChanged -= value; }
+        }
 
         /// <summary>
         /// 

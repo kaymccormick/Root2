@@ -1442,7 +1442,7 @@
       <Popup x:Name="PART_Popup" AllowsTransparency="true" Placement="Bottom" Focusable="false"
              PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
              PlacementTarget="{Binding ElementName=PART_ToggleButton}"
-             IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}">
+             IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent},NotifyOnTargetUpdated=True}">
         <classic:SystemDropShadowChrome FrameworkElement.Name="Shdw" Color="Transparent"
                                         UIElement.SnapsToDevicePixels="true"
                                         CornerRadius="2" UIElement.Focusable="true" KeyTipService.IsKeyTipScope="true"
@@ -3990,7 +3990,7 @@
                   <GridViewColumn Header="Location">
                     <GridViewColumn.CellTemplate>
                       <DataTemplate>
-                        <TextBlock Text="{Binding Location}" FontFamily="Lucida Console" />
+                        <TextBlock Text="{Binding Converter={StaticResource AssemblyInfoConverter},ConverterParameter=Location}" FontFamily="Lucida Console" />
                       </DataTemplate>
                     </GridViewColumn.CellTemplate>
                   </GridViewColumn>
@@ -5362,7 +5362,7 @@
                       </VisualStateManager.VisualStateGroups>
                       <local:CustomToggleButton x:Name="Expander"
                                                 Style="{StaticResource ExpandCollapseToggleStyle}"
-                                                Command="kmWpf:WpfAppCommands.ExpandNode"
+                                                Command="kmWpf:WpfAppCommands.ToggleNodeIsExpanded"
                                                 ClickMode="Press"
                                                 CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                                                 IsChecked="{Binding IsExpanded, 

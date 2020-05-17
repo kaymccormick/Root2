@@ -131,6 +131,7 @@
     <Compile Include="CompilationError.cs" />
     <Compile Include="ControlsProvider.cs" />
     <Compile Include="ControlView.cs" />
+    <Compile Include="ConversionUtils.cs" />
     <Compile Include="Converters\HierarchyConverter.cs" />
     <Compile Include="Converters\LocationConverter.cs" />
     <Compile Include="Converters\ObjectStringTypeConverter.cs" />

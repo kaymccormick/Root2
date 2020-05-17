@@ -166,10 +166,10 @@ namespace KayMcCormick.Lib.Wpf
                 , nameof(ViewResources)
                 , typeof(WpfAppCommands)
             );
-        public static readonly RoutedUICommand ExpandNode =
+        public static readonly RoutedUICommand ToggleNodeIsExpanded =
             new RoutedUICommand(
-                "expandnode"
-                , nameof(ExpandNode)
+                "Toggle TreeView Node IsExpanded"
+                , nameof(ToggleNodeIsExpanded)
                 , typeof(WpfAppCommands)
             );
 

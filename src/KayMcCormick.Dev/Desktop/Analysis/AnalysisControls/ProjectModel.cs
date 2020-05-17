@@ -148,6 +148,10 @@ namespace AnalysisControls
                 var s = dirs.Dequeue();
                 if (pathi == 0)
                 {
+                    if(s.StartsWith("."))
+                    {
+
+                    }
                     DebugUtils.WriteLine("First path element is " + s);
                 }
 

@@ -136,7 +136,8 @@ namespace AnalysisControls
             PixelsPerDip = pixelsPerDip;
             _typeface = typefaceManager.GetDefaultTypeface();
 
-            Rendering = typefaceManager.GetRendering(EmSize, TextAlignment.Left, new TextDecorationCollection(),
+            Rendering = typefaceManager.
+                GetRendering(EmSize, TextAlignment.Left, new TextDecorationCollection(),
                 Brushes.Black,
                 _typeface);
             BaseProps = TextPropertiesManager.GetBasicTextRunProperties(
@@ -162,18 +163,18 @@ namespace AnalysisControls
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public override TextRun GetTextRun(int textSourceCharacterIndex)
         {
-            DebugUtils.WriteLine($"{nameof(GetTextRun)}: {textSourceCharacterIndex}");
+            DebugUtils.WriteLine($"{nameof(GetTextRun)}: {textSourceCharacterIndex}", DebugCategory.TextFormatting);
             // Make sure text source index is in bounds.
             if (textSourceCharacterIndex < 0)
             {
-                DebugUtils.WriteLine($"out of bounds");
+                DebugUtils.WriteLine($"out of bounds", DebugCategory.TextFormatting);
                 throw new ArgumentOutOfRangeException(nameof(textSourceCharacterIndex),
                     "Value must be greater than 0.");
             }
 
             if (textSourceCharacterIndex >= Length)
             {
-                DebugUtils.WriteLine($"past text source length");
+                DebugUtils.WriteLine($"past text source length", DebugCategory.TextFormatting);
                 return new TextEndOfParagraph(2);
             }
 
@@ -190,8 +191,8 @@ namespace AnalysisControls
 
                     var tf = tc.Properties.Typeface;
                     var name = tf.FaceNames[XmlLanguage.GetLanguage("en-US")];
-                    DebugUtils.WriteLine($"Typeface: {name}");
-                    DebugUtils.WriteLine("Typeface FontFamily: " + tf.FontFamily.ToString());
+                    DebugUtils.WriteLine($"Typeface: {name}", DebugCategory.TextFormatting);
+                    DebugUtils.WriteLine("Typeface FontFamily: " + tf.FontFamily.ToString(), DebugCategory.TextFormatting);
                     return tc;
                 }
 
@@ -271,7 +272,7 @@ namespace AnalysisControls
         public TextRunProperties PropsFor(in SyntaxTrivia trivia, string text)
         {
             var r = BasicProps();
-            DebugUtils.WriteLine($"{CSharpExtensions.Kind(trivia)}");
+            DebugUtils.WriteLine($"{CSharpExtensions.Kind(trivia)}", DebugCategory.TextFormatting);
             if (CSharpExtensions.Kind(trivia) == SyntaxKind.SingleLineCommentTrivia)
                 r.SetForegroundBrush(Brushes.YellowGreen);
             // r.SyntaxTrivia = trivia;
@@ -322,7 +323,7 @@ namespace AnalysisControls
 
                 if (textRun.Properties is GenericTextRunProperties gp)
                 {
-                    //DebugUtils.WriteLine(gp.SyntaxToken.ToString());
+                    //DebugUtils.WriteLine(gp.SyntaxToken.ToString(), DebugCategory.TextFormatting);
                 }
             }
         }
@@ -378,7 +379,7 @@ namespace AnalysisControls
             {
                 var syntaxKind = CSharpExtensions.Kind(token.Parent);
 
-                DebugUtils.WriteLine(syntaxKind.ToString());
+                DebugUtils.WriteLine(syntaxKind.ToString(), DebugCategory.TextFormatting);
                 if (SyntaxFacts.IsName(syntaxKind))
                     pp.SetForegroundBrush(Brushes.Pink);
                 else if (SyntaxFacts.IsTypeSyntax(syntaxKind)) pp.SetForegroundBrush(Brushes.Crimson);
@@ -500,7 +501,7 @@ namespace AnalysisControls
 
                 if (textRun.Properties is GenericTextRunProperties)
                 {
-                    //DebugUtils.WriteLine(gp.SyntaxToken.ToString());
+                    //DebugUtils.WriteLine(gp.SyntaxToken.ToString(), DebugCategory.TextFormatting);
                 }
             }
         }

@@ -22,7 +22,7 @@ namespace AnalysisControls.RibbonModel.Definition
             var tgal = PrimaryRibbonModel.CreateGallery() as RibbonGallery;
             tgal.SelectionChanged += (sender, args) =>
             {
-                DebugUtils.WriteLine(args.NewValue.ToString());
+                //DebugUtils.WriteLine(args.NewValue.ToString());
                 if (args.NewValue is RibbonGalleryItem item)
                 {
                     if (item.Content is RibbonModelMenuItem item2)
@@ -102,7 +102,7 @@ namespace AnalysisControls.RibbonModel.Definition
                                 var element = field.ElementTypeMetadataName;
                                 var name = element.Substring(element.LastIndexOf('.') + 1);
                                 var ati = model.GetAppTypeInfo(name);
-                                DebugUtils.WriteLine($"{ati}");
+                                // DebugUtils.WriteLine($"{ati}");
                                 PrimaryRibbonModel.CreateGalleryItem(cat3, new RibbonModelMenuItem {Header = ati.Title});
                             } else
                             {

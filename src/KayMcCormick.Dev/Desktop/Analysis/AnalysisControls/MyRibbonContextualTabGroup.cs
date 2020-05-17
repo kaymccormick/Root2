@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
+using System.Windows.Data;
 using KayMcCormick.Dev;
 using NLog;
 
@@ -16,14 +18,7 @@ namespace AnalysisControls
     {
         private TabsEnumerable _tabs;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public Visibility Visibility
-        {
-            get { return (Visibility) GetValue(VisibilityProperty); }
-            set { SetValue(VisibilityProperty, value);}
-        }
+
         static MyRibbonContextualTabGroup()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbonContextualTabGroup),
@@ -32,8 +27,24 @@ namespace AnalysisControls
             UIElement.VisibilityProperty.OverrideMetadata(typeof(MyRibbonContextualTabGroup), (PropertyMetadata)new FrameworkPropertyMetadata((object)Visibility.Collapsed, new PropertyChangedCallback(OnVisibilityChanged), new CoerceValueCallback(CoerceVisibility)));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public MyRibbonContextualTabGroup()
         {
+            TargetUpdated += OnTargetUpdated;
+            SourceUpdated += OnSourceUpdated;
+
+        }
+
+        private void OnSourceUpdated(object sender, DataTransferEventArgs e)
+        {
+            DebugUtils.WriteLine($"*** {e.Property.Name}", DebugCategory.DataBinding);
+        }
+
+        private void OnTargetUpdated(object sender, DataTransferEventArgs e)
+        {
+            DebugUtils.WriteLine($"*** {e.Property.Name}", DebugCategory.DataBinding);
         }
 
         internal IEnumerable<MyRibbonTab> Tabs
@@ -88,15 +99,15 @@ namespace AnalysisControls
         private void CoerceTabsVisibility()
         {
             RibbonDebugUtils.DumpPropertySource(this, VisibilityProperty);
-            Logger?.Info("Coerce tabs visibility");
+            // Logger?.Info("Coerce tabs visibility");
             IEnumerable<MyRibbonTab> tabs = this.Tabs;
             if (tabs == null)
                 return;
             foreach (DependencyObject dependencyObject in tabs)
             {
-                DebugUtils.WriteLine("Calling CoerceValue Visibility property on " + dependencyObject);
+                // DebugUtils.WriteLine("Calling CoerceValue Visibility property on " + dependencyObject);
                 dependencyObject.CoerceValue(UIElement.VisibilityProperty);
-                DebugUtils.WriteLine("value is " + dependencyObject.GetValue(VisibilityProperty));;
+                // DebugUtils.WriteLine("value is " + dependencyObject.GetValue(VisibilityProperty));;
 
             }
         }
@@ -104,20 +115,32 @@ namespace AnalysisControls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            RibbonDebugUtils.DumpPropertySource(this, VisibilityProperty);
+            // RibbonDebugUtils.DumpPropertySource(this, VisibilityProperty);
         }
 
         protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
         {
             base.OnTemplateChanged(oldTemplate, newTemplate);
-            RibbonDebugUtils.DumpPropertySource(this, VisibilityProperty);
+            // RibbonDebugUtils.DumpPropertySource(this, VisibilityProperty);
         }
 
         protected override void OnStyleChanged(Style oldStyle, Style newStyle)
         {
-            base.OnStyleChanged(oldStyle, newStyle);
+            DebugUtils.WriteLine($"Style changing: " + string.Join("\n", newStyle.Setters.Select(x =>
+                    {
+                        switch (x)
+                        {
+                            case EventSetter eventSetter:
+                                break;
+                            case Setter setter:
+                                return $"{setter.Property.Name}={setter.Value}";
+                            default:
+                                return null;
+                        }
 
-            RibbonDebugUtils.DumpPropertySource(this, VisibilityProperty);
+                        return null;
+                    }).Where(x=>x  != null)), DebugCategory.DataBinding);
+                //MessageBox.Show("Test");, VisibilityProperty);
             // if (DependencyPropertyHelper.IsTemplatedValueDynamic(this, VisibilityProperty))
             // {
                 // DebugUtils.WriteLine($"Templated value is dynamic");
@@ -127,19 +150,21 @@ namespace AnalysisControls
 
         private static object CoerceVisibility(DependencyObject d, object basevalue)
         {
-            DebugUtils.WriteLine("Coercing visibility for " + d + " (basevalue is " + basevalue + ")");
+            DebugUtils.WriteLine("Coercing visibility for " + d + " (basevalue is " + basevalue + ")", DebugCategory.DataBinding);
             var coerceVisibility = (Visibility)basevalue == Visibility.Hidden ? (object)Visibility.Collapsed : basevalue;
-            DebugUtils.WriteLine("Result visibility for " + d + " is " + coerceVisibility);
+            DebugUtils.WriteLine("Result visibility for " + d + " is " + coerceVisibility, DebugCategory.DataBinding);
             return coerceVisibility;
         }
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
+            // DebugUtils.WriteLine($"Pre-base call {e.Property.Name}", DebugCategory.DataBinding);
             base.OnPropertyChanged(e);
-            if (e.Property.Name == "Visibility")
-            {
-                DebugUtils.WriteLine("XONTEXTUAL TAB GROUP VISIBILTY SET " + e.NewValue);
-            }
+            // DebugUtils.WriteLine($"return from base call {e.Property.Name}", DebugCategory.DataBinding);
+            // if (e.Property.Name == "Visibility")
+            // {
+                // DebugUtils.WriteLine("XONTEXTUAL TAB GROUP VISIBILTY SET " + e.NewValue, DebugCategory.DataBinding);
+            // }
             RibbonDebugUtils.OnPropertyChanged(this.ToString(), this, e);
         }
 

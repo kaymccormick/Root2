@@ -72,7 +72,7 @@ namespace AnalysisControls
         public override PropertyDescriptorCollection GetProperties()
         {
             var pp = base.GetProperties();
-            DebugUtils.WriteLine("GetProperties for " + Type);
+            // DebugUtils.WriteLine("GetProperties for " + Type);
             List<PropertyDescriptor> p = new List<PropertyDescriptor>();
             foreach (var propertyInfo in Type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
@@ -126,7 +126,7 @@ namespace AnalysisControls
            ILogger logger
         )
         {
-            DebugUtils.WriteLine("Constructor " + GetType().FullName + " " + type.FullName);
+            // DebugUtils.WriteLine("Constructor " + GetType().FullName + " " + type.FullName);
            // _funcConverter          = funcConverter ;
             _uiElementTypeConverter = uiElementTypeConverter ;
             Type                    = type ;
@@ -143,7 +143,7 @@ namespace AnalysisControls
         /// <returns></returns>
         public override TypeConverter GetConverter()
         {
-            DebugUtils.WriteLine("Returning converter for " + Type.FullName);
+            // DebugUtils.WriteLine("Returning converter for " + Type.FullName);
             return _uiElementTypeConverter;
         }
 

@@ -616,7 +616,7 @@ namespace KayMcCormick.Lib.Wpf
                     double height = rowHeights[row] + excessPerRow;
                     var finalRect = new Rect(Xpos, Ypos, width, height);
                     internalChild.Arrange(finalRect);
-                    DebugUtils.WriteLine(finalRect.ToString());
+                    // DebugUtils.WriteLine(finalRect.ToString());
 
                     col = (col + 1) % NumColumns;
                     if (col == 0)

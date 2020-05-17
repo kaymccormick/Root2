@@ -53,7 +53,7 @@ namespace AnalysisControls
 
         private static void OnInsertionPointUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            DebugUtils.WriteLine($"Insertion Point Updated to {e.NewValue}");
+            DebugUtils.WriteLine($"Insertion Point Updated to {e.NewValue}", DebugCategory.TextFormatting);
         }
 
         private static void OnSourceTextUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -73,7 +73,7 @@ namespace AnalysisControls
 #if false
                 foreach (var textChange in newTree.GetChanges(c.SyntaxTree))
                 {
-		DebugUtils.WriteLine($"{textChange.Span}");
+		DebugUtils.WriteLine($"{textChange.Span}", DebugCategory.TextFormatting);
                     var i = textChange.Span.Start;
                     LineInfo theLine = null;
                     for (var line = c.LineInfos.FirstOrDefault(); line != null; line = line.NextLine)
@@ -327,7 +327,7 @@ namespace AnalysisControls
         {
             foreach (var diagnostic in diagnostics)
             {
-                DebugUtils.WriteLine(diagnostic.ToString());
+                DebugUtils.WriteLine(diagnostic.ToString(), DebugCategory.TextFormatting);
                 MarkLocation(diagnostic.Location);
                 if (diagnostic.Severity == DiagnosticSeverity.Error) Errors.Add(new DiagnosticError(diagnostic));
             }
@@ -360,7 +360,7 @@ namespace AnalysisControls
             var gridDesiredSize = _grid.DesiredSize;
             DebugUtils.WriteLine(gridDesiredSize.ToString());
             return gridDesiredSize;
-            DebugUtils.WriteLine(constraint.ToString());
+            DebugUtils.WriteLine(constraint.ToString(), DebugCategory.TextFormatting);
             return base.MeasureOverride(constraint);
             return new Size(max_x, _pos.Y);
         }
@@ -411,7 +411,7 @@ namespace AnalysisControls
             if (Node == null || SyntaxTree == null) return;
             if (ReferenceEquals(Node.SyntaxTree, SyntaxTree) == false)
                 throw new InvalidOperationException("Node is not within syntax tree");
-            DebugUtils.WriteLine("Creating new " + nameof(SyntaxNodeCustomTextSource));
+            DebugUtils.WriteLine("Creating new " + nameof(SyntaxNodeCustomTextSource), DebugCategory.TextFormatting);
             TextSource = CreateAndInitTextSource(PixelsPerDip, TypefaceManager);
             _errorTextSource = Errors.Any() ? new ErrorsTextSource(PixelsPerDip, Errors,TypefaceManager) : null;
             _baseProps = TextSource.BaseProps;
@@ -509,7 +509,7 @@ namespace AnalysisControls
 
                     InsertionCharacter = newc;
                     var top = InsertionLine.Origin.Y;
-                    DebugUtils.WriteLine("Setting top to " + top);
+                    DebugUtils.WriteLine("Setting top to " + top, DebugCategory.TextFormatting);
 
                     _textCaret.SetValue(Canvas.TopProperty, top);
                     if (InsertionCharacter != null)
@@ -518,9 +518,9 @@ namespace AnalysisControls
                     break;
                 case Key.Right:
                 {
-                    DebugUtils.WriteLine("incrementing insertion point");
+                    DebugUtils.WriteLine("incrementing insertion point", DebugCategory.TextFormatting);
                     var ip = ++InsertionPoint;
-                    DebugUtils.WriteLine($"{ip}");
+                    DebugUtils.WriteLine($"{ip}", DebugCategory.TextFormatting);
 
                     var newc = InsertionCharacter.NextCell;
                     if (newc.Region != InsertionRegion)
@@ -532,7 +532,7 @@ namespace AnalysisControls
                     InsertionCharacter = newc;
 
                     var top = InsertionLine.Origin.Y;
-                    DebugUtils.WriteLine("Setting top to " + top);
+                    DebugUtils.WriteLine("Setting top to " + top, DebugCategory.TextFormatting);
 
                     _textCaret.SetValue(Canvas.TopProperty, top);
                     _textCaret.SetValue(Canvas.LeftProperty, InsertionCharacter.Bounds.Left);
@@ -601,7 +601,7 @@ namespace AnalysisControls
             }
 
             dc.Close();
-            DebugUtils.WriteLine($"{_rect.Width}x{_rect.Height}");
+            DebugUtils.WriteLine($"{_rect.Width}x{_rect.Height}", DebugCategory.TextFormatting);
             _textDest.Children.Add(d);
             // if (_textDest.Children.Count < lineNo + 1)
             // {
@@ -626,9 +626,9 @@ namespace AnalysisControls
 
             //AdvanceInsertionPoint(e.Text.Length);
 
-            DebugUtils.WriteLine("About to update source text");
+            DebugUtils.WriteLine("About to update source text", DebugCategory.TextFormatting);
             SourceText = code;
-            DebugUtils.WriteLine("Done updating source text");
+            DebugUtils.WriteLine("Done updating source text", DebugCategory.TextFormatting);
             ChangingText = false;
             e.Handled = true;
         }
@@ -662,22 +662,22 @@ namespace AnalysisControls
         protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
         {
             base.OnTemplateChanged(oldTemplate, newTemplate);
-            DebugUtils.WriteLine($"{newTemplate}");
+            DebugUtils.WriteLine($"{newTemplate}", DebugCategory.TextFormatting);
         }
 
-        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        private void OnPropertyChangedz(DependencyPropertyChangedEventArgs e)
         {
             base.OnPropertyChanged(e);
             DebugUtils.WriteLine($"{e.Property.Name}");
             if (e.Property.Name == "DesignerView1")
             {
-                DebugUtils.WriteLine($"{e.Property.Name} {e.OldValue} = {e.NewValue}");
-                foreach (var m in e.NewValue.GetType().GetMethods()) DebugUtils.WriteLine(m.ToString());
-                foreach (var ii in e.NewValue.GetType().GetInterfaces()) DebugUtils.WriteLine(ii.ToString());
+                DebugUtils.WriteLine($"{e.Property.Name} {e.OldValue} = {e.NewValue}", DebugCategory.TextFormatting);
+                foreach (var m in e.NewValue.GetType().GetMethods()) DebugUtils.WriteLine(m.ToString(), DebugCategory.TextFormatting);
+                foreach (var ii in e.NewValue.GetType().GetInterfaces()) DebugUtils.WriteLine(ii.ToString(), DebugCategory.TextFormatting);
             }
             else if (e.Property.Name == "InstanceBuilderContext")
             {
-                DebugUtils.WriteLine($"{e.Property.Name} {e.OldValue} = {e.NewValue}");
+                DebugUtils.WriteLine($"{e.Property.Name} {e.OldValue} = {e.NewValue}", DebugCategory.TextFormatting);
             }
         }
 
@@ -772,9 +772,9 @@ namespace AnalysisControls
                     }
                     else
                     {
-                        DebugUtils.WriteLine("no end of line");
+                        DebugUtils.WriteLine("no end of line", DebugCategory.TextFormatting);
                         foreach (var textRunSpan in myTextLine.GetTextRunSpans())
-                            DebugUtils.WriteLine(textRunSpan.Value.ToString());
+                            DebugUtils.WriteLine(textRunSpan.Value.ToString(), DebugCategory.TextFormatting);
                     }
 
                     var lineRegions = new List<RegionInfo>();
@@ -812,7 +812,7 @@ namespace AnalysisControls
                                 {
                                     // ReSharper disable once UnusedVariable
                                     var glyphTypefaceBaseline = rectGlyphRun.GlyphTypeface.Baseline;
-                                    //DebugUtils.WriteLine(glyphTypefaceBaseline.ToString());
+                                    //DebugUtils.WriteLine(glyphTypefaceBaseline.ToString(), DebugCategory.TextFormatting);
                                     //bounds.Offset(cell.X, cell.Y + glyphTypefaceBaseline);
                                     // dc.DrawRectangle(Brushes.White, null,  bounds);
                                     // dc.DrawText(
@@ -885,7 +885,7 @@ namespace AnalysisControls
 
                         lineInfo.Text = lineString;
                         lineInfo.Regions = lineRegions;
-//                        DebugUtils.WriteLine(rect.ToString());
+                        //                        DebugUtils.WriteLine(rect.ToString(), DebugCategory.TextFormatting);
                         //dc.DrawRectangle(null, new Pen(Brushes.Green, 1), r1);
                     }
 
@@ -893,7 +893,7 @@ namespace AnalysisControls
                     var ddBounds = dd.Bounds;
                     if (!ddBounds.IsEmpty)
                         ddBounds.Offset(0, linePosition.Y);
-                    //DebugUtils.WriteLine(line.ToString() + ddBounds.ToString());
+                    //DebugUtils.WriteLine(line.ToString() + ddBounds.ToString(), DebugCategory.TextFormatting);
                     //dc.DrawRectangle(null, new Pen(Brushes.Red, 1), ddBounds);
 
                     // Draw the formatted text into the drawing context.
@@ -901,11 +901,11 @@ namespace AnalysisControls
                     // ReSharper disable once UnusedVariable
                     var p = new Point(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace, linePosition.Y);
                     var textLineBreak = myTextLine.GetTextLineBreak();
-                    if (textLineBreak != null) DebugUtils.WriteLine(textLineBreak.ToString());
+                    if (textLineBreak != null) DebugUtils.WriteLine(textLineBreak.ToString(), DebugCategory.TextFormatting);
                     line++;
 
                     prev = textLineBreak;
-                    if (prev != null) DebugUtils.WriteLine("Line break!");
+                    if (prev != null) DebugUtils.WriteLine("Line break!", DebugCategory.TextFormatting);
 
                     // Update the index position in the text store.
                     textStorePosition += myTextLine.Length;
@@ -1031,7 +1031,7 @@ namespace AnalysisControls
             var point = e.GetPosition(_rectangle);
             var zz = Infos.Where(x => x.BoundingRect.Contains(point)).ToList();
             if (zz.Count > 1)
-                DebugUtils.WriteLine("Multiple regions matched");
+                DebugUtils.WriteLine("Multiple regions matched", DebugCategory.TextFormatting);
             //    throw new InvalidOperationException();
 
             if (!zz.Any())
@@ -1048,7 +1048,7 @@ namespace AnalysisControls
             foreach (var tuple in zz)
             {
                 HoverRegionInfo = tuple;
-                if (tuple.Trivia.HasValue) DebugUtils.WriteLine(tuple.ToString());
+                if (tuple.Trivia.HasValue) DebugUtils.WriteLine(tuple.ToString(), DebugCategory.TextFormatting);
 
                 if (tuple.SyntaxNode != HoverSyntaxNode)
                 {
@@ -1072,7 +1072,7 @@ namespace AnalysisControls
                         if (sym != null)
                         {
                             HoverSymbol = sym;
-                            DebugUtils.WriteLine(sym.Kind.ToString());
+                            DebugUtils.WriteLine(sym.Kind.ToString(), DebugCategory.TextFormatting);
                         }
 
                         var node = tuple.SyntaxNode;
@@ -1120,21 +1120,21 @@ namespace AnalysisControls
                     var item2Y = (int) item2.Y;
                     if (item2Y >= _chars.Count)
                     {
-                        DebugUtils.WriteLine("out of bounds");
+                        DebugUtils.WriteLine("out of bounds", DebugCategory.TextFormatting);
                     }
                     else
                     {
                         var chars = _chars[item2Y];
-                        DebugUtils.WriteLine("y is " + item2Y);
+                        DebugUtils.WriteLine("y is " + item2Y, DebugCategory.TextFormatting);
                         var item2X = (int) item2.X;
                         if (item2X >= chars.Count)
                         {
-                            //DebugUtils.WriteLine("out of bounds");
+                            //DebugUtils.WriteLine("out of bounds", DebugCategory.TextFormatting);
                         }
                         else
                         {
                             var ch = chars[item2X];
-                            DebugUtils.WriteLine("Cell is " + item2 + " " + ch);
+                            DebugUtils.WriteLine("Cell is " + item2 + " " + ch, DebugCategory.TextFormatting);
                             var newOffset = tuple.Offset + cellIndex;
                             HoverOffset = newOffset;
                             HoverColumn = (int) item2.X;
@@ -1142,7 +1142,7 @@ namespace AnalysisControls
                             if (SelectionEnabled && IsSelecting)
                             {
                                 if (_selectionGeometry != null) _textDest.Children.Remove(_selectionGeometry);
-                                DebugUtils.WriteLine("Calculating selection");
+                                DebugUtils.WriteLine("Calculating selection", DebugCategory.TextFormatting);
 
                                 var group = new DrawingGroup();
 
@@ -1167,14 +1167,14 @@ namespace AnalysisControls
                                     info.Offset >= begin && info.Offset + info.Length <= end))
                                 {
                                     DebugUtils.WriteLine(
-                                        $"Region offset {regionInfo.Offset} : Length {regionInfo.Length}");
+                                        $"Region offset {regionInfo.Offset} : Length {regionInfo.Length}", DebugCategory.TextFormatting);
                                     if (regionInfo.Offset <= begin)
                                     {
                                         var takeNum = begin - regionInfo.Offset;
-                                        DebugUtils.WriteLine("Taking " + takeNum);
+                                        DebugUtils.WriteLine("Taking " + takeNum, DebugCategory.TextFormatting);
                                         foreach (var tuple1 in regionInfo.Characters.Take(takeNum))
                                         {
-                                            DebugUtils.WriteLine("Adding " + tuple1);
+                                            DebugUtils.WriteLine("Adding " + tuple1, DebugCategory.TextFormatting);
                                             group.Children.Add(new GeometryDrawing(red, null,
                                                 new RectangleGeometry(tuple1.Bounds)));
                                         }
@@ -1261,7 +1261,7 @@ namespace AnalysisControls
             base.OnNodeUpdated();
             if (!ChangingText)
             {
-                DebugUtils.WriteLine("Node updated");
+                DebugUtils.WriteLine("Node updated", DebugCategory.TextFormatting);
                 UpdateTextSource();
                 UpdateFormattedText();
             }

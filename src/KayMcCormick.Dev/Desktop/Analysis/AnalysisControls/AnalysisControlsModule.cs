@@ -153,6 +153,7 @@ namespace AnalysisControls
                 kayTypes.Add(type);
             }
 
+            kayTypes.Clear();
             var xx = new CustomTypes(kayTypes);
             builder.RegisterInstance(xx).OnActivating(args =>
             {

@@ -104,12 +104,15 @@ namespace Client2
                 registration.Metadata["GuidFrom"] = guidFrom;
             }
 
-            registration.Preparing += (sender, args) => {DebugUtils.WriteLine($"{args.Component.Activator.LimitType}"); };
+            registration.Preparing += (sender, args) =>
+            {
+                // DebugUtils.WriteLine($"{args.Component.Activator.LimitType}");
+            };
             registration.Activating += (sender, args) => { };
             registration.Activated += (sender, args) => { };
             var registrationActivator = registration.Activator;
             var limitType = registrationActivator.LimitType;
-            DebugUtils.WriteLine($"LimitType = {limitType}");
+            // DebugUtils.WriteLine($"LimitType = {limitType}");
         }
 
         private void OnComponentRegistryOnRegistered(
