@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using AnalysisControls.RibbonModel;
 
 namespace AnalysisControls
@@ -11,6 +12,8 @@ namespace AnalysisControls
         /// 
         /// 
         /// </summary>
+        [DefaultValue(false)]
+
         public bool IsChecked { get; set; }
 
         public override ControlKind Kind => ControlKind.RadioButton;

@@ -140,7 +140,7 @@ namespace AnalysisControls
             kayTypes.Add(typeof(IInstanceLookup));
             kayTypes.Add(typeof(Container));
             kayTypes.Add(typeof(IResolveOperation));
-            kayTypes.Add(typeof(Type));
+            //kayTypes.Add(typeof(Type));
             kayTypes.Add(typeof(MethodInfo));
             kayTypes.Add(typeof(PropertyPath));
             kayTypes.Add(typeof(PropertyInfo));
@@ -149,7 +149,7 @@ namespace AnalysisControls
                 .Where(t => typeof(CSharpSyntaxNode).IsAssignableFrom(t)).ToList();
             foreach (var type in collection)
             {
-                DebugUtils.WriteLine("Type enabled for custom descriptor " + type.FullName);
+                //DebugUtils.WriteLine("Type enabled for custom descriptor " + type.FullName);
                 kayTypes.Add(type);
             }
 

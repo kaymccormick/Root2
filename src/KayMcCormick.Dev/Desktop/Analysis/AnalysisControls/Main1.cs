@@ -1,4 +1,13 @@
-﻿using System;
+﻿using AnalysisAppLib;
+using Autofac.Features.Metadata;
+using AvalonDock;
+using AvalonDock.Layout;
+using KayMcCormick.Dev;
+using KayMcCormick.Lib.Wpf;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.VisualBasic;
+using NLog.Fluent;
+using System;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -8,16 +17,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using AnalysisAppLib;
-using AnalysisControls.Properties;
-using Autofac.Features.Metadata;
-using AvalonDock;
-using AvalonDock.Layout;
-using KayMcCormick.Dev;
-using KayMcCormick.Lib.Wpf;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.VisualBasic;
-using NLog.Fluent;
 using SyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
 namespace AnalysisControls
@@ -119,9 +118,9 @@ namespace AnalysisControls
                 CanExecute));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateSolution, OnCreateSolutionExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateProject, OnCreateProjectExecuted));
-            CommandBindings.Add(new CommandBinding(WpfAppCommands.OpenSolutionItem, OnSolutionItemExecuted));
-            CommandBindings.Add(new CommandBinding(WpfAppCommands.LoadSolution, LoadSolutionExecuted));
-            CommandBindings.Add(new CommandBinding(WpfAppCommands.BrowseSymbols, OnBrowseSymbolsExecuted));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.OpenSolutionItem, OnSolutionItemExecutedAsync));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.LoadSolution, LoadSolutionExecutedAsync));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.BrowseSymbols, OnBrowseSymbolsExecutedAsync));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewDetails, OnViewDetailsExecutedAsync));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewResources, OnViewResourcesExecuted));
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpenExecuted));
@@ -134,7 +133,8 @@ namespace AnalysisControls
             if (e.Parameter is Meta<Lazy<IAppCustomControl>> controlItem)
             {
                 var control = controlItem.Value.Value;
-                var doc = new DocModel() {Content = control};
+                var doc = DocModel.CreateInstance();
+                doc.Content = control;
                 ViewModel.Documents.Add(doc);
                 ViewModel.ActiveContent = doc;
             }
@@ -143,7 +143,9 @@ namespace AnalysisControls
         private void OnViewResourcesExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             var a = (Assembly) e.Parameter;
-            var doc = new DocModel() {Title = "Resources", Content = new AssemblyResourceTree() {Assembly = a}};
+            var doc = DocModel.CreateInstance();
+            doc.Title = "Resources";
+            doc.Content = new AssemblyResourceTree() {Assembly = a};
             doc.ContextualTabGroupHeaders.Add("Resources");
             ViewModel.Documents.Add(doc);
             ViewModel.ActiveContent = doc;
@@ -200,7 +202,9 @@ namespace AnalysisControls
             }
 
             var detailsTitle = "Details for " + desc;
-            var docModel = new DocModel {Title = detailsTitle, Content = dg};
+            var docModel = DocModel.CreateInstance();
+            docModel.Title = detailsTitle;
+            docModel.Content = dg;
             ViewModel.Documents.Add(docModel);
             ViewModel.ActiveContent = docModel;
         }
@@ -233,7 +237,9 @@ namespace AnalysisControls
             }
             else
             {
-                var anchorableModel = new DocModel() {Content = ViewModel?.Messages, Title = "Messages"};
+                var anchorableModel = DocModel.CreateInstance();
+                anchorableModel.Content = ViewModel?.Messages;
+                anchorableModel.Title = "Messages";
                 ViewModel.Documents.Add(anchorableModel);
             }
         }
@@ -259,7 +265,7 @@ namespace AnalysisControls
             DebugUtils.WriteLine($"{cmd} {e.CanExecute} {e.Handled}");
         }
 
-        private async void OnBrowseSymbolsExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void OnBrowseSymbolsExecutedAsync(object sender, ExecutedRoutedEventArgs e)
         {
             try
             {
@@ -271,7 +277,7 @@ namespace AnalysisControls
             }
         }
 
-        private async void LoadSolutionExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void LoadSolutionExecutedAsync(object sender, ExecutedRoutedEventArgs e)
         {
             await ViewModel.LoadSolutionAsync((string) e.Parameter);
         }
@@ -281,7 +287,7 @@ namespace AnalysisControls
             if (_dockingManager.ActiveContent != null) DebugUtils.WriteLine(_dockingManager.ActiveContent.ToString());
         }
 
-        private async void OnSolutionItemExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void OnSolutionItemExecutedAsync(object sender, ExecutedRoutedEventArgs e)
         {
             await ViewModel.OpenSolutionItem(e.Parameter);
         }

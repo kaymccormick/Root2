@@ -366,5 +366,16 @@ namespace Client2
         {
             DebugUtils.WriteLine("Window OnLoaded");
         }
+
+        private void CanExecutePaste(object sender, CanExecuteRoutedEventArgs e)
+        {
+            var dataObject = Clipboard.GetDataObject();
+            if (dataObject != null) e.CanExecute = dataObject.GetFormats().Any();
+        }
+
+        private void OnExecutedPaste(object sender, ExecutedRoutedEventArgs e)
+        {
+            Main1.ViewModel.OnExecutedPaste(sender, e);
+        }
     }
 }

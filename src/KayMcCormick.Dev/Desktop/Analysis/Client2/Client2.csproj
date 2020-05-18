@@ -119,6 +119,9 @@
     <Compile Include="MyInfo.cs" />
     <Compile Include="ProjInterfaceOptions.cs" />
     <Compile Include="RibbonModelItemSplitButton.cs" />
+    <Compile Include="RibbonWin1.xaml.cs">
+      <DependentUpon>RibbonWin1.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TabItemTemplateSelector.cs" />
     <Compile Include="TestAndExitCommand.cs" />
     <Compile Include="TestRibbonWindow.xaml.cs">
@@ -276,6 +279,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Client2Window1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RibbonWin1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

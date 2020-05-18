@@ -506,15 +506,12 @@ namespace ProjInterface
             {
                 if (layoutContent is LayoutDocument d)
                 {
-                    var di = new DocModel()
-                    {
-                        ContentId = d.ContentId, Title = d.Title,
-                        Description = d.Description,
-                        IsVisible = d.IsVisible,
-                        LastActivationTimeStamp = d.LastActivationTimeStamp,
-                    };
-                    
-
+                    var di = DocModel.CreateInstance();
+                    di.ContentId = d.ContentId;
+                    di.Title = d.Title;
+                    di.Description = d.Description;
+                    di.IsVisible = d.IsVisible;
+                    di.LastActivationTimeStamp = d.LastActivationTimeStamp;
                 }
             }
             foreach (var layoutRootChild in LayoutRoot.Children)

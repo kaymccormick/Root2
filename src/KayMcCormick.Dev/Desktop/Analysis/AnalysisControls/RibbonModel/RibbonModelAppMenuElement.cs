@@ -1,11 +1,27 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace AnalysisControls.RibbonModel
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class RibbonModelAppMenuElement
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        [DefaultValue(null)]
         public string Header { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [DefaultValue(null)]
         public string KeyTip { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [DefaultValue(null)]
         public object ImageSource { get; set; }
 
         public RibbonModelAppSplitMenuItem CreateSplitMenuItem(string header)
@@ -22,7 +38,8 @@ namespace AnalysisControls.RibbonModel
             return r;
         }
 
-        public ObservableCollection<RibbonModelAppMenuElement> Items { get; } =
-            new ObservableCollection<RibbonModelAppMenuElement>();
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public RibbonModelAppMenuElementCollection  Items { get; } =
+            new RibbonModelAppMenuElementCollection();
     }
 }

@@ -22,11 +22,12 @@ namespace AnalysisControls
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private RibbonContextualTabGroupItemsControl _contextualTabGroupItemsControl;
 
+        /// <inheritdoc />
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
             MyContextualTabGroupItemsControl = GetTemplateChild("PART_ContextualTabGroupItemsControl") as MyRibbonContextualTabGroupItemsControl;
-            MyContextualTabGroupItemsControl.Logger = Logger;
+            if (MyContextualTabGroupItemsControl != null) MyContextualTabGroupItemsControl.Logger = Logger;
             _contextualTabGroupItemsControl =
                 GetTemplateChild("PART_ContextualTabGroupItemsControl") as RibbonContextualTabGroupItemsControl;
         }
@@ -190,6 +191,32 @@ namespace AnalysisControls
         }
     }
 
+    /// <inheritdoc />
+    public class MyRibbonQuickAccessToolbar : RibbonQuickAccessToolBar
+    {
+        static MyRibbonQuickAccessToolbar()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbonQuickAccessToolbar),
+                new FrameworkPropertyMetadata(typeof(MyRibbonQuickAccessToolbar)));
+
+
+        }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+        }
+
+        protected override DependencyObject GetContainerForItemOverride()
+        {
+            return (DependencyObject)new MyRibbonControl();
+        }
+
+        protected override bool IsItemItsOwnContainerOverride(object item)
+        {
+            return base.IsItemItsOwnContainerOverride(item);
+        }
+    }
     public class MyRibbonTabsPanel : RibbonTabsPanel {
     
     }

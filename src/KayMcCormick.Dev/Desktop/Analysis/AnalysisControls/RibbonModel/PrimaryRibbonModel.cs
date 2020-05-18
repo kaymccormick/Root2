@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Controls.Ribbon;
 
 namespace AnalysisControls.RibbonModel
@@ -33,11 +34,15 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public ObservableCollection<RibbonModelTab> RibbonItems { get; } = new ObservableCollection<RibbonModelTab>();
+
+        public RibbonModelQuickAccessToolbar QuickAccessToolbar { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public ObservableCollection<RibbonModelContextualTabGroup> ContextualTabGroups
         {
             get;
@@ -103,5 +108,16 @@ namespace AnalysisControls.RibbonModel
         {
             return new RibbonModelGallery();
         }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class RibbonModelQuickAccessToolbar
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public ObservableCollection<object> Items { get; set; }
     }
 }

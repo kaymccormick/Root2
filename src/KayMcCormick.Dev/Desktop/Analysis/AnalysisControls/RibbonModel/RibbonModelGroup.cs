@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Design;
-using System.Windows.Media;
+using System.Windows.Markup;
 
 namespace AnalysisControls.RibbonModel
 {
     /// <summary>
     /// 
     /// </summary>
+    [ContentProperty("Items")]
     public class RibbonModelGroup : RibbonModelItem
     {
         /// <inheritdoc />
@@ -22,12 +21,15 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public object Header { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [Editor(typeof(GroupItemCollectionEditor), typeof(CollectionEditor))]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        
         public RibbonModelGroupItemCollection Items { get; } = new RibbonModelGroupItemCollection();
 
         /// <summary>
@@ -173,93 +175,4 @@ namespace AnalysisControls.RibbonModel
 
         public override ControlKind Kind => ControlKind.RibbonGroup;
     }
-
-    [Editor(typeof(GroupItemCollectionEditor), typeof(CollectionEditor))]
-    public class RibbonModelGroupItemCollection : ObservableCollection<RibbonModelItem>
-    {
-    }
-
-    public interface IRibbonModelGroupItem
-    {
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class RibbonModelToggleButton : RibbonModelItem
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool IsChecked
-
-        {
-            get;
-            set;
-        }
-
-        public override ControlKind Kind => ControlKind.RibbonToggleButton;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class RibbonModelTwoLineText : RibbonModelItem
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public Geometry PathData
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Brush PathFill
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Brush PathStroke { get; set; } = Brushes.Black;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Text
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool HasTwoLines
-        {
-            get;
-            set;
-        }
-
-        public override ControlKind Kind => ControlKind.RibbonTwoLine;
-    }
-
-    public class GroupItemCollectionEditor : CollectionEditor
-    {
-        public GroupItemCollectionEditor() : base(typeof(RibbonModelGroupItemCollection))
-        {
-        }
-
-        protected override Type[] CreateNewItemTypes()
-        {
-            return new[] {typeof(RibbonModelItemButton), typeof(RibbonModelItemComboBox)};
-        }
-    }
-
 }

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Baml2006;
+using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -77,10 +78,18 @@ namespace AnalysisControls
         public override void LoadResult(TempLoadData result)
         {
             DebugUtils.WriteLine(result.ToString());
-            if (!(result.Value is IEnumerable ee)) return;
-            foreach (var o in ee)
-                if (o is SubnodeData sd)
-                    Items.Add(new Subnode() {Name = sd.Name, Value = sd.Value});
+            switch (result.Value)
+            {
+                case BitmapSource img:
+                    var imgc = new Image() {Source = img};
+                    Items.Add(new Subnode{Name=imgc});
+                    break;
+                case IEnumerable ee:
+                    foreach (var o in ee)
+                        if (o is SubnodeData sd)
+                            Items.Add(new Subnode() { Name = sd.Name, Value = sd.Value });
+                    break;
+            }
         }
 
         private static TempLoadData LoadResourceData(object state)
@@ -116,35 +125,58 @@ namespace AnalysisControls
                         var size = BitConverter.ToInt32(data, 0);
                         var memoryStream = new MemoryStream(data, offset, size);
                         var ext = Path.GetExtension(subnode.Name.ToString()).ToLowerInvariant();
+                        DebugUtils.WriteLine(ext);
                         switch (ext)
                         {
                             case ".baml":
                             var object2 = subnode.Dispatcher.Invoke(() =>
                             {
-                                var reader1 = new Baml2006Reader(memoryStream);
-                                var object1 = XamlReader.Load(reader1);
-                                var nodes = new List<SubnodeData>();
-                                if (object1 is IDictionary rd)
-                                    foreach (DictionaryEntry entry in rd)
-                                    {
-                                        var sb = new Subnode() {Name = entry.Key, Value = entry.Value};
-                                        subnode.Items.Add(sb);
-                                    }
+                                try
+                                {
+                                    var reader1 = new Baml2006Reader(memoryStream);
+                                    var object1 = XamlReader.Load(reader1);
+                                    if (object1 is IDictionary rd)
+                                        foreach (DictionaryEntry entry in rd)
+                                        {
+                                            var sb = new Subnode() {Name = entry.Key, Value = entry.Value};
+                                            subnode.Items.Add(sb);
+                                        }
 
-                                return new TempLoadData() {Value = object1};
+                                    return new TempLoadData() {Value = object1};
+                                }
+                                catch (Exception ex)
+                                {
+                                    return new TempLoadData() {Exception = ex};
+                                }
                             }, DispatcherPriority.Send);
                             if (object2.Value is UIElement)
                             {
                                 subnode.Dispatcher.Invoke(() => { });
                             }
 
-                            break;
+                            return object2;
                             case ".png":
-                                var png = new PngBitmapDecoder(memoryStream, BitmapCreateOptions.None,
-                                    BitmapCacheOption.Default);
-                                BitmapSource src = png.Frames[0];
-                                subnode.Value = src;
-                                break;
+                                var object3 = subnode.Dispatcher.Invoke(() =>
+                                {
+                                    try
+                                    {
+                                        DebugUtils.WriteLine(".png");
+                                        var png = new PngBitmapDecoder(memoryStream, BitmapCreateOptions.None,
+                                            BitmapCacheOption.Default);
+                                        BitmapSource src = png.Frames[0];
+                                        var s = new SubnodeData();
+                                        s.Value = src;
+                                        s.Name = "Image";
+                                        return new TempLoadData() {Value = src};
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        return new TempLoadData() {Exception = ex};
+                                    }
+                                });
+
+                                return object3;
+
 
                             case ".jpg":
                             case ".jpeg":

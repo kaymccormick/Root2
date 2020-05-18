@@ -199,7 +199,11 @@
     <Compile Include="ITextPropertiesManager.cs" />
     <Compile Include="ITypefaceManager.cs" />
     <Compile Include="JsonConverters.cs" />
+    <Compile Include="JsonNodeView.cs" />
     <Compile Include="JsonSyntaxTokenConverter.cs" />
+    <Compile Include="JsonUserControl.xaml.cs">
+      <DependentUpon>JsonUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="KindsConverter.cs" />
     <Compile Include="LineContext.cs" />
     <Compile Include="LineInfo.cs" />
@@ -253,11 +257,17 @@
     <Compile Include="RibbonModel\AppCommandTypeConverter.cs" />
     <Compile Include="RibbonModel\ControlKind.cs" />
     <Compile Include="RibbonModel\Definition\InfrastructureTab.cs" />
+    <Compile Include="RibbonModel\GroupItemCollectionEditor.cs" />
+    <Compile Include="RibbonModel\IRibbonModelGroupItem.cs" />
+    <Compile Include="RibbonModel\RibbonModelAppMenuElementCollection.cs" />
     <Compile Include="RibbonModel\RibbonModelControlGroup.cs" />
     <Compile Include="FunTabProvider.cs" />
     <Compile Include="RibbonModel\RibbonModelDropZone.cs" />
     <Compile Include="RibbonModel\RibbonModelDropZoneImpl.cs" />
+    <Compile Include="RibbonModel\RibbonModelGroupItemCollection.cs" />
     <Compile Include="RibbonModel\RibbonModelItemTypeConverter.cs" />
+    <Compile Include="RibbonModel\RibbonModelToggleButton.cs" />
+    <Compile Include="RibbonModel\RibbonModelTwoLineText.cs" />
     <Compile Include="RibbonViewGroupProviderBase.cs" />
     <Compile Include="RibbonViewGroupProviderBaseImpl.cs" />
     <Compile Include="Ribb\Definition\SuperGRoup.cs" />
@@ -269,16 +279,16 @@
     <Compile Include="RibbonModel\Definition\AssembliesTypesGroup.cs" />
     <Compile Include="RibbonModel\PrimaryRibbonModel.cs" />
     <Compile Include="RibbonModel\RibbonModelApplicationMenu.cs" />
-    <Compile Include="Ribbon\RibbonModelAppMenuElement.cs" />
+    <Compile Include="RibbonModel\RibbonModelAppMenuElement.cs" />
     <Compile Include="RibbonModel\RibbonModelAppMenuItem.cs" />
     <Compile Include="RibbonModel\RibbonModelAppSplitMenuItem.cs" />
     <Compile Include="RibbonModel\RibbonModelContextualTabGroup.cs" />
     <Compile Include="Ribbon\RibbonModelGallery.cs" />
     <Compile Include="RibbonModel\RibbonModelGalleryCategory.cs" />
-    <Compile Include="Ribbon\RibbonModelGalleryItem.cs" />
+    <Compile Include="RibbonModel\RibbonModelGalleryItem.cs" />
     <Compile Include="RibbonModel\RibbonModelItem.cs" />
     <Compile Include="RibbonModel\RibbonModelItemButton.cs" />
-    <Compile Include="Ribbon\DisplayableAppCommandGroup.cs" />
+    <Compile Include="RibbonModel\DisplayableAppCommandGroup.cs" />
     <Compile Include="RibbonModel\BaseLibCommandGroup.cs" />
     <Compile Include="Ribbon\RibbonModelItemComboBox.cs" />
     <Compile Include="Ribbon\RibbonModelItemMenuButton.cs" />
@@ -290,7 +300,7 @@
     <Compile Include="RibbonModel\RibbonTabHeaderAttribute.cs" />
     <Compile Include="RibbonModel\Definition\ManagementTab.cs" />
     <Compile Include="Ribbon\AssembliesRibbonTab.cs" />
-    <Compile Include="Ribbon\DerpTab.cs" />
+    <Compile Include="RibbonModel\DerpTab.cs" />
     <Compile Include="RWindow.xaml.cs">
       <DependentUpon>RWindow.xaml</DependentUpon>
     </Compile>
@@ -397,6 +407,10 @@
     <Page Include="FormattedCode2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="JsonUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PageFunction1.xaml">
       <SubType>Designer</SubType>

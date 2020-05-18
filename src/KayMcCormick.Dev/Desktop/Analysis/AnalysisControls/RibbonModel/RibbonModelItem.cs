@@ -25,6 +25,7 @@ namespace AnalysisControls.RibbonModel
         /// 
         /// </summary>
         [TypeConverter(typeof(ObjectStringTypeConverter))]
+        [DefaultValue(null)]
         public object Label { get; set; }
 
         /// <summary>
@@ -32,6 +33,7 @@ namespace AnalysisControls.RibbonModel
         /// </summary>
         [TypeConverter(typeof(AppCommandTypeConverter))]
         // ReSharper disable once UnusedMember.Global
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IAppCommand AppCommand
         {
             get { return _appCommand; }
@@ -47,6 +49,7 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// s
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ICommand Command
         {
             get { return _command; }
@@ -61,15 +64,18 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public object CommandTarget { get; set; }
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public object CommandParameter { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public object LargeImageSource
         {
             get;
@@ -79,6 +85,7 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public object SmallImageSource { get; set; }
         /// <summary>
         /// 
@@ -92,26 +99,32 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public double? MaxWidth { get; set; }
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public double? MaxHeight { get; set; }
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public double? MinWidth { get; set; }
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public double? MinHeight { get; set; }
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public double? Width { get; set; }
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public double? Height { get; set; }
 
         /// <inheritdoc />
@@ -121,6 +134,7 @@ namespace AnalysisControls.RibbonModel
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string StringLabel => Label?.ToString();
 
         /// <summary>

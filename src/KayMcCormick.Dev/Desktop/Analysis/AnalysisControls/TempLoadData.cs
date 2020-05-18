@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using KayMcCormick.Dev;
 
 namespace AnalysisControls
 {
@@ -37,11 +39,24 @@ namespace AnalysisControls
         /// </summary>
         public object Value { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public Exception Exception { get; set; }
+
         /// <inheritdoc />
         public override string ToString()
         {
-            return
-                $"{nameof(Node)}: {Node}, {nameof(Data)}: {Data}, {nameof(Stream)}: {Stream}, {nameof(Length)}: {Length}, {nameof(MemoryStream)}: {MemoryStream}, {nameof(Value)}: {Value}";
+            try
+            {
+                return
+                    $"{nameof(Node)}: {Node}, {nameof(Data)}: {Data}, {nameof(Stream)}: {Stream}, {nameof(Length)}: {Length}, {nameof(MemoryStream)}: {MemoryStream}, {nameof(Value)}: {Value}";
+            }
+            catch (Exception ex)
+            {
+                DebugUtils.WriteLine(ex.ToString());
+                return base.ToString();
+            }
         }
     }
 }

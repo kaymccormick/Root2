@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using System.Windows;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
@@ -16,6 +17,7 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(Visibility.Collapsed)]
         public Visibility Visibility
         {
             get { return _visibility; }
@@ -31,12 +33,15 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public string Header { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         [Browsable(false)]
+        [JsonIgnore]
+            [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public PrimaryRibbonModel RibbonModel { get; set; }
 
         /// <inheritdoc />

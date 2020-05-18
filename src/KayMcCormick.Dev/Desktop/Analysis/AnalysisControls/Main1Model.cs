@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
 using System.Windows.Forms.Integration;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using AnalysisControls.Properties;
@@ -185,6 +186,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        [UsedImplicitly]
         public ObservableCollection<object> Anchorables { get; } = new ObservableCollection<object>();
 
         /// <summary>
@@ -216,7 +218,10 @@ namespace AnalysisControls
 
         private void AddControlsDoc()
         {
-            Documents.Add(new DocModel {Title = "Controls", Content = new ControlView()});
+            var item = DocModel.CreateInstance();
+            item.Title = "Controls";
+            item.Content = new ControlView();
+            Documents.Add(item);
         }
 
         private void AddPropertiesGridDoc()
@@ -273,16 +278,16 @@ namespace AnalysisControls
             windowsFormsHost.SetValue(Grid.ColumnProperty, 0);
 
             x.Children.Add(windowsFormsHost);
-            Documents.Add(new DocModel {Content = x});
+            var item = DocModel.CreateInstance();
+            item.Content = x;
+            Documents.Add(item);
         }
 
         private void AddAssembliesDoc()
         {
-            var assembliesDoc = new DocModel
-            {
-                Title = "Assemblies",
-                Content = new AssembliesControl {AssemblySource = AppDomain.CurrentDomain.GetAssemblies()}
-            };
+            var assembliesDoc = DocModel.CreateInstance();
+            assembliesDoc.Title = "Assemblies";
+            assembliesDoc.Content = new AssembliesControl {AssemblySource = AppDomain.CurrentDomain.GetAssemblies()};
             assembliesDoc.ContextualTabGroupHeaders.Add("Assemblies");
             Documents.Add(assembliesDoc);
         }
@@ -313,7 +318,10 @@ namespace AnalysisControls
 
             //b.SetBinding(TextBlock.TextProperty, new Binding("ActiveDocument.Content") {Source = this});
 
-            Documents.Add(new DocModel {Title = "Model", Content = t1});
+            var item = DocModel.CreateInstance();
+            item.Title = "Model";
+            item.Content = t1;
+            Documents.Add(item);
         }
 
         private void AddInitialAnchorables()
@@ -429,7 +437,7 @@ namespace AnalysisControls
         /// <param name="sender"></param>
         /// <param name="e"></param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public async void WorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs e)
+        private async void WorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs e)
         {
             DebugUtils.WriteLine(e.Kind.ToString());
             switch (e.Kind)
@@ -886,7 +894,9 @@ namespace AnalysisControls
                     Compilation = (CSharpCompilation) compilation,
                     Model = model
                 };
-                var doc2 = new DocModel {Title = doc.Name, Content = c};
+                var doc2 = DocModel.CreateInstance();
+                doc2.Title = doc.Name;
+                doc2.Content = c;
                 doc2.ContextualTabGroupHeaders.Add(RibbonResources.ContextualTabGroupHeader_CodeAnalysis);
                 Documents.Add(doc2);
                 ActiveContent = doc2;
@@ -935,11 +945,10 @@ namespace AnalysisControls
                     listBox.ItemsSource = listBoxItemsSource;
                 }
 
-                Documents.Add(new DocModel()
-                {
-                    Title = "Symbols for " + pm.Name,
-                    Content = listBox
-                });
+                var item = DocModel.CreateInstance();
+                item.Title = "Symbols for " + pm.Name;
+                item.Content = listBox;
+                Documents.Add(item);
             }
         }
 
@@ -953,21 +962,45 @@ namespace AnalysisControls
             DocumentAddedEvent?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="contextSyntaxTree"></param>
+        /// <param name="cSharpCompilation"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public static DocModel CodeDoc(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)
         {
-            var doc = new DocModel()
+            var doc = DocModel.CreateInstance();
+            doc.Content = new FormattedTextControl()
             {
-                // Content = "Beep",
-                Content = new FormattedTextControl()
-                {
-                    SyntaxTree = contextSyntaxTree,
-                    Compilation = cSharpCompilation
-                },
-                Title = Path.GetFileNameWithoutExtension(file)
+                SyntaxTree = contextSyntaxTree,
+                Compilation = cSharpCompilation
             };
+            doc.Title = Path.GetFileNameWithoutExtension(file);
             doc.ContextualTabGroupHeaders.Add(RibbonResources.ContextualTabGroupHeader_CodeAnalysis);
 
             return doc;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnExecutedPaste(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (Clipboard.ContainsImage())
+            {
+                var i = Clipboard.GetImage();
+                var img = new Image {Source = i};
+                var doc = DocModel.CreateInstance();
+                doc.Content = img;
+                Documents.Add(doc);
+                ActiveContent = doc;
+            }
+            // var  d =Clipboard.GetDataObject();
+            
         }
     }
 

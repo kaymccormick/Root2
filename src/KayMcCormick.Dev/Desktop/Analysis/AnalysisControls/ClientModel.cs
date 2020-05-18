@@ -25,7 +25,8 @@ namespace AnalysisControls
                 .Subscribe(
                     infos =>
                     {
-                        var doc = new DocModel {Content = infos};
+                        var doc = DocModel.CreateInstance();
+                        doc.Content = infos;
                         Main1Model.Documents.Add(doc);
                         Main1Model.ActiveContent = doc;
                     }

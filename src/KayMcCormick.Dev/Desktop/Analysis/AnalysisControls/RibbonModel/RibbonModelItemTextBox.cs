@@ -12,6 +12,7 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public string Value
         {
             get { return _value; }

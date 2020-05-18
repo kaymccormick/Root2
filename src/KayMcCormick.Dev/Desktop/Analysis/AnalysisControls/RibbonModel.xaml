@@ -15,7 +15,15 @@
     </Setter>
   </Style>
   <Style TargetType="{x:Type local:MyRibbonContextualTabGroup}">
-    <Setter Property="Header" Value="{Binding Header}" />
+    <Setter Property="HeaderTemplate">
+      <Setter.Value>
+        <DataTemplate>
+          <TextBlock Text="{Binding}"/>
+        </DataTemplate>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Header" Value="{Binding Header,NotifyOnTargetUpdated=True}" />
+    <Setter Property="ContentPresenter.Content" Value="{Binding Header,NotifyOnTargetUpdated=True}" />
     <Setter Property="Visibility" Value="{Binding Visibility,Mode=TwoWay,NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True}" />
   </Style>
   <Style TargetType="{x:Type local:MyRibbonGroup}">

@@ -20,8 +20,11 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public ObservableCollection<object> Items { get; } = new ObservableCollection<object>();
 
+        [DefaultValue(null)]
         public object SelectionBoxItem
         {
             get { return _selectionBoxItem; }

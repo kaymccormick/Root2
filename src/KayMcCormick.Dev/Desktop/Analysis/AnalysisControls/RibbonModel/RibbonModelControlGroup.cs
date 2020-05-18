@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace AnalysisControls.RibbonModel
 {
@@ -12,6 +13,7 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public ObservableCollection<object> Items { get; set; } = new ObservableCollection<object>();
 
         public RibbonModelItemMenuButton CreateRibbonMenuButton(string label)

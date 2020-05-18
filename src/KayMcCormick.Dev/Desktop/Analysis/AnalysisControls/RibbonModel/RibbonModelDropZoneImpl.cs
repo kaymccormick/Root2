@@ -4,7 +4,7 @@ using NLog;
 
 namespace AnalysisControls.RibbonModel
 {
-    class RibbonModelDropZoneImpl : RibbonModelDropZone
+    public class RibbonModelDropZoneImpl : RibbonModelDropZone
     {
         public override DragDropEffects OnDrop(IDataObject eData)
         {

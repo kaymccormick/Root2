@@ -9,14 +9,15 @@
 // 
 // ---
 #endregion
-using System.Diagnostics ;
 
-namespace ProjInterface
+using System.Diagnostics;
+
+namespace KayMcCormick.Lib.Wpf
 {
     // ReSharper disable once UnusedType.Global
     public class BreakTraceListener : TraceListener
     {
-        private bool _doBreak ;
+        private bool _doBreak = true;
 
         public bool DoBreak { get { return _doBreak ; } set { _doBreak = value ; } }
 

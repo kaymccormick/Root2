@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using System.Windows;
+using System.Windows.Markup;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 
@@ -11,7 +12,8 @@ namespace AnalysisControls.RibbonModel
     /// <summary>
     /// 
     /// </summary>
-    public class RibbonModelTab : INotifyPropertyChanged
+[ContentProperty("Items")]
+    public class RibbonModelTab : INotifyPropertyChanged, ISupportInitialize
     {
         private Visibility _visibility = Visibility.Visible;
         private object _contextualTabGroupHeader;
@@ -20,6 +22,7 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(Visibility.Visible)]
         public Visibility Visibility
         {
             get { return _visibility; }
@@ -35,6 +38,7 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public object ContextualTabGroupHeader
         {
             get { return _contextualTabGroupHeader; }
@@ -48,7 +52,9 @@ namespace AnalysisControls.RibbonModel
 
         /// <summary>
         /// 
+
         /// </summary>
+        [DefaultValue(null)]
         public object Header
         {
             get { return _header; }
@@ -63,11 +69,13 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
-        public ObservableCollection<RibbonModelItem> Items { get; } = new ObservableCollection<RibbonModelItem>();
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+        public ObservableCollection<RibbonModelGroup> Items { get; } = new ObservableCollection<RibbonModelGroup>();
 
         /// <summary>
         /// 
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [JsonIgnore][Browsable(false)]
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public PrimaryRibbonModel RibbonModel { get; set; }
@@ -105,6 +113,18 @@ namespace AnalysisControls.RibbonModel
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <inheritdoc />
+        public virtual void BeginInit()
+        {
+            
+        }
+
+        /// <inheritdoc />
+        public virtual void EndInit()
+        {
+            
         }
     }
 

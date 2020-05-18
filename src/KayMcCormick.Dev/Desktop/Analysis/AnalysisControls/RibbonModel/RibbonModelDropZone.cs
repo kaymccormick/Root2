@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Media;
 
 namespace AnalysisControls.RibbonModel
@@ -13,6 +14,7 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
+        [DefaultValue(null)]
         public Brush Fill { get; set; }
 
         public virtual DragDropEffects OnDrop(IDataObject eData)

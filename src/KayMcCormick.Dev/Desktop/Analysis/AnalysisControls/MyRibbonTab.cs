@@ -240,7 +240,7 @@ namespace AnalysisControls
             var tabName = "";
             if (item is RibbonModelTab tab)
             {
-                tabName = tab.Header.ToString();
+                tabName = tab.Header?.ToString();
             }
 
             Logger.Info("RibbonTab selected: " + tabName);

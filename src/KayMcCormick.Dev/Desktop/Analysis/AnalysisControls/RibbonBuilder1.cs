@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Markup;
+using System.Xml;
 using AnalysisControls.RibbonModel;
 using Autofac;
 using Autofac.Core;
@@ -9,8 +11,17 @@ using KayMcCormick.Dev;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class RibbonBuilder1
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="c"></param>
+        /// <param name="o"></param>
+        /// <returns></returns>
         public static PrimaryRibbonModel RibbonModelBuilder(IComponentContext c, IEnumerable<Parameter> o)
         {
             var r = new PrimaryRibbonModel {AppMenu = c.Resolve<RibbonModelApplicationMenu>()};
@@ -26,6 +37,8 @@ namespace AnalysisControls
             foreach (var meta in tabs)
             {
                 var ribbonModelTab = meta.Value.Value;
+                ribbonModelTab.BeginInit();
+                ribbonModelTab.EndInit();                
                 r.RibbonItems.Add(ribbonModelTab);
                 if (ribbonModelTab.ContextualTabGroupHeader != null)
                 {
@@ -47,6 +60,14 @@ namespace AnalysisControls
                 r.RibbonItems.Add(item);
             }
 
+            var file = @"C:\temp\ribbon.xaml";
+            using (var w = XmlWriter.Create(file, new XmlWriterSettings() {Indent = true}))
+            {
+                ResourceDictionary d = new ResourceDictionary();
+                d["Ribbon0"] = r;
+                XamlWriter.Save(d, w);
+            }
+            
             return r;
         }
     }
