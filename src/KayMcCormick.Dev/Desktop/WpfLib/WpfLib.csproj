@@ -76,6 +76,7 @@
       <HintPath>..\..\..\..\..\..\..\.nuget\packages\microsoft.codeanalysis.csharp\3.6.0-3.final\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Activities" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.Xml" />

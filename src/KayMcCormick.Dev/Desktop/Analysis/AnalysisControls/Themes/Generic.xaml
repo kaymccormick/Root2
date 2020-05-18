@@ -3936,11 +3936,6 @@
                       </StackPanel>
                     </DataTemplate>
                   </avalondock:DockingManager.AnchorableHeaderTemplate>
-                  <avalondock:LayoutRoot x:Name="LayoutRoot">
-                    <avalondock:LayoutPanel>
-                      <avalondock:LayoutDocumentPaneGroup x:Name="LayoutDocumentPaneGroup" />
-                    </avalondock:LayoutPanel>
-                  </avalondock:LayoutRoot>
                 </avalondock:DockingManager>
               </Border>
             </Grid>

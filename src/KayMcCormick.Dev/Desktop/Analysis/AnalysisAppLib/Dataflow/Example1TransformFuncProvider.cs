@@ -56,7 +56,7 @@ namespace AnalysisAppLib.Dataflow
             var opt = await document.GetOptionsAsync ( ) ;
             var model = await document.GetSemanticModelAsync ( ) ;
             var tree = await document.GetSyntaxTreeAsync ( ) ;
-            if ( tree == null ) { throw new InvalidOperationException();}
+            if ( tree == null ) { throw new InvalidOperationException("tree is null");}
 
             var x1 = await tree.GetRootAsync ( ) ;
             var return1 = new List < Example1Out > ( ) ;

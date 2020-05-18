@@ -789,8 +789,8 @@ namespace KayMcCormick.Dev.Logging
             Task < ILogger > Function ( )
             {
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if ( callerFilePath != null )
-                {
+                // if ( callerFilePath != null )
+                // {
                     return EnsureLoggingConfiguredAsync (
                                                          slogMethod
                                                        , config1
@@ -798,9 +798,9 @@ namespace KayMcCormick.Dev.Logging
                                                          // ReSharper disable once ExplicitCallerInfoArgument
                                                        , callerFilePath
                                                         ) ;
-                }
+                // }
 
-                throw new InvalidOperationException ( ) ;
+                // throw new InvalidOperationException ( ) ;
             }
 
 

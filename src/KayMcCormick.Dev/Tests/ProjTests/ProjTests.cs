@@ -2685,5 +2685,12 @@ namespace ProjTests
         
         }
 
+        [WpfFact]
+        public void TestJsonView()
+        {
+            var j = new JsonUserControl();
+            var w = new Window {Content = j};
+            w.ShowDialog();
+        }
     }
 }

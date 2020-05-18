@@ -24,7 +24,6 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
-        [TypeConverter(typeof(ObjectStringTypeConverter))]
         [DefaultValue(null)]
         public object Label { get; set; }
 

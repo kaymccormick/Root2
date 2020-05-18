@@ -1,7 +1,9 @@
 ﻿using System ;
+using System.Activities.Statements;
 using System.Collections.Generic ;
 using System.ComponentModel ;
 using System.Diagnostics ;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -314,28 +316,47 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
 
     public class BreakFilter : TraceFilter
     {
+        public AppBindingUtils utils = new AppBindingUtils();
         public override bool ShouldTrace(TraceEventCache cache, string source, TraceEventType eventType, int id, string formatOrMessage,
             object[] args, object data1, object[] data)
         {
-            var parsed = AppBindingUtils.ParseBindingMessage(cache, source, eventType, id, formatOrMessage, args, data1, data);   
+            var parsed = utils.ParseBindingMessage(cache, source, eventType, id, formatOrMessage, args, data1, data);
+            if (parsed == null)
+            {
+                return false;
+            }
             DebugUtils.WriteLine(parsed.ToString());
             return true;
         }
     }
 
-    public static class AppBindingUtils
+    public class AppBindingUtils
     {
-        public static ParsedBindingMessage ParseBindingMessage(TraceEventCache cache, string source, TraceEventType eventType, int id, string formatOrMessage, object[] args, object data1, object[] data)
+        private StreamWriter utilsLog = new StreamWriter(@"C:\data\logs\utils.txt");
+        public ParsedBindingMessage ParseBindingMessage(TraceEventCache cache, string source, TraceEventType eventType, int id, string formatOrMessage, object[] args, object data1, object[] data)
         {
             var parsed = new ParsedBindingMessage();
-            var match = Regex.Match(formatOrMessage, @"^(.*)\sBindingExpression:(.*) DataItem=(.*); target element is (.*); target property is (.*)");
+            utilsLog.WriteLine("MSG: " + formatOrMessage);
+            var rgxp = new Regex(
+                @"^(.*)\sBindingExpression:(.*); DataItem=(.*); target element is ('(.*)' \(Name='(.*)'\)); target property is (.*)");
+            var match = rgxp.Match(formatOrMessage);
+            if (!match.Success)
+            {
+                utilsLog.WriteLine($"Match failed, regex is {rgxp.ToString()}");
+                if(ThrowOnFail) throw new InvalidOperationException(formatOrMessage);
+                return null;
+            }
             var expr = match.Groups[2].Captures[0].Value;
             parsed.BindingExpression = expr;
             parsed.DataItem = match.Groups[3].Captures[0].Value;
             parsed.TargetElement = match.Groups[4].Captures[0].Value;
-            parsed.TargetProperty = match.Groups[5].Captures[0].Value;
+            parsed.TargetElementType = match.Groups[5].Captures[0].Value;
+            parsed.TargetElementName = match.Groups[6].Captures[0].Value;
+            parsed.TargetProperty = match.Groups[7].Captures[0].Value;
             return parsed;
         }
+
+        public bool ThrowOnFail { get; set; }
     }
 
     public class ParsedBindingMessage
@@ -350,6 +371,8 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
         }
 
         public string TargetElement { get; set; }
+        public string TargetElementName { get; set; }
+        public string TargetElementType { get; set; }
     }
 
     public class XX : TraceListener
