@@ -11,7 +11,8 @@
   xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
   xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
   xmlns:classic="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
-  xmlns:primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon">
+  xmlns:primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon"
+  xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonModel">
   <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
             <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
             <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
@@ -5888,4 +5889,56 @@
             </Setter.Value>
         </Setter>
   </Style>
+
+    <Style TargetType="{x:Type local:RibbonModelView}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:RibbonModelView}">
+          <ControlTemplate.Resources>
+            <local:VisibileIfNotVisible x:Key="VisibleIfNotVisible"/>
+            <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelTab}" ItemsSource="{Binding Items}">
+              <WrapPanel>
+                <TextBlock Text="{Binding Header}"/>
+                <WrapPanel Visibility="{Binding Visibility,Converter={StaticResource VisibileIfNotVisible}}">
+                  <TextBlock Text=" ( "/>
+                  <TextBlock Text="{Binding Visibility}"/>
+                  <TextBlock Text=" )"/>
+                </WrapPanel>
+              </WrapPanel>              
+            </HierarchicalDataTemplate>
+            <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGroup}" ItemsSource="{Binding Items}">
+              <HierarchicalDataTemplate.ItemTemplate>
+<DataTemplate DataType="{x:Type ribbonModel:RibbonModelItem}">
+<WrapPanel>
+<TextBlock Text="{Binding Label}"/>
+<TextBlock Text=" ( "/>
+<TextBlock Text="{Binding Kind}"/>
+<TextBlock Text=" )"/>
+</WrapPanel>
+</DataTemplate>
+</HierarchicalDataTemplate.ItemTemplate>
+              <WrapPanel>
+              <TextBlock Text="{Binding Header}"/>
+              </WrapPanel>
+            </HierarchicalDataTemplate>
+            <HierarchicalDataTemplate DataType="{x:Type local:RibbonTabsNode}" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type local:RibbonModelView}},Path=RibbonModel.RibbonItems}">
+              <TextBlock Text="Ribbon Tabs"/>
+            </HierarchicalDataTemplate>
+            <HierarchicalDataTemplate DataType="{x:Type local:RibbonContextualTabGroupsNode}" ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RibbonModel.ContextualTabGroups}">
+              <TextBlock Text="Contextual Tab Groups"/>
+            </HierarchicalDataTemplate>
+
+            <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelItem}">
+              <TextBlock Text="{Binding Label}"/>
+            </HierarchicalDataTemplate>
+          </ControlTemplate.Resources>
+                  <Border Background="{TemplateBinding Background}"
+                          BorderBrush="{TemplateBinding BorderBrush}"
+                          BorderThickness="{TemplateBinding BorderThickness}">
+                      <TreeView ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RootItemsCollection}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

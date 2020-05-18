@@ -211,9 +211,20 @@ namespace AnalysisControls
         private void AddInitialDocuments()
         {
             AddModelDoc();
+            AddRibbonModelViewDoc();
             AddAssembliesDoc();
             AddPropertiesGridDoc();
             AddControlsDoc();
+        }
+
+        private void AddRibbonModelViewDoc()
+        {
+            var c = new RibbonModelView();
+            c.SetBinding(RibbonModelView.RibbonModelProperty, new Binding("ClientViewModel.PrimaryRibbon") { Source = this });
+            var doc = DocModel.CreateInstance();
+            doc.Title = "Ribbon Model View";
+            doc.Content = c;
+            Documents.Add(doc);
         }
 
         private void AddControlsDoc()
@@ -841,6 +852,7 @@ namespace AnalysisControls
             set
             {
                 _clientViewModel = value;
+                OnPropertyChanged();
                 new UserControl1().propertyGrid1.SelectedObject = _clientViewModel.PrimaryRibbon;
             }
         }

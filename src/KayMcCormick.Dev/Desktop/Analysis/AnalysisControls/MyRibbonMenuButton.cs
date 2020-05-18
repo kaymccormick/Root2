@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using KayMcCormick.Dev;
 
@@ -21,25 +22,46 @@ namespace AnalysisControls
         /// <inheritdoc />
         protected override DependencyObject GetContainerForItemOverride()
         {
-            var c = base.GetContainerForItemOverride();
-            var currentItem = _currentItem;
-            _currentItem = null;
-
-            DebugUtils.WriteLine($"container is {c} for {_currentItem}");
-
-            return c;
+            object currentItem = this._currentItem;
+            this._currentItem = (object)null;
+            if (this.UsesItemContainerTemplate)
+            {
+                DataTemplate dataTemplate = this.ItemContainerTemplateSelector.SelectTemplate(currentItem, (ItemsControl)this);
+                if (dataTemplate != null)
+                {
+                    object obj = (object)dataTemplate.LoadContent();
+                    switch (obj)
+                    {
+                        case RibbonMenuItem _:
+                        case RibbonGallery _:
+                        case RibbonSeparator _:
+                            return obj as DependencyObject;
+                        default:
+                            throw new AppInvalidOperationException("Invalid container");
+                    }
+                }
+            }
+            return (DependencyObject)new MyRibbonMenuItem();
         }
 
         /// <inheritdoc />
         protected override bool IsItemItsOwnContainerOverride(object item)
         {
-            _currentItem = item;
-            var br = base.IsItemItsOwnContainerOverride(item);
-            if (br == true)
+            int num;
+            switch (item)
             {
-                return true;
+                case RibbonMenuItem _:
+                case RibbonSeparator _:
+                    num = 1;
+                    break;
+                default:
+                    num = item is RibbonGallery ? 1 : 0;
+                    break;
             }
-            return br;
+            bool flag = num != 0;
+            if (!flag)
+                this._currentItem = item;
+            return flag;
         }
 
         public Guid ControlId { get; } = Guid.NewGuid();

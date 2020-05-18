@@ -8,6 +8,7 @@
               xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
               xmlns:primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon"
               xmlns:ribbon="clr-namespace:AnalysisControls.RibbonModel;assembly=AnalysisControls"
+              xmlns:ribbon1="clr-namespace:System.Windows.Controls.Ribbon;assembly=System.Windows.Controls.Ribbon"
               xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
               xmlns:contextualTabGroups="clr-namespace:AnalysisControls.RibbonModel.ContextualTabGroups;assembly=AnalysisControls"
               xmlns:definition="clr-namespace:AnalysisControls.RibbonModel.Definition;assembly=AnalysisControls"
@@ -403,7 +404,7 @@
                      ItemContainerStyle="{StaticResource AppMyRibbonItemContainerStyle}"
                      ItemsPanel="{StaticResource AppMyRibbonItemsPanelTemplate}">
         <anal:MyRibbon.QuickAccessToolBar>
-          <anal:MyRibbonQuickAccessToolbar DataContext="{Binding Path=QuickAccessToolbar}" />
+          <RibbonQuickAccessToolBar DataContext="{Binding Path=QuickAccessToolbar}" ItemsSource="{Binding Items}"/>
         </anal:MyRibbon.QuickAccessToolBar>
         <anal:MyRibbon.ApplicationMenu>
           <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" />

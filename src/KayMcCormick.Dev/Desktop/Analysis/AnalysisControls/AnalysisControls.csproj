@@ -254,6 +254,7 @@
     <Compile Include="RibbonBuilder1.cs" />
     <Compile Include="RibbonDebugUtils.cs" />
     <Compile Include="RibbonModelRadioButton.cs" />
+    <Compile Include="RibbonModelView.cs" />
     <Compile Include="RibbonModel\AppCommandTypeConverter.cs" />
     <Compile Include="RibbonModel\ControlKind.cs" />
     <Compile Include="RibbonModel\Definition\InfrastructureTab.cs" />
@@ -346,6 +347,7 @@
       <DependentUpon>UserControl1.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\ComponentTypesViewModel.cs" />
+    <Compile Include="VisibileIfNotVisible.cs" />
     <Compile Include="WorkspaceControl.xaml.cs">
       <DependentUpon>WorkspaceControl.xaml</DependentUpon>
     </Compile>

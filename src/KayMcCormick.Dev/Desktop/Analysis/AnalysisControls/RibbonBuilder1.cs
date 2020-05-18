@@ -25,7 +25,9 @@ namespace AnalysisControls
         public static PrimaryRibbonModel RibbonModelBuilder(RibbonModelApplicationMenu appMenu, IEnumerable<RibbonModelContextualTabGroup> ribbonModelContextualTabGroups, IEnumerable<RibbonModelTab> tabs, IEnumerable<IRibbonModelProvider<RibbonModelTab>> tabProviders)
         {
             var r = new PrimaryRibbonModel {AppMenu = appMenu};
-            r.QuickAccessToolbar.Items.Add(new RibbonModelItemButton {Label = "test1"});
+            r.QuickAccessToolbar.Items.Add(new RibbonModelItemButton {Label = "test1",
+            SmallImageSource = "pack://application:,,,/WpfLib;component/Assets/ASPWebSite_16x.png"
+            });
 
             foreach (var tg in ribbonModelContextualTabGroups)
             {

@@ -12,7 +12,7 @@ namespace KayMcCormick.Dev
     {
         private readonly string _callerFilename;
 
-        public AppInvalidOperationException([CallerFilename] string callerFilename = "") : base($"{callerFilename}: No message")
+        public AppInvalidOperationException(object o =  null, [CallerFilename] string callerFilename = "") : base($"{callerFilename}: No message")
         {
         }
 

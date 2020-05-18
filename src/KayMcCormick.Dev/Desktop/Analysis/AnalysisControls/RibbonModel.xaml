@@ -36,7 +36,7 @@
             Value="{Binding Visibility,Mode=TwoWay,NotifyOnTargetUpdated=True}" />
 
   </Style>
-  <Style TargetType="{x:Type RibbonMenuItem}">
+  <Style TargetType="{x:Type local:MyRibbonMenuItem}">
     <Setter Property="Header" Value="{Binding Header}" />
     <Setter Property="ImageSource" Value="{Binding Image}" />
     <Setter Property="RibbonControlService.ToolTipTitle" Value="{Binding ToolTipTitle}" />
@@ -75,7 +75,7 @@
   </Style>
 
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelItemButton}">
-    <RibbonButton Label="{Binding Label}" Command="{Binding Command}" CommandParameter="{Binding CommandParameter}"
+    <RibbonButton Label="{Binding Label}" SmallImageSource="{Binding SmallImageSource}" Command="{Binding Command}" CommandParameter="{Binding CommandParameter}"
                   CommandTarget="{Binding CommandTarget}" />
   </HierarchicalDataTemplate>
 
