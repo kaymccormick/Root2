@@ -2710,6 +2710,8 @@ namespace ProjTests
             groups.Add(ctxTabGroup);
             var tabs = new List<RibbonModelTab>();
             var tab1 = new RibbonModelTab() {Header = "tab1"};
+            RibbonModelGroup group1 = new RibbonModelGroup(){Header="GRoup 1"};
+            tab1.Items.Add(group1);
             var tab2 = new RibbonModelTab() { Header = "tab2", ContextualTabGroupHeader = ctxTabGroup.Header};
             tabs.Add(tab1);
             tabs.Add(tab2);
@@ -2746,9 +2748,17 @@ namespace ProjTests
             var r3 = w.TryFindResource("AppContextualTabGroupHeaderTemplate");
             Assert.NotNull(r3);
 
-            DataTemplate dt1 = (DataTemplate) r3;
+            var dt1 = (DataTemplate) r3;
             myRibbon.ContextualTabGroupHeaderTemplate = dt1;
+
+            var qat = new MyRibbonQuickAccessToolbar();
+            qat.SetBinding(ItemsControl.ItemsSourceProperty,
+                new Binding {Source = model.QuickAccessToolbar.Items});
+            myRibbon.ShowQuickAccessToolBarOnTop = true;
+            myRibbon.QuickAccessToolBar = qat;
+
             w.ShowDialog();
+            
             
 
         }

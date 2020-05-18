@@ -11,9 +11,11 @@
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/RibbonModel.xaml" />
-
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/RibbonModel.xaml" />
+
+        <ResourceDictionary
+          Source="pack://application:,,,/AnalysisControls;component/AppRibbonResources.xaml" />
 
         <ResourceDictionary
 
@@ -48,7 +50,7 @@
             </acrm:RibbonModelGroup>
           </acrm:RibbonModelTab>
 
-<acrm:RibbonModelTab Visibility="Collapsed" ContextualTabGroupHeader="Code Analysis" Header="Assemblies" x:Key="ass">
+          <acrm:RibbonModelTab Visibility="Collapsed" ContextualTabGroupHeader="Code Analysis" Header="Assemblies" x:Key="ass">
             <acrm:RibbonModelGroup Header="{x:Null}">
               <acrm:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" />
               <acrm:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" />
@@ -131,6 +133,9 @@
             <acrm:PrimaryRibbonModel.RibbonItems>
             </acrm:PrimaryRibbonModel.RibbonItems>
           </acrm:PrimaryRibbonModel>
+          <DataTemplate DataType="acrm:PrimaryRibbonModel">
+            <anal:MyRibbon ItemsSource="{Binding RibbonItems}" ContextualTabGroupsSource="{Binding ContextualTabGroups}" ApplicationMenu="{Binding AppMenu}" QuickAccessToolBar="{Binding QuickAccessToolbar}"/>
+          </DataTemplate>
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>

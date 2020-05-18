@@ -201,12 +201,13 @@ namespace KayMcCormick.Lib.Wpf
             var db
                 = PresentationTraceSources.DataBindingSource;
             var breakTraceListener = new BreakTraceListener();
+            breakTraceListener.DoBreak = false;
             breakTraceListener.Filter = new BreakFilter();
             db.Listeners.Add(breakTraceListener);
-            db
-.Listeners.Add(new XmlWriterTraceListener(@"C:\temp\out.xml"));
-            db
-.Listeners.Add(new XX());
+//             db
+// .Listeners.Add(new XmlWriterTraceListener(@"C:\temp\out.xml"));
+//             db
+// .Listeners.Add(new XX());
             db.Switch.Level = SourceLevels.All;
 
 
@@ -316,14 +317,44 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
 
     public class BreakFilter : TraceFilter
     {
+        private class Info1
+        {
+            public bool IgnoreBindingErrors { get; set; }
+        }
+
+        Dictionary<string, Info1> elements = new Dictionary<string, Info1>();
         public AppBindingUtils utils = new AppBindingUtils();
+
+        public BreakFilter()
+        {
+            elements["MyRibbonGalleryCategory"] = new Info1 {IgnoreBindingErrors = true};
+            elements["MyRibbonGallery"] = new Info1 { IgnoreBindingErrors = true };
+            elements["MyRibbonGalleryItem"] = new Info1 { IgnoreBindingErrors = true };
+        }
+
         public override bool ShouldTrace(TraceEventCache cache, string source, TraceEventType eventType, int id, string formatOrMessage,
             object[] args, object data1, object[] data)
         {
+
             var parsed = utils.ParseBindingMessage(cache, source, eventType, id, formatOrMessage, args, data1, data);
             if (parsed == null)
             {
                 return false;
+            }
+
+            if (elements.TryGetValue(parsed.TargetElementType, out var info1))
+            {
+                if (info1.IgnoreBindingErrors)
+                {
+             //       DebugUtils.WriteLine("Ignore binding error for " + parsed.TargetElementType);
+                    return false;
+                }
+            }
+            var st = Utils.ParseStackTrace(cache.Callstack);
+            var stackTraceEntry = st.FirstOrDefault(t => t.Method.Text != "ShouldTrace" && t.File.Text.ToLowerInvariant().StartsWith(@"c:\users"));
+            if (stackTraceEntry != null)
+            {
+                DebugUtils.WriteLine("stack frame is " + stackTraceEntry.Frame.Text);
             }
             DebugUtils.WriteLine(parsed.ToString());
             return true;
@@ -333,26 +364,32 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
     public class AppBindingUtils
     {
         private StreamWriter utilsLog = new StreamWriter(@"C:\data\logs\utils.txt");
+        private Regex _rgxp;
+
+        public AppBindingUtils()
+        {
+            _rgxp = new Regex(
+                @"^(.*)\s(.*BindingExpression):(.*;\s*)?(?:DataItem=(.*)\s*)?target element is ('(.*)' \((.*)\)); target property is ('(.*)' \((.*)\))");
+        }
+
         public ParsedBindingMessage ParseBindingMessage(TraceEventCache cache, string source, TraceEventType eventType, int id, string formatOrMessage, object[] args, object data1, object[] data)
         {
             var parsed = new ParsedBindingMessage();
-            utilsLog.WriteLine("MSG: " + formatOrMessage);
-            var rgxp = new Regex(
-                @"^(.*)\sBindingExpression:(.*); DataItem=(.*); target element is ('(.*)' \(Name='(.*)'\)); target property is (.*)");
-            var match = rgxp.Match(formatOrMessage);
+            //utilsLog.WriteLine("MSG: " + formatOrMessage);
+            var match = _rgxp.Match(formatOrMessage);
             if (!match.Success)
             {
-                utilsLog.WriteLine($"Match failed, regex is {rgxp.ToString()}");
+                utilsLog.WriteLine($"Match failed, regex is {_rgxp.ToString()}");
                 if(ThrowOnFail) throw new AppInvalidOperationException(formatOrMessage);
                 return null;
             }
-            var expr = match.Groups[2].Captures[0].Value;
+            var expr = match.Groups[3].Success ? match.Groups[3].Captures[0].Value : null;
             parsed.BindingExpression = expr;
-            parsed.DataItem = match.Groups[3].Captures[0].Value;
-            parsed.TargetElement = match.Groups[4].Captures[0].Value;
-            parsed.TargetElementType = match.Groups[5].Captures[0].Value;
-            parsed.TargetElementName = match.Groups[6].Captures[0].Value;
-            parsed.TargetProperty = match.Groups[7].Captures[0].Value;
+            parsed.DataItem = match.Groups[4].Success ? match.Groups[4].Captures[0].Value : null;
+            parsed.TargetElement = match.Groups[5].Captures[0].Value;
+            parsed.TargetElementType = match.Groups[6].Captures[0].Value;
+            parsed.TargetElementName = match.Groups[7].Captures[0].Value;
+            parsed.TargetProperty = match.Groups[8].Captures[0].Value;
             return parsed;
         }
 

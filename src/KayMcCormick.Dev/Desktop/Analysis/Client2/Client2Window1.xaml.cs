@@ -350,11 +350,6 @@ namespace Client2
             base.OnContentChanged(oldContent, newContent);
         }
 
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            base.OnSourceInitialized(e);
-        }
-
         protected override void OnPreviewMouseMove(MouseEventArgs e)
         {
             // CreateLogBuilder().Message("MouseMove: " + e.OriginalSource).Write();

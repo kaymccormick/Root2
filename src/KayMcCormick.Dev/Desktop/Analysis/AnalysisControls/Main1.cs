@@ -110,6 +110,7 @@ namespace AnalysisControls
         /// </summary>
         public Main1()
         {
+            ViewModel = new Main1Model();
             Anchorables = _anchorables;
             SetBinding(DocumentsProperty, new Binding("ViewModel.Documents") {Source = this});
             SetBinding(AnchorablesProperty, new Binding("ViewModel.Anchorables") {Source = this});

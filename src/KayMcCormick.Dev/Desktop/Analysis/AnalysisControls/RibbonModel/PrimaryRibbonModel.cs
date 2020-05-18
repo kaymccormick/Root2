@@ -37,7 +37,10 @@ namespace AnalysisControls.RibbonModel
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public ObservableCollection<RibbonModelTab> RibbonItems { get; } = new ObservableCollection<RibbonModelTab>();
 
-        public RibbonModelQuickAccessToolbar QuickAccessToolbar { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public RibbonModelQuickAccessToolbar QuickAccessToolbar { get; set; } = new RibbonModelQuickAccessToolbar();
 
         /// <summary>
         /// 
@@ -108,16 +111,5 @@ namespace AnalysisControls.RibbonModel
         {
             return new RibbonModelGallery();
         }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class RibbonModelQuickAccessToolbar
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        public ObservableCollection<object> Items { get; set; }
     }
 }

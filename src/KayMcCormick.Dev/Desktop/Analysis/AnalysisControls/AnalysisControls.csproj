@@ -266,6 +266,7 @@
     <Compile Include="RibbonModel\RibbonModelDropZoneImpl.cs" />
     <Compile Include="RibbonModel\RibbonModelGroupItemCollection.cs" />
     <Compile Include="RibbonModel\RibbonModelItemTypeConverter.cs" />
+    <Compile Include="RibbonModel\RibbonModelQuickAccessToolbar.cs" />
     <Compile Include="RibbonModel\RibbonModelToggleButton.cs" />
     <Compile Include="RibbonModel\RibbonModelTwoLineText.cs" />
     <Compile Include="RibbonViewGroupProviderBase.cs" />

@@ -119,6 +119,7 @@
     <Compile Include="ContentControlView.cs" />
     <Compile Include="ControlTemplateConverter.cs" />
     <Compile Include="ControlWrap.cs" />
+    <Compile Include="CustomBinding.cs" />
     <Compile Include="CustomDataTemplateSelector.cs" />
     <Compile Include="DataTemplateKeyConverter.cs" />
     <Compile Include="DecimalConverter.cs" />
@@ -285,6 +286,10 @@
     <ProjectReference Include="..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</Project>
       <Name>KayMcCormick.Dev</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Analysis\AnalysisAppLib\AnalysisAppLib.csproj">
+      <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
+      <Name>AnalysisAppLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -25,6 +25,8 @@ namespace AnalysisControls
         public static PrimaryRibbonModel RibbonModelBuilder(RibbonModelApplicationMenu appMenu, IEnumerable<RibbonModelContextualTabGroup> ribbonModelContextualTabGroups, IEnumerable<RibbonModelTab> tabs, IEnumerable<IRibbonModelProvider<RibbonModelTab>> tabProviders)
         {
             var r = new PrimaryRibbonModel {AppMenu = appMenu};
+            r.QuickAccessToolbar.Items.Add(new RibbonModelItemButton {Label = "test1"});
+
             foreach (var tg in ribbonModelContextualTabGroups)
             {
                 DebugUtils.WriteLine("Adding contextual tab group " + tg);
