@@ -24,6 +24,8 @@
 
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/RibbonModel.xaml" />
+        <ResourceDictionary
+          Source="pack://application:,,,/AnalysisControls;component/AppRibbonResources.xaml" />
 
         <ResourceDictionary
 
@@ -42,101 +44,316 @@
               </ribbon:RibbonModelApplicationMenu>
             </ribbon:PrimaryRibbonModel.AppMenu>
             <ribbon:PrimaryRibbonModel.RibbonItems>
-              <ribbon:RibbonModelTab Visibility="Visible" ContextualTabGroupHeader="{x:Null}" Header="{x:Static aal:Category.Infrastructure}">
-                <ribbon:RibbonModelGroup Header="{x:Static aal:Category.Infrastructure}" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
-                  <ribbon:RibbonModelItemButton Label="Python" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Populate Database" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Open File" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="no title" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Syntax node types" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+              <ribbon:RibbonModelTab Visibility="Visible" ContextualTabGroupHeader="{x:Null}"
+                                     Header="{x:Static aal:Category.Infrastructure}">
+                <ribbon:RibbonModelGroup Header="{x:Static aal:Category.Infrastructure}" Label="{x:Null}"
+                                         CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                         LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}"
+                                         MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                         Height="{x:Null}">
+                  <ribbon:RibbonModelItemButton Label="Python" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Populate Database" CommandTarget="{x:Null}"
+                                                CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Open File" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="no title" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Syntax node types" CommandTarget="{x:Null}"
+                                                CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                Height="{x:Null}" />
                 </ribbon:RibbonModelGroup>
-                <ribbon:RibbonModelGroup Header="{x:Static aal:Category.Infrastructure}" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
-                  <ribbon:RibbonModelItemButton Label="Python" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Code Gen" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Populate Database" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Primary analyze command" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Syntax node types" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                <ribbon:RibbonModelGroup Header="{x:Static aal:Category.Infrastructure}" Label="{x:Null}"
+                                         CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                         LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}"
+                                         MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                         Height="{x:Null}">
+                  <ribbon:RibbonModelItemButton Label="Python" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Code Gen" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Populate Database" CommandTarget="{x:Null}"
+                                                CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Primary analyze command" CommandTarget="{x:Null}"
+                                                CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Syntax node types" CommandTarget="{x:Null}"
+                                                CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                Height="{x:Null}" />
                 </ribbon:RibbonModelGroup>
-                <ribbon:RibbonModelGroup Header="Debug" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
-                  <ribbon:RibbonModelItemButton Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                <ribbon:RibbonModelGroup Header="Debug" Label="{x:Null}" CommandTarget="{x:Null}"
+                                         CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                         SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                         MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
+                  <ribbon:RibbonModelItemButton Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
                 </ribbon:RibbonModelGroup>
               </ribbon:RibbonModelTab>
-              <ribbon:RibbonModelTab Visibility="Visible" ContextualTabGroupHeader="{x:Null}" Header="{x:Static aal:Category.Management}">
-                <ribbon:RibbonModelGroup Header="{x:Static aal:Category.Infrastructure}" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
-                  <ribbon:RibbonModelItemButton Label="Python" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Populate Database" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Open File" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="no title" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Syntax node types" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+              <ribbon:RibbonModelTab Visibility="Visible" ContextualTabGroupHeader="{x:Null}"
+                                     Header="{x:Static aal:Category.Management}">
+                <ribbon:RibbonModelGroup Header="{x:Static aal:Category.Infrastructure}" Label="{x:Null}"
+                                         CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                         LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}"
+                                         MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                         Height="{x:Null}">
+                  <ribbon:RibbonModelItemButton Label="Python" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Populate Database" CommandTarget="{x:Null}"
+                                                CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Open File" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="no title" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Syntax node types" CommandTarget="{x:Null}"
+                                                CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                Height="{x:Null}" />
                 </ribbon:RibbonModelGroup>
-                <ribbon:RibbonModelGroup Header="{x:Static aal:Category.Infrastructure}" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
-                  <ribbon:RibbonModelItemButton Label="Python" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Code Gen" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Populate Database" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Primary analyze command" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemButton Label="Syntax node types" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                <ribbon:RibbonModelGroup Header="{x:Static aal:Category.Infrastructure}" Label="{x:Null}"
+                                         CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                         LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}"
+                                         MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                         Height="{x:Null}">
+                  <ribbon:RibbonModelItemButton Label="Python" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Code Gen" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Populate Database" CommandTarget="{x:Null}"
+                                                CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Primary analyze command" CommandTarget="{x:Null}"
+                                                CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                Height="{x:Null}" />
+                  <ribbon:RibbonModelItemButton Label="Syntax node types" CommandTarget="{x:Null}"
+                                                CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                Height="{x:Null}" />
                 </ribbon:RibbonModelGroup>
-                <ribbon:RibbonModelGroup Header="Types" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
-                  <ribbon:RibbonModelItemMenuButton Label="Types" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                <ribbon:RibbonModelGroup Header="Types" Label="{x:Null}" CommandTarget="{x:Null}"
+                                         CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                         SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                         MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
+                  <ribbon:RibbonModelItemMenuButton Label="Types" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                    LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                    MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                    MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
                 </ribbon:RibbonModelGroup>
-                <ribbon:RibbonModelGroup Header="Dropone" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
-                  <ribbon:RibbonModelDropZoneImpl Fill="#FFFF0000" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="80" MaxHeight="80" MinWidth="40" MinHeight="40" Width="{x:Null}" Height="{x:Null}" />
+                <ribbon:RibbonModelGroup Header="Dropone" Label="{x:Null}" CommandTarget="{x:Null}"
+                                         CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                         SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                         MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
+                  <ribbon:RibbonModelDropZoneImpl Fill="#FFFF0000" Label="{x:Null}" CommandTarget="{x:Null}"
+                                                  CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                  SmallImageSource="{x:Null}" MaxWidth="80" MaxHeight="80"
+                                                  MinWidth="40" MinHeight="40" Width="{x:Null}" Height="{x:Null}" />
                 </ribbon:RibbonModelGroup>
               </ribbon:RibbonModelTab>
-              <ribbon:RibbonModelTab Visibility="Collapsed" ContextualTabGroupHeader="Code Analysis" Header="Assemblies">
-                <ribbon:RibbonModelGroup Header="{x:Null}" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
-                  <ribbon:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+              <ribbon:RibbonModelTab Visibility="Collapsed" ContextualTabGroupHeader="Code Analysis"
+                                     Header="Assemblies">
+                <ribbon:RibbonModelGroup Header="{x:Null}" Label="{x:Null}" CommandTarget="{x:Null}"
+                                         CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                         SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                         MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
+                  <ribbon:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" CommandTarget="{x:Null}"
+                                                  CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                  SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                  MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                  Height="{x:Null}" />
+                  <ribbon:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" CommandTarget="{x:Null}"
+                                                  CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                  SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                  MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                  Height="{x:Null}" />
                 </ribbon:RibbonModelGroup>
               </ribbon:RibbonModelTab>
               <ribbon:RibbonModelTab Visibility="Collapsed" ContextualTabGroupHeader="Assemblies" Header="Derp">
-                <ribbon:RibbonModelGroup Header="{x:Null}" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
-                  <ribbon:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                <ribbon:RibbonModelGroup Header="{x:Null}" Label="{x:Null}" CommandTarget="{x:Null}"
+                                         CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                         SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                         MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
+                  <ribbon:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" CommandTarget="{x:Null}"
+                                                  CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                  SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                  MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                  Height="{x:Null}" />
+                  <ribbon:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" CommandTarget="{x:Null}"
+                                                  CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                  SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                  MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                  Height="{x:Null}" />
                 </ribbon:RibbonModelGroup>
               </ribbon:RibbonModelTab>
               <ribbon:RibbonModelTab Visibility="Visible" ContextualTabGroupHeader="{x:Null}" Header="Fun tab">
-                <ribbon:RibbonModelGroup Header="Group 1" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                <ribbon:RibbonModelGroup Header="{x:Null}" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
-                  <ribbon:RibbonModelToggleButton IsChecked="False" Label="Toggle" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelControlGroup Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
+                <ribbon:RibbonModelGroup Header="Group 1" Label="{x:Null}" CommandTarget="{x:Null}"
+                                         CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                         SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                         MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                <ribbon:RibbonModelGroup Header="{x:Null}" Label="{x:Null}" CommandTarget="{x:Null}"
+                                         CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                         SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                         MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
+                  <ribbon:RibbonModelToggleButton IsChecked="False" Label="Toggle" CommandTarget="{x:Null}"
+                                                  CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                  SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                  MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                  Height="{x:Null}" />
+                  <ribbon:RibbonModelControlGroup Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                  LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                  MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                  MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
                     <ribbon:RibbonModelControlGroup.Items>
-                      <anal:RibbonModelRadioButton IsChecked="False" Label="One" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                      <anal:RibbonModelRadioButton IsChecked="False" Label="Two" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                      <anal:RibbonModelRadioButton IsChecked="False" Label="Three" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                      <anal:RibbonModelRadioButton IsChecked="False" Label="One" CommandTarget="{x:Null}"
+                                                   CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                   SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                   MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                   Height="{x:Null}" />
+                      <anal:RibbonModelRadioButton IsChecked="False" Label="Two" CommandTarget="{x:Null}"
+                                                   CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                   SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                   MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                   Height="{x:Null}" />
+                      <anal:RibbonModelRadioButton IsChecked="False" Label="Three" CommandTarget="{x:Null}"
+                                                   CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                   SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                   MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                   Height="{x:Null}" />
                     </ribbon:RibbonModelControlGroup.Items>
                   </ribbon:RibbonModelControlGroup>
-                  <ribbon:RibbonModelControlGroup Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
+                  <ribbon:RibbonModelControlGroup Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                  LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                  MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                  MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
                     <ribbon:RibbonModelControlGroup.Items>
-                      <ribbon:RibbonModelTwoLineText PathData="{x:Null}" PathFill="{x:Null}" PathStroke="#FF000000" Text="{x:Null}" HasTwoLines="False" Label="beep" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                      <ribbon:RibbonModelItemButton Label="derp" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                      <anal:RibbonModelRadioButton IsChecked="False" Label="lala" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                      <ribbon:RibbonModelTwoLineText PathData="{x:Null}" PathFill="{x:Null}" PathStroke="#FF000000"
+                                                     Text="{x:Null}" HasTwoLines="False" Label="beep"
+                                                     CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                     LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                     MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                     MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                      <ribbon:RibbonModelItemButton Label="derp" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                    LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                    MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                    MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                      <anal:RibbonModelRadioButton IsChecked="False" Label="lala" CommandTarget="{x:Null}"
+                                                   CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                   SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                   MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                   Height="{x:Null}" />
                       <anal:ModelDatePicker SelectedDate="0001-01-01" />
                     </ribbon:RibbonModelControlGroup.Items>
                   </ribbon:RibbonModelControlGroup>
-                  <ribbon:RibbonModelItemMenuButton Label="Menu 1" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemMenuButton Label="Menu 2" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelTwoLineText PathFill="{x:Null}" PathStroke="#FF000000" Text="Derp" HasTwoLines="True" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
+                  <ribbon:RibbonModelItemMenuButton Label="Menu 1" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                    LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                    MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                    MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemMenuButton Label="Menu 2" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                    LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                    MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                    MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelTwoLineText PathFill="{x:Null}" PathStroke="#FF000000" Text="Derp"
+                                                 HasTwoLines="True" Label="{x:Null}" CommandTarget="{x:Null}"
+                                                 CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                 SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                 MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                 Height="{x:Null}">
                     <ribbon:RibbonModelTwoLineText.PathData>
                       <EllipseGeometry RadiusX="6" RadiusY="6" Center="6,6" />
                     </ribbon:RibbonModelTwoLineText.PathData>
                   </ribbon:RibbonModelTwoLineText>
-                  <ribbon:RibbonModelItemTextBox Value="{x:Null}" Label="Input  1" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Combo 1" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemTextBox Value="{x:Null}" Label="Input  1" CommandTarget="{x:Null}"
+                                                 CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                 SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                 MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                 Height="{x:Null}" />
+                  <ribbon:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Combo 1" CommandTarget="{x:Null}"
+                                                  CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                  SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                  MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                  Height="{x:Null}" />
                 </ribbon:RibbonModelGroup>
-                <ribbon:RibbonModelGroup Header="Super group" Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="pack://application:,,,/WpfLib;component/Assets/ASPWebSite_16x.png" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
-                  <ribbon:RibbonModelControlGroup Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
+                <ribbon:RibbonModelGroup Header="Super group" Label="{x:Null}" CommandTarget="{x:Null}"
+                                         CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                         SmallImageSource="pack://application:,,,/WpfLib;component/Assets/ASPWebSite_16x.png"
+                                         MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                         MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
+                  <ribbon:RibbonModelControlGroup Label="{x:Null}" CommandTarget="{x:Null}" CommandParameter="{x:Null}"
+                                                  LargeImageSource="{x:Null}" SmallImageSource="{x:Null}"
+                                                  MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}"
+                                                  MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}">
                     <ribbon:RibbonModelControlGroup.Items>
                       <anal:ModelCalendar SelectedDate="0001-01-01" />
                       <anal:ModelDatePicker SelectedDate="0001-01-01" />
                     </ribbon:RibbonModelControlGroup.Items>
                   </ribbon:RibbonModelControlGroup>
-                  <ribbon:RibbonModelItemMenuButton Label="Menu XX" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
-                  <ribbon:RibbonModelItemTextBox Value="{x:Null}" Label="Test" CommandTarget="{x:Null}" CommandParameter="{x:Null}" LargeImageSource="{x:Null}" SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemMenuButton Label="Menu XX" CommandTarget="{x:Null}"
+                                                    CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                    SmallImageSource="{x:Null}" MaxWidth="{x:Null}"
+                                                    MaxHeight="{x:Null}" MinWidth="{x:Null}" MinHeight="{x:Null}"
+                                                    Width="{x:Null}" Height="{x:Null}" />
+                  <ribbon:RibbonModelItemTextBox Value="{x:Null}" Label="Test" CommandTarget="{x:Null}"
+                                                 CommandParameter="{x:Null}" LargeImageSource="{x:Null}"
+                                                 SmallImageSource="{x:Null}" MaxWidth="{x:Null}" MaxHeight="{x:Null}"
+                                                 MinWidth="{x:Null}" MinHeight="{x:Null}" Width="{x:Null}"
+                                                 Height="{x:Null}" />
                 </ribbon:RibbonModelGroup>
               </ribbon:RibbonModelTab>
             </ribbon:PrimaryRibbonModel.RibbonItems>
@@ -145,93 +362,55 @@
             </ribbon:PrimaryRibbonModel.ContextualTabGroups>
           </ribbon:PrimaryRibbonModel>
           <ribbon:RibbonModelTab Header="Test123" x:Key="TestTab">
-            <ribbon:RibbonModelGroup Header="Group1">
-            </ribbon:RibbonModelGroup>
+            <ribbon:RibbonModelGroup Header="Group1" />
           </ribbon:RibbonModelTab>
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
-      <local:TabItemTemplateSelector x:Key="TabItemTemplateSelector"></local:TabItemTemplateSelector>
+      <local:TabItemTemplateSelector x:Key="TabItemTemplateSelector" />
     </ResourceDictionary>
   </RibbonWindow.Resources>
   <RibbonWindow.CommandBindings>
-    <CommandBinding Command="Paste" CanExecute="CanExecutePaste" Executed="OnExecutedPaste"/>
+    <CommandBinding Command="Paste" CanExecute="CanExecutePaste" Executed="OnExecutedPaste" />
   </RibbonWindow.CommandBindings>
   <RibbonWindow.InputBindings>
-    <KeyBinding Command="Paste" Key="V" Modifiers="Control"></KeyBinding>
+    <KeyBinding Command="Paste" Key="V" Modifiers="Control" />
   </RibbonWindow.InputBindings>
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*"></ColumnDefinition>
-      <ColumnDefinition Width="*"></ColumnDefinition>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
-      <RowDefinition Height="*"></RowDefinition>
-      <RowDefinition Height="*"></RowDefinition>
-    </Grid.RowDefinitions>
-    <Grid.RenderTransform>
-      <ScaleTransform ScaleX="2" ScaleY="2"></ScaleTransform>
-    </Grid.RenderTransform>
-  <Grid>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <anal:MyRibbon x:Name="myRibbon" 
-                   ContextualTabGroupsSource="{Binding ContextualTabGroups}" 
-                   ItemTemplateSelector="{StaticResource TabItemTemplateSelector}" 
-                   DataContext="{Binding ViewModel.PrimaryRibbon}"
-                   ItemsSource="{Binding RibbonItems}">
-      <anal:MyRibbon.TabHeaderStyle>
-        <Style TargetType="anal:MyRibbonTabHeader">
-            <Setter Property="Content" Value="xx,NotifyOnTargetUpdated=True"/>
-          <Setter Property="Background" Value="BlueViolet"/>
-        </Style>
-      </anal:MyRibbon.TabHeaderStyle>
-      <anal:MyRibbon.TabHeaderTemplate>
-        <DataTemplate DataType="{x:Type ribbon:RibbonModelTab}">
-          <WrapPanel>
-              <TextBlock Text="{Binding Header,NotifyOnTargetUpdated=True}"/>
-          </WrapPanel>
-        </DataTemplate>
-        </anal:MyRibbon.TabHeaderTemplate>
-      <anal:MyRibbon.ContextualTabGroupHeaderTemplate>
-        <DataTemplate>
-          <TextBlock Foreground="Aquamarine" Text="{Binding Header}"/>
-        </DataTemplate>
-      </anal:MyRibbon.ContextualTabGroupHeaderTemplate>
-      <anal:MyRibbon.ItemContainerStyle>
-        <Style TargetType="anal:MyRibbonTab">
-          <Style.Triggers>
-            <Trigger Property="ContextualTabGroup" Value="{x:Null}">
-              <Setter Property="TextElement.FontFamily" Value="Calibri"/>
-            </Trigger>
-            </Style.Triggers>
-          <Setter Property="kmWpf:AttachedProperties.CustomDescription" Value="MyTibbonTab style in window XAML"/>
-          <Setter Property="Visibility" Value="{Binding Visibility,Mode=TwoWay,NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True}"></Setter>
-          <Setter Property="ContextualTabGroupHeader" Value="{Binding ContextualTabGroupHeader}"></Setter>
-          <Setter Property="TextElement.FontFamily" Value="Showcard Gothic"/>
-          <Setter Property="ItemsSource" Value="{Binding Items}"/>
-        </Style>
-      </anal:MyRibbon.ItemContainerStyle>
-      <anal:MyRibbon.ItemsPanel><ItemsPanelTemplate><anal:MyRibbonTabsPanel Opacity="0.9"/></ItemsPanelTemplate></anal:MyRibbon.ItemsPanel>
-      <anal:MyRibbon.QuickAccessToolBar><anal:MyRibbonQuickAccessToolbar DataContext="{Binding Path=QuickAccessToolbar}"></anal:MyRibbonQuickAccessToolbar></anal:MyRibbon.QuickAccessToolBar>
-      <anal:MyRibbon.ApplicationMenu>
-        <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" />
-      </anal:MyRibbon.ApplicationMenu>
-    </anal:MyRibbon>
-      <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1">
-        <anal:Main1.Resources>
-         
-        </anal:Main1.Resources>
-        <anal:Main1.ViewModel><anal:Main1Model>
-          <anal:Main1Model.Documents>
-            <avalondock:LayoutDocument>
-              <anal:AssembliesControl></anal:AssembliesControl>
-            </avalondock:LayoutDocument>
-            </anal:Main1Model.Documents>
-        </anal:Main1Model></anal:Main1.ViewModel>
-      </anal:Main1>
-  </Grid>
+    <Grid.RenderTransform>
+      <ScaleTransform ScaleX="2" ScaleY="2" />
+    </Grid.RenderTransform>
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+      <anal:MyRibbon x:Name="myRibbon"
+                     ContextualTabGroupsSource="{Binding ContextualTabGroups}"
+                     ItemTemplateSelector="{StaticResource TabItemTemplateSelector}"
+                     DataContext="{Binding ViewModel.PrimaryRibbon}"
+                     ItemsSource="{Binding RibbonItems}"
+                     TabHeaderStyle="{StaticResource AppRibbonTabHeaderStyle}"
+                     TabHeaderTemplate="{StaticResource AppRibbonModelTabTemplate}"
+                     ContextualTabGroupHeaderTemplate="{StaticResource AppContextualTabGroupHeaderTemplate}"
+                     ItemContainerStyle="{StaticResource AppMyRibbonItemContainerStyle}"
+                     ItemsPanel="{StaticResource AppMyRibbonItemsPanelTemplate}">
+        <anal:MyRibbon.QuickAccessToolBar>
+          <anal:MyRibbonQuickAccessToolbar DataContext="{Binding Path=QuickAccessToolbar}" />
+        </anal:MyRibbon.QuickAccessToolBar>
+        <anal:MyRibbon.ApplicationMenu>
+          <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" />
+        </anal:MyRibbon.ApplicationMenu>
+      </anal:MyRibbon>
+      <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1" />
     </Grid>
+  </Grid>
 
 </RibbonWindow>

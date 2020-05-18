@@ -57,7 +57,7 @@ namespace TestApp
             var xx = AnalysisService.Load(@"C:\temp\Program.cs", "xx");
             if ( Instance != null )
             {
-                throw new InvalidOperationException ( "MainWindow already instantiated." ) ;
+                throw new AppInvalidOperationException ( "MainWindow already instantiated." ) ;
             }
 
             _instance = this ;
@@ -84,7 +84,7 @@ namespace TestApp
 
             Kernel32.SetConsoleActiveScreenBuffer ( _consoleScreenBuffer ) ;
             _stdHandle = Kernel32.GetStdHandle ( Kernel32.StdHandleType.STD_OUTPUT_HANDLE ) ;
-            if ( _stdHandle.IsInvalid ) throw new InvalidOperationException() ;
+            if ( _stdHandle.IsInvalid ) throw new AppInvalidOperationException() ;
 #endif
             ApplicationInstance.LogMethodDelegate logMethod = LogMethod ;
             var config = new ApplicationInstance.ApplicationInstanceConfiguration ( logMethod , ApplicationGuid ) ;
@@ -316,7 +316,7 @@ namespace TestApp
                     {
                         DataContext = new ExceptionDataInfo
                                       {
-                                          Exception = new InvalidOperationException ( )
+                                          Exception = new AppInvalidOperationException ( )
                                         , ParsedExceptions = new ParsedExceptions
                                                              {
                                                                  ParsedList =

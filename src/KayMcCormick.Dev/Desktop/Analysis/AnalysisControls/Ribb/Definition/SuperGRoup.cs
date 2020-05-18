@@ -6,9 +6,16 @@ using Autofac;
 
 namespace AnalysisControls.Ribb.Definition
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class SuperGRoup : RibbonViewGroupProviderBase
     {
-        public override RibbonModelGroup ProvideModelItem(IComponentContext context)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override RibbonModelGroup ProvideModelItem()
         {
             var group = new RibbonModelGroup(){Header="Super group"};
             group.SmallImageSource = "pack://application:,,,/WpfLib;component/Assets/ASPWebSite_16x.png";

@@ -30,7 +30,7 @@ namespace AnalysisControls
             {
                 if (!tt.IsConstructedGenericType)
                 {
-                    throw new InvalidOperationException(tt.ToString());
+                    throw new AppInvalidOperationException(tt.ToString());
                 }
 
                 sb.Append('<');
@@ -78,7 +78,7 @@ namespace AnalysisControls
 
             if (hashSet != null && !value.GetType().IsValueType)
             {
-                if (hashSet.Contains(value)) throw new InvalidOperationException(value.ToString());
+                if (hashSet.Contains(value)) throw new AppInvalidOperationException(value.ToString());
 
                 hashSet.Add(value);
             }

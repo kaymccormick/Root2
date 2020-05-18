@@ -85,7 +85,7 @@ namespace AnalysisControls
                 {
                     
                 }
-                //throw new InvalidOperationException($"{syntaxTrivia.Span.Start} != {_curPos}");
+                //throw new AppInvalidOperationException($"{syntaxTrivia.Span.Start} != {_curPos}");
             }
             if (CSharpExtensions.Kind(syntaxTrivia) == SyntaxKind.EndOfLineTrivia)
             {
@@ -183,20 +183,20 @@ namespace AnalysisControls
                         if (end != span.Start)
                         {
                             DebugUtils.WriteLine($"{end} !- {span.Start}", DebugCategory.Syntax);
-                            throw new InvalidOperationException();
+                            throw new AppInvalidOperationException();
                         }
                         
                         end = span.End;
                     }
                     else
                     {
-                        throw new InvalidOperationException();
+                        throw new AppInvalidOperationException();
                     }
                     
                     DebugUtils.WriteLine($"{index} [{span}] " + textRun.Length.ToString() + $" {textRun}", DebugCategory.Syntax);
                 }   
 
-                throw new InvalidOperationException($"{CurPos} is not {s1}");
+                throw new AppInvalidOperationException($"{CurPos} is not {s1}");
             }
             base.DefaultVisit(node);
             var n = nodes.Pop();
@@ -205,7 +205,7 @@ namespace AnalysisControls
             seen.Push(n);
             if (object.ReferenceEquals(n, node) == false)
             {
-                throw new InvalidOperationException();
+                throw new AppInvalidOperationException();
             }
 
         }
@@ -228,7 +228,7 @@ namespace AnalysisControls
             
             // if (c != text.Length)
             // {
-                // throw new InvalidOperationException($"{text} != {c}");
+                // throw new AppInvalidOperationException($"{text} != {c}");
             // }
             if (text.Length == 0)
             {
@@ -368,7 +368,7 @@ namespace AnalysisControls
                 {
 
                 }
-                //throw new InvalidOperationException($"{syntaxTrivia.Span.Start} != {_curPos}");
+                //throw new AppInvalidOperationException($"{syntaxTrivia.Span.Start} != {_curPos}");
             }
             if (VisualBasicExtensions.Kind(syntaxTrivia) == Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.EndOfLineTrivia)
             {
@@ -466,20 +466,20 @@ namespace AnalysisControls
                         if (end != span.Start)
                         {
                             DebugUtils.WriteLine($"{end} !- {span.Start}", DebugCategory.Syntax);
-                            throw new InvalidOperationException();
+                            throw new AppInvalidOperationException();
                         }
 
                         end = span.End;
                     }
                     else
                     {
-                        throw new InvalidOperationException();
+                        throw new AppInvalidOperationException();
                     }
 
                     DebugUtils.WriteLine($"{index} [{span}] " + textRun.Length.ToString() + $" {textRun}", DebugCategory.Syntax);
                 }
 
-                throw new InvalidOperationException($"{CurPos} is not {s1}");
+                throw new AppInvalidOperationException($"{CurPos} is not {s1}");
             }
             base.DefaultVisit(node);
             var n = nodes.Pop();
@@ -488,7 +488,7 @@ namespace AnalysisControls
             seen.Push(n);
             if (object.ReferenceEquals(n, node) == false)
             {
-                throw new InvalidOperationException();
+                throw new AppInvalidOperationException();
             }
 
         }
@@ -511,7 +511,7 @@ namespace AnalysisControls
 
             // if (c != text.Length)
             // {
-            // throw new InvalidOperationException($"{text} != {c}");
+            // throw new AppInvalidOperationException($"{text} != {c}");
             // }
             if (text.Length == 0)
             {

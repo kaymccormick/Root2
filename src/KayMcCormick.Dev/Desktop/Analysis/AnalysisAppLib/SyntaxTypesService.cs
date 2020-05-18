@@ -84,7 +84,7 @@ namespace AnalysisAppLib
                 case AppTypeInfoKey k1 :
                     key = k1 ;
                     break ;
-                default : throw new InvalidOperationException ( "Bad key" ) ;
+                default : throw new AppInvalidOperationException ( "Bad key" ) ;
             }
 
             if ( unqualifiedTypeName != null )
@@ -97,7 +97,7 @@ namespace AnalysisAppLib
                 return typeInfo ;
             }
 
-            throw new InvalidOperationException ( "No such type" ) ;
+            throw new AppInvalidOperationException ( "No such type" ) ;
         }
         #endregion
 
@@ -126,7 +126,7 @@ namespace AnalysisAppLib
 
             if ( ! Map.Dict.TryGetValue ( new AppTypeInfoKey ( rootR ) , out var curTypeInfo ) )
             {
-                throw new InvalidOperationException ( ) ;
+                throw new AppInvalidOperationException ( ) ;
             }
 
             DebugUtils.WriteLine ( $"{curTypeInfo}" ) ;
@@ -266,7 +266,7 @@ namespace AnalysisAppLib
             {
                 using ( var reader = XmlReader.Create (
                                                        stream
-                                                       ?? throw new InvalidOperationException ( )
+                                                       ?? throw new AppInvalidOperationException ( )
                                                      , new XmlReaderSettings { Async = true }
                                                       ) )
                 {
@@ -345,7 +345,7 @@ namespace AnalysisAppLib
                                 ParseNodeBasics ( model1 , xElement , collectionMap ) ;
                                 break ;
 
-                            default : throw new InvalidOperationException ( ) ;
+                            default : throw new AppInvalidOperationException ( ) ;
                         }
                     }
                 }
@@ -451,7 +451,7 @@ namespace AnalysisAppLib
             }
 
 
-            var fTypeP = SyntaxFactory.ParseTypeName ( fieldType ?? throw new InvalidOperationException ( ) ) ;
+            var fTypeP = SyntaxFactory.ParseTypeName ( fieldType ?? throw new AppInvalidOperationException ( ) ) ;
             var enumerable = false ;
 
             ITypeSymbol arg = null ;
@@ -532,7 +532,7 @@ namespace AnalysisAppLib
                 var result = compilation.Emit ( ms ) ;
                 // ReSharper disable once UnusedVariable
                 var resultSuccess = ( bool ? ) result.Success
-                                    ?? throw new InvalidOperationException ( ) ;
+                                    ?? throw new AppInvalidOperationException ( ) ;
 
                 var syntaxTree = compilation.SyntaxTrees.First ( ) ;
                 var model = compilation.GetSemanticModel ( syntaxTree ) ;

@@ -183,19 +183,19 @@ namespace Client2
                                         }
                                         else
                                         {
-                                            throw new InvalidOperationException();
+                                            throw new AppInvalidOperationException();
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    throw new InvalidOperationException();
+                                    throw new AppInvalidOperationException();
                                 }
                             }
                         }
                         else
                         {
-                            throw new InvalidOperationException();
+                            throw new AppInvalidOperationException();
                         }
                     }
                 }
@@ -225,7 +225,7 @@ namespace Client2
                                                         }
                                                         else
                                                         {
-                                                            throw new InvalidOperationException();
+                                                            throw new AppInvalidOperationException();
                                                         }
 
                                                     }
@@ -236,7 +236,7 @@ namespace Client2
                                                 }
                                                 else
                                                 {
-                                                    throw new InvalidOperationException();
+                                                    throw new AppInvalidOperationException();
                                                 }
 
                                             }
@@ -247,28 +247,28 @@ namespace Client2
                                         }
                                         else
                                         {
-                                            throw new InvalidOperationException();
+                                            throw new AppInvalidOperationException();
                                         }
 
                                     }
                                 }
                                 else
                                 {
-                                    //throw new InvalidOperationException();
+                                    //throw new AppInvalidOperationException();
                                 }
 
                             }
                         }
                         else
                         {
-                            throw new InvalidOperationException();
+                            throw new AppInvalidOperationException();
                         }
 
                     }
                 }
                 else
                 {
-                    throw new InvalidOperationException();
+                    throw new AppInvalidOperationException();
                 }
             }
 
@@ -286,7 +286,7 @@ namespace Client2
                 }
                 else
                 {
-                    throw new InvalidOperationException();
+                    throw new AppInvalidOperationException();
                 }
             }
         }
@@ -301,7 +301,7 @@ namespace Client2
                 }
                 else
                 {
-                    throw new InvalidOperationException();
+                    throw new AppInvalidOperationException();
                 }
             }
         }

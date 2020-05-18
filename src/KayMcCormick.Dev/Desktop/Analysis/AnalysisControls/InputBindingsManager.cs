@@ -14,6 +14,7 @@ using System.Windows ;
 using System.Windows.Data ;
 using System.Windows.Input ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev;
 
 namespace AnalysisControls
 {
@@ -96,7 +97,7 @@ namespace AnalysisControls
             var property =
                 GetUpdatePropertySourceWhenEnterPressed (
                                                          source as DependencyObject
-                                                         ?? throw new InvalidOperationException ( )
+                                                         ?? throw new AppInvalidOperationException ( )
                                                         ) ;
             if ( property == null )
             {

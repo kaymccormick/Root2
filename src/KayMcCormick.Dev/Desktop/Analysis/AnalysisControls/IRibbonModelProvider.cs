@@ -2,8 +2,16 @@
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IRibbonModelProvider<T>
     {
-        T ProvideModelItem(IComponentContext context);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        T ProvideModelItem();
     }
 }

@@ -59,7 +59,7 @@ namespace AnalysisAppLib
               , JsonSerializerOptions options
             )
             {
-                throw new InvalidOperationException ( ) ;
+                throw new AppInvalidOperationException ( ) ;
             }
 
             public override void Write (

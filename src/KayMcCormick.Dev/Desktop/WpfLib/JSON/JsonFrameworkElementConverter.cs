@@ -20,7 +20,7 @@ using System.Text.Json.Serialization ;
 using System.Windows ;
 using System.Windows.Markup ;
 using System.Xaml ;
-
+using KayMcCormick.Dev;
 using XamlWriter = System.Xaml.XamlWriter ;
 
 namespace KayMcCormick.Lib.Wpf.JSON
@@ -117,7 +117,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
                     //_output.WriteLine ( _context.Count.ToString ( ) ) ;
                     switch ( _context.Peek ( ) )
                     {
-                        case WriteContext.PropertyName : throw new InvalidOperationException ( ) ;
+                        case WriteContext.PropertyName : throw new AppInvalidOperationException ( ) ;
                         case WriteContext.PropertyValue :
                             _writer.WriteNullValue ( ) ;
                             _context.Pop ( ) ;
@@ -158,10 +158,10 @@ namespace KayMcCormick.Lib.Wpf.JSON
                         _context.Pop ( ) ;
                         break ;
                     case WriteContext.PropertyValue :
-                        throw new InvalidOperationException ( ) ;
+                        throw new AppInvalidOperationException ( ) ;
                         break ;
                     case WriteContext.InArray :
-                        throw new InvalidOperationException ( ) ;
+                        throw new AppInvalidOperationException ( ) ;
                         break ;
                     default : throw new ArgumentOutOfRangeException ( ) ;
                 }
@@ -194,7 +194,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
                         break ;
                     case WriteContext.PropertyValue :
                     case WriteContext.InArray :
-                        throw new InvalidOperationException ( ) ;
+                        throw new AppInvalidOperationException ( ) ;
                     default : throw new ArgumentOutOfRangeException ( ) ;
                 }
             }
@@ -222,7 +222,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
                     case WriteContext.PropertyValue :
 
                     case WriteContext.InArray :
-                        throw new InvalidOperationException ( _context.Peek ( ).ToString ( ) ) ;
+                        throw new AppInvalidOperationException ( _context.Peek ( ).ToString ( ) ) ;
                     case WriteContext.PropertyName :
                         _writer.WriteEndObject ( ) ;
                         _context.Pop ( ) ;
@@ -237,7 +237,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
                 {
                     case WriteContext.InArray :
                     case WriteContext.PropertyName :
-                        throw new InvalidOperationException ( ) ;
+                        throw new AppInvalidOperationException ( ) ;
                     case WriteContext.PropertyValue :
                         _writer.WriteStringValue ( value.ToString ( ) ) ;
                         _context.Pop ( ) ;
@@ -267,7 +267,7 @@ namespace KayMcCormick.Lib.Wpf.JSON
                         break ;
                     case WriteContext.PropertyValue :
                     case WriteContext.InArray :
-                        throw new InvalidOperationException ( ) ;
+                        throw new AppInvalidOperationException ( ) ;
                         break ;
                 }
             }

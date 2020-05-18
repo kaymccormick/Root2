@@ -429,10 +429,10 @@ namespace AnalysisControls
             double pixelsPerDip, double emSize, ITypefaceManager manager)
         {
             if (compilation != null && compilation.SyntaxTrees.Contains(syntaxTree) == false)
-                throw new InvalidOperationException("Compilation does not contain syntax tree.");
+                throw new AppInvalidOperationException("Compilation does not contain syntax tree.");
 
             if (ReferenceEquals(node.SyntaxTree, syntaxTree) == false)
-                throw new InvalidOperationException("Node is not within syntax tree");
+                throw new AppInvalidOperationException("Node is not within syntax tree");
             var store = new SyntaxNodeCustomTextSource(pixelsPerDip, manager)
             {
                 EmSize = emSize,

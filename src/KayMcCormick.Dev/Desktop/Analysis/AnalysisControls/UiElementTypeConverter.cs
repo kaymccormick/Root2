@@ -53,7 +53,7 @@ namespace AnalysisControls
                 return ConversionUtils.DoConvertToString(value, sb).ToString();
             }
 
-        //    throw new InvalidOperationException();
+        //    throw new AppInvalidOperationException();
             return base.ConvertTo(context, culture, value, destinationType);
         }
 

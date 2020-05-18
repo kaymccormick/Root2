@@ -54,7 +54,7 @@ namespace KayMcCormick.Dev.Logging
             _layout     = XmlEventLayout ;
             if ( _layout == null )
             {
-                throw new InvalidOperationException ( "LAyout is null" ) ;
+                throw new AppInvalidOperationException ( "LAyout is null" ) ;
             }
 
             _getBytes = DefaultGetBytes ;

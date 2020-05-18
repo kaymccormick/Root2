@@ -118,7 +118,7 @@ namespace AnalysisControls
                     .Any())
 
                 {
-                    throw new InvalidOperationException("no type converter");
+                    throw new AppInvalidOperationException("no type converter");
                 }
 
                 foreach (var jsonConverter in jsonSerializerOptions.Converters)
@@ -207,7 +207,7 @@ namespace AnalysisControls
                 if (db.AppTypeInfos.Any()
                     || db.AppClrType.Any())
                 {
-                    throw new InvalidOperationException();
+                    throw new AppInvalidOperationException();
                 }
             }
 
@@ -329,7 +329,7 @@ namespace AnalysisControls
             var optionsSolutionFile = SolutionFilePath;//context.Options?.SolutionFile ?? SolutionFilePath ;
             if ( String.IsNullOrEmpty ( optionsSolutionFile ) )
             {
-                throw new InvalidOperationException ( "No solution file" ) ;
+                throw new AppInvalidOperationException ( "No solution file" ) ;
             }
 
             var solution = await workspace.OpenSolutionAsync(optionsSolutionFile,
@@ -544,7 +544,7 @@ namespace AnalysisControls
                                              , node
                                              , declared
                                          )
-                                         ?? throw new InvalidOperationException (
+                                         ?? throw new AppInvalidOperationException (
                                              "Null from HandleDocElementNode"
                                          ) ;
                                 }
@@ -554,7 +554,7 @@ namespace AnalysisControls
                                              node
                                              , docId
                                          )
-                                         ?? throw new InvalidOperationException (
+                                         ?? throw new AppInvalidOperationException (
                                              "Null from CreateCodeDocumentationElementType"
                                          ) ;
                                 }

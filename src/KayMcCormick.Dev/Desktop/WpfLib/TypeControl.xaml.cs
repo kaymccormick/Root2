@@ -309,7 +309,7 @@ namespace KayMcCormick.Lib.Wpf
                     "obj:///"
                     + Uri.EscapeUriString(
                         myType.AssemblyQualifiedName
-                        ?? throw new InvalidOperationException()
+                        ?? throw new AppInvalidOperationException()
                     )
                     , UriKind.Absolute
                     , out var res

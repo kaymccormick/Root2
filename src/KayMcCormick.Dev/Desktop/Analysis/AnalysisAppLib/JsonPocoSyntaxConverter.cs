@@ -2,6 +2,7 @@
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev;
 
 namespace AnalysisAppLib
 {
@@ -41,7 +42,7 @@ namespace AnalysisAppLib
         private sealed class SyntaxConverter < T > : JsonConverter<T>
         {
             #region Overrides of JsonConverter<T>
-            public override T Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { throw new InvalidOperationException(); }
+            public override T Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { throw new AppInvalidOperationException(); }
 
             public override void Write (
                 Utf8JsonWriter        writer

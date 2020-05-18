@@ -218,7 +218,7 @@ namespace AnalysisControls
                     // p.Inlines.Add(il);
                 // } else
                 // {
-                    // throw new InvalidOperationException();
+                    // throw new AppInvalidOperationException();
                 // }
             // }
             // addChild.Inlines.Add(p);
@@ -407,7 +407,7 @@ namespace AnalysisControls
             {
                 if (gr.Count() > 1)
                 {
-                    throw new InvalidOperationException();
+                    throw new AppInvalidOperationException();
                 }
 
                 DebugUtils.WriteLine(gr.First().GlyphRun.Characters.ToString());

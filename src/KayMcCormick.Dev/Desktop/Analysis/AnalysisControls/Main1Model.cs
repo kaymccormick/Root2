@@ -138,7 +138,7 @@ namespace AnalysisControls
         {
             if (TrySelectVsInstance())
                 return;
-            throw new InvalidOperationException("Cant register");
+            throw new AppInvalidOperationException("Cant register");
         }
 
         /// <summary>

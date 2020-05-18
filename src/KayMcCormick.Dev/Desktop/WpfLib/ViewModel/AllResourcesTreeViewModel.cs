@@ -307,7 +307,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
                                                            );
 
                                                 break;
-                                            default: throw new InvalidOperationException();
+                                            default: throw new AppInvalidOperationException();
                                         }
                                     }
 
@@ -369,7 +369,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
         {
             // if ( IsInitializing )
             // {
-            //     throw new InvalidOperationException("Cannot initialize twice");
+            //     throw new AppInvalidOperationException("Cannot initialize twice");
             // }
             //
             // IsInitializing = true ;

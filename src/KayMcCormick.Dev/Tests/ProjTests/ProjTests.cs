@@ -72,6 +72,7 @@ using AnalysisControls.RibbonModel.Definition;
 using AnalysisControls.ViewModel;
 using Autofac;
 using Autofac.Features.AttributeFilters;
+using Autofac.Features.Metadata;
 using AvalonDock;
 using AvalonDock.Layout;
 using Castle.DynamicProxy;
@@ -1076,7 +1077,7 @@ namespace ProjTests
                     , new
                         InvalidOperationException()
                 )
-                , new InvalidOperationException("boo2")
+                , new AppInvalidOperationException("boo2")
             );
             var dd = new ExceptionDataInfo
             {
@@ -1388,7 +1389,7 @@ namespace ProjTests
             //     , assembly
             // );
             // ReSharper disable once ResourceItemNotResolved
-            var oo = ProjTestsHelper.ControlsResources();
+            var oo = ProjTestsHelper.ControlsResources("templates.baml");
 
             var w2 = new RWindow();
             //w2.ShowDialog();
@@ -1653,7 +1654,7 @@ namespace ProjTests
                 }
                 else
                 {
-                    throw new InvalidOperationException(tr.GetType().FullName);
+                    throw new AppInvalidOperationException(tr.GetType().FullName);
                 }
 
                 charPos += tr.Length;
@@ -1789,14 +1790,14 @@ namespace ProjTests
             foreach (var allLineInfo in allLineInfos)
             {
                 if (allLineInfo == null)
-                    throw new InvalidOperationException();
-                if (allLineInfo.Regions == null) throw new InvalidOperationException(allLineInfo.LineNumber.ToString());
+                    throw new AppInvalidOperationException();
+                if (allLineInfo.Regions == null) throw new AppInvalidOperationException(allLineInfo.LineNumber.ToString());
                 foreach (var regionInfo in allLineInfo.Regions)
                 {
-                    if (regionInfo == null) throw new InvalidOperationException();
+                    if (regionInfo == null) throw new AppInvalidOperationException();
                     foreach (var ch in regionInfo.Characters)
                         if (ch == null)
-                            throw new InvalidOperationException();
+                            throw new AppInvalidOperationException();
                 }
             }
 
@@ -1842,7 +1843,7 @@ namespace ProjTests
             var model = new Main1Model();
             model.LoadSolutionAsync(solutionPath).ContinueWith(async task =>
             {
-                var resources = ProjTestsHelper.ControlsResources();
+                var resources = ProjTestsHelper.ControlsResources("templates.baml");
                 // var control = new SymbolTextControl();
                 // control.BorderThickness = new Thickness(3);
                 // control.BorderBrush = Brushes.Pink;
@@ -1875,7 +1876,7 @@ namespace ProjTests
             var l = new LogEventInstanceObservableCollection();
             l.Add(new LogEventInstance() {Level = 1, LoggerName = "foo", FormattedMessage = "test 123"});
             c.EventsSource = l;
-            var resources = ProjTestsHelper.ControlsResources();
+            var resources = ProjTestsHelper.ControlsResources("templates.baml");
 
             var w = new Window {Content = c, ShowActivated = true, Resources = resources};
             w.ShowDialog();
@@ -1892,7 +1893,7 @@ namespace ProjTests
         public void TestMain1()
         {
             Main1Model.SelectVsInstance();
-            var r = ProjTestsHelper.ControlsResources();
+            var r = ProjTestsHelper.ControlsResources("templates.baml");
             var mainw = new Main1();
             mainw.Resources = r;
             var w = new Window()
@@ -1926,7 +1927,7 @@ namespace ProjTests
                     }
                     else
                     {
-                        throw new InvalidOperationException();
+                        throw new AppInvalidOperationException();
                     }
 
                     await mainw.ViewModel.LoadSolutionAsync(solutionPath);
@@ -2109,16 +2110,16 @@ namespace ProjTests
         public void TestRibbonModel()
         {
             var m = new PrimaryRibbonModel();
-            var p = new FunTabProvider();
-            var t = p.ProvideModelItem(null);
+            var p = new FunTabProvider(Enumerable.Empty<IRibbonModelProvider<RibbonModelGroup>>());
+            var t = p.ProvideModelItem();
             m.RibbonItems.Add(t);
             var x = new RibbonViewGroupProviderBaseImpl();
-            t.Items.Add(x.ProvideModelItem(null));
+            t.Items.Add(x.ProvideModelItem());
             var window = new TemplateWindow();
             window.Content = new Ribbon {ItemsSource = m.RibbonItems};
             window.ShowDialog();
         }
-
+        
 
         private void Documents_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -2523,7 +2524,7 @@ namespace ProjTests
                 instance.Initialize();
                 var lifetimeScope = instance.GetLifetimeScope(builder =>
                 {
-                    builder.Register(RibbonBuilder1.RibbonModelBuilder);
+                    builder.Register((c, o) => RibbonBuilder1.RibbonModelBuilder(c.Resolve<RibbonModelApplicationMenu>(), c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>(), c.Resolve<IEnumerable<RibbonModelTab>>(), c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>()));
                     builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
                     builder.RegisterType<ClientModel>().AsSelf().SingleInstance().AsImplementedInterfaces()
                         .WithCallerMetadata();
@@ -2691,6 +2692,65 @@ namespace ProjTests
             var j = new JsonUserControl();
             var w = new Window {Content = j};
             w.ShowDialog();
+        }
+
+        [WpfFact]
+        public void TestRibbonBuilder1()
+        {
+            //XamlReader.Load()
+            var cb = typeof(AnalysisControlsModule).Assembly.CodeBase;
+            var ribbonModel = ProjTestsHelper.ControlsResources("ribbonmodel.baml");
+            var appRibbonResources = ProjTestsHelper.ControlsResources("appribbonresources.baml");
+            var dictionary = new ResourceDictionary();
+            dictionary.MergedDictionaries.Add(ribbonModel);
+            dictionary.MergedDictionaries.Add(appRibbonResources);
+            RibbonModelApplicationMenu appMenu = new RibbonModelApplicationMenu();
+            var groups = new List<RibbonModelContextualTabGroup>();
+            var ctxTabGroup = new RibbonModelContextualTabGroup {Header = "Contextual Tab Group 1"};
+            groups.Add(ctxTabGroup);
+            var tabs = new List<RibbonModelTab>();
+            var tab1 = new RibbonModelTab() {Header = "tab1"};
+            var tab2 = new RibbonModelTab() { Header = "tab2", ContextualTabGroupHeader = ctxTabGroup.Header};
+            tabs.Add(tab1);
+            tabs.Add(tab2);
+            var providers = new List<IRibbonModelProvider<RibbonModelTab>>();
+            var model = RibbonBuilder1.RibbonModelBuilder(appMenu, groups, tabs, providers);
+            Assert.NotNull(model);
+            Assert.NotEmpty(model.RibbonItems);
+            Assert.NotEmpty(model.ContextualTabGroups);
+            var myRibbon = new MyRibbon();
+
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)});
+            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            grid.RenderTransform = new ScaleTransform(2, 2);
+            grid.Children.Add(myRibbon);
+            var w = new Window { Content = grid, Resources = dictionary };
+            var templ = w.TryFindResource("AppRibbonModelTabTemplate");
+            Assert.NotNull(templ);
+            myRibbon.TabHeaderTemplate = (DataTemplate) templ;
+            myRibbon.SetBinding(MyRibbon.ItemsSourceProperty, new Binding {Source = model.RibbonItems});
+            var r1 = w.TryFindResource("AppRibbonTabHeaderStyle");
+            w.LayoutTransform = new ScaleTransform(2, 2);
+            //w.RenderTransform = new ScaleTransform(2, 2);
+            Assert.NotNull(r1);
+            
+            var style1 = (Style) r1;
+            myRibbon.TabHeaderStyle = style1;
+            var res2 = w.TryFindResource("AppMyRibbonItemContainerStyle");
+            Assert.NotNull(res2);
+            var style2 = (Style) res2;
+            myRibbon.ItemContainerStyle = style2;
+
+            var r3 = w.TryFindResource("AppContextualTabGroupHeaderTemplate");
+            Assert.NotNull(r3);
+
+            DataTemplate dt1 = (DataTemplate) r3;
+            myRibbon.ContextualTabGroupHeaderTemplate = dt1;
+            w.ShowDialog();
+            
+
         }
     }
 }

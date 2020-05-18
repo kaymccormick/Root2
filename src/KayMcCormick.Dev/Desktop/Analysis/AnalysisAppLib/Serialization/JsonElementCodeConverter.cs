@@ -2,6 +2,7 @@
 using System.Linq ;
 using System.Text.Json ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -92,7 +93,7 @@ namespace AnalysisAppLib.Serialization
                     }
                     else
                     {
-                        throw new InvalidOperationException ( ) ;
+                        throw new AppInvalidOperationException ( ) ;
                     }
 
                     break ;

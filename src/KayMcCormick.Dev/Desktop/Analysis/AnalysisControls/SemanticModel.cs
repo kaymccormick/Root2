@@ -70,7 +70,7 @@ namespace AnalysisControls
             // }
             if (!trees.Any())
             {
-                throw new InvalidOperationException("No syntax trees");
+                throw new AppInvalidOperationException("No syntax trees");
             }
 
             IEnumerable<MetadataReference> mrs =

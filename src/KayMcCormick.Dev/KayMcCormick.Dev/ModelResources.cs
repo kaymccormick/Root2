@@ -645,7 +645,7 @@ namespace KayMcCormick.Dev
         {
             // if (IsInitializing)
             // {
-            //     throw new InvalidOperationException("Cannot initialize twice");
+            //     throw new AppInvalidOperationException("Cannot initialize twice");
             // }
             //
             // IsInitializing = true;

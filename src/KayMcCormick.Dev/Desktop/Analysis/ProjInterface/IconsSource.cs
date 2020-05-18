@@ -96,7 +96,7 @@ namespace ProjInterface
                 return ( ImageSource ) IconsResources[ typeof ( File ) ] ;
             }
 
-            throw new InvalidOperationException ( ) ;
+            throw new AppInvalidOperationException ( ) ;
         }
 
         public Image DirectoryIcon

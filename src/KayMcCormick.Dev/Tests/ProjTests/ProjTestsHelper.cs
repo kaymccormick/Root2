@@ -60,7 +60,7 @@ namespace ProjTests
 
         public static void TestSyntaxControl(SyntaxNodeControl control)
         {
-            var resources = ProjTestsHelper.ControlsResources();
+            var resources = ProjTestsHelper.ControlsResources("templates.baml");
             control.BorderThickness = new Thickness(3);
             control.BorderBrush = Brushes.Pink;
             control.VerticalAlignment = VerticalAlignment.Stretch;
@@ -100,7 +100,7 @@ namespace ProjTests
             return compilation.SyntaxTrees.First();
         }
 
-        public static ResourceDictionary ControlsResources()
+        public static ResourceDictionary ControlsResources(string filename)
         {
             var assembly = typeof(AnalysisControlsModule).Assembly;
             var x = new ResourceManager(
@@ -108,7 +108,11 @@ namespace ProjTests
                 , assembly
             );
 
-            var y = x.GetStream("templates.baml");
+            var y = x.GetStream(filename);
+            if (y == null)
+            {
+                throw new AppInvalidOperationException("Unable to get resource stream for " + filename);
+            }
             // ReSharper disable once AssignNullToNotNullAttribute
             var b = new Baml2006Reader(y, new XamlReaderSettings());
 
@@ -120,7 +124,7 @@ namespace ProjTests
         {
             var tree = SetupSyntaxParamsVb(out var Compilation);
 
-            var resources = ProjTestsHelper.ControlsResources();
+            var resources = ProjTestsHelper.ControlsResources("templates.baml");
             control.BorderThickness = new Thickness(3);
             control.BorderBrush = Brushes.Pink;
             control.VerticalAlignment = VerticalAlignment.Stretch;

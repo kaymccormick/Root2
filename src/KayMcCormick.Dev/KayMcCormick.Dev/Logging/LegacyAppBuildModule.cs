@@ -173,7 +173,7 @@ namespace KayMcCormick.Dev.Logging
                                   reg.Activator.LimitType == typeof(LifetimeScope);
             if (!withoutMetadata && !hasMetadata)
             {
-                // throw new InvalidOperationException ( "Need metadata for " + reg ) ;
+                // throw new AppInvalidOperationException ( "Need metadata for " + reg ) ;
             }
 
             var activatorLimitType = reg.Activator.LimitType;

@@ -231,7 +231,7 @@ namespace AnalysisControls
                 return HandleName ( xdoc.Root , xdoc.Root.Name.LocalName ) ;
             }
 
-            throw new InvalidOperationException ( ) ;
+            throw new AppInvalidOperationException ( ) ;
         }
 
         /// <summary>
@@ -244,7 +244,7 @@ namespace AnalysisControls
         {
             if ( doc.DocumentElement == null )
             {
-                throw new InvalidOperationException ( ) ;
+                throw new AppInvalidOperationException ( ) ;
             }
 
             return doc.DocumentElement.ChildNodes.OfType < XmlElement > ( )
@@ -272,7 +272,7 @@ namespace AnalysisControls
                 return doc.Root.Elements ( "member" ) ;
             }
 
-            throw new InvalidOperationException ( ) ;
+            throw new AppInvalidOperationException ( ) ;
         }
 
         /// <summary>
@@ -313,7 +313,7 @@ namespace AnalysisControls
                 }
                 else
                 {
-                    throw new InvalidOperationException (
+                    throw new AppInvalidOperationException (
                                                          $"Mismatched element Id ({elementId} != {embeddedEleementId}"
                                                         ) ;
                 }
@@ -378,7 +378,7 @@ namespace AnalysisControls
 #endif
             if ( docElem == null )
             {
-                throw new InvalidOperationException ( ) ;
+                throw new AppInvalidOperationException ( ) ;
             }
 
             docElem.ElementId = elementId ;
@@ -410,7 +410,7 @@ namespace AnalysisControls
             }
             else
             {
-                throw new InvalidOperationException (
+                throw new AppInvalidOperationException (
                                                      $"Unrecognized member kind {member.Kind ( )}"
                                                     ) ;
             }
@@ -454,12 +454,12 @@ namespace AnalysisControls
                 case SimpleNameSyntax sns :
                     sns1 = sns ;
                     break ;
-                default : throw new InvalidOperationException ( ) ;
+                default : throw new AppInvalidOperationException ( ) ;
             }
 
             if ( sns1.Identifier.Text.StartsWith ( _pocoPrefix , StringComparison.Ordinal ) )
             {
-                throw new InvalidOperationException ( "Type already has poco prefix" ) ;
+                throw new AppInvalidOperationException ( "Type already has poco prefix" ) ;
             }
 
             var pocoType = SyntaxFactory.ParseTypeName ( _pocoPrefix + sns1.Identifier.Text ) ;
@@ -503,7 +503,7 @@ namespace AnalysisControls
             var appTypeInfo = model.GetAppTypeInfo ( typeSyntax.Identifier.ValueText ) ;
             if ( appTypeInfo == null )
             {
-                throw new InvalidOperationException ( "Invalid type info" ) ;
+                throw new AppInvalidOperationException ( "Invalid type info" ) ;
             }
 
             // ReSharper disable once UnusedVariable
@@ -513,7 +513,7 @@ namespace AnalysisControls
                 return SyntaxFactory.ParseTypeName ( ( string ) info2 ) ;
             }
 
-            throw new InvalidOperationException ( "No collection type in the map." ) ;
+            throw new AppInvalidOperationException ( "No collection type in the map." ) ;
             // ReSharper disable once AssignNullToNotNullAttribute
 #pragma warning disable 162
             // ReSharper disable once HeuristicUnreachableCode

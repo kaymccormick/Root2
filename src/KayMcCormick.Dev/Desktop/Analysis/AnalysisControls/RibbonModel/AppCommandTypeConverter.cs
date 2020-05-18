@@ -33,9 +33,9 @@ namespace AnalysisControls.RibbonModel
                 DebugUtils.WriteLine($"result is {r} and {cmdId}");
                 return r;
             });
-            if (_commands.Count() == 0)
+            if (!_commands.Any())
             {
-                throw new InvalidOperationException("no matchin ccommands");
+                throw new AppInvalidOperationException("no matchin ccommands");
             }
 
         }

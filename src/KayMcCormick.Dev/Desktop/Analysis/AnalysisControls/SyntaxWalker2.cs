@@ -36,7 +36,7 @@ namespace AnalysisControls
             var classSymbol = _model.GetDeclaredSymbol ( node ) ;
             if ( classSymbol == null )
             {
-                throw new InvalidOperationException ( "No class symbol" ) ;
+                throw new AppInvalidOperationException ( "No class symbol" ) ;
             }
 
             foreach ( var member in classSymbol.GetMembers ( ) )
@@ -129,7 +129,7 @@ namespace AnalysisControls
                  && symbol.MethodKind != MethodKind.Ordinary
                  && symbol.MethodKind != MethodKind.ExplicitInterfaceImplementation )
             {
-                throw new InvalidOperationException ( symbol.MethodKind.ToString ( ) ) ;
+                throw new AppInvalidOperationException ( symbol.MethodKind.ToString ( ) ) ;
             }
 
             // ReSharper disable once PossibleNullReferenceException

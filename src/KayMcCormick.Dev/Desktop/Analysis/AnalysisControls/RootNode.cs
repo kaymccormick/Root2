@@ -38,7 +38,7 @@ namespace AnalysisControls
         /// <inheritdoc />
         public override Task<TempLoadData> CheckLoadItemsAsync()
         {
-            if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running) throw new InvalidOperationException();
+            if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running) throw new AppInvalidOperationException();
             Items.Clear();
             _loadTask2 = Task.Factory.StartNew(LoadResources,
                 new TaskState<RootNode>(this), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);

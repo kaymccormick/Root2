@@ -14,6 +14,7 @@ using System.Collections.Generic ;
 using System.IO ;
 using System.Linq ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis ;
 
 namespace AnalysisAppLib.Syntax
@@ -71,7 +72,7 @@ namespace AnalysisAppLib.Syntax
 
             if ( doc.FilePath == null )
             {
-                throw new InvalidOperationException ( ) ;
+                return "";
             }
 
             var strings = doc.FilePath.Split ( Path.DirectorySeparatorChar ) ;
@@ -99,7 +100,7 @@ namespace AnalysisAppLib.Syntax
                 return GetRelativePath ( doc.Project.FilePath , doc.FilePath ) ;
             }
 
-            throw new InvalidOperationException ( ) ;
+            throw new AppInvalidOperationException ( ) ;
         }
 
         /// <summary>

@@ -15,6 +15,7 @@ using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
 using FindLogUsages ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -56,7 +57,7 @@ namespace AnalysisAppLib.Dataflow
             var opt = await document.GetOptionsAsync ( ) ;
             var model = await document.GetSemanticModelAsync ( ) ;
             var tree = await document.GetSyntaxTreeAsync ( ) ;
-            if ( tree == null ) { throw new InvalidOperationException("tree is null");}
+            if ( tree == null ) { throw new AppInvalidOperationException("tree is null");}
 
             var x1 = await tree.GetRootAsync ( ) ;
             var return1 = new List < Example1Out > ( ) ;

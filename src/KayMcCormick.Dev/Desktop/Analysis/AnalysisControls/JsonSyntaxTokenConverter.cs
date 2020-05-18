@@ -13,6 +13,7 @@ using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis ;
 
 namespace AnalysisControls
@@ -35,7 +36,7 @@ namespace AnalysisControls
           , JsonSerializerOptions options
         )
         {
-            throw new InvalidOperationException();
+            throw new AppInvalidOperationException();
         }
 
         /// <summary>

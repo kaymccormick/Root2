@@ -202,7 +202,7 @@ namespace AnalysisControls
                     );
 
                 var typeSyntax2 =
-                    SyntaxFactory.ParseTypeName(t.Type.FullName ?? throw new InvalidOperationException());
+                    SyntaxFactory.ParseTypeName(t.Type.FullName ?? throw new AppInvalidOperationException());
                 var typeSyntax = SyntaxFactory.ParseTypeName(
                     PocoPrefix
                     + ((QualifiedNameSyntax)typeSyntax2)
@@ -243,7 +243,7 @@ namespace AnalysisControls
                     var typeByMetadataName =
                         x.GetTypeByMetadataName(
                             type1.FullName
-                            ?? throw new InvalidOperationException()
+                            ?? throw new AppInvalidOperationException()
                         );
                     if (typeByMetadataName == null)
                     {
@@ -1081,7 +1081,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             var rb1 = workspace.TryApplyChanges(s2);
             if (!rb1)
             {
-                throw new InvalidOperationException();
+                throw new AppInvalidOperationException();
             }
 
             DebugOut("Applying assembly refs");
@@ -1102,7 +1102,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
                 var rb = workspace.TryApplyChanges(s3);
                 if (!rb)
                 {
-                    throw new InvalidOperationException();
+                    throw new AppInvalidOperationException();
                 }
             }
 

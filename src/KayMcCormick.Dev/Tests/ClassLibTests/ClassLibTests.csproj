@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -101,9 +101,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Desktop\Wpf\KayMcCormick.Lib.Wpf.csproj">
-      <Project>{3434e74c-d7b5-4315-a8e1-51dbce878199}</Project>
-      <Name>KayMcCormick.Lib.Wpf</Name>
+    <ProjectReference Include="..\..\Desktop\WpfLib\WpfLib.csproj">
+      <Project>{2012CAA5-09C0-4E58-81B4-5007C9D31DB9}</Project>
+      <Name>WpfLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6fcd1ef9-8936-4c8b-9f36-255cce291ca9}</Project>

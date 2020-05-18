@@ -800,7 +800,7 @@ namespace KayMcCormick.Dev.Logging
                                                         ) ;
                 // }
 
-                // throw new InvalidOperationException ( ) ;
+                // throw new AppInvalidOperationException ( ) ;
             }
 
 

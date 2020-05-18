@@ -10,7 +10,7 @@ namespace AnalysisControls
 {
     public class RibbonViewGroupProviderBaseImpl : RibbonViewGroupProviderBase
     {
-        public override RibbonModelGroup ProvideModelItem(IComponentContext context)
+        public override RibbonModelGroup ProvideModelItem()
         {
             var group = new RibbonModelGroup();
             group.CreateRibbonToggleButton("Toggle");

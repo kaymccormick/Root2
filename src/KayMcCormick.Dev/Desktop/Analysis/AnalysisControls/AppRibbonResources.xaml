@@ -1,0 +1,34 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:AnalysisControls"
+                    xmlns:ribbon="clr-namespace:AnalysisControls.RibbonModel"
+                    xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf">
+  <Style x:Key="AppRibbonTabHeaderStyle" TargetType="local:MyRibbonTabHeader">
+    <Setter Property="Content" Value="xx,NotifyOnTargetUpdated=True"/>
+    <Setter Property="Background" Value="BlueViolet"/>
+  </Style>
+  <DataTemplate x:Key="AppRibbonModelTabTemplate" DataType="{x:Type ribbon:RibbonModelTab}">
+    <WrapPanel>
+      <TextBlock Text="{Binding Header,NotifyOnTargetUpdated=True}"/>
+    </WrapPanel>
+  </DataTemplate>
+  <DataTemplate x:Key="AppContextualTabGroupHeaderTemplate">
+    <TextBlock Foreground="Aquamarine" Text="{Binding Header}"/>
+  </DataTemplate>
+  <Style x:Key="AppMyRibbonItemContainerStyle" TargetType="local:MyRibbonTab">
+    <Style.Triggers>
+      <Trigger Property="ContextualTabGroup" Value="{x:Null}">
+        <Setter Property="TextElement.FontFamily" Value="Calibri"/>
+      </Trigger>
+    </Style.Triggers>
+    <Setter Property="kmWpf:AttachedProperties.CustomDescription" Value="MyTibbonTab style in window XAML"/>
+    <Setter Property="Visibility" Value="{Binding Visibility,Mode=TwoWay,NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True}"></Setter>
+    <Setter Property="ContextualTabGroupHeader" Value="{Binding ContextualTabGroupHeader}"></Setter>
+    <Setter Property="TextElement.FontFamily" Value="Showcard Gothic"/>
+    <Setter Property="ItemsSource" Value="{Binding Items}"/>
+  </Style>
+  <ItemsPanelTemplate x:Key="AppMyRibbonItemsPanelTemplate">
+    <local:MyRibbonTabsPanel Opacity="0.9" />
+  </ItemsPanelTemplate>
+
+</ResourceDictionary>

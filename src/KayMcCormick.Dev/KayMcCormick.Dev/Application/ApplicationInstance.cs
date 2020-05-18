@@ -379,7 +379,7 @@ namespace KayMcCormick.Dev.Application
             {
                 // if (action != null)
                 // {
-                    // throw new InvalidOperationException();
+                    // throw new AppInvalidOperationException();
                 // }
                 return _lifetimeScope;
             }
@@ -471,7 +471,7 @@ namespace KayMcCormick.Dev.Application
 
                 if (args.LifetimeScope.Tag.GetType() == typeof(object))
                 {
-                    throw new InvalidOperationException();
+                    throw new AppInvalidOperationException();
                 }
 
             });

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Media.TextFormatting;
+using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using VisualBasicExtensions = Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions;
@@ -40,13 +41,13 @@ namespace AnalysisControls
                     kind = VisualBasicExtensions.Kind(token);
                     if (kind == Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.None)
                     {
-                        throw new InvalidOperationException(token.Span.ToString());
+                        throw new AppInvalidOperationException(token.Span.ToString());
                     }
                     break;
                 case LanguageNames.CSharp:
                     csKind = Token.Kind();
                     if(csKind == SyntaxKind.None)
-                        throw new InvalidOperationException(token.Span.ToString());
+                        throw new AppInvalidOperationException(token.Span.ToString());
                     break;
             }
 

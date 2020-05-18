@@ -166,7 +166,7 @@ namespace AnalysisControls.ViewModel
                     break ;
                 case AppTypeInfoKey k1 : key                 = k1 ;
                     break ;
-                default :                throw new InvalidOperationException ( "Bad key" ) ;
+                default :                throw new AppInvalidOperationException ( "Bad key" ) ;
             }
 
             if ( unqualifiedTypeName != null )
@@ -179,7 +179,7 @@ namespace AnalysisControls.ViewModel
                 return typeInfo ;
             }
 
-            throw new InvalidOperationException ( "No such type" ) ;
+            throw new AppInvalidOperationException ( "No such type" ) ;
         }
 
 
@@ -574,7 +574,7 @@ var mapCount = Map.Count ;
         {
             // DebugUtils.WriteLine ( $"{rootR}" ) ;
             // if (_docs.TryGetValue(
-            //                       rootR ?? throw new InvalidOperationException()
+            //                       rootR ?? throw new AppInvalidOperationException()
             //                     , out var info
             //                      ))
             // {
@@ -584,7 +584,7 @@ var mapCount = Map.Count ;
 //            CollectDoc(docNode);
             if ( ! Map.Dict.TryGetValue ( new AppTypeInfoKey ( rootR ) , out var curTypeInfo ) )
             {
-                throw new InvalidOperationException ( ) ;
+                throw new AppInvalidOperationException ( ) ;
             }
 
             // DebugUtils.WriteLine ( $"{curTypeInfo}" ) ;

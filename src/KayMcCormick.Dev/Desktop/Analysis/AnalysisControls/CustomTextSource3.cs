@@ -341,7 +341,7 @@ namespace AnalysisControls
         {
             if (obj is CustomTextCharacters c)
             {
-                if (c.Index.HasValue == false) throw new InvalidOperationException("no index");
+                if (c.Index.HasValue == false) throw new AppInvalidOperationException("no index");
                 _lineBuilder.Append(c.Text);
                 var cIndex = c.Index.Value;
                 if (currentLineIndex + cIndex > _lineBuilder.Length)

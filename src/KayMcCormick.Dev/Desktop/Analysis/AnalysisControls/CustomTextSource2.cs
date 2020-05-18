@@ -72,7 +72,7 @@ namespace AnalysisControls
                 }
                 else
                 {
-                    throw new InvalidOperationException();
+                    throw new AppInvalidOperationException();
                 }
             }
 
@@ -198,7 +198,7 @@ namespace AnalysisControls
                 var tt0 = x1.GetTypeByMetadataName(fullyQualifiedMetadataName);
                 if (tt0 == null)
                 {
-                    throw new InvalidOperationException(fullyQualifiedMetadataName);
+                    throw new AppInvalidOperationException(fullyQualifiedMetadataName);
                 }
                 if (t.IsGenericType && t.IsConstructedGenericType)
                 {

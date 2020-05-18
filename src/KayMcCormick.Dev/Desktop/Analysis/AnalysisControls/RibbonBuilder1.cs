@@ -4,8 +4,6 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Xml;
 using AnalysisControls.RibbonModel;
-using Autofac;
-using Autofac.Core;
 using Autofac.Features.Metadata;
 using KayMcCormick.Dev;
 
@@ -19,13 +17,15 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="c"></param>
-        /// <param name="o"></param>
+        /// <param name="appMenu"></param>
+        /// <param name="ribbonModelContextualTabGroups"></param>
+        /// <param name="tabs"></param>
+        /// <param name="tabProviders"></param>
         /// <returns></returns>
-        public static PrimaryRibbonModel RibbonModelBuilder(IComponentContext c, IEnumerable<Parameter> o)
+        public static PrimaryRibbonModel RibbonModelBuilder(RibbonModelApplicationMenu appMenu, IEnumerable<RibbonModelContextualTabGroup> ribbonModelContextualTabGroups, IEnumerable<RibbonModelTab> tabs, IEnumerable<IRibbonModelProvider<RibbonModelTab>> tabProviders)
         {
-            var r = new PrimaryRibbonModel {AppMenu = c.Resolve<RibbonModelApplicationMenu>()};
-            foreach (var tg in c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>())
+            var r = new PrimaryRibbonModel {AppMenu = appMenu};
+            foreach (var tg in ribbonModelContextualTabGroups)
             {
                 DebugUtils.WriteLine("Adding contextual tab group " + tg);
                 tg.RibbonModel = r;
@@ -33,10 +33,9 @@ namespace AnalysisControls
             }
 
             r.AppMenu.Items.Add(new RibbonModelAppMenuItem {Header = "test"});
-            var tabs = c.Resolve<IEnumerable<Meta<Lazy<RibbonModelTab>>>>();
             foreach (var meta in tabs)
             {
-                var ribbonModelTab = meta.Value.Value;
+                var ribbonModelTab = meta;
                 ribbonModelTab.BeginInit();
                 ribbonModelTab.EndInit();                
                 r.RibbonItems.Add(ribbonModelTab);
@@ -48,10 +47,9 @@ namespace AnalysisControls
                 ribbonModelTab.RibbonModel = r;
             }
 
-            var tabProviders = c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>();
             foreach (var ribbonModelProvider in tabProviders)
             {
-                var item = ribbonModelProvider.ProvideModelItem(c);
+                var item = ribbonModelProvider.ProvideModelItem();
                 item.RibbonModel = r;
                 if (item.ContextualTabGroupHeader != null)
                 {

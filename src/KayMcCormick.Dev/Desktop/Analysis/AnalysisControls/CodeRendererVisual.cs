@@ -699,7 +699,7 @@ namespace AnalysisControls
 
             if (SyntaxNode == null || SyntaxTree == null) return;
             if (ReferenceEquals(SyntaxNode.SyntaxTree, SyntaxTree) == false)
-                throw new InvalidOperationException("Node is not within syntax tree");
+                throw new AppInvalidOperationException("Node is not within syntax tree");
             DebugUtils.WriteLine("Creating new " + nameof(SyntaxNodeCustomTextSource));
 
             TextSource = TextSourceService.CreateAndInitTextSource(ErrorsList, EmSize, PixelsPerDip, TypefaceManager,

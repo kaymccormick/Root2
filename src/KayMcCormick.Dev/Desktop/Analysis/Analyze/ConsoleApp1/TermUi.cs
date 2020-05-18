@@ -56,7 +56,7 @@ namespace ConsoleAnalysis
             _commands = cmdsAry ;
             if ( ! cmdsAry.Any ( ) )
             {
-                throw new InvalidOperationException ( "No commands" ) ;
+                throw new AppInvalidOperationException ( "No commands" ) ;
             }
         }
 

@@ -35,6 +35,7 @@ using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
 using Autofac.Extras.AttributeMetadata;
 using Autofac.Features.AttributeFilters;
+using Autofac.Features.Metadata;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Container;
@@ -179,7 +180,7 @@ namespace Client2
                         c.ResolveOptional<MyCacheTarget2>()))
                 .As<Window>().WithCallerMetadata();
             
-            builder.Register(RibbonBuilder1.RibbonModelBuilder);
+            builder.Register((c, o) => RibbonBuilder1.RibbonModelBuilder(c.Resolve<RibbonModelApplicationMenu>(), c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>(), c.Resolve<IEnumerable<RibbonModelTab>>(), c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>()));
             builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
             builder.RegisterType<ClientModel>().AsSelf().SingleInstance().AsImplementedInterfaces().WithCallerMetadata();
             builder.RegisterType<RibbonModelApplicationMenu>();

@@ -410,7 +410,7 @@ namespace AnalysisControls
 
             if (Node == null || SyntaxTree == null) return;
             if (ReferenceEquals(Node.SyntaxTree, SyntaxTree) == false)
-                throw new InvalidOperationException("Node is not within syntax tree");
+                throw new AppInvalidOperationException("Node is not within syntax tree");
             DebugUtils.WriteLine("Creating new " + nameof(SyntaxNodeCustomTextSource), DebugCategory.TextFormatting);
             TextSource = CreateAndInitTextSource(PixelsPerDip, TypefaceManager);
             _errorTextSource = Errors.Any() ? new ErrorsTextSource(PixelsPerDip, Errors,TypefaceManager) : null;
@@ -1032,7 +1032,7 @@ namespace AnalysisControls
             var zz = Infos.Where(x => x.BoundingRect.Contains(point)).ToList();
             if (zz.Count > 1)
                 DebugUtils.WriteLine("Multiple regions matched", DebugCategory.TextFormatting);
-            //    throw new InvalidOperationException();
+            //    throw new AppInvalidOperationException();
 
             if (!zz.Any())
             {

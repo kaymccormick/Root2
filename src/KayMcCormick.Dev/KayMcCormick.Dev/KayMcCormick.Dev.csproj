@@ -112,6 +112,7 @@
     <Compile Include="..\Desktop\Analysis\ProjInterface\RegSource.cs">
       <Link>RegSource.cs</Link>
     </Compile>
+    <Compile Include="AppInvalidOperationException.cs" />
     <Compile Include="Attributes\CommandIdMetadataAttribute.cs" />
     <Compile Include="Attributes\TitleMetadataAttribute.cs" />
     <Compile Include="BaseLibTypeConverter.cs" />

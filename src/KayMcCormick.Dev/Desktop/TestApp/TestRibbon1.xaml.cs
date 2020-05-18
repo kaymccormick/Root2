@@ -52,37 +52,37 @@ namespace TestApp
                                                         }
                                                         else
                                                         {
-                                                            throw new InvalidOperationException();
+                                                            throw new AppInvalidOperationException();
                                                         }
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    throw new InvalidOperationException();
+                                                    throw new AppInvalidOperationException();
                                                 }
                                             }
                                         }
                                         else
                                         {
-                                            throw new InvalidOperationException();
+                                            throw new AppInvalidOperationException();
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    throw new InvalidOperationException();
+                                    throw new AppInvalidOperationException();
                                 }
 
                             }
                         } else
                         {
-                            throw new InvalidOperationException();
+                            throw new AppInvalidOperationException();
                         }
                     }
                 }
                 else
                 {
-                    throw new InvalidOperationException();
+                    throw new AppInvalidOperationException();
                 }
             }
         }

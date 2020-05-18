@@ -14,6 +14,7 @@ using System.Collections ;
 using System.Collections.Generic ;
 using AnalysisAppLib.Syntax ;
 using JetBrains.Annotations ;
+using KayMcCormick.Dev;
 
 namespace AnalysisAppLib.Xaml
 {
@@ -133,7 +134,7 @@ namespace AnalysisAppLib.Xaml
         {
             if (! Dict.ContainsKey ( typeKey.StringValue ) )
             {
-                throw new InvalidOperationException ( "No such type" ) ;
+                throw new AppInvalidOperationException ( "No such type" ) ;
             }
 
             return Dict[ typeKey.StringValue ] ;

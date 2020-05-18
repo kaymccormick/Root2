@@ -225,7 +225,7 @@ namespace AnalysisControls
             var result = Workspace.TryApplyChanges ( solution ) ;
             if ( result == false )
             {
-                throw new InvalidOperationException ( ) ;
+                throw new AppInvalidOperationException ( ) ;
             }
         }
     }

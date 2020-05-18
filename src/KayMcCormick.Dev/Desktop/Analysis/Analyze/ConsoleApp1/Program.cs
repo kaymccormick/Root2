@@ -270,7 +270,7 @@ namespace ConsoleAnalysis
             if ( ! string.IsNullOrEmpty ( options.Action )
                  && cmds.All ( a => a.DisplayName != options.Action ) )
             {
-                throw new InvalidOperationException ( ) ;
+                throw new AppInvalidOperationException ( ) ;
             }
 
             SelectVsInstance ( ) ;
@@ -812,7 +812,7 @@ namespace ConsoleAnalysis
                                                        ) ;
 
                 var typeSyntax2 =
-                    ParseTypeName ( t.Type.FullName ?? throw new InvalidOperationException ( ) ) ;
+                    ParseTypeName ( t.Type.FullName ?? throw new AppInvalidOperationException ( ) ) ;
                 var typeSyntax = ParseTypeName (
                                                 PocoPrefix
                                                 + ( ( QualifiedNameSyntax ) typeSyntax2 )
@@ -853,7 +853,7 @@ namespace ConsoleAnalysis
                     var typeByMetadataName =
                         x.GetTypeByMetadataName (
                                                  type1.FullName
-                                                 ?? throw new InvalidOperationException ( )
+                                                 ?? throw new AppInvalidOperationException ( )
                                                 ) ;
                     if ( typeByMetadataName == null )
                     {
@@ -1663,7 +1663,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             var rb1 = workspace.TryApplyChanges ( s2 ) ;
             if ( ! rb1 )
             {
-                throw new InvalidOperationException ( ) ;
+                throw new AppInvalidOperationException ( ) ;
             }
 
             DebugOut ( "Applying assembly refs" ) ;
@@ -1684,7 +1684,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
                 var rb = workspace.TryApplyChanges ( s3 ) ;
                 if ( ! rb )
                 {
-                    throw new InvalidOperationException ( ) ;
+                    throw new AppInvalidOperationException ( ) ;
                 }
             }
 
@@ -1737,7 +1737,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             DebugOut ( "attempting emit" ) ;
 
             var result =
-                ( comp1 ?? throw new InvalidOperationException ( ) ).Emit (
+                ( comp1 ?? throw new AppInvalidOperationException ( ) ).Emit (
                                                                            @"C:\data\logs\output.dll"
                                                                           ) ;
             if ( result.Success )

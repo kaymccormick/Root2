@@ -111,7 +111,7 @@ namespace AnalysisAppLib
             var instance = JsonSerializer.Deserialize < LogEventInstance > ( s , options ) ;
             if ( instance == null )
             {
-                throw new InvalidOperationException ( ) ;
+                throw new AppInvalidOperationException ( ) ;
             }
 
             instance.SerializedForm = s ;

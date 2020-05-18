@@ -343,7 +343,7 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
             if (!match.Success)
             {
                 utilsLog.WriteLine($"Match failed, regex is {rgxp.ToString()}");
-                if(ThrowOnFail) throw new InvalidOperationException(formatOrMessage);
+                if(ThrowOnFail) throw new AppInvalidOperationException(formatOrMessage);
                 return null;
             }
             var expr = match.Groups[2].Captures[0].Value;
