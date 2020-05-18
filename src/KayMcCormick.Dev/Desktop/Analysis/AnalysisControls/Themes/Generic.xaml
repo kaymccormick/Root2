@@ -5899,7 +5899,7 @@
             <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelTab}" ItemsSource="{Binding Items}">
               <WrapPanel>
                 <TextBlock Text="{Binding Header}"/>
-                <WrapPanel Visibility="{Binding Visibility,Converter={StaticResource VisibileIfNotVisible}}">
+                <WrapPanel Visibility="{Binding Visibility,Converter={StaticResource VisibleIfNotVisible}}">
                   <TextBlock Text=" ( "/>
                   <TextBlock Text="{Binding Visibility}"/>
                   <TextBlock Text=" )"/>
@@ -5908,14 +5908,14 @@
             </HierarchicalDataTemplate>
             <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGroup}" ItemsSource="{Binding Items}">
               <HierarchicalDataTemplate.ItemTemplate>
-<DataTemplate DataType="{x:Type ribbonModel:RibbonModelItem}">
+<HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelItem}" ItemsSource="{Binding Items}">
 <WrapPanel>
 <TextBlock Text="{Binding Label}"/>
 <TextBlock Text=" ( "/>
 <TextBlock Text="{Binding Kind}"/>
 <TextBlock Text=" )"/>
 </WrapPanel>
-</DataTemplate>
+</HierarchicalDataTemplate>
 </HierarchicalDataTemplate.ItemTemplate>
               <WrapPanel>
               <TextBlock Text="{Binding Header}"/>
@@ -5935,8 +5935,49 @@
                   <Border Background="{TemplateBinding Background}"
                           BorderBrush="{TemplateBinding BorderBrush}"
                           BorderThickness="{TemplateBinding BorderThickness}">
-                      <TreeView ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RootItemsCollection}"/>
-                    </Border>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+              </Grid.RowDefinitions>
+              <TreeView x:Name="TreeView" ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RootItemsCollection}"/>
+              <ContentPresenter Grid.Column="1" Content="{Binding ElementName=TreeView,Path=SelectedItem}">
+                <ContentPresenter.Resources>
+                  <DataTemplate DataType="{x:Type ribbonModel:RibbonModelTab}">
+                    <StackPanel>
+                      <TextBlock Text="Ribbon Tab" HorizontalAlignment="Center" FontSize="16"/>
+                      <kmWpf:TablePanel Margin="10">
+                        <TextBlock Text="Tab Header"/>
+                        <TextBlock Text="{Binding Header}"/>
+                        <TextBlock Text="Contextual Tab Group Header"/>
+                        <TextBlock Text="{Binding ContextualTabGroupHeader}"/>
+                        <TextBlock Text="Visibility"/>
+                        <TextBlock Text="{Binding Visibility}"/>
+                      </kmWpf:TablePanel>
+                    </StackPanel>
+                  </DataTemplate>
+                </ContentPresenter.Resources>
+              </ContentPresenter>
+              <Grid Grid.Column="1" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition/>
+                  <RowDefinition/>
+                  <RowDefinition/>
+                  <RowDefinition/>
+                  <RowDefinition/>
+                  <RowDefinition/>
+                  <RowDefinition/>
+                </Grid.RowDefinitions>
+              </Grid>
+            </Grid>
+          </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

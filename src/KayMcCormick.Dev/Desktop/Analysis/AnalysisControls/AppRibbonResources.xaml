@@ -26,6 +26,7 @@
     <Setter Property="ContextualTabGroupHeader" Value="{Binding ContextualTabGroupHeader}"></Setter>
     <Setter Property="TextElement.FontFamily" Value="Showcard Gothic"/>
     <Setter Property="ItemsSource" Value="{Binding Items}"/>
+    <Setter Property="kmWpf:AttachedProperties.Model" Value="{Binding}"/>
   </Style>
   <ItemsPanelTemplate x:Key="AppMyRibbonItemsPanelTemplate">
     <local:MyRibbonTabsPanel Opacity="0.9" />

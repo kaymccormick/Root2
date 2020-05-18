@@ -150,7 +150,14 @@ namespace AnalysisControls
                 return tabPRoxy;
             }
 
+
+
             return containerForItemOverride;
+        }
+
+        protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+        {
+            base.PrepareContainerForItemOverride(element, item);
         }
 
         /// <summary>
