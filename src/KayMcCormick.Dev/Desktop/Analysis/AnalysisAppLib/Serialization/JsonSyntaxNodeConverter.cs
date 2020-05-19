@@ -27,6 +27,9 @@ namespace AnalysisAppLib.Serialization
     /// </summary>
     public sealed class JsonSyntaxNodeConverter : JsonConverterFactory
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public JsonSyntaxNodeConverter()
         {
         }

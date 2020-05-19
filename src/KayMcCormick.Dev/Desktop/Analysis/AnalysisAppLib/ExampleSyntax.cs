@@ -17,6 +17,9 @@ using JetBrains.Annotations;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [ ContentProperty ( "Example" ) ]
     public sealed class ExampleSyntax
     {

@@ -4,7 +4,6 @@ using System.Linq ;
 using System.Security.Policy;
 using System.Threading.Tasks ;
 using System.Threading.Tasks.Dataflow ;
-using AnalysisAppLib.Dataflow;
 using FindLogUsages ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
@@ -38,8 +37,11 @@ namespace AnalysisAppLib
             
             _add           = add ;
 
-            AppDomainSetup setup = new AppDomainSetup();
-            setup.ApplicationBase = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\BuildalyzerBuild\bin\debug";
+            AppDomainSetup setup = new AppDomainSetup
+            {
+                ApplicationBase =
+                    @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\BuildalyzerBuild\bin\debug"
+            };
             Evidence baseEvidence = AppDomain.CurrentDomain.Evidence;
             Evidence evidence = new Evidence(baseEvidence);
             //evidence.AddAssembly("(some assembly)");
@@ -152,8 +154,11 @@ namespace AnalysisAppLib
             ResultBufferBlock =
                 new BufferBlock < ILogInvocation > ( new DataflowBlockOptions ( ) ) ;
 
-            AppDomainSetup setup = new AppDomainSetup();
-            setup.ApplicationBase = @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\BuildalyzerBuild\bin\debug";
+            AppDomainSetup setup = new AppDomainSetup
+            {
+                ApplicationBase =
+                    @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\BuildalyzerBuild\bin\debug"
+            };
             Evidence baseEvidence = AppDomain.CurrentDomain.Evidence;
             Evidence evidence = new Evidence(baseEvidence);
             //evidence.AddAssembly("(some assembly)");

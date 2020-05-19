@@ -25,6 +25,9 @@ namespace AnalysisAppLib
         /// </summary>
         CompilationUnitSyntax CompilationUnit { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         SyntaxNode Node { get; }
     }
 }

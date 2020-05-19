@@ -11,18 +11,35 @@
 #endregion
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class SToken
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public SToken ( ) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tokenKind"></param>
+        /// <param name="tokenValue"></param>
         public SToken ( string tokenKind , string tokenValue )
         {
             TokenKind  = tokenKind ;
             TokenValue = tokenValue ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string TokenKind { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string TokenValue { get ; }
     }
 }

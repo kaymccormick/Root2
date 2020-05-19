@@ -5,18 +5,41 @@ using Microsoft.CodeAnalysis;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class ParameterInfo
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string TypeDisplayString { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string TypeFullName { get ; }
 
         // ReSharper disable once CollectionNeverQueried.Global
+        /// <summary>
+        /// 
+        /// </summary>
         public readonly List < CustomModifierInfo > CustomModifiers =
             new List < CustomModifierInfo > ( ) ;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="typeSymbol"></param>
+        /// <param name="select"></param>
+        /// <param name="typeDisplayString"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public ParameterInfo (
             string name
             // ReSharper disable once SuggestBaseTypeForParameter

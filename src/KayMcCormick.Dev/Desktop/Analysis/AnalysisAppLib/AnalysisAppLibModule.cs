@@ -60,6 +60,7 @@ namespace AnalysisAppLib
           , IComponentRegistration registration
         )
         {
+            // ReSharper disable once UnusedVariable
             var svc = String.Join ( "; " , registration.Services.Select ( s => s.ToString ( ) ) ) ;
             // DebugUtils.WriteLine (
                                   // $"{nameof ( AttachToComponentRegistration )}: {registration.Id} {registration.Lifetime} {svc}"
@@ -234,6 +235,7 @@ namespace AnalysisAppLib
         /// <exception cref="NotImplementedException"></exception>
         public bool RegisterConcreteBlockProviders { get; set; }
 
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
         private bool RegisterModelResources { get; set; }
 
         [ NotNull ]

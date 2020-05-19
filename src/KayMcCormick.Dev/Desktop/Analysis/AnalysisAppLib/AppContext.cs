@@ -51,6 +51,9 @@ namespace AnalysisAppLib
         /// </summary>
         public ILifetimeScope Scope { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IProjectBrowserViewModel BrowserViewModel
         {
             // ReSharper disable once UnusedMember.Global

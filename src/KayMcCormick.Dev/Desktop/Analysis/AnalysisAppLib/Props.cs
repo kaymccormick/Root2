@@ -14,6 +14,9 @@
         /// </summary>
         public Category Category { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public object TabHeader { get; set; }
 
         /// <inheritdoc />

@@ -143,12 +143,14 @@ namespace AnalysisAppLib
                 , compilation
             );
         }
+
         /// <summary>
         /// Create a context from code to parse.
         /// </summary>
         /// <param name="code"></param>
         /// <param name="assemblyName"></param>
         /// <param name="extraRefs"></param>
+        /// <param name="filename"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>

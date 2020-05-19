@@ -25,6 +25,11 @@ namespace AnalysisAppLib
     /// </summary>
     public sealed class CodeAnalyseContext : ICodeAnalyseContext
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="assemblyName"></param>
         public delegate ISyntaxTreeContext Factory1 ( string code , string assemblyName ) ;
 
         // ReSharper disable once UnusedMember.Local
@@ -37,6 +42,9 @@ namespace AnalysisAppLib
 
         // ReSharper disable once NotAccessedField.Local
         private StatementSyntax _statement ;
+        /// <summary>
+        /// 
+        /// </summary>
         public CSharpCompilation Compilation { get; }
 
         private SyntaxNode _node ;
@@ -71,17 +79,32 @@ namespace AnalysisAppLib
             _lazy         = new Lazy < CompilationUnitSyntax > ( ValueFactory ) ;
         }
 
+        /// <summary>
+        /// SyntaxNode for analysis
+        /// </summary>
         public SyntaxNode Node { get { return _node ; } set { _node = value ; } }
 
 
+        /// <summary>
+        /// Semantic model for analysis
+        /// </summary>
         public SemanticModel CurrentModel
         {
             get { return _currentModel ; }
             set { _currentModel = value ; }
         }
 
+        /// <summary>
+        /// Syntax tree for analysis
+        /// </summary>
         public SyntaxTree SyntaxTree { get ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="syntaxTree"></param>
+        /// <param name="model"></param>
+        /// <param name="compilationUnitSyntax"></param>
         public void Deconstruct (
             out SyntaxTree            syntaxTree
           , out SemanticModel         model
@@ -93,12 +116,23 @@ namespace AnalysisAppLib
             compilationUnitSyntax = CompilationUnit ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override string ToString ( )
         {
             return
                 $"{nameof ( _assemblyName )}: {_assemblyName}, {nameof ( _currentModel )}: {_currentModel}, {nameof ( CompilationUnit )}: {CompilationUnit.DescendantNodes ( ).Count ( )} nodes" ;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tree"></param>
+        /// <param name="assemblyName"></param>
+        /// <param name="opts"></param>
+        /// <returns></returns>
         [ NotNull ]
         public static ISyntaxTreeContext FromSyntaxTree (
             [ NotNull ] SyntaxTree               tree
@@ -111,6 +145,13 @@ namespace AnalysisAppLib
             // return new CodeAnalyseContext(comp.GetSemanticModel(tree), tree.GetCompilationUnitRoot(), null, tree.GetRoot(), new CodeSource("memory"), tree);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="assemblyName"></param>
+        /// <param name="opts"></param>
+        /// <returns></returns>
         [ NotNull ]
         public static ISyntaxTreeContext FromSyntaxNode (
             [ NotNull ] SyntaxNode               node
@@ -124,8 +165,14 @@ namespace AnalysisAppLib
         }
 
         #region Implementation of ICompilationUnitRootContext
+        /// <summary>
+        /// 
+        /// </summary>
         public CompilationUnitSyntax CompilationUnit { get { return _lazy.Value ; } }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public CompilationUnitSyntax Lazy { get { return _lazy.Value ; } }
 
         [ NotNull ]

@@ -79,7 +79,16 @@ namespace AnalysisAppLib
         /// </summary>
         void LoadTypeInfo ( );
 
+        /// <summary>
+        /// 
+        /// </summary>
         void DetailFields();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <param name="appTypeInfo"></param>
+        /// <returns></returns>
         bool TryGetAppTypeInfo(object identifier, out AppTypeInfo appTypeInfo);
     }
 }

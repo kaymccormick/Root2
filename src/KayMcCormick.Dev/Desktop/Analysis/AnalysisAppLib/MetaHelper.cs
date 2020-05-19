@@ -5,14 +5,27 @@ using KayMcCormick.Dev;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class MetaHelper
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="meta"></param>
+        /// <returns></returns>
         public static Props GetProps(Meta<Lazy<IBaseLibCommand>> meta)
         {
             var metaMetadata = meta.Metadata;
             return GetMetadataProps(metaMetadata);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="metaMetadata"></param>
+        /// <returns></returns>
         public static Props GetMetadataProps(IDictionary<string, object> metaMetadata)
 
         {

@@ -17,6 +17,9 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class ExampleDict : IDictionary , ICollection , IEnumerable
     {
         private readonly IDictionary _dictionaryImplementation =

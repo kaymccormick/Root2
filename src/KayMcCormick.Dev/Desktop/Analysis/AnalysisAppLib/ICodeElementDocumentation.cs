@@ -2,6 +2,9 @@
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ICodeElementDocumentation
     {
         /// <summary>
