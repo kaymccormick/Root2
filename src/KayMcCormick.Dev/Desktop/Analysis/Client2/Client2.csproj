@@ -127,6 +127,7 @@
     <Compile Include="TestRibbonWindow.xaml.cs">
       <DependentUpon>TestRibbonWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserDbContext.cs" />
     <Compile Include="ViewModel\AnalyzeResultsViewModel.cs" />
     <Compile Include="Client2App.xaml.cs">
       <DependentUpon>Client2App.xaml</DependentUpon>
