@@ -10,6 +10,9 @@
         /// </summary>
         public object Content { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public string Title { get; set; }
     }
 }

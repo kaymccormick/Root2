@@ -184,7 +184,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
                     //_output.WriteLine ( str ) ;
                 }
 
-                ;
                 switch ( _context.Peek ( ) )
                 {
                     case WriteContext.PropertyName :
@@ -216,7 +215,6 @@ namespace KayMcCormick.Lib.Wpf.JSON
                     //_output.WriteLine ( str ) ;
                 }
 
-                ;
                 switch ( _context.Peek ( ) )
                 {
                     case WriteContext.PropertyValue :

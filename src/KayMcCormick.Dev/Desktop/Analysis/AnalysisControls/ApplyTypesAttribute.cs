@@ -3,6 +3,9 @@ using System.Composition;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [MetadataAttribute]
     public class ApplyTypesAttribute : Attribute
     {

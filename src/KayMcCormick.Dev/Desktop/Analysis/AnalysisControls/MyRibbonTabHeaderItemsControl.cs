@@ -3,13 +3,12 @@ using System.Windows.Controls.Ribbon;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MyRibbonTabHeaderItemsControl : RibbonTabHeaderItemsControl
     {
-        public override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
-        }
-
+        /// <inheritdoc />
         protected override DependencyObject GetContainerForItemOverride()
         {
             return new MyRibbonTabHeader();

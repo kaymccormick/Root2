@@ -66,7 +66,6 @@ namespace ProjInterface
         private       DockWindowViewModel _viewModel ;
         private       ILifetimeScope      _beginLifetimeScope ;
         private       MyCacheTarget2      _cacheTarget ;
-        private ReplaySubject<DocContent> _docContent;
 
         public Window1 ( )
         {
@@ -93,76 +92,70 @@ namespace ProjInterface
         public Window1 ( [ NotNull ] ILifetimeScope lifetimeScope ) : this (
                                                                             lifetimeScope
                                                                           , null
-                                                                          , null, null, null, null)
+                                                                          , null, null, null)
         {
         }
 
         public Window1([NotNull] ILifetimeScope lifetimeScope
             , DockWindowViewModel viewModel
-            , UiElementTypeConverter converter, ITypesViewModel typesViewModel, RibbonBuilder builder,
+            , UiElementTypeConverter converter, ITypesViewModel typesViewModel,
             ReplaySubject<ActivationInfo> actSubject)
         {
-            if ( lifetimeScope == null )
+            if (lifetimeScope == null)
             {
-                throw new ArgumentNullException ( nameof ( lifetimeScope ) ) ;
+                throw new ArgumentNullException(nameof(lifetimeScope));
             }
 
-            if ( lifetimeScope.IsRegistered ( typeof ( MyCacheTarget2 ) ) )
+            if (lifetimeScope.IsRegistered(typeof(MyCacheTarget2)))
             {
-                _cacheTarget = lifetimeScope.Resolve < MyCacheTarget2 > ( ) ;
+                _cacheTarget = lifetimeScope.Resolve<MyCacheTarget2>();
             }
 
-            
 
-            _converter = converter ;
-            _typesViewModel = typesViewModel ;
-            _cacheTarget?.Cache.SubscribeOn ( Scheduler.Default )
-                         .Buffer ( TimeSpan.FromMilliseconds ( 100 ) )
-                         .Where ( x => x.Any ( ) )
-                         .ObserveOnDispatcher ( DispatcherPriority.Background )
-                         .Subscribe (
-                                     infos => {
-                                         foreach ( var json in infos )
-                                         {
-                                             var i =
-                                                 JsonSerializer.Deserialize < LogEventInstance > (
-                                                                                                  json
-                                                                                                , new
-                                                                                                      JsonSerializerOptions ( )
-                                                                                                 ) ;
-                                             List1.Items.Add ( new LogEventMisc ( i , json ) ) ;
-                                         }
-                                     }
-                                    ) ;
+
+            _converter = converter;
+            _typesViewModel = typesViewModel;
+            _cacheTarget?.Cache.SubscribeOn(Scheduler.Default)
+                .Buffer(TimeSpan.FromMilliseconds(100))
+                .Where(x => x.Any())
+                .ObserveOnDispatcher(DispatcherPriority.Background)
+                .Subscribe(
+                    infos =>
+                    {
+                        foreach (var json in infos)
+                        {
+                            var i =
+                                JsonSerializer.Deserialize<LogEventInstance>(
+                                    json
+                                    , new
+                                        JsonSerializerOptions()
+                                );
+                            List1.Items.Add(new LogEventMisc(i, json));
+                        }
+                    }
+                );
 
 
 
             //SetValue ( AttachedProperties.LifetimeScopeProperty , (ILifetimeScope)lifetimeScope ) ;
-            _beginLifetimeScope = lifetimeScope.BeginLifetimeScope ( ConfigurationAction ) ;
-            var lf = _beginLifetimeScope ;
-            SetValue ( AttachedProperties.LifetimeScopeProperty , lf ) ;
+            _beginLifetimeScope = lifetimeScope.BeginLifetimeScope(ConfigurationAction);
+            var lf = _beginLifetimeScope;
+            SetValue(AttachedProperties.LifetimeScopeProperty, lf);
             // lifetimeScope.ResolveOperationBeginning += ( sender , args ) => {
             // throw new AppComponentException ( "New lifetime scope should be used instead." ) ;
             // } ;
 
-            ViewModel = viewModel ;
-            Builder = builder;
+            ViewModel = viewModel;
+
             // var wih = new WindowInteropHelper ( this ) ;
             // var hWnd = wih.Handle ;
             // viewModel.SethWnd ( hWnd ) ;
-            InitializeComponent ( ) ;
-            builder.DocPane = Docpane;
+            InitializeComponent();
+
             ObservableCollection<ActivationInfo> actList = new ObservableCollection<ActivationInfo>();
-            Docpane.Children.Add(new LayoutDocument() { Content = AnalysisControlsModule.ReplayListView(actList, actSubject, Resources )});
+            Docpane.Children.Add(new LayoutDocument()
+                {Content = AnalysisControlsModule.ReplayListView(actList, actSubject, Resources)});
 
-
-            _docContent = lifetimeScope.Resolve<ReplaySubject<DocContent>>();
-            _docContent.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send).Subscribe(
-                item =>
-                {
-                    var ld = new LayoutDocument {Content = item.Content};
-                    Docpane.Children.Add(ld);
-                });
         }
 
         protected override void OnContentRendered(EventArgs e)

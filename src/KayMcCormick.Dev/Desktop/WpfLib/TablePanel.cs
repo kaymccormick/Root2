@@ -128,7 +128,6 @@ namespace KayMcCormick.Lib.Wpf
             int col = 0;
             int row = 0;
             double rowHeight = 0.0;
-            ;
             double totalHeight = 0.0;
             double Xpos = 0.0;
             double Ypos = 0.0;
@@ -537,7 +536,6 @@ namespace KayMcCormick.Lib.Wpf
                 int col = 0;
                 int row = 0;
                 double rowHeight = 0.0;
-                ;
                 double totalHeight = 0.0;
                 double Xpos = 0.0;
                 double Ypos = 0.0;

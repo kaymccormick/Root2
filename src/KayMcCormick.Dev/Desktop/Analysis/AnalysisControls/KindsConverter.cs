@@ -6,8 +6,12 @@ using AnalysisAppLib.Syntax;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class KindsConverter : IValueConverter
     {
+        /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             AppTypeInfo v = (AppTypeInfo) value;
@@ -24,10 +28,9 @@ namespace AnalysisControls
             {
                 return v.SyntaxKinds;
             }
-
-            return null;
         }
 
+        /// <inheritdoc />
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

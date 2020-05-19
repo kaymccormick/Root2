@@ -4,8 +4,12 @@ using NLog;
 
 namespace AnalysisControls.RibbonModel
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class RibbonModelDropZoneImpl : RibbonModelDropZone
     {
+        /// <inheritdoc />
         public override DragDropEffects OnDrop(DragEventArgs e, IInputElement inputElement)
         {
             var eData = e.Data;

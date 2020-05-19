@@ -193,7 +193,7 @@ namespace ProjInterface
 
         public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
         {
-            builder.RegisterType<RibbonBuilder>();
+            
             builder.ComponentRegistryBuilder.Registered += ComponentRegistryBuilderOnRegistered ;
             builder.RegisterInstance ( _activators ) ;
             builder.Register < AppTypeInfoObservableCollection > (

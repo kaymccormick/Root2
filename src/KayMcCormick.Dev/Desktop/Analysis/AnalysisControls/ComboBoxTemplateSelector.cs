@@ -4,8 +4,12 @@ using AnalysisControls.RibbonModel;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ComboBoxTemplateSelector: ItemContainerTemplateSelector
     {
+        /// <inheritdoc />
         public override DataTemplate SelectTemplate(object item, ItemsControl parentItemsControl)
         {
             if (item is RibbonModelGallery)

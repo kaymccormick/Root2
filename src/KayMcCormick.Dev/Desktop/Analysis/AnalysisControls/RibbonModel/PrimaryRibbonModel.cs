@@ -52,6 +52,8 @@ namespace AnalysisControls.RibbonModel
             get;
         } = new ObservableCollection<RibbonModelContextualTabGroup>();
 
+	public object HelpPaneContent { get; set; }
+
         /// <summary>
         /// 
         /// </summary>

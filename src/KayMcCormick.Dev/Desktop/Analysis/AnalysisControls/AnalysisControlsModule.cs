@@ -108,10 +108,6 @@ namespace AnalysisControls
             //     .SingleInstance()
             //     .WithCallerMetadata();
             //
-            if (RibbonFunc2)
-            {
-                OldRibbonBuilder(builder);
-            }
 
             var kayTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(
@@ -494,107 +490,5 @@ namespace AnalysisControls
                 item => { collection?.Add(item); });
             return lb;
         }
-
-        private static void OldRibbonBuilder(ContainerBuilder builder)
-        {
-            builder.RegisterType<RibbonBuilder>();
-            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AssignableTo<IRibbonComponent>()
-                .AsImplementedInterfaces().AsSelf();
-            //builder.RegisterAdapter<>()
-            builder.RegisterType<AppRibbon>().AsImplementedInterfaces().AsSelf().WithCallerMetadata();
-            builder.RegisterType<AppRibbonTab>().AsImplementedInterfaces().AsSelf().WithCallerMetadata();
-            foreach (Category enumValue in typeof(Category).GetEnumValues())
-            {
-                var cat = new CategoryInfo(enumValue);
-                builder.RegisterInstance(cat).As<CategoryInfo>();
-            }
-
-            builder.Register((c, p) =>
-            {
-                var r = new AppRibbonTabSet();
-                foreach (var ct in c.Resolve<IEnumerable<CategoryInfo>>())
-                {
-                    var tab = new AppRibbonTab { Category = ct };
-                    r.TabSet.Add(tab);
-                }
-
-                foreach (var meta in c.Resolve<IEnumerable<Meta<Lazy<IBaseLibCommand>>>>())
-                {
-                    DebugUtils.WriteLine(meta.ToString());
-                    var props = MetaHelper.GetProps(meta);
-                    DebugUtils.WriteLine(props.ToString());
-                }
-
-                return r;
-            });
-
-            // builder.RegisterAssemblyTypes(ThisAssembly).AssignableTo<IBaseLibCommand>().AsImplementedInterfaces()
-            // .WithCallerMetadata();
-            builder.Register((c, p) =>
-            {
-                var cm = c.Resolve<IEnumerable<Meta<Lazy<IBaseLibCommand>>>>();
-
-                var dict = new Dictionary<Category, Info1>();
-                foreach (var c1 in cm)
-                {
-                    foreach (var m1 in c1.Metadata) DebugUtils.WriteLine($"{m1.Key} = {m1.Value}");
-
-                    var ci = new CommandInfo { Command = c1 };
-
-                    if (c1.Metadata.TryGetValue("Category", out var cv))
-                    {
-                    }
-
-                    var cat = Category.None;
-                    try
-                    {
-                        if (cv != null) cat = (Category)cv;
-                    }
-                    catch (Exception ex)
-                    {
-                        // ignored
-                    }
-
-                    c1.Metadata.TryGetValue("Group", out var group);
-                    if (@group == null) @group = "no group";
-
-                    if (!dict.TryGetValue(cat, out var i1))
-                    {
-                        i1 = new Info1()
-                        {
-                            Category = (Category)cat
-                        };
-                        dict[cat] = i1;
-                    }
-
-                    if (@group == null)
-                    {
-                        i1.Ungrouped.Add(ci);
-                    }
-                    else
-                    {
-                        if (!i1.Infos.TryGetValue((string)@group, out var i2))
-                        {
-                            i2 = new Info2 { Group = (string)@group };
-                            i1.Infos[(string)@group] = i2;
-                        }
-
-                        i2.Infos.Add(ci);
-                    }
-                }
-
-                DebugUtils.WriteLine("***");
-                foreach (var k in dict.Keys)
-                {
-                    DebugUtils.WriteLine(k.ToString());
-                    foreach (var cx in dict[k].Infos)
-                        foreach (var cxx in cx.Value.Infos)
-                            DebugUtils.WriteLine(cxx.Command.ToString());
-                }
-
-                return dict;
-            }).AsSelf().WithCallerMetadata().SingleInstance();
-        }
-
     }
 }

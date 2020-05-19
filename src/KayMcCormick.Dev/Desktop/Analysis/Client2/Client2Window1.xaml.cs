@@ -95,8 +95,8 @@ namespace Client2
             foreach (var format in e.Data.GetFormats())
             {
                 DebugUtils.WriteLine(format);
-                var o = e.Data.GetData(format);
-                DebugUtils.WriteLine(o?.GetType()?.FullName ?? "");
+                // var o = e.Data.GetData(format);
+                // DebugUtils.WriteLine(o?.GetType()?.FullName ?? "");
             }
 
             base.OnPreviewDrop(e);

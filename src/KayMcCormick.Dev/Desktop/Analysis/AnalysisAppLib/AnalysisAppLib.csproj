@@ -131,7 +131,6 @@
     <Compile Include="SyntaxFieldInfoTypeConverter.cs" />
     <Compile Include="SyntaxInfo.cs" />
     <Compile Include="SyntaxTypesService.cs" />
-    <Compile Include="TestModel.cs" />
     <Compile Include="TextTemplate1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

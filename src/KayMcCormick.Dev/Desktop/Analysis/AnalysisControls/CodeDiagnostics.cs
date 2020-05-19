@@ -108,7 +108,6 @@ namespace AnalysisControls
                 96,
                 PixelFormats.Pbgra32);
             rtb.Render(v);
-            ;
             PngBitmapEncoder png = new PngBitmapEncoder();
             png.Frames.Add(BitmapFrame.Create(rtb));
             var fname = $"img_{_lines.SelectedIndex}-{r.Offset}.png";

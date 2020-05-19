@@ -14,10 +14,19 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace AnalysisAppLib
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class SyntaxInfo
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public SyntaxKind Kind { get ; set ; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int Count { get ; set ; }
     }
 }

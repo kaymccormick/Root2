@@ -4,8 +4,12 @@ using System.Windows.Controls.Ribbon;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class QATItemTemplateSelector : DataTemplateSelector
     {
+        /// <inheritdoc />
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             var selectTemplate = base.SelectTemplate(item, container);

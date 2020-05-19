@@ -121,7 +121,7 @@ namespace Client2
             }
 
             var win = enumerable.First().Value.Value;
-
+            // var win = new RibbonWin1();
 
             if (selCmd != null)
             {

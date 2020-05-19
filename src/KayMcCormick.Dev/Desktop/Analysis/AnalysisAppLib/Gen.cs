@@ -5,6 +5,9 @@ using System.ComponentModel;
 
 namespace PocoSyntax
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class PocoAccessorDeclarationSyntaxCollection : IList, IEnumerable, ICollection
     {
         // System.Collections.IList

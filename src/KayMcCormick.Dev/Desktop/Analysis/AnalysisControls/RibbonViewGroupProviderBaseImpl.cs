@@ -8,6 +8,9 @@ using Autofac;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class RibbonViewGroupProviderBaseImpl : RibbonViewGroupProviderBase
     {
         /// <inheritdoc />

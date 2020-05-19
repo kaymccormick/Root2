@@ -6,8 +6,12 @@ using AnalysisAppLib.Syntax;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AppTypeInfoConvereter : IValueConverter
     {
+        /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             SyntaxFieldInfo info = value as SyntaxFieldInfo;
@@ -36,6 +40,7 @@ namespace AnalysisControls
             return null;
         }
 
+        /// <inheritdoc />
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

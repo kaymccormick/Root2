@@ -1415,7 +1415,7 @@ namespace ProjTests
                     containerBuilder.RegisterInstance(progress).AsSelf().AsImplementedInterfaces();
                 });
 
-                var sourceDocs = new ObservableCollection<AppDoc>();
+                var sourceDocs = new ObservableCollection<object>();
 
                 var provider = lifetimeScope.Resolve<ControlsProvider>();
                 foreach (var providerType in provider.Types)
@@ -1426,9 +1426,7 @@ namespace ProjTests
 
                 foreach (var displayableAppCommand in lifetimeScope.Resolve<IEnumerable<IDisplayableAppCommand>>())
                     DebugUtils.WriteLine(displayableAppCommand.DisplayName);
-                var builder = lifetimeScope.Resolve<RibbonBuilder>();
-                var ribbon = builder.Ribbon;
-                ribbon.SelectionChanged += (sender, args) => DebugUtils.WriteLine(args.AddedItems[0].ToString());
+                
                 var w = new RibbonWindow();
                 var dp = new DockPanel();
                 var progresses = new ObservableCollection<CommandProgress>();
@@ -1449,8 +1447,6 @@ namespace ProjTests
                             workspace.WorkspaceChanged += OnWorkspaceOnWorkspaceChanged;
                         });
 
-                dp.Children.Add(ribbon);
-                ribbon.SetValue(DockPanel.DockProperty, Dock.Top);
                 var uiElement = new Grid();
 
                 var m = new DockingManager();
@@ -1479,7 +1475,7 @@ namespace ProjTests
                     }
                 };
                 m.DocumentsSource = sourceDocs;
-                sourceDocs.Add(new AppDoc() {Title = "test"});
+                //sourceDocs.Add(new AppDoc() {Title = "test"});
                 var pane = new LayoutDocumentPane();
                 pane.Children.Add(new LayoutDocument() {Content = lv});
 
@@ -1500,7 +1496,7 @@ namespace ProjTests
             }
         }
 
-        private async void OnWorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args)
+        public async void OnWorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args)
         {
             DebugUtils.WriteLine(args.Kind.ToString());
             var project = args.NewSolution.GetProject(args.ProjectId);
@@ -2101,7 +2097,6 @@ namespace ProjTests
             model.ProjectedAddedEvent += (sender, args) => { model.AddDocument(args.Model, @"C:\temp\program.cs"); };
             model.DocumentAddedEvent += async (sender, args) => { await model.OpenSolutionItem(args.Document); };
             var p = model.CreateProject();
-            ;
             tcs.Task.Wait(5000);
             if (tcs.Task.Result is SyntaxTree t) DebugUtils.WriteLine(t.Length.ToString());
         }
@@ -2524,20 +2519,17 @@ namespace ProjTests
                 instance.Initialize();
                 var lifetimeScope = instance.GetLifetimeScope(builder =>
                 {
-                    builder.Register((c, o) => RibbonBuilder1.RibbonModelBuilder(c.Resolve<RibbonModelApplicationMenu>(), c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>(), c.Resolve<IEnumerable<RibbonModelTab>>(), c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>(), new JsonSerializerOptions()));
+                    // builder.Register((c, o) => RibbonBuilder1.RibbonModelBuilder(c.Resolve<RibbonModelApplicationMenu>(), c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>(), c.Resolve<IEnumerable<RibbonModelTab>>(), c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>(), new JsonSerializerOptions()));
                     builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
                     builder.RegisterType<ClientModel>().AsSelf().SingleInstance().AsImplementedInterfaces()
                         .WithCallerMetadata();
                     builder.RegisterType<RibbonModelApplicationMenu>();
                     builder.RegisterType<FunTabProvider>().As<IRibbonModelProvider<RibbonModelTab>>().SingleInstance()
                         .WithAttributeFiltering();
-                    ;
                     builder.RegisterType<RibbonViewGroupProviderBaseImpl>().AsImplementedInterfaces()
                         .WithCallerMetadata().SingleInstance().WithAttributeFiltering();
-                    ;
                     builder.RegisterType<SuperGRoup>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance()
                         .WithAttributeFiltering();
-                    ;
                     builder.RegisterType<InfrastructureTab>().As<RibbonModelTab>().SingleInstance()
                         .WithAttributeFiltering()
                         // .OnActivated(args => args.Instance.ClientModel = args.Context.Resolve<IClientModel>())
@@ -2546,24 +2538,16 @@ namespace ProjTests
                         .WithAttributeFiltering();
                     builder.RegisterType<AssembliesRibbonTab>().As<RibbonModelTab>().SingleInstance()
                         .WithAttributeFiltering();
-                    ;
                     builder.RegisterType<DerpTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
-                    ;
                     builder.RegisterType<AssembliesTypesGroup>().As<RibbonModelGroup>().SingleInstance()
                         .WithAttributeFiltering();
-                    ;
                     builder.RegisterType<DisplayableAppCommandGroup>().As<RibbonModelGroup>().SingleInstance()
                         .WithAttributeFiltering();
-                    ;
                     builder.RegisterType<BaseLibCommandGroup>().As<RibbonModelGroup>().SingleInstance()
                         .WithAttributeFiltering();
-                    ;
                     builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering();
-                    ;
                     builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering();
-                    ;
                     builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces().WithAttributeFiltering();
-                    ;
                     builder.RegisterType<AppCommandTypeConverter>().AsSelf();
                     builder.RegisterType<ObjectStringTypeConverter>().AsSelf();
                     builder.RegisterType<ClientModel>().AsSelf().AsImplementedInterfaces();
@@ -2584,7 +2568,7 @@ namespace ProjTests
                     x($"ComponentType {prop.ComponentType}");
                     x($"IsReadonly {prop.IsReadOnly}");
                     x($"Serialization visibility {prop.SerializationVisibility}");
-                    x($"Caategory {prop.Category}");
+                    x($"Category {prop.Category}");
                     x($"Description {prop.Description}");
                     x($"Child properties {prop.GetChildProperties()}");
                     foreach (Attribute propAttribute in prop.Attributes)
@@ -2713,7 +2697,7 @@ namespace ProjTests
             tabs.Add(tab1);
             tabs.Add(tab2);
             var providers = new List<IRibbonModelProvider<RibbonModelTab>>();
-            var model = RibbonBuilder1.RibbonModelBuilder(appMenu, groups, tabs, providers, new JsonSerializerOptions());
+            PrimrayRibbonModel model = null;//RibbonBuilder1.RibbonModelBuilder(appMenu, groups, tabs, providers, new JsonSerializerOptions());
             Assert.NotNull(model);
             Assert.NotEmpty(model.RibbonItems);
             Assert.NotEmpty(model.ContextualTabGroups);

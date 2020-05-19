@@ -25,122 +25,12 @@
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
         <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:acrm="clr-namespace:AnalysisControls.RibbonModel;assembly=AnalysisControls" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:acrmd="clr-namespace:AnalysisControls.RibbonModel.Definition;assembly=AnalysisControls" xmlns:aal="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib" xmlns:anal="http://kaymccormick.com/xaml/analysis" xmlns:acrmctg="clr-namespace:AnalysisControls.RibbonModel.ContextualTabGroups;assembly=AnalysisControls">
-          <acrm:RibbonModelTab Header="{x:Static aal:Category.Management}" x:Key="man">
-            <acrm:RibbonModelGroup Header="{x:Static aal:Category.Infrastructure}">
-              <acrm:RibbonModelItemButton Label="Python" />
-              <acrm:RibbonModelItemButton Label="Populate Database" />
-              <acrm:RibbonModelItemButton Label="Open File" />
-              <acrm:RibbonModelItemButton Label="no title" />
-              <acrm:RibbonModelItemButton Label="Syntax node types" />
-            </acrm:RibbonModelGroup>
-            <acrm:RibbonModelGroup Header="{x:Static aal:Category.Infrastructure}">
-              <acrm:RibbonModelItemButton Label="Python" />
-              <acrm:RibbonModelItemButton Label="Code Gen" />
-              <acrm:RibbonModelItemButton Label="Populate Database" />
-              <acrm:RibbonModelItemButton />
-              <acrm:RibbonModelItemButton />
-              <acrm:RibbonModelItemButton Label="Primary analyze command" />
-              <acrm:RibbonModelItemButton Label="Syntax node types" />
-            </acrm:RibbonModelGroup>
-            <acrm:RibbonModelGroup Header="Types">
-              <acrm:RibbonModelItemMenuButton Label="Types" />
-            </acrm:RibbonModelGroup>
-            <acrm:RibbonModelGroup Header="Dropone">
-              <acrm:RibbonModelDropZoneImpl Fill="#FFFF0000" MaxWidth="80" MaxHeight="80" MinWidth="40" MinHeight="40" />
-            </acrm:RibbonModelGroup>
-          </acrm:RibbonModelTab>
-
-          <acrm:RibbonModelTab Visibility="Collapsed" ContextualTabGroupHeader="Code Analysis" Header="Assemblies" x:Key="ass">
-            <acrm:RibbonModelGroup Header="{x:Null}">
-              <acrm:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" />
-              <acrm:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" />
-            </acrm:RibbonModelGroup>
-          </acrm:RibbonModelTab>
-          <acrm:RibbonModelTab Header="{x:Static aal:Category.Infrastructure}" x:Key="infra">
-            <acrm:RibbonModelGroup Header="{x:Static aal:Category.Infrastructure}">
-              <acrm:RibbonModelItemButton Label="Python" />
-              <acrm:RibbonModelItemButton Label="Populate Database" />
-              <acrm:RibbonModelItemButton Label="Open File" />
-              <acrm:RibbonModelItemButton Label="no title" />
-              <acrm:RibbonModelItemButton Label="Syntax node types" />
-            </acrm:RibbonModelGroup>
-            <acrm:RibbonModelGroup Header="{x:Static aal:Category.Infrastructure}">
-              <acrm:RibbonModelItemButton Label="Python" />
-              <acrm:RibbonModelItemButton Label="Code Gen" />
-              <acrm:RibbonModelItemButton Label="Populate Database" />
-              <acrm:RibbonModelItemButton />
-              <acrm:RibbonModelItemButton />
-              <acrm:RibbonModelItemButton Label="Primary analyze command" />
-              <acrm:RibbonModelItemButton Label="Syntax node types" />
-            </acrm:RibbonModelGroup>
-            <acrm:RibbonModelGroup Header="Debug">
-              <acrm:RibbonModelItemButton />
-            </acrm:RibbonModelGroup>
-          </acrm:RibbonModelTab>
-          <acrm:RibbonModelTab Header="Fun tab" x:Key="funtab">
-            <acrm:RibbonModelGroup Header="Group 1" />
-            <acrm:RibbonModelGroup Header="{x:Null}">
-              <acrm:RibbonModelToggleButton IsChecked="False" Label="Toggle" />
-              <acrm:RibbonModelControlGroup>
-                <acrm:RibbonModelControlGroup.Items>
-                  <anal:RibbonModelRadioButton IsChecked="False" Label="One" />
-                  <anal:RibbonModelRadioButton IsChecked="False" Label="Two" />
-                  <anal:RibbonModelRadioButton IsChecked="False" Label="Three" />
-                </acrm:RibbonModelControlGroup.Items>
-              </acrm:RibbonModelControlGroup>
-              <acrm:RibbonModelControlGroup>
-                <acrm:RibbonModelControlGroup.Items>
-                  <acrm:RibbonModelTwoLineText PathData="{x:Null}" PathFill="{x:Null}" PathStroke="#FF000000" Text="{x:Null}" HasTwoLines="False" Label="beep" />
-                  <acrm:RibbonModelItemButton Label="derp" />
-                  <anal:RibbonModelRadioButton IsChecked="False" Label="lala" />
-                  <anal:ModelDatePicker SelectedDate="0001-01-01" />
-                </acrm:RibbonModelControlGroup.Items>
-              </acrm:RibbonModelControlGroup>
-              <acrm:RibbonModelItemMenuButton Label="Menu 1" />
-              <acrm:RibbonModelItemMenuButton Label="Menu 2" />
-              <acrm:RibbonModelTwoLineText PathFill="{x:Null}" PathStroke="#FF000000" Text="Derp" HasTwoLines="True">
-                <acrm:RibbonModelTwoLineText.PathData>
-                  <EllipseGeometry RadiusX="6" RadiusY="6" Center="6,6" />
-                </acrm:RibbonModelTwoLineText.PathData>
-              </acrm:RibbonModelTwoLineText>
-              <acrm:RibbonModelItemTextBox Value="{x:Null}" Label="Input  1" />
-              <acrm:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Combo 1" />
-            </acrm:RibbonModelGroup>
-            <acrm:RibbonModelGroup Header="Super group" SmallImageSource="pack://application:,,,/WpfLib;component/Assets/ASPWebSite_16x.png">
-              <acrm:RibbonModelControlGroup>
-                <acrm:RibbonModelControlGroup.Items>
-                  <anal:ModelCalendar SelectedDate="0001-01-01" />
-                  <anal:ModelDatePicker SelectedDate="0001-01-01" />
-                </acrm:RibbonModelControlGroup.Items>
-              </acrm:RibbonModelControlGroup>
-              <acrm:RibbonModelItemMenuButton Label="Menu XX" />
-              <acrm:RibbonModelItemTextBox Value="{x:Null}" Label="Test" />
-            </acrm:RibbonModelGroup>
-          </acrm:RibbonModelTab>
-          <acrm:RibbonModelTab Visibility="Collapsed" ContextualTabGroupHeader="Assemblies" Header="Derp" x:Key="derp">
-            <acrm:RibbonModelGroup Header="{x:Null}">
-              <acrm:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" />
-              <acrm:RibbonModelItemComboBox SelectionBoxItem="{x:Null}" Label="Types" />
-            </acrm:RibbonModelGroup>
-          </acrm:RibbonModelTab>
-          <acrm:RibbonModelApplicationMenu Header="{x:Null}" KeyTip="{x:Null}" ImageSource="{x:Null}" x:Key="appmenu">
-            <acrm:RibbonModelApplicationMenu.Items>
-              <acrm:RibbonModelAppMenuItem Header="test" KeyTip="{x:Null}" ImageSource="{x:Null}" />
-            </acrm:RibbonModelApplicationMenu.Items>
-          </acrm:RibbonModelApplicationMenu>
-          <acrm:RibbonModelContextualTabGroup Visibility="Collapsed" Header="Code Analysis"  x:Key="code"/>
-          <acrm:PrimaryRibbonModel x:Key="Ribbon0">
-            <acrm:PrimaryRibbonModel.RibbonItems>
-            </acrm:PrimaryRibbonModel.RibbonItems>
-          </acrm:PrimaryRibbonModel>
-          <DataTemplate DataType="acrm:PrimaryRibbonModel">
-            <anal:MyRibbon ItemsSource="{Binding RibbonItems}" ContextualTabGroupsSource="{Binding ContextualTabGroups}" ApplicationMenu="{Binding AppMenu}" QuickAccessToolBar="{Binding QuickAccessToolBar}"/>
-          </DataTemplate>
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Window.Resources>
-  <Grid>
-        <ContentPresenter Content="{StaticResource Ribbon0}"/>
-    </Grid>
+  <local:Ribbon1>
+          <RibbonTab Header="foo"/>
+          </local:Ribbon1>
+
 </Window>

@@ -1163,8 +1163,7 @@
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
-      <ContentPresenter Content="{Binding ElementName=RibbonWindow1,Path=Builder.Ribbon}"/>
-
+      
       <avalondock:DockingManager BorderBrush="Black"
                                  BorderThickness="1"
                                  Grid.Row="2"

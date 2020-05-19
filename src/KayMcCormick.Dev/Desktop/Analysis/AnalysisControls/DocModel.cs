@@ -8,6 +8,10 @@ namespace AnalysisControls
     /// </summary>
     public class DocModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static DocModel CreateInstance()
         {
             return new DocModel();

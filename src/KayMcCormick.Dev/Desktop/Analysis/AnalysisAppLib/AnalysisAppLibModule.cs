@@ -23,6 +23,7 @@ using KayMcCormick.Dev.Logging ;
 using Microsoft.Graph ;
 using Microsoft.Identity.Client ;
 using Document = Microsoft.CodeAnalysis.Document;
+// ReSharper disable UnusedParameter.Local
 
 namespace AnalysisAppLib
 {
@@ -241,8 +242,10 @@ namespace AnalysisAppLib
         [ NotNull ]
         // ReSharper disable once UnusedMember.Local
         private static DataTable DataAdapter (
+            // ReSharper disable once UnusedParameter.Local
             IComponentContext         c
-          , IEnumerable<Parameter> p
+            // ReSharper disable once UnusedParameter.Local
+            , IEnumerable<Parameter> p
           , [NotNull ] object        o
         )
         {

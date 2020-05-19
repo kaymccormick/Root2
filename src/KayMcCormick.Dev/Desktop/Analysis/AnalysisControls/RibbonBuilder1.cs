@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Ribbon;
 using System.Windows.Markup;
 using System.Xml;
 using AnalysisControls.RibbonModel;
@@ -28,7 +30,9 @@ namespace AnalysisControls
         /// <returns></returns>
         public static PrimaryRibbonModel RibbonModelBuilder(RibbonModelApplicationMenu appMenu,
             IEnumerable<RibbonModelContextualTabGroup> ribbonModelContextualTabGroups, IEnumerable<RibbonModelTab> tabs,
-            IEnumerable<IRibbonModelProvider<RibbonModelTab>> tabProviders, JsonSerializerOptions _options)
+            IEnumerable<IRibbonModelProvider<RibbonModelTab>> tabProviders,
+            IEnumerable<IRibbonModelProvider<RibbonModelContextualTabGroup>> grpProviders,
+            JsonSerializerOptions _options)
         {
             JsonSerializerOptions opt= new JsonSerializerOptions();
             foreach (var optionsConverter in _options.Converters)
@@ -38,11 +42,18 @@ namespace AnalysisControls
 
             opt.WriteIndented = true;
             opt.IgnoreNullValues = true;
-            var r = new PrimaryRibbonModel {AppMenu = appMenu};
+            var r = new PrimaryRibbonModel {AppMenu = appMenu, HelpPaneContent = "help"};
             r.QuickAccessToolBar.CustomizeMenuButton = new RibbonModelItemMenuButton() { Command = WpfAppCommands.CustomizeQAT };
             r.QuickAccessToolBar.Items.Add(new RibbonModelItemButton {Label = "test1",
             SmallImageSource = "pack://application:,,,/WpfLib;component/Assets/ASPWebSite_16x.png"
             });
+            var dockPanel = new DockPanel {LastChildFill = false};
+            dockPanel.Children.Add(new RibbonButton {Label = "Quit"});
+            appMenu.FooterPaneContent = dockPanel;
+            foreach (var ribbonModelProvider in grpProviders)
+            {
+                r.ContextualTabGroups.Add(ribbonModelProvider.ProvideModelItem());
+            }
 
             foreach (var tg in ribbonModelContextualTabGroups)
             {
@@ -52,19 +63,19 @@ namespace AnalysisControls
             }
 
             r.AppMenu.Items.Add(new RibbonModelAppMenuItem {Header = "test"});
-            foreach (var meta in tabs)
-            {
-                var ribbonModelTab = meta;
-                ribbonModelTab.BeginInit();
-                ribbonModelTab.EndInit();                
-                r.RibbonItems.Add(ribbonModelTab);
-                if (ribbonModelTab.ContextualTabGroupHeader != null)
-                {
-                    ribbonModelTab.Visibility = Visibility.Collapsed;
-                }
+            // foreach (var meta in tabs)
+            // {
+                // var ribbonModelTab = meta;
+                // ribbonModelTab.BeginInit();
+                // ribbonModelTab.EndInit();                
+                // r.RibbonItems.Add(ribbonModelTab);
+                // if (ribbonModelTab.ContextualTabGroupHeader != null)
+                // {
+                    // ribbonModelTab.Visibility = Visibility.Collapsed;
+                // }
 
-                ribbonModelTab.RibbonModel = r;
-            }
+                // ribbonModelTab.RibbonModel = r;
+            // }
 
             foreach (var ribbonModelProvider in tabProviders)
             {
@@ -85,8 +96,8 @@ namespace AnalysisControls
                 XamlWriter.Save(d, w);
             }
 
-            var json = JsonSerializer.Serialize(r, opt);
-            File.WriteAllText(@"C:\temp\ribbon.json", json);
+            // var json = JsonSerializer.Serialize(r, opt);
+            // File.WriteAllText(@"C:\temp\ribbon.json", json);
 
             return r;
         }

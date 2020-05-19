@@ -28,6 +28,7 @@ namespace AnalysisControls
         /// <inheritdoc />
         public override void OnApplyTemplate()
         {
+            DebugUtils.WriteLine($"{this}.{nameof(OnApplyTemplate)}");
             base.OnApplyTemplate();
             MyContextualTabGroupItemsControl = GetTemplateChild("PART_ContextualTabGroupItemsControl") as MyRibbonContextualTabGroupItemsControl;
             if (MyContextualTabGroupItemsControl != null) MyContextualTabGroupItemsControl.Logger = Logger;
@@ -150,6 +151,24 @@ namespace AnalysisControls
             Logger.Info($"{p}");
         }
 
+        protected override void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnItemTemplateChanged)}");
+            base.OnItemTemplateChanged(oldItemTemplate, newItemTemplate);
+        }
+
+        protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnTemplateChanged)}");
+            base.OnTemplateChanged(oldTemplate, newTemplate);
+        }
+
+        protected override Size MeasureOverride(Size constraint)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(MeasureOverride)}");
+            return base.MeasureOverride(constraint);
+        }
+
         public override void EndInit()
         {
             Logger.Info("EndInit");
@@ -223,6 +242,8 @@ namespace AnalysisControls
 
         public MyRibbonQuickAccessToolBar MyQuickAccessToolBar { get; set; }
 
+
+        
         private void UseLogMethod(string message)
         {
             Logger.Info(message);
@@ -282,6 +303,12 @@ namespace AnalysisControls
     /// <inheritdoc />
     public class MyRibbonQuickAccessToolBar : RibbonQuickAccessToolBar
     {
+        public override void OnApplyTemplate()
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnApplyTemplate)}");
+            base.OnApplyTemplate();
+        }
+
         static MyRibbonQuickAccessToolBar()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbonQuickAccessToolBar),
@@ -290,12 +317,7 @@ namespace AnalysisControls
 
         }
 
-        public override void OnApplyTemplate()
-        {
-            
-            base.OnApplyTemplate();
-        }
-
+        
         protected override DependencyObject GetContainerForItemOverride()
         {
             return (DependencyObject)new MyRibbonControl();
@@ -314,14 +336,44 @@ namespace AnalysisControls
             }
             return false;
         }
+        protected override Size MeasureOverride(Size constraint)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(MeasureOverride)}");
+            return base.MeasureOverride(constraint);
+        }
+
     }
     public class MyRibbonTabsPanel : RibbonTabsPanel {
-    
+        public override void OnApplyTemplate()
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnApplyTemplate)}");
+            base.OnApplyTemplate();
+        }
+
     }
 
     public class MyRibbonMenuItem : RibbonMenuItem
     {
         private object _currentItem;
+        public override void OnApplyTemplate()
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnApplyTemplate)}");
+            base.OnApplyTemplate();
+        }
+
+        protected override void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnItemTemplateChanged)}");
+            base.OnItemTemplateChanged(oldItemTemplate, newItemTemplate);
+        }
+
+        protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnTemplateChanged)}");
+            base.OnTemplateChanged(oldTemplate, newTemplate);
+        }
+
+
         protected override void ClearContainerForItemOverride(DependencyObject element, object item)
         {
             base.ClearContainerForItemOverride(element, item);
@@ -377,12 +429,64 @@ namespace AnalysisControls
             }
             return (DependencyObject)new MyRibbonMenuItem();
         }
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            DebugUtils.WriteLine($"{this} {e.Property.Name} {e.NewValue}");
+            base.OnPropertyChanged(e);
+            RibbonDebugUtils.OnPropertyChanged(this.ToString(), this, e);
+
+        }
+        protected override Size MeasureOverride(Size constraint)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(MeasureOverride)}");
+            return base.MeasureOverride(constraint);
+        }
+
     }
 
     public class MyRibbonApplicationMenu : RibbonApplicationMenu
     {
         private object _currentItem;
 
+        public MyRibbonApplicationMenu()
+        {
+            Background = Brushes.Green;
+        }
+
+        public override void OnApplyTemplate()
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnApplyTemplate)}");
+            base.OnApplyTemplate();
+        }
+
+        protected override void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnItemTemplateChanged)}");
+            base.OnItemTemplateChanged(oldItemTemplate, newItemTemplate);
+        }
+
+        protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnTemplateChanged)}");
+            base.OnTemplateChanged(oldTemplate, newTemplate);
+        }
+
+
+        static MyRibbonApplicationMenu()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbonApplicationMenu),
+                new FrameworkPropertyMetadata(typeof(MyRibbonApplicationMenu)));
+
+        }
+
+        protected override void OnStyleChanged(Style oldStyle, Style newStyle)
+        {
+            DebugUtils.WriteLine($"{this} {newStyle}");
+            base.OnStyleChanged(oldStyle, newStyle);
+            DebugUtils.WriteLine($"!{this} {newStyle}");
+        }
+
+        /// <inheritdoc />
         protected override bool IsItemItsOwnContainerOverride(object item)
         {
             int num;
@@ -428,6 +532,19 @@ namespace AnalysisControls
             }
             return (DependencyObject)new MyRibbonApplicationMenuItem();
         }
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            DebugUtils.WriteLine($"{this} {e.Property.Name} {e.NewValue}");
+            base.OnPropertyChanged(e);
+            RibbonDebugUtils.OnPropertyChanged(this.ToString(), this, e);
+
+        }
+        protected override Size MeasureOverride(Size constraint)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(MeasureOverride)}");
+            return base.MeasureOverride(constraint);
+        }
+
     }
 
     /// <summary>
@@ -437,6 +554,21 @@ namespace AnalysisControls
     {
         private object _currentItem;
 
+
+        protected override void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnItemTemplateChanged)}");
+            base.OnItemTemplateChanged(oldItemTemplate, newItemTemplate);
+        }
+
+        protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnTemplateChanged)}");
+            base.OnTemplateChanged(oldTemplate, newTemplate);
+        }
+
+
+        /// <inheritdoc />
         protected override bool IsItemItsOwnContainerOverride(object item)
         {
             int num;
@@ -458,6 +590,7 @@ namespace AnalysisControls
 
         }
 
+        /// <inheritdoc />
         protected override DependencyObject GetContainerForItemOverride()
         {
             object currentItem = this._currentItem;
@@ -483,6 +616,112 @@ namespace AnalysisControls
             return (DependencyObject)new MyRibbonApplicationMenuItem();
 
         }
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            DebugUtils.WriteLine($"{this} {e.Property.Name} {e.NewValue}");
+            base.OnPropertyChanged(e);
+            RibbonDebugUtils.OnPropertyChanged(this.ToString(), this, e);
 
+        }
+
+        protected override Size MeasureOverride(Size constraint)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(MeasureOverride)}");
+            return base.MeasureOverride(constraint);
+        }
+
+    }
+    public class MyRibbonApplicationSplitMenuItem : RibbonApplicationSplitMenuItem
+    {
+        public override void OnApplyTemplate()
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnApplyTemplate)}");
+            base.OnApplyTemplate();
+        }
+
+        protected override void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnItemTemplateChanged)}");
+            base.OnItemTemplateChanged(oldItemTemplate, newItemTemplate);
+        }
+
+        protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnTemplateChanged)}");
+            base.OnTemplateChanged(oldTemplate, newTemplate);
+        }
+
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            DebugUtils.WriteLine($"{this} {e.Property.Name} {e.NewValue}");
+            base.OnPropertyChanged(e);
+            RibbonDebugUtils.OnPropertyChanged(this.ToString(), this, e);
+
+        }
+        protected override Size MeasureOverride(Size constraint)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(MeasureOverride)}");
+            return base.MeasureOverride(constraint);
+        }
+
+
+    }
+    public class MyRibbonSplitMenuItem : RibbonSplitMenuItem
+    {
+        public override void OnApplyTemplate()
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnApplyTemplate)}");
+            base.OnApplyTemplate();
+        }
+
+        protected override void OnItemTemplateChanged(DataTemplate oldItemTemplate, DataTemplate newItemTemplate)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnItemTemplateChanged)}");
+            base.OnItemTemplateChanged(oldItemTemplate, newItemTemplate);
+        }
+
+        protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnTemplateChanged)}");
+            base.OnTemplateChanged(oldTemplate, newTemplate);
+        }
+
+
+        protected override Size MeasureOverride(Size constraint)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(MeasureOverride)}");
+            return base.MeasureOverride(constraint);
+        }
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+            RibbonDebugUtils.OnPropertyChanged(this.ToString(), this, e);
+
+        }
+
+    }
+    public class MyRibbonSeparator : RibbonSeparator
+    {
+        public override void OnApplyTemplate()
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(OnApplyTemplate)}");
+            base.OnApplyTemplate();
+        }
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            DebugUtils.WriteLine($"{this} {e.Property.Name} {e.NewValue}");
+            base.OnPropertyChanged(e);
+            RibbonDebugUtils.OnPropertyChanged(this.ToString(), this, e);
+            
+        }
+
+        protected override Size MeasureOverride(Size constraint)
+        {
+            DebugUtils.WriteLine($"{this}.{nameof(MeasureOverride)}");
+            return base.MeasureOverride(constraint);
+        }
     }
 }

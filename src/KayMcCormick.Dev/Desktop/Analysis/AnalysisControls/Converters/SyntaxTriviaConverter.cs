@@ -7,8 +7,12 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace AnalysisControls.Converters
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class SyntaxTriviaConverter : IValueConverter
     {
+        /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             SyntaxTrivia? v = (SyntaxTrivia?) value;
@@ -18,6 +22,7 @@ namespace AnalysisControls.Converters
             return s.Kind().ToString();
         }
 
+        /// <inheritdoc />
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();

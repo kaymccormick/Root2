@@ -93,8 +93,7 @@ namespace KayMcCormick.Lib.Wpf
                         // g1.Key,
                         // List = qq111.Where(zxzx => zxzx.Node.Position == 1 && zxzx.Node.Prefix == g1.Key + ".").ToList()
                     // }
-                ;
-            // foreach (var x1 in q1)
+                    // foreach (var x1 in q1)
             // {
                 // DebugUtils.WriteLine($"{x1.Key}: {String.Join("\n", x1.List)}\n****\n");
             // }

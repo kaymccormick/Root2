@@ -101,17 +101,12 @@
     <Compile Include="AnalysisControlsModule.cs" />
     <Compile Include="AnchorableModel.cs" />
     <Compile Include="AppControl.cs" />
-    <Compile Include="AppDoc.cs" />
     <Compile Include="ApplyTypesAttribute.cs" />
-    <Compile Include="AppRibbon.cs" />
-    <Compile Include="AppRibbonTab.cs" />
-    <Compile Include="AppRibbonTabSet.cs" />
     <Compile Include="AppTextSource.cs" />
     <Compile Include="AppTypeInfoConvereter.cs" />
     <Compile Include="AssembliesControl.cs" />
     <Compile Include="AssemblyResourceTree.cs" />
     <Compile Include="BasicTextRunProperties.cs" />
-    <Compile Include="CategoryInfo.cs" />
     <Compile Include="CharacterCell.cs" />
     <Compile Include="ClientModel.cs" />
     <Compile Include="CodeAnalysisProperties.cs" />
@@ -158,7 +153,6 @@
     <Compile Include="DevTypeControl.cs" />
     <Compile Include="DiagnosticError.cs" />
     <Compile Include="DisplayModeConverter.cs" />
-    <Compile Include="DocContent.cs" />
     <Compile Include="DocElements.cs" />
     <Compile Include="DocModel.cs" />
     <Compile Include="DocumentAddedEventArgs.cs" />
@@ -175,7 +169,7 @@
       <DependentUpon>EnhancedCodeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ErrorsTextSource.cs" />
-    <Compile Include="FieldsControl.cs" />
+    <Compile Include="ExtractDocCommentsCommand.cs" />
     <Compile Include="Filter.cs" />
     <Compile Include="FontRendering.cs" />
     <Compile Include="FormattedTextControl.cs" />
@@ -185,17 +179,13 @@
     <Compile Include="GuidConverter.cs" />
     <Compile Include="IAppControl.cs" />
     <Compile Include="IAppCustomControl.cs" />
-    <Compile Include="IAppRibbon.cs" />
-    <Compile Include="IAppRibbonTab.cs" />
     <Compile Include="IClientModel.cs" />
-    <Compile Include="ICodeGenCommand.cs" />
     <Compile Include="ICustomSpan.cs" />
     <Compile Include="INodeData.cs" />
     <Compile Include="InputBindingsManager.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
     <Compile Include="IReadWriteTextRunProperties.cs" />
-    <Compile Include="IRibbonComponent.cs" />
     <Compile Include="IRibbonModelProvider.cs" />
     <Compile Include="ITextPropertiesManager.cs" />
     <Compile Include="ITypefaceManager.cs" />
@@ -212,7 +202,6 @@
     <Compile Include="LogEventsSource.cs" />
     <Compile Include="Main1.cs" />
     <Compile Include="Main1Model.cs" />
-    <Compile Include="MenuTemplateSelector.cs" />
     <Compile Include="MessagesModel.cs" />
     <Compile Include="MetaLazyTypeConverter.cs" />
     <Compile Include="MiscCommands.cs" />
@@ -252,7 +241,6 @@
     </Compile>
     <Compile Include="RectConverter.cs" />
     <Compile Include="RegionInfo.cs" />
-    <Compile Include="RibbonBuilder.cs" />
     <Compile Include="RibbonBuilder1.cs" />
     <Compile Include="RibbonDebugUtils.cs" />
     <Compile Include="RibbonModelRadioButton.cs" />
@@ -334,8 +322,6 @@
       <DependentUpon>TemplateWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="TempLoadData.cs" />
-    <Compile Include="Test.cs" />
-    <Compile Include="TestConverter1.cs" />
     <Compile Include="TestConverter2.cs" />
     <Compile Include="TextCaret.cs" />
     <Compile Include="TextPropertiesManager.cs" />

@@ -22,17 +22,16 @@ namespace ProjInterface
     public sealed class DockWindowViewModel : IViewModel, INotifyPropertyChanged
     {
         [NotNull] private readonly ILifetimeScope _scope;
-        private readonly IAppRibbon _appRibbon;
 
         // ReSharper disable once UnusedMember.Local
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
         private Dictionary<Category, Info1> _dict;
 
 
-        public DockWindowViewModel ([ NotNull ] ILifetimeScope scope, Dictionary<Category, Info1> dict , IAppRibbon appRibbon, AppRibbonTabSet set)
+        public DockWindowViewModel ([ NotNull ] ILifetimeScope scope, Dictionary<Category, Info1> dict)
         {
             _scope = scope;
-            _appRibbon = appRibbon;
+            
             var views = scope.Resolve < IEnumerable < Lazy<IControlView> > > ( ) ;
             foreach ( var controlView in views )
             {
@@ -80,7 +79,7 @@ namespace ProjInterface
             }
         }
 
-        public ObservableCollection<AppDoc> Documents { get; set; } = new ObservableCollection<AppDoc>();
+        public ObservableCollection<object> Documents { get; set; } = new ObservableCollection<object>();
 
         #region Implementation of ISerializable
         /// <summary>

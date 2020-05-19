@@ -15,6 +15,7 @@
               xmlns:aal="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
               xmlns:system="clr-namespace:System;assembly=mscorlib"
               mc:Ignorable="d"
+              Background="Blue"
               Loaded="Client2Window1_OnLoaded"
               DataContext="{Binding RelativeSource={RelativeSource Self}}"
               Title="Client2Window1" Height="900" Width="1600">
@@ -405,12 +406,12 @@
                      TabHeaderTemplate="{StaticResource AppRibbonModelTabTemplate}"
                      ContextualTabGroupHeaderTemplate="{StaticResource AppContextualTabGroupHeaderTemplate}"
                      ItemContainerStyle="{StaticResource AppMyRibbonItemContainerStyle}"
-                     ItemsPanel="{StaticResource AppMyRibbonItemsPanelTemplate}">
+                     ItemsPanel="{StaticResource AppMyRibbonItemsPanelTemplate}" HelpPaneContent="{Binding HelpPaneContent}">
         <anal:MyRibbon.QuickAccessToolBar>
           <anal:MyRibbonQuickAccessToolBar x:Name="QAT" ItemsSource="{Binding Items}"  DataContext="{Binding Path=QuickAccessToolBar}" CustomizeMenuButton="{Binding CustomizeMenuButton}"/>
         </anal:MyRibbon.QuickAccessToolBar>
         <anal:MyRibbon.ApplicationMenu>
-          <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" />
+          <anal:MyRibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" FooterPaneContent="{Binding AppMenu.FooterPaneContent}"/>
         </anal:MyRibbon.ApplicationMenu>
       </anal:MyRibbon>
       <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"  ViewModel="{kmWpf:Resolve anal:Main1Model}"/>

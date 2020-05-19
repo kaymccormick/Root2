@@ -32,7 +32,7 @@ namespace AnalysisControls
     [CategoryMetadata(Category.Infrastructure)]
     [GroupMetadata("Tasks")]
     [CommandIdMetadata("{50AD944E-B85F-4877-951B-FD3CCEC2C2ED}")]
-    public sealed class CodeGenCommand : ICodeGenCommand, IBaseLibCommand
+    public sealed class CodeGenCommand : IBaseLibCommand
     {
 #pragma warning disable 1591
         public CodeGenCommand(ILifetimeScope scope, ReplaySubject<CommandProgress> progressReplaySubject)

@@ -183,7 +183,7 @@ namespace AnalysisControls.ViewModel
         }
 
 
-        [CanBeNull]
+ 
         public bool TryGetAppTypeInfo([NotNull] object identifier, out AppTypeInfo appTypeInfo)
         {
             AppTypeInfoKey key = null;

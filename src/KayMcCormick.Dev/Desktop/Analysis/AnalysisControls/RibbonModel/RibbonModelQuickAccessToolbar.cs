@@ -1,9 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows.Controls.Ribbon;
 
 namespace AnalysisControls.RibbonModel
 {
     /// <summary>
-    /// <see cref="System.Windows.Controls.Ribbon.RibbonQuickAccessToolbar"/>
+    /// <see cref="RibbonQuickAccessToolBar"/>
     /// </summary>
     public class RibbonModelQuickAccessToolBar
     {

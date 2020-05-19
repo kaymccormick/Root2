@@ -8,6 +8,10 @@ namespace AnalysisControls
     /// </summary>
     public interface ITypefaceManager
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         Typeface GetDefaultTypeface();
         /// <summary>
         /// 

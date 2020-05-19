@@ -13,10 +13,10 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
 using System.Text.Json;
@@ -31,7 +31,6 @@ using AnalysisControls.RibbonModel.Definition;
 using AnalysisControls.ViewModel;
 using Autofac;
 using Autofac.Core;
-using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
 using Autofac.Extras.AttributeMetadata;
 using Autofac.Features.AttributeFilters;
@@ -40,6 +39,7 @@ using KayMcCormick.Dev;
 using KayMcCormick.Dev.Container;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
+using KayMcCormick.Lib.Wpf.Command;
 using NLog;
 
 #if EXPLORER
@@ -123,14 +123,14 @@ namespace Client2
             DebugUtils.WriteLine(
                 $"{sender} Logging reg {args.ComponentRegistration} ({args.ComponentRegistration.Lifetime})"
             );
-            regs.OnNext(args.ComponentRegistration);
+            _regSubject.OnNext(args.ComponentRegistration);
         }
 
         #endregion
 
 
         private readonly Subject<IComponentRegistration>
-            regs = new Subject<IComponentRegistration>();
+            _regSubject = new Subject<IComponentRegistration>();
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -140,7 +140,7 @@ namespace Client2
                 .WithAttributedMetadata().AsSelf()
                 .AsImplementedInterfaces().WithCallerMetadata();
 
-            builder.RegisterInstance(regs)
+            builder.RegisterInstance(_regSubject)
                 .AsSelf()
                 .As<IObservable<IComponentRegistration>>();
 
@@ -182,7 +182,10 @@ namespace Client2
 
             builder.Register((c, o) => RibbonBuilder1.RibbonModelBuilder(c.Resolve<RibbonModelApplicationMenu>(),
                 c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>(), c.Resolve<IEnumerable<RibbonModelTab>>(),
-                c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>(), c.Resolve<JsonSerializerOptions>()));
+                c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>(),
+                
+                c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelContextualTabGroup>>>(),
+                c.Resolve<JsonSerializerOptions>()));
             builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
             builder.RegisterType<ClientModel>().AsSelf().SingleInstance().AsImplementedInterfaces()
                 .WithCallerMetadata();
@@ -199,6 +202,8 @@ namespace Client2
                 // .OnActivated(args => args.Instance.ClientModel = args.Context.Resolve<IClientModel>())
                 ;
             builder.RegisterType<ManagementTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
+            builder.RegisterType<CodeAnalysisContextualTabGroupProvider>().AsImplementedInterfaces()
+                .WithCallerMetadata();
             builder.RegisterType<AssembliesRibbonTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
             builder.RegisterType<DerpTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
             builder.RegisterType<AssembliesTypesGroup>().As<RibbonModelGroup>().SingleInstance()
@@ -209,6 +214,12 @@ namespace Client2
                 .WithAttributeFiltering();
             builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering();
             builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering();
+            builder.Register((c) =>
+            {
+                return new LambdaAppCommand("Extract docs", l => ExtractDocCommentsCommand.ProcessSolutionAsync(l, ""),
+                    null);
+
+            }).AsImplementedInterfaces().WithMetadata("Title", "Extract docs");
             builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces().WithAttributeFiltering();
             builder.RegisterType<AppCommandTypeConverter>().AsSelf();
             builder.RegisterType<ObjectStringTypeConverter>().AsSelf();
@@ -217,16 +228,5 @@ namespace Client2
         public bool RegisterPython { get; set; }
 
 #pragma warning disable 1998
-    }
-
-    public class x : IConstructorSelector
-    {
-        public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings,
-            IEnumerable<Parameter> parameters)
-        {
-            return constructorBindings
-                .Where(x => x.TargetConstructor.GetParameters().Any(info => info.ParameterType == typeof(ClientModel)))
-                .OrderByDescending(x => x.TargetConstructor.GetParameters().Length).FirstOrDefault();
-        }
     }
 }

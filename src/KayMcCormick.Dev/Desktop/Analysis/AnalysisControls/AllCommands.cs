@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Subjects;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
@@ -13,16 +12,15 @@ using AvalonDock.Layout;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf.Command;
 
-namespace AnalysisControls
-{
+namespace AnalysisControls{
+
     /// <summary>
     /// 
     /// </summary>
-    public class AllCommands : IRibbonComponent
+    public class AllCommands 
     {
         private readonly IEnumerable<Meta<Lazy<IBaseLibCommand>>> _commands;
         private readonly IEnumerable<IDisplayableAppCommand> _displayCommands;
-        private readonly ReplaySubject<DocContent> _docContent;
         private readonly IEnumerable<Func<LayoutDocumentPane, IDisplayableAppCommand>> _funcs = null;
         private List<Meta<Lazy<IBaseLibCommand>>> _cmds;
 
@@ -31,13 +29,11 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="commands"></param>
         /// <param name="displayCommands"></param>
-        /// <param name="docContent"></param>
-        public AllCommands(IEnumerable<Meta<Lazy<IBaseLibCommand>>> commands, IEnumerable<IDisplayableAppCommand> displayCommands,
-            ReplaySubject<DocContent> docContent)
+        public AllCommands(IEnumerable<Meta<Lazy<IBaseLibCommand>>> commands, IEnumerable<IDisplayableAppCommand> displayCommands)
         {
             _commands = commands;
             _displayCommands = displayCommands;
-            _docContent = docContent;
+            
             _cmds = _commands.ToList();
             
         }
@@ -60,19 +56,19 @@ namespace AnalysisControls
         {
             var myGroup = new RibbonGroup();
             var x = new RibbonTextBox();
-            x.PreviewKeyDown += (sender, args) =>
-            {
-                if (args.Key == Key.Enter)
-                {
-                    var type = Type.GetType(x.Text);
-                    if (type != null)
-                    {
-                        DebugUtils.WriteLine(type.ToString());
-                        DocContent doc = new DocContent() {Content = type};
-                        _docContent.OnNext(doc);
-                    }
-                }
-            };
+            // x.PreviewKeyDown += (sender, args) =>
+            // {
+            //     if (args.Key == Key.Enter)
+            //     {
+            //         var type = Type.GetType(x.Text);
+            //         if (type != null)
+            //         {
+            //             DebugUtils.WriteLine(type.ToString());
+            //             DocContent doc = new DocContent() {Content = type};
+            //             _docContent.OnNext(doc);
+            //         }
+            //     }
+            // };
             myGroup.Items.Add(x);
             var gallery = new RibbonGallery();
             var galCat = new RibbonGalleryCategory { MaxColumnCount = 1, MinColumnCount = 1 };

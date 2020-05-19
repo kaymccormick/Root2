@@ -3,6 +3,9 @@ using System.ComponentModel;
 
 namespace AnalysisControls.RibbonModel
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class RibbonModelItemTypeConverter : TypeConverter
     {
         public override object CreateInstance(ITypeDescriptorContext context, IDictionary propertyValues)

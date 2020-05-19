@@ -7,12 +7,11 @@ using Microsoft.CodeAnalysis;
 namespace AnalysisControls
 {
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class SyntaxTreeCollection : IList,ICollection,IEnumerable, IEnumerable<SyntaxTree>
     {
-        public SyntaxTreeCollection()
-        {
-        }
-
         private IList _listImplementation = new List<SyntaxTree>();
         IEnumerator<SyntaxTree> IEnumerable<SyntaxTree>.GetEnumerator()
         {

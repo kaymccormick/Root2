@@ -126,6 +126,8 @@ namespace AnalysisControls
                 DebugUtils.WriteLine($"Adding {eNewItem.Name}");
                 var filePath = eNewItem.FilePath;
                 if (eNewItem.Project != null && eNewItem.Project.FilePath != null) filePath = Ext.GetRelativePath(eNewItem.Project.FilePath, filePath);
+                if(filePath.StartsWith(@".\"))
+                filePath = filePath.Substring(2);
                 var pathInfo = GetPathInfo(filePath, DocumentsPath);
                 
                 var pathInfoEntry = new PathModel(PathModelKind.File)

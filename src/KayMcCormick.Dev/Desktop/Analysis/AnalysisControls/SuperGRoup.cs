@@ -7,8 +7,14 @@ using Microsoft.Graph;
 
 namespace AnalysisControls
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ModelCalendar
     {
-        public DateTime SelectedDate { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime? SelectedDate { get; set; }
     }
 }
