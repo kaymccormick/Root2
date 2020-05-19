@@ -212,12 +212,12 @@ namespace AnalysisControls
 
         private void AddInitialDocuments()
         {
-            AddModelDoc();
+//            AddModelDoc();
             AddRibbonModelViewDoc();
-            AddAssembliesDoc();
-            AddPropertiesGridDoc();
+//            AddAssembliesDoc();
+//            AddPropertiesGridDoc();
             AddVisualTreeViewDoc();
-            AddControlsDoc();
+//            AddControlsDoc();
         }
 
         private void AddVisualTreeViewDoc()

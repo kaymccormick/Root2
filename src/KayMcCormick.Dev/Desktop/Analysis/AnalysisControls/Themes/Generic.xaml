@@ -12,7 +12,8 @@
   xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
   xmlns:classic="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
   xmlns:primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon"
-  xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonModel">
+  xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonModel"
+  xmlns:controls="clr-namespace:AnalysisControls.Controls">
   <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
   <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
   <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
@@ -2608,36 +2609,36 @@
   </Style>
   <Style TargetType="{x:Type local:MyRibbonMenuButton}">
     <Style.Resources>
-      <Style TargetType="{x:Type local:MyRibbonSeparator}" x:Key="{x:Static MenuItem.SeparatorStyleKey}">
-        <Setter Property="FrameworkElement.OverridesDefaultStyle" Value="true" />
-        <Setter Property="UIElement.Focusable" Value="false" />
+      <Style TargetType="{x:Type RibbonSeparator}" x:Key="{x:Static MenuItem.SeparatorStyleKey}">
+        <Setter Property="FrameworkElement.OverridesDefaultStyle" Value="true"/>
+        <Setter Property="UIElement.Focusable" Value="false"/>
         <Setter Property="Control.BorderBrush"
-                Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type RibbonMenuButton}}, Path=Ribbon.BorderBrush}" />
+                        Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type RibbonMenuButton}}, Path=Ribbon.BorderBrush}"/>
         <Setter Property="Control.Background"
-                Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type RibbonMenuButton}}, Path=Ribbon.Background}" />
-        <Setter Property="Control.FontWeight" Value="Bold" />
+                        Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type RibbonMenuButton}}, Path=Ribbon.Background}"/>
+        <Setter Property="Control.FontWeight" Value="Bold"/>
         <Setter Property="Control.Template">
           <Setter.Value>
-            <ControlTemplate TargetType="{x:Type local:MyRibbonSeparator}">
+            <ControlTemplate TargetType="{x:Type RibbonSeparator}">
               <Border x:Name="MainBorder" SnapsToDevicePixels="true" BorderThickness="0,1,0,1"
                       BorderBrush="{TemplateBinding Control.BorderBrush}"
                       Background="{TemplateBinding Control.Background}">
                 <Border x:Name="Overlay" Background="{StaticResource ì}">
-                  <TextBlock x:Name="Text" Margin="2,1,2,1" Text="{TemplateBinding RibbonSeparator.Label}" />
+                  <TextBlock x:Name="Text" Margin="2,1,2,1" Text="{TemplateBinding RibbonSeparator.Label}"/>
                 </Border>
               </Border>
               <ControlTemplate.Triggers>
                 <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
                   <Setter TargetName="Text"
-                          Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
-                          Property="TextBlock.Foreground" />
-                  <Setter TargetName="Overlay" Property="Border.Background" Value="Transparent" />
+                                  Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
+                                  Property="TextBlock.Foreground"/>
+                  <Setter TargetName="Overlay" Property="Border.Background" Value="Transparent"/>
                   <Setter TargetName="MainBorder"
-                          Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
-                          Property="Border.BorderBrush" />
+                                  Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                                  Property="Border.BorderBrush"/>
                   <Setter TargetName="MainBorder"
-                          Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                          Property="Border.Background" />
+                                  Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                                  Property="Border.Background"/>
                 </DataTrigger>
               </ControlTemplate.Triggers>
             </ControlTemplate>
@@ -2647,32 +2648,31 @@
           <Trigger Property="RibbonSeparator.Label" Value="{x:Null}">
             <Setter Property="Control.Template">
               <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:MyRibbonSeparator}">
+                <ControlTemplate TargetType="{x:Type RibbonSeparator}">
                   <Grid x:Name="Grid" SnapsToDevicePixels="true" Margin="1">
                     <Grid.ColumnDefinitions>
-                      <ColumnDefinition MinWidth="22" Width="Auto" SharedSizeGroup="MenuItemIconColumnGroup" />
-                      <ColumnDefinition Width="*" />
-                      <ColumnDefinition Width="14" />
+                      <ColumnDefinition MinWidth="22" Width="Auto" SharedSizeGroup="MenuItemIconColumnGroup"/>
+                      <ColumnDefinition Width="*"/>
+                      <ColumnDefinition Width="14"/>
                     </Grid.ColumnDefinitions>
                     <Border x:Name="SideBarBorder" BorderThickness="0,0,1,0" Margin="0,-1,0,-1"
                             Background="{TemplateBinding Control.Background}"
                             BorderBrush="{TemplateBinding Control.BorderBrush}">
-                      <Border x:Name="SideBarOverlay" Background="{StaticResource ì}" />
+                      <Border x:Name="SideBarOverlay" Background="{StaticResource ì}"/>
                     </Border>
-                    <Line x:Name="Line" Grid.Column="1" Grid.ColumnSpan="2" Margin="2,0,0,0" X1="0" Y1="0" X2="1"
-                          Y2="0"
-                          Stroke="{TemplateBinding Control.BorderBrush}" StrokeThickness="1" Stretch="Fill" />
+                    <Line x:Name="Line" Grid.Column="1" Grid.ColumnSpan="2" Margin="2,0,0,0" X1="0" Y1="0" X2="1" Y2="0"
+                          Stroke="{TemplateBinding Control.BorderBrush}" StrokeThickness="1" Stretch="Fill"/>
                   </Grid>
                   <ControlTemplate.Triggers>
                     <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
-                      <Setter TargetName="SideBarBorder" Property="Border.Background" Value="Transparent" />
+                      <Setter TargetName="SideBarBorder" Property="Border.Background" Value="Transparent"/>
                       <Setter TargetName="SideBarBorder"
-                              Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                              Property="Border.BorderBrush" />
-                      <Setter TargetName="SideBarOverlay" Property="Border.Background" Value="Transparent" />
+                                      Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                      Property="Border.BorderBrush"/>
+                      <Setter TargetName="SideBarOverlay" Property="Border.Background" Value="Transparent"/>
                       <Setter TargetName="Line"
-                              Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                              Property="Shape.Stroke" />
+                                      Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                      Property="Shape.Stroke"/>
                     </DataTrigger>
                   </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -3359,36 +3359,36 @@
   </ControlTemplate>
   <Style TargetType="{x:Type local:MyRibbonComboBox}">
     <Style.Resources>
-      <Style TargetType="{x:Type local:MyRibbonSeparator}" x:Key="{x:Static MenuItem.SeparatorStyleKey}">
-        <Setter Property="FrameworkElement.OverridesDefaultStyle" Value="true" />
-        <Setter Property="UIElement.Focusable" Value="false" />
+      <Style TargetType="{x:Type RibbonSeparator}" x:Key="{x:Static MenuItem.SeparatorStyleKey}">
+        <Setter Property="FrameworkElement.OverridesDefaultStyle" Value="true"/>
+        <Setter Property="UIElement.Focusable" Value="false"/>
         <Setter Property="Control.BorderBrush"
-                Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type RibbonMenuButton}}, Path=Ribbon.BorderBrush}" />
+                        Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type RibbonMenuButton}}, Path=Ribbon.BorderBrush}"/>
         <Setter Property="Control.Background"
-                Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type RibbonMenuButton}}, Path=Ribbon.Background}" />
-        <Setter Property="Control.FontWeight" Value="Bold" />
+                        Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type RibbonMenuButton}}, Path=Ribbon.Background}"/>
+        <Setter Property="Control.FontWeight" Value="Bold"/>
         <Setter Property="Control.Template">
           <Setter.Value>
-            <ControlTemplate TargetType="{x:Type local:MyRibbonSeparator}">
+            <ControlTemplate TargetType="{x:Type RibbonSeparator}">
               <Border x:Name="MainBorder" BorderThickness="0,1,0,1"
                       BorderBrush="{TemplateBinding Control.BorderBrush}"
                       Background="{TemplateBinding Control.Background}">
                 <Border x:Name="Overlay" Background="{StaticResource ì}">
-                  <TextBlock x:Name="Text" Margin="2,1,2,1" Text="{TemplateBinding RibbonSeparator.Label}" />
+                  <TextBlock x:Name="Text" Margin="2,1,2,1" Text="{TemplateBinding RibbonSeparator.Label}"/>
                 </Border>
               </Border>
               <ControlTemplate.Triggers>
                 <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
                   <Setter TargetName="Text"
-                          Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
-                          Property="TextBlock.Foreground" />
-                  <Setter TargetName="Overlay" Property="Border.Background" Value="Transparent" />
+                                  Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
+                                  Property="TextBlock.Foreground"/>
+                  <Setter TargetName="Overlay" Property="Border.Background" Value="Transparent"/>
                   <Setter TargetName="MainBorder"
-                          Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
-                          Property="Border.BorderBrush" />
+                                  Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                                  Property="Border.BorderBrush"/>
                   <Setter TargetName="MainBorder"
-                          Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                          Property="Border.Background" />
+                                  Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                                  Property="Border.Background"/>
                 </DataTrigger>
               </ControlTemplate.Triggers>
             </ControlTemplate>
@@ -3398,32 +3398,31 @@
           <Trigger Property="RibbonSeparator.Label" Value="{x:Null}">
             <Setter Property="Control.Template">
               <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:MyRibbonSeparator}">
+                <ControlTemplate TargetType="{x:Type RibbonSeparator}">
                   <Grid x:Name="Grid" SnapsToDevicePixels="true" Margin="1">
                     <Grid.ColumnDefinitions>
-                      <ColumnDefinition MinWidth="22" Width="Auto" SharedSizeGroup="MenuItemIconColumnGroup" />
-                      <ColumnDefinition Width="*" />
-                      <ColumnDefinition Width="14" />
+                      <ColumnDefinition MinWidth="22" Width="Auto" SharedSizeGroup="MenuItemIconColumnGroup"/>
+                      <ColumnDefinition Width="*"/>
+                      <ColumnDefinition Width="14"/>
                     </Grid.ColumnDefinitions>
                     <Border x:Name="SideBarBorder" BorderThickness="0,0,1,0" Margin="0,-1,0,-1"
                             Background="{TemplateBinding Control.Background}"
                             BorderBrush="{TemplateBinding Control.BorderBrush}">
-                      <Border x:Name="SideBarOverlay" Background="{StaticResource ì}" />
+                      <Border x:Name="SideBarOverlay" Background="{StaticResource ì}"/>
                     </Border>
-                    <Line x:Name="Line" Grid.Column="1" Grid.ColumnSpan="2" Margin="2,0,0,0" X1="0" Y1="0" X2="1"
-                          Y2="0"
-                          Stroke="{TemplateBinding Control.BorderBrush}" StrokeThickness="1" Stretch="Fill" />
+                    <Line x:Name="Line" Grid.Column="1" Grid.ColumnSpan="2" Margin="2,0,0,0" X1="0" Y1="0" X2="1" Y2="0"
+                          Stroke="{TemplateBinding Control.BorderBrush}" StrokeThickness="1" Stretch="Fill"/>
                   </Grid>
                   <ControlTemplate.Triggers>
                     <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
-                      <Setter TargetName="SideBarBorder" Property="Border.Background" Value="Transparent" />
+                      <Setter TargetName="SideBarBorder" Property="Border.Background" Value="Transparent"/>
                       <Setter TargetName="SideBarBorder"
-                              Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                              Property="Border.BorderBrush" />
-                      <Setter TargetName="SideBarOverlay" Property="Border.Background" Value="Transparent" />
+                                      Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                      Property="Border.BorderBrush"/>
+                      <Setter TargetName="SideBarOverlay" Property="Border.Background" Value="Transparent"/>
                       <Setter TargetName="Line"
-                              Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                              Property="Shape.Stroke" />
+                                      Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                      Property="Shape.Stroke"/>
                     </DataTrigger>
                   </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -3755,69 +3754,6 @@
         <Setter Property="Control.Template">
           <Setter.Value>
             <ControlTemplate TargetType="{x:Type RibbonSeparator}">
-              <Border x:Name="MainBorder" BorderThickness="0,1,0,1"
-                      BorderBrush="{TemplateBinding Control.BorderBrush}"
-                      Background="{TemplateBinding Control.Background}">
-                <Border x:Name="Overlay" Background="{StaticResource ì}">
-                  <TextBlock x:Name="Text" Margin="2,1,2,1" Text="{TemplateBinding RibbonSeparator.Label}"/>
-                </Border>
-              </Border>
-              <ControlTemplate.Triggers>
-                <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
-                  <Setter TargetName="Text"
-                                  Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
-                                  Property="TextBlock.Foreground"/>
-                  <Setter TargetName="Overlay" Property="Border.Background" Value="Transparent"/>
-                  <Setter TargetName="MainBorder"
-                                  Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
-                                  Property="Border.BorderBrush"/>
-                  <Setter TargetName="MainBorder"
-                                  Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
-                                  Property="Border.Background"/>
-                </DataTrigger>
-              </ControlTemplate.Triggers>
-            </ControlTemplate>
-          </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-          <Trigger Property="RibbonSeparator.Label" Value="{x:Null}">
-            <Setter Property="Control.Template">
-              <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:MyRibbonSeparator}">
-                  <Grid x:Name="Grid" Margin="1" SnapsToDevicePixels="true">
-                    <Grid.ColumnDefinitions>
-                      <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemIconColumnGroup"/>
-                      <ColumnDefinition Width="*" MinWidth="44"/>
-                      <ColumnDefinition Width="22"/>
-                    </Grid.ColumnDefinitions>
-                    <Line x:Name="Line" Grid.Column="1" Grid.ColumnSpan="2" X1="0" Y1="0" X2="1" Y2="0"
-                          Stroke="{TemplateBinding Control.BorderBrush}" StrokeThickness="1" Stretch="Fill"/>
-                  </Grid>
-                  <ControlTemplate.Triggers>
-                    <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
-                      <Setter TargetName="Line"
-                                      Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                                      Property="Shape.Stroke"/>
-                      <Setter TargetName="Grid" Property="FrameworkElement.Margin" Value="0"/>
-                    </DataTrigger>
-                  </ControlTemplate.Triggers>
-                </ControlTemplate>
-              </Setter.Value>
-            </Setter>
-          </Trigger>
-        </Style.Triggers>
-      </Style>
-      <Style TargetType="{x:Type local:MyRibbonSeparator}" x:Key="{x:Static MenuItem.SeparatorStyleKey}">
-        <Setter Property="FrameworkElement.OverridesDefaultStyle" Value="true"/>
-        <Setter Property="UIElement.Focusable" Value="false"/>
-        <Setter Property="Control.BorderBrush"
-                        Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MyRibbonApplicationMenu}}, Path=Ribbon.BorderBrush,FallbackValue=#f0f0f0}"/>
-        <Setter Property="Control.Background"
-                        Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MyRibbonApplicationMenu}}, Path=Ribbon.Background,FallbackValue=#0f0f0f}"/>
-        <Setter Property="Control.FontWeight" Value="Bold"/>
-        <Setter Property="Control.Template">
-          <Setter.Value>
-            <ControlTemplate TargetType="{x:Type local:MyRibbonSeparator}">
               <Border x:Name="MainBorder" BorderThickness="0,1,0,1"
                       BorderBrush="{TemplateBinding Control.BorderBrush}"
                       Background="{TemplateBinding Control.Background}">
@@ -7704,4 +7640,20 @@
       </Setter.Value>
     </Setter>
   </Style>
+
+    <Style TargetType="{x:Type controls:TraceSourcesView}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:TraceSourcesView}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+            <Grid>.
+            <local:CustomTreeView ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RootNodes}"/>
+            </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

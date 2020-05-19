@@ -411,7 +411,7 @@
           <anal:MyRibbonQuickAccessToolBar x:Name="QAT" ItemsSource="{Binding Items}"  DataContext="{Binding Path=QuickAccessToolBar}" CustomizeMenuButton="{Binding CustomizeMenuButton}"/>
         </anal:MyRibbon.QuickAccessToolBar>
         <anal:MyRibbon.ApplicationMenu>
-          <anal:MyRibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" FooterPaneContent="{Binding AppMenu.FooterPaneContent}"/>
+          <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" FooterPaneContent="{Binding AppMenu.FooterPaneContent}"/>
         </anal:MyRibbon.ApplicationMenu>
       </anal:MyRibbon>
       <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"  ViewModel="{kmWpf:Resolve anal:Main1Model}"/>

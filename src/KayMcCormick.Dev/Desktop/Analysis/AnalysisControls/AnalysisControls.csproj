@@ -126,6 +126,7 @@
     <Compile Include="CompilationControl.cs" />
     <Compile Include="CompilationError.cs" />
     <Compile Include="ControlsProvider.cs" />
+    <Compile Include="Controls\TraceSourcesView.cs" />
     <Compile Include="ControlView.cs" />
     <Compile Include="ConversionUtils.cs" />
     <Compile Include="Converters\HierarchyConverter.cs" />
@@ -322,6 +323,7 @@
       <DependentUpon>TemplateWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="TempLoadData.cs" />
+    <Compile Include="TempLoadData11.cs" />
     <Compile Include="TestConverter2.cs" />
     <Compile Include="TextCaret.cs" />
     <Compile Include="TextPropertiesManager.cs" />

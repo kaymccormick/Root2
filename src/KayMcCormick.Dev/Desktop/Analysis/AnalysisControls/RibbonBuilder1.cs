@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
+using System.Windows.Input;
 using System.Windows.Markup;
 using System.Xml;
 using AnalysisControls.RibbonModel;
@@ -52,31 +53,21 @@ namespace AnalysisControls
             appMenu.FooterPaneContent = dockPanel;
             foreach (var ribbonModelProvider in grpProviders)
             {
-                r.ContextualTabGroups.Add(ribbonModelProvider.ProvideModelItem());
-            }
-
-            foreach (var tg in ribbonModelContextualTabGroups)
-            {
-                DebugUtils.WriteLine("Adding contextual tab group " + tg);
-                tg.RibbonModel = r;
-                r.ContextualTabGroups.Add(tg);
+	    var t = ribbonModelProvider.ProvideModelItem();
+	    t.RibbonModel = r;
+                r.ContextualTabGroups.Add(t);
+		
             }
 
             r.AppMenu.Items.Add(new RibbonModelAppMenuItem {Header = "test"});
-            // foreach (var meta in tabs)
-            // {
-                // var ribbonModelTab = meta;
-                // ribbonModelTab.BeginInit();
-                // ribbonModelTab.EndInit();                
-                // r.RibbonItems.Add(ribbonModelTab);
-                // if (ribbonModelTab.ContextualTabGroupHeader != null)
-                // {
-                    // ribbonModelTab.Visibility = Visibility.Collapsed;
-                // }
 
-                // ribbonModelTab.RibbonModel = r;
-            // }
-
+	    var HomeTab = new RibbonModelTab { Header = "Home" };
+	    var PasteButton = new RibbonModelItemButton { Label = "Paste", Command = ApplicationCommands.Paste };
+	    var Group1 = new RibbonModelGroup { Header = "Paste" };
+	    Group1.Items.Add(PasteButton);
+	    HomeTab.Items.Add(Group1);
+	    r.RibbonItems.Add(HomeTab);
+	    
             foreach (var ribbonModelProvider in tabProviders)
             {
                 var item = ribbonModelProvider.ProvideModelItem();

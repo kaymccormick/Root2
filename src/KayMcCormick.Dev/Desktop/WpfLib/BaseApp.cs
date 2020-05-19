@@ -185,14 +185,16 @@ namespace KayMcCormick.Lib.Wpf
         /// </summary>
         protected virtual void SetupTracing ( )
         {
-            
+
+            bool TraceAll = false;
+            bool tracenone = true;
             PresentationTraceSources.Refresh ( ) ;
             foreach (var propertyInfo in typeof(PresentationTraceSources).GetProperties(BindingFlags.Static | BindingFlags.Public))
             {
                 if (propertyInfo.PropertyType == typeof(TraceSource))
                 {
                     TraceSource t = (TraceSource) propertyInfo.GetValue(null);
-                    t.Switch.Level = SourceLevels.All;
+                    t.Switch.Level = tracenone ? SourceLevels.Off : SourceLevels.All;
                     t.Listeners.Add(new ConsoleTraceListener());
                 }
             }

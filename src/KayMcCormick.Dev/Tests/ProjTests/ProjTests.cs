@@ -1944,7 +1944,7 @@ namespace ProjTests
         }
 
 
-        [WpfFact]
+        
         public void TestAllCommand()
         {
             using (var instance = new ApplicationInstance(
@@ -2078,7 +2078,7 @@ namespace ProjTests
             }
         }
 
-        [WpfFact]
+        //[WpfFact]
         public void TestMdodel1()
         {
             var model = new Main1Model();
@@ -2697,7 +2697,7 @@ namespace ProjTests
             tabs.Add(tab1);
             tabs.Add(tab2);
             var providers = new List<IRibbonModelProvider<RibbonModelTab>>();
-            PrimrayRibbonModel model = null;//RibbonBuilder1.RibbonModelBuilder(appMenu, groups, tabs, providers, new JsonSerializerOptions());
+            PrimaryRibbonModel model = null;//RibbonBuilder1.RibbonModelBuilder(appMenu, groups, tabs, providers, new JsonSerializerOptions());
             Assert.NotNull(model);
             Assert.NotEmpty(model.RibbonItems);
             Assert.NotEmpty(model.ContextualTabGroups);
