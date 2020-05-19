@@ -1,17 +1,19 @@
-﻿using System;
+﻿using Autofac;
+using Castle.DynamicProxy;
+using KayMcCormick.Dev;
+using KayMcCormick.Lib.Wpf;
+using NLog;
+using NLog.Fluent;
+using System;
+using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Controls.Ribbon.Primitives;
 using System.Windows.Input;
+using System.Windows.Media;
 using AnalysisControls.RibbonModel;
-using Autofac;
-using Castle.DynamicProxy;
-using KayMcCormick.Dev;
-using KayMcCormick.Lib.Wpf;
-using NLog;
-using NLog.Fluent;
 
 namespace AnalysisControls
 {
@@ -33,6 +35,19 @@ namespace AnalysisControls
                 GetTemplateChild("PART_ContextualTabGroupItemsControl") as RibbonContextualTabGroupItemsControl;
         }
 
+        private static void RibbonQATUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var ribbon = ((MyRibbon)d);
+            ribbon.MyQuickAccessToolBar = e.NewValue as MyRibbonQuickAccessToolBar;
+            // RibbonQuickAccessToolBar oldValue = e.OldValue as RibbonQuickAccessToolBar;
+            // RibbonQuickAccessToolBar newValue = e.NewValue as RibbonQuickAccessToolBar;
+            // if (oldValue != null)
+                // ribbon.RemoveLogicalChild((object)oldValue);
+            // if (newValue == null)
+                // return;
+            // ribbon.AddLogicalChild((object)newValue);
+        }
+
         static MyRibbon()
        {
            DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbon),
@@ -40,6 +55,42 @@ namespace AnalysisControls
             ItemsPanelProperty.OverrideMetadata(typeof(MyRibbon), new FrameworkPropertyMetadata(new ItemsPanelTemplate(new FrameworkElementFactory(typeof(MyRibbonTabsPanel)))));
 		    
             AttachedProperties.LifetimeScopeProperty.OverrideMetadata(typeof(MyRibbon), new FrameworkPropertyMetadata(null,FrameworkPropertyMetadataOptions.Inherits, null, CoerceLifetimeScope));
+            CommandManager.RegisterClassCommandBinding(typeof(MyRibbon), new CommandBinding((ICommand)RibbonCommands.AddToQuickAccessToolBarCommand, new ExecutedRoutedEventHandler(MyRibbon.AddToQATExecuted), new CanExecuteRoutedEventHandler(MyRibbon.AddToQATCanExecute)));
+            Ribbon.QuickAccessToolBarProperty.OverrideMetadata(typeof(MyRibbon), new FrameworkPropertyMetadata(null, RibbonQATUpdated));
+
+        }
+
+        private static void AddToQATCanExecute(object sender, CanExecuteRoutedEventArgs args)
+        {
+            DependencyObject thatCanBeAddedToQat = MyRibbon.FindElementThatCanBeAddedToQAT(args.OriginalSource as DependencyObject);
+            if (thatCanBeAddedToQat == null || RibbonControlService.GetQuickAccessToolBarId(thatCanBeAddedToQat) == null || RibbonHelper.ExistsInQAT(thatCanBeAddedToQat))
+                return;
+            args.CanExecute = true;
+        }
+
+        private static DependencyObject FindElementThatCanBeAddedToQAT(DependencyObject obj)
+        {
+            while (obj != null && !RibbonControlService.GetCanAddToQuickAccessToolBarDirectly(obj))
+                obj = TreeHelper.GetParent(obj);
+            return obj;
+        }
+
+        private static void AddToQATExecuted(object sender, ExecutedRoutedEventArgs args)
+        {
+            var ribbon0 = (MyRibbon) sender;
+            object model = AttachedProperties.GetModel(ribbon0);
+            if ((model is PrimaryRibbonModel primary))
+            {
+                if (!(MyRibbon.FindElementThatCanBeAddedToQAT((DependencyObject)(args.OriginalSource as UIElement)) is UIElement thatCanBeAddedToQat))
+                    return;
+                RibbonQuickAccessToolBarCloneEventArgs barCloneEventArgs = new RibbonQuickAccessToolBarCloneEventArgs(thatCanBeAddedToQat);
+                thatCanBeAddedToQat.RaiseEvent((RoutedEventArgs)barCloneEventArgs);
+                MyRibbon ribbon = RibbonControlService.GetRibbon((DependencyObject)thatCanBeAddedToQat) as MyRibbon;
+                if (barCloneEventArgs.CloneInstance == null)
+                    return;
+                primary.QuickAccessToolBar.Items.Add((object)barCloneEventArgs.CloneInstance);
+                args.Handled = true;
+            }
         }
 
         private static object CoerceLifetimeScope(DependencyObject d, object basevalue)
@@ -170,6 +221,8 @@ namespace AnalysisControls
         /// </summary>
         public MyRibbonContextualTabGroupItemsControl MyContextualTabGroupItemsControl { get; set; }
 
+        public MyRibbonQuickAccessToolBar MyQuickAccessToolBar { get; set; }
+
         private void UseLogMethod(string message)
         {
             Logger.Info(message);
@@ -179,39 +232,67 @@ namespace AnalysisControls
         protected override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
-            if (!e.Handled)
-            {
-                if (e.OriginalSource is FrameworkElement el)
-                {
-                    if (el.TemplatedParent != null)
-                    {
-                        if (el.TemplatedParent is ContentPresenter cp)
-                        {
-                            if (cp.Content is RibbonModelDropZone dz)
-                            {
-                                e.Effects= dz.OnDrop(e.Data);
-                                e.Handled = true;
-                            }
-                        }
-                    }
-                }
-            }
+            // if (!e.Handled)
+            // {
+                // if (e.OriginalSource is FrameworkElement el)
+                // {
+                    // if (el.TemplatedParent != null)
+                    // {
+                        // if (el.TemplatedParent is ContentPresenter cp)
+                        // {
+                            // if (cp.Content is RibbonModelDropZone dz)
+                            // {
+                                // e.Effects= dz.OnDrop(e.Data, TODO);
+                                // e.Handled = true;
+                            // }
+                        // }
+                    // }
+                // }
+            // }
         }
     }
 
-    /// <inheritdoc />
-    public class MyRibbonQuickAccessToolbar : RibbonQuickAccessToolBar
+    internal class RibbonHelper
     {
-        static MyRibbonQuickAccessToolbar()
+        internal static bool ExistsInQAT(DependencyObject element)
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbonQuickAccessToolbar),
-                new FrameworkPropertyMetadata(typeof(MyRibbonQuickAccessToolbar)));
+            if (element == null)
+                throw new ArgumentNullException(nameof(element));
+            var ribbon = (MyRibbon)element.GetValue(RibbonControlService.RibbonProperty);
+            object quickAccessToolBarId = RibbonControlService.GetQuickAccessToolBarId(element);
+            return ribbon != null && ribbon.MyQuickAccessToolBar != null && quickAccessToolBarId != null && ribbon.MyQuickAccessToolBar.ContainsId(quickAccessToolBarId);
+        }
+
+    }
+
+    internal static class TreeHelper
+    {
+        public static DependencyObject GetParent(DependencyObject element)
+        {
+            DependencyObject dependencyObject = (DependencyObject)null;
+            if (!(element is ContentElement))
+                dependencyObject = VisualTreeHelper.GetParent(element);
+            if (dependencyObject == null)
+                dependencyObject = LogicalTreeHelper.GetParent(element);
+            return dependencyObject;
+        }
+
+    }
+
+    /// <inheritdoc />
+    public class MyRibbonQuickAccessToolBar : RibbonQuickAccessToolBar
+    {
+        static MyRibbonQuickAccessToolBar()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbonQuickAccessToolBar),
+                new FrameworkPropertyMetadata(typeof(MyRibbonQuickAccessToolBar)));
 
 
         }
 
         public override void OnApplyTemplate()
         {
+            
             base.OnApplyTemplate();
         }
 
@@ -223,6 +304,15 @@ namespace AnalysisControls
         protected override bool IsItemItsOwnContainerOverride(object item)
         {
             return base.IsItemItsOwnContainerOverride(item);
+        }
+        internal bool ContainsId(object targetID)
+        {
+            foreach (object obj in (IEnumerable)this.Items)
+            {
+                if (obj is DependencyObject element && object.Equals(RibbonControlService.GetQuickAccessToolBarId(element), targetID))
+                    return true;
+            }
+            return false;
         }
     }
     public class MyRibbonTabsPanel : RibbonTabsPanel {
@@ -393,5 +483,6 @@ namespace AnalysisControls
             return (DependencyObject)new MyRibbonApplicationMenuItem();
 
         }
+
     }
 }

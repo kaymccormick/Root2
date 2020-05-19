@@ -6,8 +6,9 @@ namespace AnalysisControls.RibbonModel
 {
     public class RibbonModelDropZoneImpl : RibbonModelDropZone
     {
-        public override DragDropEffects OnDrop(IDataObject eData)
+        public override DragDropEffects OnDrop(DragEventArgs e, IInputElement inputElement)
         {
+            var eData = e.Data;
             foreach (var format in eData.GetFormats())
             {
                 var t = Type.GetType(format);

@@ -10,10 +10,27 @@ namespace AnalysisControls
 {
     public class RibbonViewGroupProviderBaseImpl : RibbonViewGroupProviderBase
     {
+        /// <inheritdoc />
         public override RibbonModelGroup ProvideModelItem()
         {
             var group = new RibbonModelGroup();
             group.CreateRibbonToggleButton("Toggle");
+            var combo0 = @group.CreateRibbonComboBox("Combo!");
+            var gal0 = PrimaryRibbonModel.CreateGallery();
+            var gal2 = PrimaryRibbonModel.CreateGallery();
+            combo0.Items.Add(gal0);
+            combo0.Items.Add(gal2);
+            var galleryCategory = PrimaryRibbonModel.CreateGalleryCategory(gal0, "eep");
+            PrimaryRibbonModel.CreateGalleryItem(galleryCategory, "boop");
+            PrimaryRibbonModel.CreateGalleryItem(galleryCategory, "boop2");
+
+            var galleryCategory3 = PrimaryRibbonModel.CreateGalleryCategory(gal0, "eep2");
+            PrimaryRibbonModel.CreateGalleryItem(galleryCategory3, "boop");
+            PrimaryRibbonModel.CreateGalleryItem(galleryCategory3, "boop5");
+
+            var galleryCategory2 = PrimaryRibbonModel.CreateGalleryCategory(gal2, "bop");
+            PrimaryRibbonModel.CreateGalleryItem(galleryCategory2, "boop");
+
             var cg = group.CreateControlGroup();
             cg.CreateRibbonRadioButton("One");
             cg.CreateRibbonRadioButton("Two");

@@ -5,6 +5,17 @@
                     xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf">
   <local:TestConverter2 x:Key="TestConverter2" />
   <kmWpf:GetTypeConverter x:Key="GetTypeConverter" />
+  <local:ComboBoxTemplateSelector x:Key="ComboBoxTemplateSelector"/>
+  <DataTemplate x:Key="RibbonModelGalleryContainer" DataType="{x:Type ribbonModel:RibbonModelGallery}">
+    <local:MyRibbonGallery ItemsSource="{Binding Items}"/>
+  </DataTemplate>
+  <DataTemplate x:Key="RibbonModelGalleryCategoryContainer" DataType="{x:Type ribbonModel:RibbonModelGalleryCategory}">
+    <local:MyRibbonGalleryCategory Header="{Binding Header}" ItemsSource="{Binding Items}"/>
+  </DataTemplate>
+  <DataTemplate x:Key="RibbonModelGalleryItemContainer" DataType="{x:Type ribbonModel:RibbonModelGalleryItem}">
+    <local:MyRibbonGalleryItem Content="{Binding Content}"/>
+  </DataTemplate>
+
   <Style x:Key="old" TargetType="{x:Type local:MyRibbonContextualTabGroupItemsControl}">
     <Setter Property="ItemTemplate">
       <Setter.Value>
@@ -95,7 +106,7 @@
                         Command="{Binding Command}" />
   </HierarchicalDataTemplate>
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelItemComboBox}">
-    <local:MyRibbonComboBox Label="{Binding Label,NotifyOnTargetUpdated=True}" ItemsSource="{Binding Items}">
+    <local:MyRibbonComboBox Label="{Binding Label,NotifyOnTargetUpdated=True}" ItemsSource="{Binding Items}" ItemContainerTemplateSelector="{StaticResource ComboBoxTemplateSelector}" UsesItemContainerTemplate="True">
       <local:MyRibbonComboBox.Resources>
         <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGallery}" ItemsSource="{Binding Items}">
           <TextBlock Text="{Binding Header,NotifyOnTargetUpdated=True}" />
@@ -116,10 +127,10 @@
   <DataTemplate DataType="{x:Type local:ModelCalendar}">
     <Calendar SelectedDate="{Binding SelectedDate}" />
   </DataTemplate>
-  <local:MenuTemplateSelector x:Key="MenuTemplateSelector" />
   <local:GuidConverter x:Key="GuidConverter" />
   <DataTemplate DataType="{x:Type ribbonModel:RibbonModelItemMenuButton}">
-    <local:MyRibbonMenuButton ItemContainerTemplateSelector="{StaticResource MenuTemplateSelector}"
+    <local:MyRibbonMenuButton ItemContainerTemplateSelector="{StaticResource ComboBoxTemplateSelector}"
+                              UsesItemContainerTemplate="True"
                               Foreground="Crimson" Label="{Binding Label}" ItemsSource="{Binding Items}">
       <local:MyRibbonMenuButton.ToolTip>
         <StackPanel>

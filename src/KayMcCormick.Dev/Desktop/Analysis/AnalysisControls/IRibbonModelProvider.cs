@@ -14,4 +14,6 @@ namespace AnalysisControls
         /// <returns></returns>
         T ProvideModelItem();
     }
+
+    
 }

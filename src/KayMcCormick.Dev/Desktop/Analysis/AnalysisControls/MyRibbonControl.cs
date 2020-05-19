@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
 using System.Windows.Media;
+using AnalysisControls.RibbonModel;
 using KayMcCormick.Dev;
 
 namespace AnalysisControls
@@ -144,6 +145,24 @@ static MyRibbonControl() {
             base.OnContentTemplateChanged(oldContentTemplate, newContentTemplate);
         }
 
-        
+        protected override void OnDragOver(DragEventArgs e)
+        {
+            base.OnDragOver(e);
+            if (!e.Handled)
+            {
+                if (Content is RibbonModelDropZone dz)
+                {
+                    dz.OnDragOver(e, this);
+                }
+            }
+        }
+
+        protected override void OnDrop(DragEventArgs e)
+        {
+            if (Content is RibbonModelDropZone rdz)
+            {
+                rdz.OnDrop(e, this);
+            }
+        }
     }
 }

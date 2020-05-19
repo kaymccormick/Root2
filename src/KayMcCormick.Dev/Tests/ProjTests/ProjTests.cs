@@ -2524,7 +2524,7 @@ namespace ProjTests
                 instance.Initialize();
                 var lifetimeScope = instance.GetLifetimeScope(builder =>
                 {
-                    builder.Register((c, o) => RibbonBuilder1.RibbonModelBuilder(c.Resolve<RibbonModelApplicationMenu>(), c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>(), c.Resolve<IEnumerable<RibbonModelTab>>(), c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>()));
+                    builder.Register((c, o) => RibbonBuilder1.RibbonModelBuilder(c.Resolve<RibbonModelApplicationMenu>(), c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>(), c.Resolve<IEnumerable<RibbonModelTab>>(), c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>(), new JsonSerializerOptions()));
                     builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
                     builder.RegisterType<ClientModel>().AsSelf().SingleInstance().AsImplementedInterfaces()
                         .WithCallerMetadata();
@@ -2556,9 +2556,6 @@ namespace ProjTests
                         .WithAttributeFiltering();
                     ;
                     builder.RegisterType<BaseLibCommandGroup>().As<RibbonModelGroup>().SingleInstance()
-                        .WithAttributeFiltering();
-                    ;
-                    builder.RegisterType<CodeAnalysis>().As<RibbonModelContextualTabGroup>().SingleInstance()
                         .WithAttributeFiltering();
                     ;
                     builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering();
@@ -2716,7 +2713,7 @@ namespace ProjTests
             tabs.Add(tab1);
             tabs.Add(tab2);
             var providers = new List<IRibbonModelProvider<RibbonModelTab>>();
-            var model = RibbonBuilder1.RibbonModelBuilder(appMenu, groups, tabs, providers);
+            var model = RibbonBuilder1.RibbonModelBuilder(appMenu, groups, tabs, providers, new JsonSerializerOptions());
             Assert.NotNull(model);
             Assert.NotEmpty(model.RibbonItems);
             Assert.NotEmpty(model.ContextualTabGroups);
@@ -2751,9 +2748,9 @@ namespace ProjTests
             var dt1 = (DataTemplate) r3;
             myRibbon.ContextualTabGroupHeaderTemplate = dt1;
 
-            var qat = new MyRibbonQuickAccessToolbar();
+            var qat = new MyRibbonQuickAccessToolBar();
             qat.SetBinding(ItemsControl.ItemsSourceProperty,
-                new Binding {Source = model.QuickAccessToolbar.Items});
+                new Binding {Source = model.QuickAccessToolBar.Items});
             myRibbon.ShowQuickAccessToolBarOnTop = true;
             myRibbon.QuickAccessToolBar = qat;
 
@@ -2761,6 +2758,17 @@ namespace ProjTests
             
             
 
+        }
+
+        [WpfFact]
+        public void TestTree1()
+        {
+            VisualTreeView v = new VisualTreeView();
+            //v.RenderTransform = new ScaleTransform(2, 2);
+            //ScrollViewer s = new ScrollViewer() {Content = v};
+            Window w = new Window {Content = v, FontSize= 20};
+	    //v.RootItems.Add(new VisualTreeNode { Visual = w });
+            w.ShowDialog();
         }
     }
 }

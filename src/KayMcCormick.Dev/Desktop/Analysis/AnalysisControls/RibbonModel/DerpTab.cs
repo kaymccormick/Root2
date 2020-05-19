@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
+using AnalysisControls.Properties;
 using Autofac.Features.Metadata;
 using Microsoft.EntityFrameworkCore.Internal;
 
@@ -27,7 +28,7 @@ namespace AnalysisControls.RibbonModel
             if (Header != null || Items.Any())
                 return;
             Visibility = Visibility.Visible;
-            ContextualTabGroupHeader = "Assemblies";
+            ContextualTabGroupHeader = RibbonResources.ContextualTabGroupHeader_CodeAnalysis;
             Header = "Derp";
             foreach (var ribbonModelGroup in _groups)
             {

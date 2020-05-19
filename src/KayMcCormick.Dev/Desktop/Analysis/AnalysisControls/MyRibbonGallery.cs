@@ -19,7 +19,11 @@ namespace AnalysisControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbonGallery),
                 new FrameworkPropertyMetadata(typeof(MyRibbonGallery)));
         }
-    
+
+        public MyRibbonGallery()
+        {
+        }
+
         protected override bool IsItemItsOwnContainerOverride(object item)
         {
             return base.IsItemItsOwnContainerOverride(item);

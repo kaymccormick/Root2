@@ -132,6 +132,8 @@ namespace AnalysisControls
             var item = ParentItemsControl.ItemContainerGenerator.ItemFromContainer(this);
             if (item is INodeData d)
                 await d.ExpandAsync();
+            else if(item is IAsyncExpand i)
+                await i.ExpandAsync();
             else
                 DebugUtils.WriteLine($"{item}");
         }
@@ -153,6 +155,8 @@ namespace AnalysisControls
             var item = ParentItemsControl.ItemContainerGenerator.ItemFromContainer(this);
             if (item is INodeData d)
                 d.Collapse();
+            else if (item is ITreeViewItemCollapse i)
+                i.Collapse();
             else
                 DebugUtils.WriteLine($"{item}");
         }
@@ -170,5 +174,15 @@ namespace AnalysisControls
         {
             return new CustomTreeViewItem();
         }
+    }
+
+    public interface ITreeViewItemCollapse
+    {
+        void Collapse();
+    }
+
+    public interface IAsyncExpand
+    {
+        Task ExpandAsync();
     }
 }

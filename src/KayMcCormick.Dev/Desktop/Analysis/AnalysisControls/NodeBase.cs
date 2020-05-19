@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using JetBrains.Annotations;
@@ -50,6 +51,8 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        [JsonIgnore
+        ]
         public Assembly Assembly { get; set; }
 
         /// <summary>
@@ -60,11 +63,13 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        /// 
         public ResourceLocation ResourceLocation { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
+        [JsonIgnore]
         public Assembly ReferencedAssembly { get; set; }
 
         /// <summary>
@@ -75,6 +80,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        [JsonIgnore]
         public virtual ObservableCollection<INodeData> Items
         {
             get { return _items; }
@@ -213,6 +219,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        [JsonIgnore]
         public Dispatcher Dispatcher
         {
             get { return _dispatcher; }

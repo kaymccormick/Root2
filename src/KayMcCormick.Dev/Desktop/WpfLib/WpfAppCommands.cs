@@ -172,6 +172,18 @@ namespace KayMcCormick.Lib.Wpf
                 , nameof(ToggleNodeIsExpanded)
                 , typeof(WpfAppCommands)
             );
+        public static readonly RoutedUICommand CustomizeQAT =
+            new RoutedUICommand(
+                "Customize Ribbon Quick Access Toolbar"
+                , nameof(CustomizeQAT)
+                , typeof(WpfAppCommands)
+            );
+        public static readonly RoutedUICommand ConvertToJson =
+            new RoutedUICommand(
+                "Convert to JSON"
+                , nameof(ConvertToJson)
+                , typeof(WpfAppCommands)
+            );
 
     }
 }

@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
+using System.Text.Json;
 using System.Windows;
 using AnalysisAppLib;
 using AnalysisControls;
@@ -26,7 +27,6 @@ using AnalysisControls.Commands;
 using AnalysisControls.Converters;
 using AnalysisControls.Ribb.Definition;
 using AnalysisControls.RibbonModel;
-using AnalysisControls.RibbonModel.ContextualTabGroups;
 using AnalysisControls.RibbonModel.Definition;
 using AnalysisControls.ViewModel;
 using Autofac;
@@ -35,7 +35,6 @@ using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
 using Autofac.Extras.AttributeMetadata;
 using Autofac.Features.AttributeFilters;
-using Autofac.Features.Metadata;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Container;
@@ -137,7 +136,8 @@ namespace Client2
 
         public override void DoLoad([NotNull] ContainerBuilder builder)
         {
-            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AssignableTo<IControlView>().WithAttributedMetadata().AsSelf()
+            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly()).AssignableTo<IControlView>()
+                .WithAttributedMetadata().AsSelf()
                 .AsImplementedInterfaces().WithCallerMetadata();
 
             builder.RegisterInstance(regs)
@@ -179,27 +179,37 @@ namespace Client2
                     new Client2Window1(c.Resolve<ILifetimeScope>(), c.Resolve<ClientModel>(),
                         c.ResolveOptional<MyCacheTarget2>()))
                 .As<Window>().WithCallerMetadata();
-            
-            builder.Register((c, o) => RibbonBuilder1.RibbonModelBuilder(c.Resolve<RibbonModelApplicationMenu>(), c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>(), c.Resolve<IEnumerable<RibbonModelTab>>(), c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>()));
+
+            builder.Register((c, o) => RibbonBuilder1.RibbonModelBuilder(c.Resolve<RibbonModelApplicationMenu>(),
+                c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>(), c.Resolve<IEnumerable<RibbonModelTab>>(),
+                c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>(), c.Resolve<JsonSerializerOptions>()));
             builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
-            builder.RegisterType<ClientModel>().AsSelf().SingleInstance().AsImplementedInterfaces().WithCallerMetadata();
+            builder.RegisterType<ClientModel>().AsSelf().SingleInstance().AsImplementedInterfaces()
+                .WithCallerMetadata();
             builder.RegisterType<RibbonModelApplicationMenu>();
-            builder.RegisterType<FunTabProvider>().As<IRibbonModelProvider<RibbonModelTab>>().SingleInstance().WithAttributeFiltering(); ;
-            builder.RegisterType<RibbonViewGroupProviderBaseImpl>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance().WithAttributeFiltering(); ;
-            builder.RegisterType<SuperGRoup>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance().WithAttributeFiltering();;
+            builder.RegisterType<FunTabProvider>().As<IRibbonModelProvider<RibbonModelTab>>().SingleInstance()
+                .WithAttributeFiltering();
+            builder.RegisterType<CodeAnalysisContextualTabGroupProvider>().AsImplementedInterfaces()
+                .WithCallerMetadata();
+            builder.RegisterType<RibbonViewGroupProviderBaseImpl>().AsImplementedInterfaces().WithCallerMetadata()
+                .SingleInstance().WithAttributeFiltering();
+            builder.RegisterType<SuperGRoup>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance()
+                .WithAttributeFiltering();
             builder.RegisterType<InfrastructureTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering()
                 // .OnActivated(args => args.Instance.ClientModel = args.Context.Resolve<IClientModel>())
                 ;
             builder.RegisterType<ManagementTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
-            builder.RegisterType<AssembliesRibbonTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering(); ;
-            builder.RegisterType<DerpTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering(); ;
-            builder.RegisterType<AssembliesTypesGroup>().As<RibbonModelGroup>().SingleInstance().WithAttributeFiltering(); ;
-            builder.RegisterType<DisplayableAppCommandGroup>().As<RibbonModelGroup>().SingleInstance().WithAttributeFiltering(); ;
-            builder.RegisterType<BaseLibCommandGroup>().As<RibbonModelGroup>().SingleInstance().WithAttributeFiltering(); ;
-            builder.RegisterType<CodeAnalysis>().As<RibbonModelContextualTabGroup>().SingleInstance().WithAttributeFiltering(); ;
-            builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering(); ;
-            builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering(); ;
-            builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces().WithAttributeFiltering(); ;
+            builder.RegisterType<AssembliesRibbonTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
+            builder.RegisterType<DerpTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
+            builder.RegisterType<AssembliesTypesGroup>().As<RibbonModelGroup>().SingleInstance()
+                .WithAttributeFiltering();
+            builder.RegisterType<DisplayableAppCommandGroup>().As<RibbonModelGroup>().SingleInstance()
+                .WithAttributeFiltering();
+            builder.RegisterType<BaseLibCommandGroup>().As<RibbonModelGroup>().SingleInstance()
+                .WithAttributeFiltering();
+            builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering();
+            builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering();
+            builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces().WithAttributeFiltering();
             builder.RegisterType<AppCommandTypeConverter>().AsSelf();
             builder.RegisterType<ObjectStringTypeConverter>().AsSelf();
         }
@@ -218,6 +228,5 @@ namespace Client2
                 .Where(x => x.TargetConstructor.GetParameters().Any(info => info.ParameterType == typeof(ClientModel)))
                 .OrderByDescending(x => x.TargetConstructor.GetParameters().Length).FirstOrDefault();
         }
-
     }
 }

@@ -134,7 +134,7 @@
             </acrm:PrimaryRibbonModel.RibbonItems>
           </acrm:PrimaryRibbonModel>
           <DataTemplate DataType="acrm:PrimaryRibbonModel">
-            <anal:MyRibbon ItemsSource="{Binding RibbonItems}" ContextualTabGroupsSource="{Binding ContextualTabGroups}" ApplicationMenu="{Binding AppMenu}" QuickAccessToolBar="{Binding QuickAccessToolbar}"/>
+            <anal:MyRibbon ItemsSource="{Binding RibbonItems}" ContextualTabGroupsSource="{Binding ContextualTabGroups}" ApplicationMenu="{Binding AppMenu}" QuickAccessToolBar="{Binding QuickAccessToolBar}"/>
           </DataTemplate>
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>

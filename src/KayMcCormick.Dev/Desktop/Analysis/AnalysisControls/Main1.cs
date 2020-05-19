@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -110,7 +111,7 @@ namespace AnalysisControls
         /// </summary>
         public Main1()
         {
-            ViewModel = new Main1Model();
+            
             Anchorables = _anchorables;
             SetBinding(DocumentsProperty, new Binding("ViewModel.Documents") {Source = this});
             SetBinding(AnchorablesProperty, new Binding("ViewModel.Anchorables") {Source = this});
@@ -125,8 +126,37 @@ namespace AnalysisControls
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewDetails, OnViewDetailsExecutedAsync));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewResources, OnViewResourcesExecuted));
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpenExecuted));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.ConvertToJson, OnConvertToJsonExecuted));
 
             //Documents.Add(new DocInfo { Description = "test", Content = Properties.Resources.Program_Parse});
+        }
+
+        private void OnConvertToJsonExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (e.Parameter == null)
+                return;
+            if (e.Parameter is IDataObject o)
+            {
+                var t1 = o.GetFormats().Select(f => Tuple.Create(f, (object) o.GetData(f)))
+                    .FirstOrDefault(t => !(t.Item2 is string));
+                if (t1 != null)
+                {
+                    try
+                    {
+                        var json = JsonSerializer.Serialize(t1.Item2,ViewModel.JsonSerializerOptions);
+                        DocModel d = DocModel.CreateInstance();
+                        d.Title = "json";
+                        var dp = new DockPanel();
+                        dp.Children.Add(new TextBox {Text = json});
+                        d.Content = dp;
+                        ViewModel.Documents.Add(d);
+                    } catch(Exception ex)
+                    {
+                        DebugUtils.WriteLine(ex.ToString());
+                    }
+                }
+
+            }
         }
 
         private void OnOpenExecuted(object sender, ExecutedRoutedEventArgs e)

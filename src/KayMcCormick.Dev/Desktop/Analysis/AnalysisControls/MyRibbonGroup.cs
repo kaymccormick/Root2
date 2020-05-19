@@ -36,6 +36,12 @@ namespace AnalysisControls
 
         }
 
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+            RibbonDebugUtils.OnPropertyChanged(this.ToString(), this, e);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -121,12 +127,15 @@ namespace AnalysisControls
 
         protected override void OnDragOver(DragEventArgs e)
         {
-            e.Effects = DragDropEffects.None;
-               if (object.ReferenceEquals(e.Data.GetData(GetType()), this))
-               {
-                   e.Effects = DragDropEffects.Move;
-               }
-            
+            if (!e.Handled)
+            {
+                e.Effects = DragDropEffects.None;
+                if (object.ReferenceEquals(e.Data.GetData(GetType()), this))
+                {
+                    e.Effects = DragDropEffects.Move;
+                }
+            }
+
         }
 
         protected override void OnDragLeave(DragEventArgs e)

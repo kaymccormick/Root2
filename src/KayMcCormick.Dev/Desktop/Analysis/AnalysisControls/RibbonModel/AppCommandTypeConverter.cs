@@ -14,7 +14,11 @@ namespace AnalysisControls.RibbonModel
     /// </summary>
     public class AppCommandTypeConverter:TypeConverter
     {
-        private readonly IEnumerable<Meta<Lazy<IAppCommand>>> _commands;
+        private IEnumerable<Meta<Lazy<IAppCommand>>> _commands = Enumerable.Empty<Meta<Lazy<IAppCommand>>>();
+
+        public AppCommandTypeConverter()
+        {
+        }
 
         /// <summary>
         /// 

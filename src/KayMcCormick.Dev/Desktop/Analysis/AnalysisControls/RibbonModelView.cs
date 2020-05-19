@@ -60,8 +60,13 @@ namespace AnalysisControls
             RootItemsCollection = new RibbonModelViewItemsCollection();
             var tabsNode = new RibbonTabsNode();
             BindingOperations.SetBinding(tabsNode, RibbonModelViewItem.RibbonModelProperty, new Binding("RibbonModel") {Source = this});
-
             RootItemsCollection.Add(tabsNode);
+            var ctabsNode = new RibbonContextualTabGroupsNode();
+            BindingOperations.SetBinding(ctabsNode, RibbonModelViewItem.RibbonModelProperty, new Binding("RibbonModel") { Source = this });
+            RootItemsCollection.Add(ctabsNode);
+            var qatNode = new RibbonQATNode();
+            BindingOperations.SetBinding(qatNode, RibbonModelViewItem.RibbonModelProperty, new Binding("RibbonModel") { Source = this });
+            RootItemsCollection.Add(qatNode);
         }
 
         public PrimaryRibbonModel RibbonModel
@@ -80,6 +85,10 @@ namespace AnalysisControls
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(RibbonModelView), new FrameworkPropertyMetadata(typeof(RibbonModelView)));
         }
+    }
+
+    public class RibbonQATNode : RibbonModelViewItem
+    {
     }
 
     public class RibbonTabsNode : RibbonModelViewItem

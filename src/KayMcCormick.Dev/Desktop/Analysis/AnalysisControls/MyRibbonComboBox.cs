@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Specialized;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
+using KayMcCormick.Dev;
 using NLog;
 
 namespace AnalysisControls
@@ -12,7 +14,13 @@ namespace AnalysisControls
     /// </summary>
     public class MyRibbonComboBox : RibbonComboBox, IAppControl
     {
-        private object _currentItem;
+        static MyRibbonComboBox()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(MyRibbonComboBox),
+                new FrameworkPropertyMetadata(typeof(MyRibbonComboBox)));
+
+        }
+    private object _currentItem;
         /// <summary>
         /// 
         /// </summary>
@@ -63,17 +71,26 @@ namespace AnalysisControls
         /// <returns></returns>
         protected override DependencyObject GetContainerForItemOverride()
         {
-            var currentItem = _currentItem;
-            _currentItem = (object) null;
-            Logger.Info($"Current item is {currentItem}");
-            Logger.Info($"UsesItemContainerTEmplate is {UsesItemContainerTemplate}");
-            if (UsesItemContainerTemplate)
+            object currentItem = this._currentItem;
+            this._currentItem = (object)null;
+            if (this.UsesItemContainerTemplate)
             {
+                DataTemplate dataTemplate = this.ItemContainerTemplateSelector.SelectTemplate(currentItem, (ItemsControl)this);
+                if (dataTemplate != null)
+                {
+                    object obj = (object)dataTemplate.LoadContent();
+                    switch (obj)
+                    {
+                        case RibbonMenuItem _:
+                        case RibbonGallery _:
+                        case RibbonSeparator _:
+                            return obj as DependencyObject;
+                        default:
+                            throw new AppInvalidOperationException("Invalid container");
+                    }
+                }
             }
-
-            var containerForItemOverride = base.GetContainerForItemOverride();
-            Logger.Info($"container is {containerForItemOverride}");
-            return containerForItemOverride;
+            return (DependencyObject)new MyRibbonMenuItem();
         }
 
 
@@ -97,6 +114,7 @@ namespace AnalysisControls
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);
         }
 
+        /// <inheritdoc />
         public Guid ControlId { get; }
     }
 }

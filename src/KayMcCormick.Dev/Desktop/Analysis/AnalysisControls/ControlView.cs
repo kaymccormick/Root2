@@ -66,17 +66,20 @@ namespace AnalysisControls
             DebugUtils.WriteLine(e.NewValue);
             Dispatcher.InvokeAsync(() =>
             {
-                var items = e.NewValue.Resolve<IEnumerable<Meta<Lazy<IAppCustomControl>>>>();
-                foreach (var item in items)
+                if (e.NewValue != null)
                 {
-                    var props = MetaHelper.GetMetadataProps(item.Metadata);
-
-                    Controls.Add(new ControlInfo()
+                    var items = e.NewValue.Resolve<IEnumerable<Meta<Lazy<IAppCustomControl>>>>();
+                    foreach (var item in items)
                     {
-                        Metadata = item.Metadata, MetadataProps = props,
-                        Item = item
-                    });
+                        var props = MetaHelper.GetMetadataProps(item.Metadata);
 
+                        Controls.Add(new ControlInfo()
+                        {
+                            Metadata = item.Metadata, MetadataProps = props,
+                            Item = item
+                        });
+
+                    }
                 }
             }, DispatcherPriority.DataBind);
         }

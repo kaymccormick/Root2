@@ -35,7 +35,7 @@ namespace Client2
             }
 
             // Environment.SetEnvironmentVariable("DISABLE_LOGGING", "Yes");
-            var loggingConfiguration = AppLoggingConfiguration.Default ;
+                var loggingConfiguration = AppLoggingConfiguration.Default ;
             loggingConfiguration.IsEnabledCacheTarget = true ;
             loggingConfiguration.MinLogLevel          = LogLevel.Debug ;
             loggingConfiguration.IsEnabledDebuggerTarget = false;

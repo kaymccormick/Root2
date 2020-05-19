@@ -77,6 +77,29 @@ namespace Client2
             var logControl = new LogEventInstancesControl();
             logControl.SetBinding(LogEventInstancesControl.EventsSourceProperty,
                 new Binding("ViewModel.LogEntries") {Source = this});
+            AddHandler(RibbonQuickAccessToolBar.CloneEvent, new RibbonQuickAccessToolBarCloneEventHandler(Clone));
+            // if (QAT.Items is IEditableCollectionView ai)
+            // {
+                
+            // }
+        }
+
+        private void Clone(object sender, RibbonQuickAccessToolBarCloneEventArgs e)
+        {
+            e.Handled = true;
+            
+        }
+
+        protected override void OnPreviewDrop(DragEventArgs e)
+        {
+            foreach (var format in e.Data.GetFormats())
+            {
+                DebugUtils.WriteLine(format);
+                var o = e.Data.GetData(format);
+                DebugUtils.WriteLine(o?.GetType()?.FullName ?? "");
+            }
+
+            base.OnPreviewDrop(e);
         }
 
         private void OnTargetUpdated(object sender, DataTransferEventArgs e)
@@ -371,6 +394,11 @@ namespace Client2
         private void OnExecutedPaste(object sender, ExecutedRoutedEventArgs e)
         {
             Main1.ViewModel.OnExecutedPaste(sender, e);
+        }
+
+        private void CustomizeQATExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            DebugUtils.WriteLine("eep");
         }
     }
 }

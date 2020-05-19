@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -193,8 +194,9 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <param name="replay"></param>
-        public Main1Model(ReplaySubject<Workspace> replay) : this()
+        public Main1Model(ReplaySubject<Workspace> replay, JsonSerializerOptions jsonSerializerOptions = null) : this()
         {
+            JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
             _replay = replay;
         }
 
@@ -214,7 +216,17 @@ namespace AnalysisControls
             AddRibbonModelViewDoc();
             AddAssembliesDoc();
             AddPropertiesGridDoc();
+            AddVisualTreeViewDoc();
             AddControlsDoc();
+        }
+
+        private void AddVisualTreeViewDoc()
+        {
+            var c = new VisualTreeView();
+            var doc = DocModel.CreateInstance();
+            doc.Title = "Visual Tree View";
+            doc.Content = c;
+            Documents.Add(doc);
         }
 
         private void AddRibbonModelViewDoc()
@@ -856,6 +868,8 @@ namespace AnalysisControls
                 new UserControl1().propertyGrid1.SelectedObject = _clientViewModel.PrimaryRibbon;
             }
         }
+
+        public JsonSerializerOptions JsonSerializerOptions { get; set; }
 
         /// <summary>
         /// 

@@ -27,7 +27,8 @@ namespace AnalysisControls.RibbonModel
         /// <returns></returns>
         public static object CreateGallery()
         {
-            return new MyRibbonGallery();
+            //return new MyRibbonGallery();
+            return new RibbonModelGallery();
         }
 
 
@@ -40,7 +41,7 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
-        public RibbonModelQuickAccessToolbar QuickAccessToolbar { get; set; } = new RibbonModelQuickAccessToolbar();
+        public RibbonModelQuickAccessToolBar QuickAccessToolBar { get; set; } = new RibbonModelQuickAccessToolBar();
 
         /// <summary>
         /// 
@@ -49,7 +50,6 @@ namespace AnalysisControls.RibbonModel
         public ObservableCollection<RibbonModelContextualTabGroup> ContextualTabGroups
         {
             get;
-            set;
         } = new ObservableCollection<RibbonModelContextualTabGroup>();
 
         /// <summary>
@@ -59,7 +59,8 @@ namespace AnalysisControls.RibbonModel
         /// <returns></returns>
         public static object CreateGalleryCategory(string header)
         {
-            return new MyRibbonGalleryCategory() {Header = header};
+            return new RibbonModelGalleryCategory() { Header = header};
+            //return new MyRibbonGalleryCategory() {Header = header};
         }
 
         /// <summary>
@@ -90,7 +91,9 @@ namespace AnalysisControls.RibbonModel
         /// <returns></returns>
         public static object CreateGalleryItem(object cat1, object content)
         {
-            var ribbonGalleryItem = new MyRibbonGalleryItem() { Content = content };
+            //var ribbonGalleryItem = new MyRibbonGalleryItem() { Content = content };
+            var ribbonGalleryItem = new RibbonModelGalleryItem() {Content = content};
+        
             if (cat1 is RibbonModelGalleryCategory c)
             {
                 c.Items.Add(ribbonGalleryItem);

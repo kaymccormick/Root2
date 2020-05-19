@@ -19,33 +19,37 @@ namespace AnalysisControls.RibbonModel.Definition
             var combo = CreateRibbonComboBox("Types");
             var combo1 = CreateRibbonComboBox("Types");
 
-            var tgal = PrimaryRibbonModel.CreateGallery() as RibbonGallery;
-            tgal.SelectionChanged += (sender, args) =>
+            var gallery = PrimaryRibbonModel.CreateGallery();
+            if (gallery is RibbonGallery tgal)
             {
-                //DebugUtils.WriteLine(args.NewValue.ToString());
-                if (args.NewValue is RibbonGalleryItem item)
+                tgal.SelectionChanged += (sender, args) =>
                 {
-                    if (item.Content is RibbonModelMenuItem item2)
+                    //DebugUtils.WriteLine(args.NewValue.ToString());
+                    if (args.NewValue is RibbonGalleryItem item)
                     {
-                        combo1.Items.Clear();
-                        var appTypeInfo= (AppTypeInfo) item2.CommandParameter;
-                        var gal1 = TypeItems(appTypeInfo, model);
-                        if (gal1 != null)
+                        if (item.Content is RibbonModelMenuItem item2)
                         {
-                            combo1.Items.Add(gal1);
+                            combo1.Items.Clear();
+                            var appTypeInfo = (AppTypeInfo) item2.CommandParameter;
+                            var gal1 = TypeItems(appTypeInfo, model);
+                            if (gal1 != null)
+                            {
+                                combo1.Items.Add(gal1);
+                            }
                         }
                     }
+                };
+                combo.Items.Add(tgal);
+                var cat2 = PrimaryRibbonModel.CreateGalleryCategory(tgal, "Type");
+                foreach (var appTypeInfo in model.GetAppTypeInfos())
+                {
+                    var gal111 = TypeItems(appTypeInfo, model);
+                    PrimaryRibbonModel.CreateGalleryItem(cat2,
+                        new RibbonModelMenuItem()
+                            {Header = appTypeInfo.Title, CommandParameter = appTypeInfo, IsEnabled = gal111 != null});
                 }
-
-            };
-            combo.Items.Add(tgal);
-            var cat2 = PrimaryRibbonModel.CreateGalleryCategory(tgal, "Type");
-            foreach (var appTypeInfo in model.GetAppTypeInfos())
-            {
-                var gal111 = TypeItems(appTypeInfo, model);
-                PrimaryRibbonModel.CreateGalleryItem(cat2,
-                    new RibbonModelMenuItem() {Header = appTypeInfo.Title, CommandParameter = appTypeInfo, IsEnabled = gal111 != null});
             }
+
             combo1.PropertyChanged += (sender, args) =>
             {
                 if (args.PropertyName == "SelectionBoxItem")

@@ -53,6 +53,7 @@
         RibbonToggleButton,
         RibbonTwoLine,
         RibbonComboBox,
-        DropZone
+        DropZone,
+        RibbonSeparator
     }
 }
