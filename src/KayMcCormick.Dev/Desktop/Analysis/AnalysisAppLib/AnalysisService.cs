@@ -211,8 +211,8 @@ namespace AnalysisAppLib
         {
             using (var ss = new StreamReader(file))
             {
-                var code = await ss.ReadToEndAsync().ConfigureAwait(false);
-                var result = await ParseAsync(code, s, b, file).ConfigureAwait(false);
+                var code = await ss.ReadToEndAsync().ConfigureAwait(true);
+                var result = await ParseAsync(code, s, b, file).ConfigureAwait(true);
                 return result;
             }
         }

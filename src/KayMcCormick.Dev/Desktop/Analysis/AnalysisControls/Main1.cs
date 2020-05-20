@@ -392,7 +392,7 @@ namespace AnalysisControls
                     }
                     else
                     {
-                        var context = await AnalysisService.LoadAsync(file, "x", false);
+                        var context = await AnalysisService.LoadAsync(file, "x", false).ConfigureAwait(true);
                         var cSharpCompilation = context.Compilation;
                         compilation = cSharpCompilation;
                         DebugUtils.WriteLine(string.Join("\n", cSharpCompilation.GetDiagnostics()));

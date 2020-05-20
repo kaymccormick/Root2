@@ -5263,6 +5263,19 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:Main1}">
+          <ControlTemplate.Resources>
+            <ResourceDictionary>
+              <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+
+              Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
+            <ResourceDictionary
+              Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
+            <ResourceDictionary
+              Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
+</ResourceDictionary.MergedDictionaries>
+              </ResourceDictionary>
+</ControlTemplate.Resources>
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Stretch">

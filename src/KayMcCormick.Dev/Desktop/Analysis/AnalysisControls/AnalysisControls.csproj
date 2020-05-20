@@ -108,6 +108,7 @@
     <Compile Include="AssemblyResourceTree.cs" />
     <Compile Include="BasicTextRunProperties.cs" />
     <Compile Include="CharacterCell.cs" />
+    <Compile Include="Client2Module1.cs" />
     <Compile Include="ClientModel.cs" />
     <Compile Include="CodeAnalysisProperties.cs" />
     <Compile Include="CodeControl1.xaml.cs">
@@ -125,6 +126,7 @@
     <Compile Include="Commands\OpenFileCommand.cs" />
     <Compile Include="CompilationControl.cs" />
     <Compile Include="CompilationError.cs" />
+    <Compile Include="ControlsAppInstance.cs" />
     <Compile Include="ControlsProvider.cs" />
     <Compile Include="Controls\TraceSourcesView.cs" />
     <Compile Include="ControlView.cs" />

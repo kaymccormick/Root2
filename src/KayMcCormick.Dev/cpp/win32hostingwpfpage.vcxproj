@@ -223,18 +223,18 @@
     <ClCompile Include="WPFPage.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MyLayoutPanel.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Win32HostingWPFPage.h" />
-    <ClInclude Include="WPFPage.h" />
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="small.ico" />
     <Image Include="Win32HostingWPFPage.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Win32HostingWPFPage.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MyLayoutPanel.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Win32HostingWPFPage.h" />
+    <ClInclude Include="WPFPage.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

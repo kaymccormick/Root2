@@ -70,7 +70,7 @@ namespace KayMcCormick.Dev.Application
 
     /// <summary>
     /// </  summary>
-    public sealed class ApplicationInstance : ApplicationInstanceBase , IDisposable
+    public class ApplicationInstance : ApplicationInstanceBase , IDisposable
     {
 #pragma warning disable 169
         private readonly bool                            _disableLogging ;
@@ -79,7 +79,7 @@ namespace KayMcCormick.Dev.Application
         private readonly List < IModule >                _modules = new List < IModule > ( ) ;
         private          IContainer                      _container ;
         private          ApplicationInstanceHost         _host ;
-        private          ILifetimeScope                  _lifetimeScope ;
+        protected ILifetimeScope LifetimeScope { get; private set; }
         private readonly ReplaySubject < AppLogMessage > _subject ;
         private          ILogger                         _logger ;
 
@@ -314,7 +314,7 @@ namespace KayMcCormick.Dev.Application
         public override void Dispose ( )
         {
             _host?.Dispose ( ) ;
-            _lifetimeScope?.Dispose ( ) ;
+            LifetimeScope?.Dispose ( ) ;
             Container1?.Dispose ( ) ;
             _subject?.Dispose();
         }
@@ -346,15 +346,16 @@ namespace KayMcCormick.Dev.Application
         /// <param name="appModule"></param>
         public override void AddModule ( IModule appModule ) { _modules.Add ( appModule ) ; }
 
+        public IComponentContext ComponentContext => GetLifetimeScope();
         /// <summary>
         /// </summary>
         /// <returns></returns>
         [ NotNull ]
         public override ILifetimeScope GetLifetimeScope ()
         {
-            if ( _lifetimeScope != null )
+            if ( LifetimeScope != null )
             {
-                return _lifetimeScope ;
+                return LifetimeScope ;
             }
 
             if ( Container1 == null )
@@ -362,8 +363,8 @@ namespace KayMcCormick.Dev.Application
                 Container1 = BuildContainer ( ) ;
             }
 
-            _lifetimeScope = Container1.BeginLifetimeScope ("Primary") ;
-            return _lifetimeScope ;
+            LifetimeScope = Container1.BeginLifetimeScope ("Primary") ;
+            return LifetimeScope ;
         }
 
         /// <summary>
@@ -375,13 +376,13 @@ namespace KayMcCormick.Dev.Application
         [ NotNull ]
         public override ILifetimeScope GetLifetimeScope(Action<ContainerBuilder> action)
         {
-            if (_lifetimeScope != null)
+            if (LifetimeScope != null)
             {
                 // if (action != null)
                 // {
                     // throw new AppInvalidOperationException();
                 // }
-                return _lifetimeScope;
+                return LifetimeScope;
             }
 
             if (Container1 == null)
@@ -389,8 +390,8 @@ namespace KayMcCormick.Dev.Application
                 Container1 = BuildContainer();
             }
 
-            _lifetimeScope = Container1.BeginLifetimeScope("initial scope", action );
-            return _lifetimeScope;
+            LifetimeScope = Container1.BeginLifetimeScope("initial scope", action );
+            return LifetimeScope;
         }
 
         /// <summary>
