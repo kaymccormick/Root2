@@ -32,12 +32,6 @@ namespace KmDevWpfControls
         public override DataLoadStrategy LoadStrategy { get; set; }
 
         /// <inheritdoc />
-        public override Subnode1 CreateSubnode()
-        {
-            return new Subnode1();
-        }
-
-        /// <inheritdoc />
         public override Task<IDataObject> CheckLoadItemsAsync()
         {
             if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running)

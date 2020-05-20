@@ -22,6 +22,10 @@ namespace KmDevWpfControls
     {
         private Task<IDataObject> _loadTask2;
 
+        public Subnode1(bool addPlaceholder = true) : base(addPlaceholder)
+        {
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -59,21 +63,26 @@ namespace KmDevWpfControls
         public override DataLoadStrategy LoadStrategy { get; set; }
 
         /// <inheritdoc />
-        public override Subnode1 CreateSubnode()
-        {
-            return new Subnode1();
-        }
+        // public override Task<IDataObject> CheckLoadItemsAsync()
+        // {
 
-        /// <inheritdoc />
         public override Task<IDataObject> CheckLoadItemsAsync()
         {
             if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running)
                 throw new InvalidOperationException("error");
             Items.Clear();
-            _loadTask2 = Task.Factory.StartNew(LoadResourceData,
-                new TaskState<Subnode1>(this), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
+            _loadTask2 = Task.Run(LoadResourceData,
+                CancellationToken.None);
             return _loadTask2;
         }
+
+            // if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running)
+                // throw new InvalidOperationException("error");
+            // Items.Clear();
+            // _loadTask2 = Task.Factory.StartNew(LoadResourceData,
+                // new TaskState<Subnode1>(this), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
+            // return _loadTask2;
+        // }
 
         /// <inheritdoc />
         public override void LoadResult(IDataObject result)
@@ -83,9 +92,9 @@ namespace KmDevWpfControls
             {
                 switch (format)
                 {
-                    case nameof(BitmapSource):
+                    case "System.Windows.Media.Imaging.BitmapSource":
                         var imgc = new Image() {Source = result.GetData(format) as ImageSource};
-                        Items.Add(new Subnode1 {Name = imgc});
+                        Items.Add(new Subnode1(false) {Name = imgc});
                         break;
                     case nameof(IEnumerable):
                         var ee = result.GetData(format) as IEnumerable;
@@ -97,12 +106,12 @@ namespace KmDevWpfControls
             }
         }
 
-        private static async Task<IDataObject> LoadResourceData(object state)
+        private async Task<IDataObject>  LoadResourceData()
         {
-            var st = (TaskState<Subnode1>) state;
-            var subnode = st.Node;
+            var subnode = this;
             Debug.WriteLine($"{nameof(TempLoadDat)}: {subnode}");
-            if (subnode.ResourceName == null) throw new InvalidOperationException("ResourceName is null");
+            if (subnode.
+                ResourceName== null) throw new InvalidOperationException("ResourceName is null");
             if (subnode.Assembly == null) throw new InvalidOperationException("Assembly is null");
             var stream = subnode.Assembly.GetManifestResourceStream(subnode.ResourceName.ToString());
 
@@ -124,14 +133,15 @@ namespace KmDevWpfControls
 
                         var size = BitConverter.ToInt32(data, 0);
                         var memoryStream = new MemoryStream(data, offset, size);
+                        subnode.MemoryStream = memoryStream;
                         var ext = Path.GetExtension(subnode.Name.ToString()).ToLowerInvariant();
                         Debug.WriteLine(ext);
                         switch (ext)
                         {
                             case ".baml":
-                                return await MakeBamlValue(subnode, memoryStream);
+                                return await subnode.MakeBamlValue(subnode, memoryStream);
                             case ".png":
-                                return MakeBitmapValue(subnode, memoryStream);
+                                return await subnode.MakeBitmapValue();
 
 
                             case ".jpg":
@@ -149,13 +159,16 @@ namespace KmDevWpfControls
             return null;
         }
 
-        public delegate object InvocationDelegate(object[] args);
+        public MemoryStream MemoryStream { get; set; }
 
-        private static async Task<IDataObject> MakeBamlValue(Subnode1 subnode, MemoryStream memoryStream)
+        public delegate object InvocationDelegate();
+
+        private async Task<IDataObject> MakeBamlValue(AssemblyResourceNodeBase1 subnode, MemoryStream memoryStream)
         {
+
+
             var ary = new object[] {memoryStream};
-            var o = await subnode.Dispatcher.InvokeAsync(args => TempLoadDat((MemoryStream) ((object[]) args)[0]), DispatcherPriority.Send,
-                ary);
+            var o = await subnode.Dispatcher.InvokeAsync(TempLoadDat, DispatcherPriority.Send);
             return (IDataObject) o;
         }
 
@@ -192,22 +205,23 @@ namespace KmDevWpfControls
             return null;
         }
 
-        private static IDataObject MakeBitmapValue(Subnode1 subnode, MemoryStream memoryStream)
+        private async Task<IDataObject> MakeBitmapValue()
         {
-            var object3 = subnode.Dispatcher.Invoke(new InvocationDelegate(args =>
+            var object3 = await Dispatcher.InvokeAsync(() =>
                 {
                     Debug.WriteLine(".png");
-                    var png = new PngBitmapDecoder(memoryStream, BitmapCreateOptions.None,
+                    
+                    var png = new PngBitmapDecoder(MemoryStream, BitmapCreateOptions.None,
                         BitmapCacheOption.Default);
                     BitmapSource src = png.Frames[0];
                     var s = new SubnodeData();
                     s.Value = src;
                     s.Name = "Image";
                     return new DataObject(typeof(BitmapSource), src);
-                }),
-            DispatcherPriority.Send, new object[]{} );
+                },
+            DispatcherPriority.Send);
 
-            return (IDataObject) object3;
+            return object3;
         }
 
         private static IDataObject MakeStreamValue(int size, MemoryStream memoryStream, byte[] data)
@@ -221,29 +235,21 @@ namespace KmDevWpfControls
         }
 
 
-        private static IDataObject TempLoadDat(MemoryStream memoryStream)
+        private IDataObject TempLoadDat()
         {
             {
-                Baml2006Reader reader1 = null;
-                try
-                {
-                    reader1 = new Baml2006Reader(memoryStream);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                    throw;
-                }
-
                 object object1;
-                try
+                using (Baml2006Reader reader1 = new Baml2006Reader(this.MemoryStream))
                 {
-                    object1 = XamlReader.Load(reader1);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                    throw;
+                  try
+                    {
+                        object1 = XamlReader.Load(reader1);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                        throw;
+                    }
                 }
 
                 return new DataObject("BAML", object1);

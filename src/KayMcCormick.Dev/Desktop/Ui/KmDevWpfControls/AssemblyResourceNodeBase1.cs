@@ -46,8 +46,9 @@ namespace KmDevWpfControls
         /// <summary>
         /// 
         /// </summary>
-        protected AssemblyResourceNodeBase1()
+        protected AssemblyResourceNodeBase1(bool addPlaceholder = true)
         {
+            if(addPlaceholder)
             _items?.Add(new AssemblyResourceNodesPlaceHolder());
             Dispatcher = Dispatcher.CurrentDispatcher;
             _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
@@ -210,9 +211,6 @@ namespace KmDevWpfControls
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        /// <inheritdoc />
-        public abstract Subnode1 CreateSubnode();
-
         /// <summary>
         /// 
         /// </summary>
@@ -254,10 +252,6 @@ namespace KmDevWpfControls
         public NodeExpandedState1 ExpandedState { get; }
         public bool IsExpanded { get; }
         public NodeDataLoadState1 DataState { get; set; }
-        public Subnode1 CreateSubnode()
-        {
-            throw new NotImplementedException();
-        }
 
         public Task<IDataObject> CheckLoadItemsAsync()
         {

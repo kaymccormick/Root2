@@ -44,12 +44,6 @@ namespace KmDevWpfControls
         /// 
         /// </summary>
         /// <returns></returns>
-        Subnode1 CreateSubnode();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
         Task<IDataObject> CheckLoadItemsAsync();
 
         /// <summary>
