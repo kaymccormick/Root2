@@ -93,7 +93,7 @@ namespace KmDevWpfControls
                 switch (format)
                 {
                     case "System.Windows.Media.Imaging.BitmapSource":
-                        var imgc = new Image() {Source = result.GetData(format) as ImageSource};
+                        var imgc = new Image() {Source = result.GetData(format) as ImageSource,HorizontalAlignment = HorizontalAlignment.Left,VerticalAlignment = VerticalAlignment.Center};
                         Items.Add(new Subnode1(false) {Name = imgc});
                         break;
                     case nameof(IEnumerable):
