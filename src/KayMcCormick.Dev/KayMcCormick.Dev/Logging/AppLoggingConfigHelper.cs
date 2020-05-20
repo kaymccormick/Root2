@@ -780,7 +780,7 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="config1"></param>
         /// <param name="callerFilePath"></param>
         /// <returns></returns>
-        public static ILogger EnsureLoggingConfigured (
+        public static void EnsureLoggingConfigured (
             [ CanBeNull ] LogDelegates.LogMethod  slogMethod     = null
           , ILoggingConfiguration                 config1        = null
           , [ CallerFilePath ] [ NotNull ] string callerFilePath = ""
@@ -805,7 +805,9 @@ namespace KayMcCormick.Dev.Logging
 
 
             var task = Task.Run ( Function ) ;
-            return task.Result ;
+
+            Task.WaitAll(task);
+            return;
         }
 
         /// <summary>Ensures the logging configured.</summary>

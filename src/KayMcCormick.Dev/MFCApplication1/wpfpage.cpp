@@ -29,6 +29,11 @@ WPFPage::WPFPage(int allottedWidth, int allotedHeight)
 
   void(__clrcall * logM)(String ^ message);
   logM = logM1;
+  AnalysisControls::Main1Model::SelectVsInstance();
+  auto con = gcnew KayMcCormick::Dev::Logging::AppLoggingConfiguration();
+  con->Trace();
+	
+  KayMcCormick::Dev::Logging::AppLoggingConfigHelper::EnsureLoggingConfigured(gcnew KayMcCormick::Dev::Logging::LogDelegates::LogMethod(logM), con, "");
   auto app = gcnew AnalysisControls::ControlsAppInstance(gcnew KayMcCormick::Dev::Application::ApplicationInstance::ApplicationInstanceConfiguration(gcnew KayMcCormick::Dev::Application::ApplicationInstance::LogMethodDelegate(logM), Guid::NewGuid(), nullptr, false, true, true));
   app->Initialize();
   //auto scope = app->ComponentContext;
@@ -36,6 +41,7 @@ WPFPage::WPFPage(int allottedWidth, int allotedHeight)
   app->Startup();
   auto element = gcnew AnalysisControls::Main1();
   element->ViewModel = app->Main1Model;
+  
   this->Children->Add(element);
   // this->Children->Add(element);
  

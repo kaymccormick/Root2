@@ -17,6 +17,11 @@ namespace KayMcCormick.Dev.Logging
     /// </summary>
     public sealed class AppLoggingConfiguration : ILoggingConfiguration
     {
+        public void Trace()
+        {
+            MinLogLevel = LogLevel.Trace;
+            
+        }
         private static readonly ILoggingConfiguration _default =
             new AppLoggingConfiguration
             {

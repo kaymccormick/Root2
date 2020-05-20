@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -365,55 +366,7 @@ namespace AnalysisControls
         {
             base.OnDrop(e);
 
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
-            var docPath = (string[]) e.Data.GetData(DataFormats.FileDrop);
-            if (docPath == null) return;
-            foreach (var file in docPath)
-            {
-                if (file.ToLowerInvariant().EndsWith(".cs") || file.EndsWith(".vb"))
-                {
-                    if (ViewModel.SelectedProject != null)
-                    {
-                        ViewModel.AddDocument(ViewModel.SelectedProject, file);
-                        continue;
-                    }
-
-                    Compilation compilation = null;
-                    SyntaxTree tree;
-                    if (file.ToLowerInvariant().EndsWith(".vb"))
-                    {
-                        var s = new StreamReader(file);
-                        string code = await s.ReadToEndAsync();
-                        tree = SyntaxFactory.ParseSyntaxTree(code,
-                            new VisualBasicParseOptions(),
-                            file);
-
-                        compilation = VisualBasicCompilation.Create("x", new[] {tree});
-                    }
-                    else
-                    {
-                        var context = await AnalysisService.LoadAsync(file, "x", false).ConfigureAwait(true);
-                        var cSharpCompilation = context.Compilation;
-                        compilation = cSharpCompilation;
-                        DebugUtils.WriteLine(string.Join("\n", cSharpCompilation.GetDiagnostics()));
-
-                        tree = context.SyntaxTree;
-                    }
-
-                    var doc = Main1Model.CodeDoc(tree, compilation, file);
-                    ViewModel.Documents.Add(doc);
-                    ViewModel.ActiveContent = doc;
-                }
-                else if (file.ToLowerInvariant().EndsWith(".sln"))
-                {
-                    await ViewModel.LoadSolutionAsync(file);
-                }
-                else if (file.ToLowerInvariant().EndsWith(".csproj") || file.EndsWith(".vbproj"))
-                {
-                    await ViewModel.LoadProjectAsync(file);
-                }
-
-            }
+            await ViewModel.ProcessDrop(e);
         }
 
         /// <inheritdoc />
@@ -426,6 +379,7 @@ namespace AnalysisControls
                 DataContext = _viewModel;
                 if (_viewModel != null)
                 {
+                    _viewModel.Dispatcher = Dispatcher;
                     foreach (var anchorable in _anchorables) _viewModel.Anchorables.Add(anchorable);
 
                     _viewModel.View = this;

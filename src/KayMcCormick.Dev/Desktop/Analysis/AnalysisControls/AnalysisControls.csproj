@@ -155,6 +155,7 @@
     <Compile Include="DefaultTypefaceManager.cs" />
     <Compile Include="DevTypeControl.cs" />
     <Compile Include="DiagnosticError.cs" />
+    <Compile Include="DiagnosticNodeModel.cs" />
     <Compile Include="DisplayModeConverter.cs" />
     <Compile Include="DocElements.cs" />
     <Compile Include="DocModel.cs" />

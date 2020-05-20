@@ -378,6 +378,7 @@ namespace AnalysisControls
         public FormattedTextControl()
 
         {
+            
             PixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
             CommandBindings.Add(new CommandBinding(WpfAppCommands.SerializeContents, Executed));
             TypefaceManager = new DefaultTypefaceManager();

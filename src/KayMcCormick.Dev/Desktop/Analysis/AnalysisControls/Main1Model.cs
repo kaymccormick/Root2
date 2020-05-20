@@ -8,6 +8,7 @@ using System.Reactive.Subjects;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,6 +18,8 @@ using System.Windows.Forms.Integration;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
+using AnalysisAppLib;
 using AnalysisControls.Properties;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
@@ -26,9 +29,11 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.VisualBasic;
 using Microsoft.VisualStudio.Threading;
 using NLog;
 using Path = System.IO.Path;
+using SyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
 namespace AnalysisControls
 {
@@ -58,22 +63,25 @@ namespace AnalysisControls
                             !d.ContextualTabGroupHeaders.Contains(x)))
                         {
                             ContextualTabGroups.Remove(xx);
-                            foreach (var primaryRibbonContextualTabGroup in ClientViewModel.PrimaryRibbon.ContextualTabGroups)
+                            if (ClientViewModel?.PrimaryRibbon != null)
                             {
-                                if (Equals(primaryRibbonContextualTabGroup.Header, xx))
+                                foreach (var primaryRibbonContextualTabGroup in ClientViewModel.PrimaryRibbon
+                                    .ContextualTabGroups)
                                 {
-                                    primaryRibbonContextualTabGroup.Visibility = Visibility.Collapsed;
+                                    if (Equals(primaryRibbonContextualTabGroup.Header, xx))
+                                    {
+                                        primaryRibbonContextualTabGroup.Visibility = Visibility.Collapsed;
+                                    }
+                                }
+
+                                foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
+                                {
+                                    if (Object.Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, xx))
+                                    {
+                                        primaryRibbonRibbonItem.Visibility = Visibility.Collapsed;
+                                    }
                                 }
                             }
-                            foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
-                            {
-                                if (Object.Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, xx))
-                                {
-                                    primaryRibbonRibbonItem.Visibility = Visibility.Collapsed;
-                                }
-                            }
-
-
                         }
                     }
 
@@ -85,21 +93,25 @@ namespace AnalysisControls
                         }
                         DebugUtils.WriteLine("Adding group " + header);
                         ContextualTabGroups.Add(header);
-                        foreach (var primaryRibbonContextualTabGroup in ClientViewModel.PrimaryRibbon.ContextualTabGroups)
+                        if (ClientViewModel?.PrimaryRibbon != null)
                         {
-                            if (Equals(primaryRibbonContextualTabGroup.Header, header))
+                            foreach (var primaryRibbonContextualTabGroup in ClientViewModel.PrimaryRibbon
+                                .ContextualTabGroups)
                             {
-                                primaryRibbonContextualTabGroup.Visibility = Visibility.Visible;
+                                if (Equals(primaryRibbonContextualTabGroup.Header, header))
+                                {
+                                    primaryRibbonContextualTabGroup.Visibility = Visibility.Visible;
+                                }
+                            }
+
+                            foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
+                            {
+                                if (Object.Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, header))
+                                {
+                                    primaryRibbonRibbonItem.Visibility = Visibility.Visible;
+                                }
                             }
                         }
-                        foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
-                        {
-                            if (Object.Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, header))
-                            {
-                                primaryRibbonRibbonItem.Visibility = Visibility.Visible;
-                            }
-                        }
-                        
                     }
                 }
 
@@ -196,6 +208,8 @@ namespace AnalysisControls
         /// <param name="replay"></param>
         public Main1Model(ReplaySubject<Workspace> replay, JsonSerializerOptions jsonSerializerOptions = null) : this()
         {
+
+            _f = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current)); 
             JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
             _replay = replay;
         }
@@ -205,6 +219,7 @@ namespace AnalysisControls
         /// </summary>
         public Main1Model()
         {
+            _f = _f ?? new JoinableTaskFactory(new JoinableTaskContext());
             AddInitialDocuments();
 
             AddInitialAnchorables();
@@ -422,6 +437,7 @@ namespace AnalysisControls
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private IClientModel _clientViewModel;
+        private JoinableTaskFactory _f;
 
         private void WorkspaceOnDocumentClosed(object sender, DocumentEventArgs e)
         {
@@ -714,6 +730,15 @@ namespace AnalysisControls
 
             if (Workspace is AdhocWorkspace ww)
             {
+                foreach (var servicesSupportedLanguage in ww.Services.SupportedLanguages)
+                {
+                    LogManager.GetCurrentClassLogger().Info(servicesSupportedLanguage);
+                }
+
+                if (!ww.Services.IsSupported(LanguageNames.CSharp))
+                {
+                    return null;
+                }
                 var projectInfo = ProjectInfo.Create(ProjectId.CreateNewId(), VersionStamp.Create(), "unnamed project",
                     "unnamed assembly", LanguageNames.CSharp
                 ).WithMetadataReferences(new[]
@@ -870,6 +895,7 @@ namespace AnalysisControls
         }
 
         public JsonSerializerOptions JsonSerializerOptions { get; set; }
+        public Dispatcher Dispatcher { get; set; }
 
         /// <summary>
         /// 
@@ -995,7 +1021,16 @@ namespace AnalysisControls
         /// <param name="cSharpCompilation"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        public static DocModel CodeDoc(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)
+        ///
+        public delegate DocModel Del1(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file);
+
+        public async Task<DocModel> CodeDoc(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)
+        {
+             await Dispatcher.BeginInvoke(new Del1(Method1), contextSyntaxTree, cSharpCompilation, file);
+             return null;
+        }
+
+        private DocModel Method1(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)
         {
             var doc = DocModel.CreateInstance();
             doc.Content = new FormattedTextControl()
@@ -1005,6 +1040,8 @@ namespace AnalysisControls
             };
             doc.Title = Path.GetFileNameWithoutExtension(file);
             doc.ContextualTabGroupHeaders.Add(RibbonResources.ContextualTabGroupHeader_CodeAnalysis);
+            this.Documents.Add(doc);
+            this.ActiveContent = doc;
 
             return doc;
         }
@@ -1028,57 +1065,61 @@ namespace AnalysisControls
             // var  d =Clipboard.GetDataObject();
             
         }
-    }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public class DiagnosticNodeModel : PathModel
-    {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="kind"></param>
+        /// <param name="e"></param>
         /// <returns></returns>
-        public static DiagnosticNodeModel CreateInstance(PathModelKind kind)
+        public async Task ProcessDrop(DragEventArgs e)
         {
-            return new DiagnosticNodeModel(kind);
-        }
-
-        private Diagnostic _diagnostic;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="kind"></param>
-        private DiagnosticNodeModel(PathModelKind kind) : base(kind)
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="docs"></param>
-        public override void Add(PathModel docs)
-        {
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Diagnostic Diagnostic
-        {
-            get { return _diagnostic; }
-            set
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            var docPath = (string[]) e.Data.GetData(DataFormats.FileDrop);
+            if (docPath == null) return;
+            foreach (var file in docPath)
             {
-                _diagnostic = value;
-                Message = _diagnostic.GetMessage();
+                if (file.ToLowerInvariant().EndsWith(".cs") || file.EndsWith(".vb"))
+                {
+                    if (this.SelectedProject != null)
+                    {
+                        this.AddDocument(this.SelectedProject, file);
+                        continue;
+                    }
+
+                    Compilation compilation = null;
+                    SyntaxTree tree;
+                    if (file.ToLowerInvariant().EndsWith(".vb"))
+                    {
+                        var s = new StreamReader(file);
+                        string code = await s.ReadToEndAsync();
+                        tree = SyntaxFactory.ParseSyntaxTree(code,
+                            new VisualBasicParseOptions(),
+                            file);
+
+                        compilation = VisualBasicCompilation.Create("x", new[] {tree});
+                    }
+                    else
+                    {
+                        var context = await AnalysisService.LoadAsync(file, "x", false).ConfigureAwait(true);
+                        var cSharpCompilation = context.Compilation;
+                        compilation = cSharpCompilation;
+                        DebugUtils.WriteLine(string.Join("\n", cSharpCompilation.GetDiagnostics()));
+
+                        tree = context.SyntaxTree;
+                    }
+
+                    await _f.SwitchToMainThreadAsync();
+                    await CodeDoc(tree, compilation, file).ConfigureAwait(true);
+                }
+                else if (file.ToLowerInvariant().EndsWith(".sln"))
+                {
+                    await this.LoadSolutionAsync(file);
+                }
+                else if (file.ToLowerInvariant().EndsWith(".csproj") || file.EndsWith(".vbproj"))
+                {
+                    await this.LoadProjectAsync(file);
+                }
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Message { get; set; }
     }
 }

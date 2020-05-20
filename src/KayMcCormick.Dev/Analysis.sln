@@ -80,6 +80,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Win32HostingWPFPage", "cpp\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MFCApplication1", "MFCApplication1\MFCApplication1.vcxproj", "{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VSPackage1", "..\..\..\VSPackage1\VSPackage1\VSPackage1.vcxproj", "{B7F4CC92-9919-42BA-94B9-9EBC88C9E02A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -551,8 +553,8 @@ Global
 		{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}.Debug|ARM64.ActiveCfg = Debug|Win32
 		{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}.Debug|x64.ActiveCfg = Debug|x64
 		{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}.Debug|x64.Build.0 = Debug|x64
-		{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}.Debug|x86.ActiveCfg = Debug|Win32
-		{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}.Debug|x86.Build.0 = Debug|Win32
+		{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}.Debug|x86.ActiveCfg = Debug1|Win32
+		{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}.Debug|x86.Build.0 = Debug1|Win32
 		{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}.Release|Any CPU.ActiveCfg = Release|Win32
 		{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}.Release|ARM.ActiveCfg = Release|Win32
 		{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}.Release|ARM64.ActiveCfg = Release|Win32
@@ -560,6 +562,18 @@ Global
 		{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}.Release|x64.Build.0 = Release|x64
 		{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}.Release|x86.ActiveCfg = Release|Win32
 		{F5B39079-F185-45D6-8FF2-BFF8C1C9527C}.Release|x86.Build.0 = Release|Win32
+		{B7F4CC92-9919-42BA-94B9-9EBC88C9E02A}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{B7F4CC92-9919-42BA-94B9-9EBC88C9E02A}.Debug|ARM.ActiveCfg = Debug|Win32
+		{B7F4CC92-9919-42BA-94B9-9EBC88C9E02A}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{B7F4CC92-9919-42BA-94B9-9EBC88C9E02A}.Debug|x64.ActiveCfg = Debug|Win32
+		{B7F4CC92-9919-42BA-94B9-9EBC88C9E02A}.Debug|x86.ActiveCfg = Debug|Win32
+		{B7F4CC92-9919-42BA-94B9-9EBC88C9E02A}.Debug|x86.Build.0 = Debug|Win32
+		{B7F4CC92-9919-42BA-94B9-9EBC88C9E02A}.Release|Any CPU.ActiveCfg = Release|Win32
+		{B7F4CC92-9919-42BA-94B9-9EBC88C9E02A}.Release|ARM.ActiveCfg = Release|Win32
+		{B7F4CC92-9919-42BA-94B9-9EBC88C9E02A}.Release|ARM64.ActiveCfg = Release|Win32
+		{B7F4CC92-9919-42BA-94B9-9EBC88C9E02A}.Release|x64.ActiveCfg = Release|Win32
+		{B7F4CC92-9919-42BA-94B9-9EBC88C9E02A}.Release|x86.ActiveCfg = Release|Win32
+		{B7F4CC92-9919-42BA-94B9-9EBC88C9E02A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
