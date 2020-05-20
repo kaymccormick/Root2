@@ -33,15 +33,15 @@ namespace KmDevWpfControls
         /// 
         /// </summary>
         public static readonly DependencyProperty RootNodesProperty = DependencyProperty.Register(
-            "RootNodes", typeof(ObservableCollection<NodeBase1>), typeof(AssemblyResourceTree1),
-            new PropertyMetadata(default(ObservableCollection<NodeBase1>)));
+            "RootNodes", typeof(ObservableCollection<AssemblyResourceNodeBase1>), typeof(AssemblyResourceTree1),
+            new PropertyMetadata(default(ObservableCollection<AssemblyResourceNodeBase1>)));
 
         /// <summary>
         /// 
         /// </summary>
-        public ObservableCollection<NodeBase1> RootNodes
+        public ObservableCollection<AssemblyResourceNodeBase1> RootNodes
         {
-            get { return (ObservableCollection<NodeBase1>) GetValue(RootNodesProperty); }
+            get { return (ObservableCollection<AssemblyResourceNodeBase1>) GetValue(RootNodesProperty); }
             set { SetValue(RootNodesProperty, (object) value); }
         }
 
@@ -77,7 +77,7 @@ namespace KmDevWpfControls
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        public ObservableCollection<NodeBase1> RootItems { get; } = new ObservableCollection<NodeBase1>();
+        public ObservableCollection<AssemblyResourceNodeBase1> RootItems { get; } = new ObservableCollection<AssemblyResourceNodeBase1>();
 
         /// <summary>
         /// 
@@ -120,7 +120,7 @@ namespace KmDevWpfControls
         public AssemblyResourceTree1()
         {
             AddHandler(TreeViewItem.ExpandedEvent, new RoutedEventHandler(OnExpanded) );
-            RootNodes = new ObservableCollection<NodeBase1>();
+            RootNodes = new ObservableCollection<AssemblyResourceNodeBase1>();
             CommandBindings.Add(new CommandBinding(CustomTreeView.ToggleNodeIsExpanded, OnExpandNodeExecutedAsync,
                 OnToggleNodeCanExecute));
         }
@@ -165,7 +165,7 @@ namespace KmDevWpfControls
                 if (!(e.Parameter is DependencyObject dependencyObject)) return;
 
                 var itemFromContainer = _treeView.ItemContainerGenerator.ItemFromContainer(dependencyObject);
-                if (!(itemFromContainer is INodeData1 node)) return;
+                if (!(itemFromContainer is IAssemblyResourceNode node)) return;
                 //Debug.WriteLine("param is " + node);
                 if (node.Items.Any() && node.ExpandedState != NodeExpandedState1.Expanded)
                     //  Debug.WriteLine("can execute");

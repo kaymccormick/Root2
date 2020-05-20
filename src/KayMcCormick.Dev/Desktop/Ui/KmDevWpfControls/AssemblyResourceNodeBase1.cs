@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -15,7 +16,7 @@ namespace KmDevWpfControls
     /// <summary>
     /// 
     /// </summary>
-    public abstract class NodeBase1 : INotifyPropertyChanged, INodeData1
+    public abstract class AssemblyResourceNodeBase1 : INotifyPropertyChanged, IAssemblyResourceNode
     {
         /// <summary>
         /// 
@@ -35,15 +36,15 @@ namespace KmDevWpfControls
         private Task<TempLoadData1> _loadTask;
         private Dispatcher _dispatcher;
         private TaskScheduler _taskScheduler;
-        private readonly ObservableCollection<INodeData1> _items = new ObservableCollection<INodeData1>();
+        private readonly ObservableCollection<IAssemblyResourceNode> _items = new ObservableCollection<IAssemblyResourceNode>();
         private NodeDataLoadState1 _dataState;
 
         /// <summary>
         /// 
         /// </summary>
-        protected NodeBase1()
+        protected AssemblyResourceNodeBase1()
         {
-            _items?.Add(new NodesPlaceHolder());
+            _items?.Add(new AssemblyResourceNodesPlaceHolder());
             Dispatcher = Dispatcher.CurrentDispatcher;
             _taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
         }
@@ -80,7 +81,7 @@ namespace KmDevWpfControls
         /// 
         /// </summary>
         [JsonIgnore]
-        public virtual ObservableCollection<INodeData1> Items
+        public virtual ObservableCollection<IAssemblyResourceNode> Items
         {
             get { return _items; }
         }
@@ -107,12 +108,19 @@ namespace KmDevWpfControls
         /// <returns></returns>
         public abstract bool CheckLoadItems(out NodeDataLoadState1 state);
 
+        public object Header => Name;
+
         /// <summary>
         /// 
         /// </summary>
         public virtual bool IsExpanded
         {
             get { return ExpandedState == NodeExpandedState1.Expanded; }
+        }
+
+        IEnumerable ITreeViewNode.Items
+        {
+            get { return Items; }
         }
 
         /// <inheritdoc />
@@ -126,7 +134,7 @@ namespace KmDevWpfControls
         /// <inheritdoc />
         public virtual async Task ExpandAsync()
         {
-            Debug.WriteLine($"Items has any {Items.Any()} and ExpandedState is {ExpandedState}");
+            Debug.WriteLine($"InternalItems has any {Items.Any()} and ExpandedState is {ExpandedState}");
             if (Items.Any() && ExpandedState != NodeExpandedState1.Expanded)
             {
                 Debug.WriteLine("Data state is " + DataState);
@@ -168,7 +176,7 @@ namespace KmDevWpfControls
         /// <param name="arg2"></param>
         protected static void SetExpandedAction(Task<TempLoadData1> arg1, object arg2)
         {
-            var state = (TaskState<NodeBase1>) arg2;
+            var state = (TaskState<AssemblyResourceNodeBase1>) arg2;
             Debug.WriteLine(nameof(SetExpandedAction));
             state.Node.Items.Clear();
             state.Node.ExpandedState = NodeExpandedState1.Expanded;
@@ -231,24 +239,37 @@ namespace KmDevWpfControls
         public abstract DataLoadStrategy LoadStrategy { get; set; }
     }
 
-    public class NodesPlaceHolder : INodeData1
+    public class AssemblyResourceNodesPlaceHolder : IAssemblyResourceNode
     {
+        private Assembly _assembly;
+
         /// <inheritdoc />
-        public Assembly Assembly { get; set; }
+        public Assembly Assembly
+        {
+            get { return _assembly; }
+            set { _assembly = value; }
+        }
 
         /// <inheritdoc />
         public object Name { get; set; }
 
         /// <inheritdoc />
-        public ObservableCollection<INodeData1> Items { get; } = new ObservableCollection<INodeData1>();
+        public ObservableCollection<IAssemblyResourceNode> Items { get; } = new ObservableCollection<IAssemblyResourceNode>();
 
         /// <inheritdoc />
         public NodeExpandedState1 ExpandedState { get; set; }
+
+        public object Header { get; }
 
         /// <inheritdoc />
         public bool IsExpanded
         {
             get { return ExpandedState == NodeExpandedState1.Expanded; }
+        }
+
+        IEnumerable ITreeViewNode.Items
+        {
+            get { return Items; }
         }
 
         /// <summary>

@@ -17,7 +17,7 @@ namespace KmDevWpfControls
     /// <summary>
     /// 
     /// </summary>
-    public class Subnode1 : NodeBase1
+    public class Subnode1 : AssemblyResourceNodeBase1
     {
         private Task<TempLoadData1> _loadTask2;
 
@@ -66,7 +66,8 @@ namespace KmDevWpfControls
         /// <inheritdoc />
         public override Task<TempLoadData1> CheckLoadItemsAsync()
         {
-            if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running) throw new InvalidOperationException("error");
+            if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running)
+                throw new InvalidOperationException("error");
             Items.Clear();
             _loadTask2 = Task.Factory.StartNew(LoadResourceData,
                 new TaskState<Subnode1>(this), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
@@ -81,12 +82,12 @@ namespace KmDevWpfControls
             {
                 case BitmapSource img:
                     var imgc = new Image() {Source = img};
-                    Items.Add(new Subnode1{Name=imgc});
+                    Items.Add(new Subnode1 {Name = imgc});
                     break;
                 case IEnumerable ee:
                     foreach (var o in ee)
                         if (o is SubnodeData sd)
-                            Items.Add(new Subnode1() { Name = sd.Name, Value = sd.Value });
+                            Items.Add(new Subnode1() {Name = sd.Name, Value = sd.Value});
                     break;
             }
         }
@@ -96,7 +97,10 @@ namespace KmDevWpfControls
             var st = (TaskState<Subnode1>) state;
             var subnode = st.Node;
             Debug.WriteLine($"{nameof(TempLoadData1)}: {subnode}");
+            if (subnode.ResourceName == null) throw new InvalidOperationException("ResourceName is null");
+            if (subnode.Assembly == null) throw new InvalidOperationException("Assembly is null");
             var stream = subnode.Assembly.GetManifestResourceStream(subnode.ResourceName.ToString());
+            
             if (stream == null) return null;
             using (var reader = new ResourceReader(stream))
             {
@@ -130,28 +134,52 @@ namespace KmDevWpfControls
                             case ".baml":
                                 var object2 = subnode.Dispatcher.Invoke(() =>
                                 {
+                                    Baml2006Reader reader1 = null;
                                     try
                                     {
-                                        var reader1 = new Baml2006Reader(memoryStream);
-                                        var object1 = XamlReader.Load(reader1);
-                                        if (object1 is IDictionary rd)
-                                            foreach (DictionaryEntry entry in rd)
-                                            {
-                                                var sb = new Subnode1() {Name = entry.Key, Value = entry.Value};
-                                                subnode.Items.Add(sb);
-                                            }
-
-                                        return new TempLoadData1() {Value = object1};
+                                        reader1 = new Baml2006Reader(memoryStream);
                                     }
                                     catch (Exception ex)
                                     {
+                                        Debug.WriteLine(ex);
                                         return new TempLoadData1() {Exception = ex};
                                     }
+
+                                    object object1 = null;
+                                    try
+                                    {
+                                        object1 = XamlReader.Load(reader1);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine(ex);
+                                        return new TempLoadData1() {Exception = ex};
+                                    }
+
+                                    if (object1 is IDictionary rd)
+                                        try
+                                        {
+                                            foreach (DictionaryEntry entry in rd)
+                                                try
+                                                {
+                                                    var sb = new Subnode1() {Name = entry.Key, Value = entry.Value};
+                                                    subnode.Items.Add(sb);
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    return new TempLoadData1() {Exception = ex};
+                                                    Debug.WriteLine(ex);
+                                                }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Debug.WriteLine(ex);
+                                            return new TempLoadData1() {Exception = ex};
+                                        }
+
+                                    return new TempLoadData1() {Value = object1};
                                 }, DispatcherPriority.Send);
-                                if (object2.Value is UIElement)
-                                {
-                                    subnode.Dispatcher.Invoke(() => { });
-                                }
+                                if (object2.Value is UIElement) subnode.Dispatcher.Invoke(() => { });
 
                                 return object2;
                             case ".png":

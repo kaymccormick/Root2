@@ -401,11 +401,13 @@
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
-            <StackPanel>
-              <TextBlock Text="Resources"></TextBlock>
-              <local:CustomTreeView ItemsSource="{Binding RootNodes,RelativeSource={RelativeSource TemplatedParent}}"
-                                    x:Name="TreeView" />
-            </StackPanel>
+            <ScrollViewer>
+              <StackPanel>
+                <TextBlock Text="Resources"></TextBlock>
+                <local:CustomTreeView ItemsSource="{Binding RootNodes,RelativeSource={RelativeSource TemplatedParent}}"
+                                      x:Name="TreeView" />
+              </StackPanel>
+            </ScrollViewer>
           </Border>
         </ControlTemplate>
       </Setter.Value>
@@ -416,6 +418,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:VisualTreeView1}">
           <ControlTemplate.Resources>
+            <local:RectConverter1 x:Key="RectConverter"></local:RectConverter1>
             <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
             <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
 
@@ -633,10 +636,10 @@
               </Setter>
             </Style>
 
-            <HierarchicalDataTemplate DataType="{x:Type local:VisualTreeNode}" ItemsSource="{Binding Items}">
+            <HierarchicalDataTemplate DataType="{x:Type local:VisualTreeNode}" ItemsSource="{Binding InternalItems}">
               <WrapPanel>
-                <TextBlock Text="{Binding Type}" />
-                <TextBlock Text="{Binding DescendantBounds}" />
+                <TextBlock Text="{Binding Type.Name}" />
+                <TextBlock Margin="10,0,0,0" Text="{Binding DescendantBounds,Converter={StaticResource RectConverter}}" />
               </WrapPanel>
             </HierarchicalDataTemplate>
           </ControlTemplate.Resources>
@@ -662,11 +665,11 @@
                 <ListView ItemsSource="{Binding Properties_}">
                   <ListView.View>
                     <GridView>
-                      <GridViewColumn DisplayMemberBinding="{Binding Name}"/>
-                      <GridViewColumn DisplayMemberBinding="{Binding Type}"/>
-                      <GridViewColumn DisplayMemberBinding="{Binding Value}"/>
-                      <GridViewColumn DisplayMemberBinding="{Binding IsAttached}"/>
-                      <GridViewColumn DisplayMemberBinding="{Binding IsComposite}"/>
+                      <GridViewColumn Header="Property Name" DisplayMemberBinding="{Binding Name}"/>
+                      <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}"/>
+                      <GridViewColumn Header="Property Type" DisplayMemberBinding="{Binding PropertyType}"/>
+                      <GridViewColumn Header="Is Attached" DisplayMemberBinding="{Binding IsAttached}"/>
+                      <GridViewColumn Header="Is Composite" DisplayMemberBinding="{Binding IsComposite}"/>
                     </GridView>
                   </ListView.View>
                 </ListView>
@@ -679,4 +682,18 @@
   </Style>
 
 
+
+    <Style TargetType="{x:Type local:ConverterViewer}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:ConverterViewer}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            x:Name="Border">
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

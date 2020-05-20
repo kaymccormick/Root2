@@ -13,7 +13,7 @@ namespace KmDevWpfControls
     /// <summary>
     /// 
     /// </summary>
-    public class RootNode1 : NodeBase1
+    public class RootNode1 : AssemblyResourceNodeBase1
     {
         private Task<TempLoadData1> _loadTask2;
 
@@ -161,7 +161,7 @@ namespace KmDevWpfControls
         public object Value { get; set; }
     }
 
-    public class TaskState<T> where T : INodeData1
+    public class TaskState<T> where T : IAssemblyResourceNode
     {
         /// <summary>
         /// 

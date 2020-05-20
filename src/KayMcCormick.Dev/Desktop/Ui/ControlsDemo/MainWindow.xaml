@@ -1,0 +1,34 @@
+﻿<Window x:Class="ControlsDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ControlsDemo"
+        xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControls"
+        xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
+        mc:Ignorable="d" FontSize="20"
+        Title="MainWindow" Height="450" Width="800">
+  <avalondock:DockingManager>
+    <avalondock:LayoutRoot>
+      <avalondock:LayoutPanel>
+        <avalondock:LayoutDocumentPaneGroup>
+          <avalondock:LayoutDocumentPane>
+            <avalondock:LayoutDocument Title="Assemblies">
+              <kmDevWpfControls:AssembliesControl1 x:Name="AssembliesControl1"/>
+            </avalondock:LayoutDocument>
+            <avalondock:LayoutDocument Title="Resources">
+              <kmDevWpfControls:AssemblyResourceTree1 Assembly="{Binding ElementName=AssembliesControl1,Path=SelectedAssembly}"/>
+            </avalondock:LayoutDocument>
+            <avalondock:LayoutDocument Title="Visual Tree">
+              <kmDevWpfControls:VisualTreeView1 VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"/>
+            </avalondock:LayoutDocument>
+            <avalondock:LayoutDocument Title="ConverterViewer">
+              <kmDevWpfControls:ConverterViewer VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" SelectedObject="{Binding ElementName=AssembliesControl1,Path=SelectedAssembly}"/>
+            </avalondock:LayoutDocument>
+          </avalondock:LayoutDocumentPane>
+        </avalondock:LayoutDocumentPaneGroup>
+      </avalondock:LayoutPanel>
+    </avalondock:LayoutRoot>
+  </avalondock:DockingManager>
+  
+</Window>

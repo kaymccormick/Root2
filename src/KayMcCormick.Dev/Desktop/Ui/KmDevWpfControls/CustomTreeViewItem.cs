@@ -131,7 +131,7 @@ namespace KmDevWpfControls
         public async Task ExpandAsync()
         {
             var item = ParentItemsControl.ItemContainerGenerator.ItemFromContainer(this);
-            if (item is INodeData1 d)
+            if (item is IAssemblyResourceNode d)
                 await d.ExpandAsync();
             else if(item is IAsyncExpand i)
                 await i.ExpandAsync();
@@ -154,7 +154,7 @@ namespace KmDevWpfControls
         public void Collapse()
         {
             var item = ParentItemsControl.ItemContainerGenerator.ItemFromContainer(this);
-            if (item is INodeData1 d)
+            if (item is IAssemblyResourceNode d)
                 d.Collapse();
             else if (item is ITreeViewItemCollapse i)
                 i.Collapse();
@@ -177,8 +177,4 @@ namespace KmDevWpfControls
         }
     }
 
-    public interface ITreeViewItemCollapse
-    {
-        void Collapse();
-    }
 }

@@ -82,13 +82,17 @@
     <Compile Include="AssembliesControl1.cs" />
     <Compile Include="AssemblyInfoConverter1.cs" />
     <Compile Include="AssemblyResourceTree1.cs" />
+    <Compile Include="ConversionUtils1.cs" />
+    <Compile Include="ConverterViewer.cs" />
     <Compile Include="CustomToggleButton1.cs" />
     <Compile Include="GetTypeConverter1.cs" />
     <Compile Include="IAsyncExpand.cs" />
+    <Compile Include="RectConverter1.cs" />
     <Compile Include="RootNode1.cs" />
     <Compile Include="Subnode1.cs" />
     <Compile Include="TablePanel5.cs" />
     <Compile Include="TempLoadData1.cs" />
+    <Compile Include="UiElementTypeConverter1.cs" />
     <Compile Include="VisualTreeNode.cs" />
     <Compile Include="VisualTreeView1.cs" />
     <Page Include="Themes\Generic.xaml">
@@ -102,8 +106,8 @@
   <ItemGroup>
     <Compile Include="CustomTreeView.cs" />
     <Compile Include="CustomTreeViewItem.cs" />
-    <Compile Include="INodeData1.cs" />
-    <Compile Include="NodeBase1.cs" />
+    <Compile Include="IAssemblyResourceNode.cs" />
+    <Compile Include="AssemblyResourceNodeBase1.cs" />
     <Compile Include="NodeDataLoadState1.cs" />
     <Compile Include="NodeExpandedState1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

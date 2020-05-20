@@ -7,7 +7,7 @@ namespace KmDevWpfControls
     /// <summary>
     /// 
     /// </summary>
-    public interface INodeData1
+    public interface IAssemblyResourceNode : ITreeViewNode
     {
         /// <summary>
         /// 
@@ -22,7 +22,7 @@ namespace KmDevWpfControls
         /// <summary>
         /// 
         /// </summary>
-        ObservableCollection<INodeData1> Items { get; }
+        ObservableCollection<IAssemblyResourceNode> Items { get; }
 
         /// <summary>
         /// 

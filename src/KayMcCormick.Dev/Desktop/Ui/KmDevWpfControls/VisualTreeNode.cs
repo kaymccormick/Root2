@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -12,12 +13,22 @@ using JetBrains.Annotations;
 
 namespace KmDevWpfControls
 {
-    public sealed class VisualTreeNode : IAsyncExpand, ITreeViewItemCollapse,INotifyPropertyChanged
+    public interface ITreeViewNode : ITreeViewItemCollapse
+    {
+        object Header { get; }
+        bool IsExpanded { get; }
+        IEnumerable  Items { get; }
+    }
+    public interface ITreeViewItemCollapse
+    {
+        void Collapse();
+    }
+    public sealed class VisualTreeNode : IAsyncExpand, ITreeViewItemCollapse,INotifyPropertyChanged, ITreeViewNode
     {
         private Visual _visual;
         private DrawingGroup _drawing;
         private bool _isExpanded;
-        private ObservableCollection<VisualTreeNode> _items;
+        private ObservableCollection<VisualTreeNode> _internalItems;
         private Rect _contentBounds;
         private Rect _transformedBounds;
         private Visual _transformToSource;
@@ -34,8 +45,7 @@ namespace KmDevWpfControls
                 OnPropertyChanged();
                 if (_visual != null)
                 {
-                    Items = new ObservableCollection<VisualTreeNode>();
-                    Items.Add(new VisualTreeNode());
+                    InternalItems = new ObservableCollection<VisualTreeNode> {new VisualTreeNode()};
                     Type = _visual.GetType();
                     Visual.Dispatcher.InvokeAsync(() =>
                     {
@@ -51,7 +61,7 @@ namespace KmDevWpfControls
                             {
                                 if (Transform_ != null)
                                 {
-                                    var t = Transform_.TransformBounds(Drawing1.Bounds);
+                                    var t = Transform_.TransformBounds(drawingGroup.Bounds);
                                     TransformedBounds = new Rect((int) t.X, (int) t.Y, (int) t.Width, (int) t.Height);
                                 }
                             }
@@ -97,6 +107,7 @@ namespace KmDevWpfControls
             }
         }
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public Rect TransformedBounds
         {
             get { return _transformedBounds; }
@@ -166,20 +177,22 @@ namespace KmDevWpfControls
         /// <inheritdoc />
         public Task ExpandAsync()
         {
-            if (Items == null)
+            if (InternalItems == null)
             {
-                throw new InvalidOperationException("Items is nukk");
+                throw new InvalidOperationException("InternalItems is nukk");
             }
-            Items.Clear();
+            InternalItems.Clear();
             var count =    VisualTreeHelper.GetChildrenCount(Visual);
             for(int i = 0; i < count; i++)
             {
-                Items.Add(new VisualTreeNode {Visual = VisualTreeHelper.GetChild(Visual, i) as Visual, TransformToSource = this.TransformToSource});
+                InternalItems.Add(new VisualTreeNode {Visual = VisualTreeHelper.GetChild(Visual, i) as Visual, TransformToSource = this.TransformToSource});
             }
 
             IsExpanded = true;
             return Task.CompletedTask;
         }
+
+        public object Header => this;
 
         public bool IsExpanded
         {
@@ -192,13 +205,15 @@ namespace KmDevWpfControls
             }
         }
 
-        public ObservableCollection<VisualTreeNode> Items
+        public IEnumerable Items => InternalItems;
+
+        private ObservableCollection<VisualTreeNode> InternalItems
         {
-            get { return _items; }
+            get { return _internalItems; }
             set
             {
-                if (Equals(value, _items)) return;
-                _items = value;
+                if (Equals(value, _internalItems)) return;
+                _internalItems = value;
                 OnPropertyChanged();
             }
         }
