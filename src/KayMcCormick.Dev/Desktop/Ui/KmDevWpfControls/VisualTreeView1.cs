@@ -45,6 +45,14 @@ namespace KmDevWpfControls
     /// </summary>
     public class VisualTreeView1 : Control
     {
+        public static readonly DependencyProperty SelectedVisualProperty = DependencyProperty.Register(
+            "SelectedVisual", typeof(Visual), typeof(VisualTreeView1), new PropertyMetadata(default(Visual)));
+
+        public Visual SelectedVisual
+        {
+            get { return (Visual) GetValue(SelectedVisualProperty); }
+            set { SetValue(SelectedVisualProperty, value); }
+        }
         public ObservableCollection<VisualTreeNode> InternalRootItems { get; } = new ObservableCollection<VisualTreeNode>();
 
         public static readonly DependencyProperty RootItemsProperty = DependencyProperty.Register(
@@ -111,6 +119,8 @@ namespace KmDevWpfControls
         {
             base.OnVisualParentChanged(oldParent);
             var source = DependencyPropertyHelper.GetValueSource(this, RootVisualProperty);
+            if (source.IsExpression && source.BaseValueSource == BaseValueSource.Local)
+                return;
             if (source.BaseValueSource != BaseValueSource.Default && source.BaseValueSource != BaseValueSource.Local &&
                 source.BaseValueSource != BaseValueSource.Inherited)
             {
@@ -139,18 +149,19 @@ namespace KmDevWpfControls
 
     public class VisualTreeViewModel : INotifyPropertyChanged
     {
-        private Visual _currentVisual;
+        private VisualTreeNode _currentVisual;
         private IEnumerable _rootNodes;
         private ObservableCollection<VisualTreeNode> _internalItems = new ObservableCollection<VisualTreeNode>();
         private Visual _rootVisual;
 
-        public Visual CurrentVisual
+        public VisualTreeNode CurrentVisual
         {
             get { return _currentVisual; }
             set
             {
                 if (Equals(value, _currentVisual)) return;
                 _currentVisual = value;
+                Debug.WriteLine("current visual updated to " + _currentVisual);
                 OnPropertyChanged();
             }
         }

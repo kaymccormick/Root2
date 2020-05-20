@@ -22,7 +22,7 @@ namespace KmDevWpfControls
                     vs.Add(new VisualTreeNode {Visual = (Visual) VisualTreeHelper.GetChild(v, i)});
                 }
 
-                return vs;
+                return vs; 
             }
 
             return null;

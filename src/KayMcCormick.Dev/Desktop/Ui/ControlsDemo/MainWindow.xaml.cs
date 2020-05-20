@@ -28,8 +28,8 @@ namespace ControlsDemo
             InitializeComponent();
             AllowDrop = true;
 
-            var m = new VisualTreeViewModel();
-            m.RootVisual = this;
+            VisualTreeViewModel.RootVisual = this;
+            
             
             
             

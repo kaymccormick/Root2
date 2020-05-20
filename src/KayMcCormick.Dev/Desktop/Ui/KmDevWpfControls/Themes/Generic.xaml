@@ -636,7 +636,7 @@
               </Setter>
             </Style>
 
-            <HierarchicalDataTemplate DataType="{x:Type local:VisualTreeNode}" ItemsSource="{Binding InternalItems}">
+            <HierarchicalDataTemplate DataType="{x:Type local:VisualTreeNode}" ItemsSource="{Binding Items}">
               <WrapPanel>
                 <TextBlock Text="{Binding Type.Name}" />
                 <TextBlock Margin="10,0,0,0" Text="{Binding DescendantBounds,Converter={StaticResource RectConverter}}" />
@@ -659,22 +659,6 @@
                 <local:CustomTreeView x:Name="TreeView"
                 ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RootVisual,Converter={StaticResource VisualConverter}}" />
               </ScrollViewer>
-              <StackPanel Grid.Column="1" DataContext="{Binding ElementName=TreeView,Path=SelectedItem}">
-                <local:TablePanel5>
-                  <TextBlock Text="{Binding DescendantBounds}"/>
-                </local:TablePanel5>
-                <ListView ItemsSource="{Binding Properties_}">
-                  <ListView.View>
-                    <GridView>
-                      <GridViewColumn Header="Property Name" DisplayMemberBinding="{Binding Name}"/>
-                      <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}"/>
-                      <GridViewColumn Header="Property Type" DisplayMemberBinding="{Binding PropertyType}"/>
-                      <GridViewColumn Header="Is Attached" DisplayMemberBinding="{Binding IsAttached}"/>
-                      <GridViewColumn Header="Is Composite" DisplayMemberBinding="{Binding IsComposite}"/>
-                    </GridView>
-                  </ListView.View>
-                </ListView>
-              </StackPanel>
             </Grid>
           </Border>
         </ControlTemplate>
