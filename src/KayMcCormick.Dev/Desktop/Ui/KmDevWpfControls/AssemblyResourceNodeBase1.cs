@@ -91,6 +91,8 @@ namespace KmDevWpfControls
             get { return _items; }
         }
 
+        public bool IsSelected { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -274,6 +276,7 @@ namespace KmDevWpfControls
         }
 
         public ObservableCollection<IAssemblyResourceNode> Items { get; }
+        public bool IsSelected { get; set; }
         public Assembly Assembly { get; set; }
         public object Name { get; set; }
 

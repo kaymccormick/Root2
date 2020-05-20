@@ -1,6 +1,7 @@
-﻿<Window x:Class="ControlsDemo.MainWindow"
-        DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=VisualTreeViewModel}"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<windows:Window x:Class="ControlsDemo.MainWindow"
+        DataContext="{windows:Binding RelativeSource={windows:RelativeSource Self},Path=VisualTreeViewModel}"
+        WindowStyle="None" Background="Transparent"
+        xmlns:windows="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -11,52 +12,27 @@
         Title="MainWindow" Height="450" Width="800"
         Drop="MainWindow_OnDrop"
         >
-  <Window.Resources>
-    <DataTemplate DataType="{x:Type kmDevWpfControls:VisualTreeNode}">
-    <StackPanel>
+
+  <windows:Window.Resources>
+    <windows:DataTemplate DataType="{x:Type kmDevWpfControls:VisualTreeNode}">
+    <windows:StackPanel>
       <kmDevWpfControls:TablePanel5>
-        <TextBlock Text="{Binding DescendantBounds}"/>
+        <windows:TextBlock Text="{windows:Binding DescendantBounds}"/>
       </kmDevWpfControls:TablePanel5>
-      <ListView ItemsSource="{Binding Properties_}">
-        <ListView.View>
-          <GridView>
-            <GridViewColumn Header="Property Name" DisplayMemberBinding="{Binding Name}"/>
-            <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Value}"/>
-            <GridViewColumn Header="Property Type" DisplayMemberBinding="{Binding PropertyType}"/>
-            <GridViewColumn Header="Is Attached" DisplayMemberBinding="{Binding IsAttached}"/>
-            <GridViewColumn Header="Is Composite" DisplayMemberBinding="{Binding IsComposite}"/>
-          </GridView>
-        </ListView.View>
-      </ListView>
-    </StackPanel>
-      </DataTemplate>
+      <windows:ListView ItemsSource="{windows:Binding Properties_}">
+        <windows:ListView.View>
+          <windows:GridView>
+            <windows:GridViewColumn Header="Property Name" DisplayMemberBinding="{windows:Binding Name}"/>
+            <windows:GridViewColumn Header="Value" DisplayMemberBinding="{windows:Binding Value}"/>
+            <windows:GridViewColumn Header="Property Type" DisplayMemberBinding="{windows:Binding PropertyType}"/>
+            <windows:GridViewColumn Header="Is Attached" DisplayMemberBinding="{windows:Binding IsAttached}"/>
+            <windows:GridViewColumn Header="Is Composite" DisplayMemberBinding="{windows:Binding IsComposite}"/>
+          </windows:GridView>
+        </windows:ListView.View>
+      </windows:ListView>
+    </windows:StackPanel>
+      </windows:DataTemplate>
 
-  </Window.Resources>
-  <avalondock:DockingManager>
-    <avalondock:LayoutRoot>
-      <avalondock:LayoutPanel>
-        <avalondock:LayoutDocumentPaneGroup>
-          <avalondock:LayoutDocumentPane>
-            <avalondock:LayoutDocument Title="Assemblies">
-              <kmDevWpfControls:AssembliesControl1 x:Name="AssembliesControl1"/>
-            </avalondock:LayoutDocument>
-            <avalondock:LayoutDocument Title="Resources">
-              <kmDevWpfControls:AssemblyResourceTree1 Assembly="{Binding ElementName=AssembliesControl1,Path=SelectedAssembly}"/>
-            </avalondock:LayoutDocument>
-            <avalondock:LayoutDocument Title="Visual Tree" >
-              <kmDevWpfControls:VisualTreeView1 x:Name="VisualTreeView1" SelectedVisual="{Binding CurrentVisual,Mode=TwoWay}"  VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" RootVisual="{Binding RootVisual}" DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=VisualTreeViewModel}"/>
-            </avalondock:LayoutDocument>
-            <avalondock:LayoutDocument Title="ConverterViewer">
-              <kmDevWpfControls:ConverterViewer VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" SelectedObject="{Binding ElementName=AssembliesControl1,Path=SelectedAssembly}"/>
-            </avalondock:LayoutDocument>
-            <avalondock:LayoutDocument Title="ConverterViewer">
-          <ContentPresenter  Content="{Binding CurrentVisual}"/>
-            </avalondock:LayoutDocumentPane>
-
-          </avalondock:LayoutDocumentPane>
-        </avalondock:LayoutDocumentPaneGroup>
-      </avalondock:LayoutPanel>
-    </avalondock:LayoutRoot>
-  </avalondock:DockingManager>
-  
-</Window>
+  </windows:Window.Resources>
+<kmDevWpfControls:HostedDockingManager></kmDevWpfControls:HostedDockingManager>
+</windows:Window>

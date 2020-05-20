@@ -4,6 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <ProjectGuid>{62D5B790-0E4F-4552-88A1-5390DB6F31F2}</ProjectGuid>
     <OutputType>library</OutputType>
     <RootNamespace>KmDevWpfControls</RootNamespace>
@@ -15,6 +16,7 @@
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +24,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RegisterForComInterop>false</RegisterForComInterop>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -86,6 +91,10 @@
     <Compile Include="ConverterViewer.cs" />
     <Compile Include="CustomToggleButton1.cs" />
     <Compile Include="GetTypeConverter1.cs" />
+    <Compile Include="HostedDockingManager.xaml.cs">
+      <DependentUpon>HostedDockingManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="HotedControl.cs" />
     <Compile Include="IAsyncExpand.cs" />
     <Compile Include="RectConverter1.cs" />
     <Compile Include="RootNode1.cs" />
@@ -96,6 +105,11 @@
     <Compile Include="VisualConverter.cs" />
     <Compile Include="VisualTreeNode.cs" />
     <Compile Include="VisualTreeView1.cs" />
+    <Compile Include="VisualTreeViewModel.cs" />
+    <Page Include="HostedDockingManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -134,6 +148,12 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\AvalonDock\source\Components\AvalonDock\AvalonDock.csproj">
+      <Project>{11221345-BC85-488C-8E5C-395C0F848682}</Project>
+      <Name>AvalonDock</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

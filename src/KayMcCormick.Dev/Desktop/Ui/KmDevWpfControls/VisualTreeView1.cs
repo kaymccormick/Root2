@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using JetBrains.Annotations;
 
 namespace KmDevWpfControls
 {
@@ -45,13 +42,32 @@ namespace KmDevWpfControls
     /// </summary>
     public class VisualTreeView1 : Control
     {
-        public static readonly DependencyProperty SelectedVisualProperty = DependencyProperty.Register(
-            "SelectedVisual", typeof(Visual), typeof(VisualTreeView1), new PropertyMetadata(default(Visual)));
+        public static readonly DependencyProperty SelectedVisualTreeNodeProperty = DependencyProperty.Register(
+            "SelectedVisualTreeNode", typeof(VisualTreeNode), typeof(VisualTreeView1),
+            new PropertyMetadata(default(Visual), new PropertyChangedCallback(Target)));
 
-        public Visual SelectedVisual
+        private static void Target(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            get { return (Visual) GetValue(SelectedVisualProperty); }
-            set { SetValue(SelectedVisualProperty, value); }
+            ((VisualTreeView1) d).OnSelectedVisualTreeNodeChanged(e.OldValue as VisualTreeNode,
+                e.NewValue as VisualTreeNode);
+        }
+    
+
+    private void OnSelectedVisualTreeNodeChanged(VisualTreeNode old, VisualTreeNode @new)
+        {
+            var tvi = _treeView.ItemContainerGenerator.ContainerFromItem(@new)
+                as TreeViewItem;
+
+            if (tvi != null)
+            {
+                tvi.IsSelected = true;
+            }
+        }
+
+        public VisualTreeNode SelectedVisualTreeNode
+        {
+            get { return (VisualTreeNode) GetValue(SelectedVisualTreeNodeProperty); }
+            set { SetValue(SelectedVisualTreeNodeProperty, value); }
         }
         public ObservableCollection<VisualTreeNode> InternalRootItems { get; } = new ObservableCollection<VisualTreeNode>();
 
@@ -68,6 +84,8 @@ namespace KmDevWpfControls
             "RootVisual", typeof(Visual), typeof(VisualTreeView1), new PropertyMetadata(default(Visual)));
 
         private VisualConverter _vc;
+        private TreeView _treeView;
+        private CustomTreeView _ctreeView;
 
         public Visual RootVisual
         {
@@ -113,6 +131,14 @@ namespace KmDevWpfControls
         {
             base.OnApplyTemplate();
             _vc = TryFindResource("VisualConverter") as VisualConverter;
+            _ctreeView = GetTemplateChild("TreeView") as CustomTreeView;
+            _treeView = GetTemplateChild("TreeView") as TreeView;
+            _treeView.SelectedItemChanged += TreeViewOnSelectedItemChanged;
+        }
+
+        private void TreeViewOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            SelectedVisualTreeNode = (VisualTreeNode) e.NewValue;
         }
 
         protected override void OnVisualParentChanged(DependencyObject oldParent)
@@ -144,62 +170,6 @@ namespace KmDevWpfControls
         static VisualTreeView1()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(VisualTreeView1), new FrameworkPropertyMetadata(typeof(VisualTreeView1)));
-        }
-    }
-
-    public class VisualTreeViewModel : INotifyPropertyChanged
-    {
-        private VisualTreeNode _currentVisual;
-        private IEnumerable _rootNodes;
-        private ObservableCollection<VisualTreeNode> _internalItems = new ObservableCollection<VisualTreeNode>();
-        private Visual _rootVisual;
-
-        public VisualTreeNode CurrentVisual
-        {
-            get { return _currentVisual; }
-            set
-            {
-                if (Equals(value, _currentVisual)) return;
-                _currentVisual = value;
-                Debug.WriteLine("current visual updated to " + _currentVisual);
-                OnPropertyChanged();
-            }
-        }
-
-        public IEnumerable RootNodes
-        {
-            get { return InternalItems; }
-        }
-
-        public ObservableCollection<VisualTreeNode> InternalItems
-        {
-            get { return _internalItems; }
-            set
-            {
-                if (Equals(value, _internalItems)) return;
-                _internalItems = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(RootNodes));
-            }
-        }
-
-        public Visual RootVisual
-        {
-            get { return _rootVisual; }
-            set
-            {
-                if (Equals(value, _rootVisual)) return;
-                _rootVisual = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

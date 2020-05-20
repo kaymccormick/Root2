@@ -11,7 +11,7 @@ namespace KmDevWpfControls
     /// </summary>
     public class CustomTreeViewItem : TreeViewItem
     {
-        // ReSharper disable once UnusedMember.Local
+        // ReSharper d  isable once UnusedMember.Local
         TreeView ParentTreeView
         {
             get

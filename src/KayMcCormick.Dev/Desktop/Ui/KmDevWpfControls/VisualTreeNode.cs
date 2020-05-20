@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup.Primitives;
@@ -15,10 +16,12 @@ namespace KmDevWpfControls
 {
     public interface ITreeViewNode : ITreeViewItemCollapse
     {
-        object Header { get; }
+       object Header { get; }
         bool IsExpanded { get; }
         IEnumerable  Items { get; }
+        bool IsSelected { get; set; }
     }
+
     public interface ITreeViewItemCollapse
     {
         void Collapse();
@@ -35,7 +38,9 @@ namespace KmDevWpfControls
         private Rect? _descendantBounds;
         private GeneralTransform _transform;
         private Type _type;
+        private bool _isSelected;
 
+        [JsonIgnore]
         public Visual Visual
         {
             get { return _visual; }
@@ -118,7 +123,7 @@ namespace KmDevWpfControls
                 OnPropertyChanged();
             }
         }
-
+        [JsonIgnore]
         public GeneralTransform Transform_
         {
             get { return _transform; }
@@ -130,6 +135,7 @@ namespace KmDevWpfControls
             }
         }
 
+        [JsonIgnore]
         public Visual TransformToSource
         {
             get { return _transformToSource; }
@@ -153,7 +159,7 @@ namespace KmDevWpfControls
                 OnPropertyChanged();
             }
         }
-
+        [JsonIgnore]
         public Type Type
         {
             get { return _type; }
@@ -164,7 +170,7 @@ namespace KmDevWpfControls
                 OnPropertyChanged();
             }
         }
-
+        [JsonIgnore]
         public DrawingGroup Drawing1
         {
             get { return _drawing; }
@@ -192,6 +198,7 @@ namespace KmDevWpfControls
             return Task.CompletedTask;
         }
 
+        [JsonIgnore]
         public object Header => this;
 
         public bool IsExpanded
@@ -205,7 +212,19 @@ namespace KmDevWpfControls
             }
         }
 
+        [JsonIgnore]
         public IEnumerable Items => InternalItems;
+
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set
+            {
+                if (value == _isSelected) return;
+                _isSelected = value;
+                OnPropertyChanged();
+            }
+        }
 
         private ObservableCollection<VisualTreeNode> InternalItems
         {
