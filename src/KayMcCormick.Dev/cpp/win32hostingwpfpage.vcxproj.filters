@@ -38,6 +38,9 @@
     <ClInclude Include="WPFPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MyLayoutPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">

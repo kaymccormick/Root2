@@ -92,7 +92,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance     = hInstance;
     wcex.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_WIN32HOSTINGWPFPAGE));
     wcex.hCursor       = LoadCursor(NULL, IDC_ARROW);
-    wcex.hbrBackground = (HBRUSH)(COLOR_BTNSHADOW);
+    wcex.hbrBackground = (HBRUSH)(0);
     wcex.lpszMenuName  = MAKEINTRESOURCE(IDC_WIN32HOSTINGWPFPAGE);
     wcex.lpszClassName = szWindowClass;
     wcex.hIconSm       = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -125,7 +125,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
         MessageBox::Show("Unable to create window.", "Error");
         return FALSE;
     }
-
+    //SetMenu(hWnd, nullptr);
 	SetWindowLong(hWnd, GWL_STYLE,  WS_EX_TRANSPARENT | 0x02000000L |
         WS_EX_TOPMOST); //remove all window styles, check MSDN for details
 
