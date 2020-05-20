@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace KmDevWpfControls
 {
@@ -49,13 +50,13 @@ namespace KmDevWpfControls
         /// 
         /// </summary>
         /// <returns></returns>
-        Task<TempLoadData1> CheckLoadItemsAsync();
+        Task<IDataObject> CheckLoadItemsAsync();
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="result"></param>
-        void LoadResult(TempLoadData1 result);
+        void LoadResult(IDataObject result);
 
         /// <summary>
         /// 
@@ -68,9 +69,5 @@ namespace KmDevWpfControls
         /// </summary>
         Task ExpandAsync();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        void Collapse();
     }
 }

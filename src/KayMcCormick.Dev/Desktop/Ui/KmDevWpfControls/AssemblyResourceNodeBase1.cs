@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Threading;
 using JetBrains.Annotations;
 
@@ -36,7 +37,10 @@ namespace KmDevWpfControls
         private Task<TempLoadData1> _loadTask;
         private Dispatcher _dispatcher;
         private TaskScheduler _taskScheduler;
-        private readonly ObservableCollection<IAssemblyResourceNode> _items = new ObservableCollection<IAssemblyResourceNode>();
+
+        private readonly ObservableCollection<IAssemblyResourceNode> _items =
+            new ObservableCollection<IAssemblyResourceNode>();
+
         private NodeDataLoadState1 _dataState;
 
         /// <summary>
@@ -127,7 +131,7 @@ namespace KmDevWpfControls
         public virtual void SetIsExpanded(bool value)
         {
             Debug.WriteLine("Setting expanded.");
-            
+
             ExpandedState = value ? NodeExpandedState1.Expanded : NodeExpandedState1.Collapsed;
         }
 
@@ -141,7 +145,7 @@ namespace KmDevWpfControls
                 if (DataState != NodeDataLoadState1.DataLoaded)
                 {
                     Debug.WriteLine("Attempting to load");
-                    TempLoadData1 result = null;
+                    IDataObject result = null;
                     try
                     {
                         result = await CheckLoadItemsAsync();
@@ -186,10 +190,10 @@ namespace KmDevWpfControls
         /// 
         /// </summary>
         /// <returns></returns>
-        public abstract Task<TempLoadData1> CheckLoadItemsAsync();
+        public abstract Task<IDataObject> CheckLoadItemsAsync();
 
         /// <inheritdoc />
-        public abstract void LoadResult(TempLoadData1 result);
+        public abstract void LoadResult(IDataObject result);
 
         /// <summary>
         /// 
@@ -241,44 +245,33 @@ namespace KmDevWpfControls
 
     public class AssemblyResourceNodesPlaceHolder : IAssemblyResourceNode
     {
-        private Assembly _assembly;
-
-        /// <inheritdoc />
-        public Assembly Assembly
+        public void Collapse()
         {
-            get { return _assembly; }
-            set { _assembly = value; }
+            
         }
-
-        /// <inheritdoc />
-        public object Name { get; set; }
-
-        /// <inheritdoc />
-        public ObservableCollection<IAssemblyResourceNode> Items { get; } = new ObservableCollection<IAssemblyResourceNode>();
-
-        /// <inheritdoc />
-        public NodeExpandedState1 ExpandedState { get; set; }
 
         public object Header { get; }
-
-        /// <inheritdoc />
-        public bool IsExpanded
+        public NodeExpandedState1 ExpandedState { get; }
+        public bool IsExpanded { get; }
+        public NodeDataLoadState1 DataState { get; set; }
+        public Subnode1 CreateSubnode()
         {
-            get { return ExpandedState == NodeExpandedState1.Expanded; }
+            throw new NotImplementedException();
         }
 
-        IEnumerable ITreeViewNode.Items
+        public Task<IDataObject> CheckLoadItemsAsync()
         {
-            get { return Items; }
+            throw new NotImplementedException();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <exception cref="NotImplementedException"></exception>
+        public void LoadResult(IDataObject result)
+        {
+            throw new NotImplementedException();
+        }
+
         public void SetIsExpanded(bool value)
         {
+            throw new NotImplementedException();
         }
 
         public Task ExpandAsync()
@@ -286,35 +279,13 @@ namespace KmDevWpfControls
             throw new NotImplementedException();
         }
 
+        public ObservableCollection<IAssemblyResourceNode> Items { get; }
+        public Assembly Assembly { get; set; }
+        public object Name { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Collapse()
+        IEnumerable ITreeViewNode.Items
         {
-        }
-
-        /// <inheritdoc />
-        public NodeDataLoadState1 DataState { get; set; }
-
-        /// <inheritdoc />
-        public Subnode1 CreateSubnode()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public Task<TempLoadData1> CheckLoadItemsAsync()
-        {
-            return Task.FromResult(new TempLoadData1());
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="result"></param>
-        public void LoadResult(TempLoadData1 result)
-        {
+            get { return Items; }
         }
     }
 }

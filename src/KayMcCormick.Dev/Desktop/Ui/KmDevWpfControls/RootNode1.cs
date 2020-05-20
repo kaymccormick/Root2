@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace KmDevWpfControls
 {
@@ -15,7 +16,7 @@ namespace KmDevWpfControls
     /// </summary>
     public class RootNode1 : AssemblyResourceNodeBase1
     {
-        private Task<TempLoadData1> _loadTask2;
+        private Task<IDataObject> _loadTask2;
 
         /// <summary>
         /// 
@@ -37,35 +38,34 @@ namespace KmDevWpfControls
         }
 
         /// <inheritdoc />
-        public override Task<TempLoadData1> CheckLoadItemsAsync()
+        public override Task<IDataObject> CheckLoadItemsAsync()
         {
-            if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running) throw new InvalidOperationException("error");
+            if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running)
+                throw new InvalidOperationException("error");
             Items.Clear();
             _loadTask2 = Task.Factory.StartNew(LoadResources,
-                new TaskState<RootNode1>(this), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
+                new TaskState<RootNode1>
+                    (this), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
             return _loadTask2;
         }
 
-        private static TempLoadData1 LoadResources(object state1)
+        private static IDataObject LoadResources(object state1)
         {
             var st = (TaskState<RootNode1>) state1;
             var node = st.Node;
-            var res = new TempLoadData1();
             try
             {
                 var dta = new List<SubnodeData>();
                 using (var stream = node.Assembly.GetManifestResourceStream(node.Name.ToString()))
                 {
-                    if (stream != null)
+                    if (stream != null && node.Name.ToString().EndsWith(".resources"))
                         using (var reader = new ResourceReader(stream))
                         {
                             foreach (var dictionaryEntry in reader.Cast<DictionaryEntry>())
                             {
                                 var value = dictionaryEntry.Value;
                                 if (((string) dictionaryEntry.Key).EndsWith(".png"))
-                                {
                                     Debug.WriteLine(dictionaryEntry.Value.ToString());
-                                }
                                 try
                                 {
                                     var data = new SubnodeData
@@ -85,25 +85,22 @@ namespace KmDevWpfControls
                         }
                 }
 
-                res.Value = dta;
-                // DebugUtils.WriteLine("End of enumerate children");
-                return res;
+                return new DataObject(typeof(IEnumerable), dta);
             }
             catch (Exception ex)
             {
                 // DebugUtils.WriteLine(ex.ToString());
+                throw;
             }
-
-            return res;
         }
 
         /// <inheritdoc />
-        public override void LoadResult(TempLoadData1 result)
+        public override void LoadResult(IDataObject result)
         {
             // DebugUtils.WriteLine("Loading data");
             Items.Clear();
-            if (result.Value is IEnumerable x && !(result.Value is string))
-            {
+            var x = (IEnumerable) result.GetData(typeof(IEnumerable));
+            if (x != null)
                 foreach (var o in x)
                 {
                     var subnodeData = (SubnodeData) o;
@@ -115,9 +112,8 @@ namespace KmDevWpfControls
                     });
                 }
 
-                //DebugUtils.WriteLine("Setting data loaded");
-                DataState = NodeDataLoadState1.DataLoaded;
-            }
+            //DebugUtils.WriteLine("Setting data loaded");
+            DataState = NodeDataLoadState1.DataLoaded;
         }
     }
 

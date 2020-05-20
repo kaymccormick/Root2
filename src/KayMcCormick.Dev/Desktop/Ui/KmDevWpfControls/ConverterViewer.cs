@@ -62,8 +62,11 @@ namespace KmDevWpfControls
 
             if (_b != null)
             {
-                var p = new UiElementTypeConverter1().ConvertTo(eNewValue, typeof(UIElement));
-                _b.Child = (UIElement) p;
+                if (eNewValue != null)
+                {
+                    var p = new UiElementTypeConverter1().ConvertTo(eNewValue, typeof(UIElement));
+                    _b.Child = (UIElement) p;
+                }
             }
         }
 

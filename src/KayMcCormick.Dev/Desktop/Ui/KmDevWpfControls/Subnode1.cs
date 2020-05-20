@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Baml2006;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
@@ -19,7 +20,7 @@ namespace KmDevWpfControls
     /// </summary>
     public class Subnode1 : AssemblyResourceNodeBase1
     {
-        private Task<TempLoadData1> _loadTask2;
+        private Task<IDataObject> _loadTask2;
 
         /// <summary>
         /// 
@@ -64,7 +65,7 @@ namespace KmDevWpfControls
         }
 
         /// <inheritdoc />
-        public override Task<TempLoadData1> CheckLoadItemsAsync()
+        public override Task<IDataObject> CheckLoadItemsAsync()
         {
             if (_loadTask2 != null && _loadTask2.Status <= TaskStatus.Running)
                 throw new InvalidOperationException("error");
@@ -75,32 +76,36 @@ namespace KmDevWpfControls
         }
 
         /// <inheritdoc />
-        public override void LoadResult(TempLoadData1 result)
+        public override void LoadResult(IDataObject result)
         {
             Debug.WriteLine(result.ToString());
-            switch (result.Value)
+            foreach (var format in result.GetFormats())
             {
-                case BitmapSource img:
-                    var imgc = new Image() {Source = img};
-                    Items.Add(new Subnode1 {Name = imgc});
-                    break;
-                case IEnumerable ee:
-                    foreach (var o in ee)
-                        if (o is SubnodeData sd)
-                            Items.Add(new Subnode1() {Name = sd.Name, Value = sd.Value});
-                    break;
+                switch (format)
+                {
+                    case nameof(BitmapSource):
+                        var imgc = new Image() {Source = result.GetData(format) as ImageSource};
+                        Items.Add(new Subnode1 {Name = imgc});
+                        break;
+                    case nameof(IEnumerable):
+                        var ee = result.GetData(format) as IEnumerable;
+                        foreach (var o in ee)
+                            if (o is SubnodeData sd)
+                                Items.Add(new Subnode1() {Name = sd.Name, Value = sd.Value});
+                        break;
+                }
             }
         }
 
-        private static TempLoadData1 LoadResourceData(object state)
+        private static async Task<IDataObject> LoadResourceData(object state)
         {
             var st = (TaskState<Subnode1>) state;
             var subnode = st.Node;
-            Debug.WriteLine($"{nameof(TempLoadData1)}: {subnode}");
+            Debug.WriteLine($"{nameof(TempLoadDat)}: {subnode}");
             if (subnode.ResourceName == null) throw new InvalidOperationException("ResourceName is null");
             if (subnode.Assembly == null) throw new InvalidOperationException("Assembly is null");
             var stream = subnode.Assembly.GetManifestResourceStream(subnode.ResourceName.ToString());
-            
+
             if (stream == null) return null;
             using (var reader = new ResourceReader(stream))
             {
@@ -112,16 +117,8 @@ namespace KmDevWpfControls
                         var binaryReader = new BinaryReader(new MemoryStream(data));
                         var binData = binaryReader.ReadString();
                         Debug.WriteLine($"   Recreated Value: {binData}");
-                        return new TempLoadData1() {Value = binData};
+                        return MakeValue(binData);
 
-                    case "ResourceTypeCode.Int32":
-                        var int32 = BitConverter.ToInt32(data, 0);
-                        return new TempLoadData1() {Value = int32};
-
-                    case "ResourceTypeCode.Boolean":
-                        Debug.WriteLine($"   Recreated Value: {BitConverter.ToBoolean(data, 0)}");
-                        break;
-                    // .jpeg image stored as a stream.
                     case "ResourceTypeCode.Stream":
                         var offset = 4;
 
@@ -132,77 +129,9 @@ namespace KmDevWpfControls
                         switch (ext)
                         {
                             case ".baml":
-                                var object2 = subnode.Dispatcher.Invoke(() =>
-                                {
-                                    Baml2006Reader reader1 = null;
-                                    try
-                                    {
-                                        reader1 = new Baml2006Reader(memoryStream);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Debug.WriteLine(ex);
-                                        return new TempLoadData1() {Exception = ex};
-                                    }
-
-                                    object object1 = null;
-                                    try
-                                    {
-                                        object1 = XamlReader.Load(reader1);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Debug.WriteLine(ex);
-                                        return new TempLoadData1() {Exception = ex};
-                                    }
-
-                                    if (object1 is IDictionary rd)
-                                        try
-                                        {
-                                            foreach (DictionaryEntry entry in rd)
-                                                try
-                                                {
-                                                    var sb = new Subnode1() {Name = entry.Key, Value = entry.Value};
-                                                    subnode.Items.Add(sb);
-                                                }
-                                                catch (Exception ex)
-                                                {
-                                                    return new TempLoadData1() {Exception = ex};
-                                                    Debug.WriteLine(ex);
-                                                }
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Debug.WriteLine(ex);
-                                            return new TempLoadData1() {Exception = ex};
-                                        }
-
-                                    return new TempLoadData1() {Value = object1};
-                                }, DispatcherPriority.Send);
-                                if (object2.Value is UIElement) subnode.Dispatcher.Invoke(() => { });
-
-                                return object2;
+                                return await MakeBamlValue(subnode, memoryStream);
                             case ".png":
-                                var object3 = subnode.Dispatcher.Invoke(() =>
-                                {
-                                    try
-                                    {
-                                        Debug.WriteLine(".png");
-                                        var png = new PngBitmapDecoder(memoryStream, BitmapCreateOptions.None,
-                                            BitmapCacheOption.Default);
-                                        BitmapSource src = png.Frames[0];
-                                        var s = new SubnodeData();
-                                        s.Value = src;
-                                        s.Name = "Image";
-                                        return new TempLoadData1() {Value = src};
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        return new TempLoadData1() {Exception = ex};
-                                    }
-                                });
-
-                                return object3;
+                                return MakeBitmapValue(subnode, memoryStream);
 
 
                             case ".jpg":
@@ -213,17 +142,112 @@ namespace KmDevWpfControls
                                 break;
                         }
 
-                        var load = new TempLoadData1()
-                        {
-                            Length = size,
-                            MemoryStream = memoryStream,
-                            Data = data
-                        };
-                        return load;
+                        return MakeStreamValue(size, memoryStream, data);
                 }
             }
 
             return null;
+        }
+
+        public delegate object InvocationDelegate(object[] args);
+
+        private static async Task<IDataObject> MakeBamlValue(Subnode1 subnode, MemoryStream memoryStream)
+        {
+            var ary = new object[] {memoryStream};
+            var o = await subnode.Dispatcher.InvokeAsync(args => TempLoadDat((MemoryStream) ((object[]) args)[0]), DispatcherPriority.Send,
+                ary);
+            return (IDataObject) o;
+        }
+
+        private object HandleBamlResource(MemoryStream memoryStream, Subnode1 subnode)
+        {
+            object object1 = null;
+            if (object1 is IDictionary rd)
+            {
+                try
+                {
+                    foreach (DictionaryEntry entry in rd)
+                        try
+                        {
+                            var sb = new Subnode1() {Name = entry.Key, Value = entry.Value};
+                            subnode.Items.Add(sb);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex);
+                            return new DataObject(typeof(Exception), ex);
+                        }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    // ReSharper disable once AssignNullToNotNullAttribute
+                    return new DataObject(typeof(Exception).FullName, ex);
+                }
+
+                // ReSharper disable once AssignNullToNotNullAttribute
+                return new DataObject(typeof(ResourceDictionary).FullName, object1);
+            }
+
+            return null;
+        }
+
+        private static IDataObject MakeBitmapValue(Subnode1 subnode, MemoryStream memoryStream)
+        {
+            var object3 = subnode.Dispatcher.Invoke(new InvocationDelegate(args =>
+                {
+                    Debug.WriteLine(".png");
+                    var png = new PngBitmapDecoder(memoryStream, BitmapCreateOptions.None,
+                        BitmapCacheOption.Default);
+                    BitmapSource src = png.Frames[0];
+                    var s = new SubnodeData();
+                    s.Value = src;
+                    s.Name = "Image";
+                    return new DataObject(typeof(BitmapSource), src);
+                }),
+            DispatcherPriority.Send, new object[]{} );
+
+            return (IDataObject) object3;
+        }
+
+        private static IDataObject MakeStreamValue(int size, MemoryStream memoryStream, byte[] data)
+        {
+            return new DataObject("MemoryStream", memoryStream);
+        }
+
+        private static IDataObject MakeValue(string binData)
+        {
+            return new DataObject(nameof(String), binData);
+        }
+
+
+        private static IDataObject TempLoadDat(MemoryStream memoryStream)
+        {
+            {
+                Baml2006Reader reader1 = null;
+                try
+                {
+                    reader1 = new Baml2006Reader(memoryStream);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    throw;
+                }
+
+                object object1;
+                try
+                {
+                    object1 = XamlReader.Load(reader1);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    throw;
+                }
+
+                return new DataObject("BAML", object1);
+            }
         }
     }
 }

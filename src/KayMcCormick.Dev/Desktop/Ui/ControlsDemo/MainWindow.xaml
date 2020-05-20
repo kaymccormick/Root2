@@ -7,7 +7,9 @@
         xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControls"
         xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
         mc:Ignorable="d" FontSize="20"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        Drop="MainWindow_OnDrop"
+        >
   <avalondock:DockingManager>
     <avalondock:LayoutRoot>
       <avalondock:LayoutPanel>

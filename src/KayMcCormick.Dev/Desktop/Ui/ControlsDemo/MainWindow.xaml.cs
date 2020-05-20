@@ -25,6 +25,34 @@ namespace ControlsDemo
         {
             PresentationTraceSources.Refresh();
             InitializeComponent();
+            AllowDrop = true;
+        }
+
+        protected override void OnDragOver(DragEventArgs e)
+        {
+            base.OnDragOver(e);
+            if (!e.Handled)
+            {
+                e.Effects = e.AllowedEffects;
+                e.Handled = true;
+
+            }
+        }
+
+        private void MainWindow_OnDrop(object sender, DragEventArgs e)
+        {
+            foreach (var format in e.Data.GetFormats())
+            {
+                Debug.WriteLine($"{format}");
+                try
+                {
+                    Debug.WriteLine($"{e.Data.GetData(format)}");
+                }
+                catch
+                {
+
+                }
+            }
         }
     }
 }
