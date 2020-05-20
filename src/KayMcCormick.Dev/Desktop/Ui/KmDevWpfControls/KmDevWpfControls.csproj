@@ -93,6 +93,7 @@
     <Compile Include="TablePanel5.cs" />
     <Compile Include="TempLoadData1.cs" />
     <Compile Include="UiElementTypeConverter1.cs" />
+    <Compile Include="VisualConverter.cs" />
     <Compile Include="VisualTreeNode.cs" />
     <Compile Include="VisualTreeView1.cs" />
     <Page Include="Themes\Generic.xaml">

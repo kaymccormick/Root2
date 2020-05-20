@@ -642,6 +642,7 @@
                 <TextBlock Margin="10,0,0,0" Text="{Binding DescendantBounds,Converter={StaticResource RectConverter}}" />
               </WrapPanel>
             </HierarchicalDataTemplate>
+            <local:VisualConverter x:Key="VisualConverter"/>
           </ControlTemplate.Resources>
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
@@ -656,7 +657,7 @@
               </Grid.RowDefinitions>
               <ScrollViewer HorizontalScrollBarVisibility="Auto">
                 <local:CustomTreeView x:Name="TreeView"
-                ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RootItems}" />
+                ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RootVisual,Converter={StaticResource VisualConverter}}" />
               </ScrollViewer>
               <StackPanel Grid.Column="1" DataContext="{Binding ElementName=TreeView,Path=SelectedItem}">
                 <local:TablePanel5>

@@ -22,7 +22,7 @@
               <kmDevWpfControls:AssemblyResourceTree1 Assembly="{Binding ElementName=AssembliesControl1,Path=SelectedAssembly}"/>
             </avalondock:LayoutDocument>
             <avalondock:LayoutDocument Title="Visual Tree">
-              <kmDevWpfControls:VisualTreeView1 VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"/>
+              <kmDevWpfControls:VisualTreeView1 VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" RootVisual="{Binding RelativeSource={RelativeSource AncestorType=Window},Path=VisualTreeViewModel.RootVisual}"/>
             </avalondock:LayoutDocument>
             <avalondock:LayoutDocument Title="ConverterViewer">
               <kmDevWpfControls:ConverterViewer VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" SelectedObject="{Binding ElementName=AssembliesControl1,Path=SelectedAssembly}"/>

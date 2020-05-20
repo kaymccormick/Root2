@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 using KmDevWpfControls;
 using Xunit;
@@ -58,7 +59,13 @@ namespace WpfUiTests
             g.Children.Add(ac);
             //g.RenderTransform = new ScaleTransform(2, 2);
             Window w = new Window { Content = g, FontSize = 20.0 };
+       
+            var m = new VisualTreeViewModel();
+            m.CurrentVisual = w;
+        ac.SetBinding(VisualTreeView1.RootVisualProperty, new Binding("CurrentVisual") { Source =m});
+
             w.ShowDialog();
+
         }
     }
 }

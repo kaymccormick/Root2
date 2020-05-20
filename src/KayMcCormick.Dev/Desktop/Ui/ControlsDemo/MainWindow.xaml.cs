@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using KmDevWpfControls;
 
 namespace ControlsDemo
 {
@@ -26,8 +27,16 @@ namespace ControlsDemo
             PresentationTraceSources.Refresh();
             InitializeComponent();
             AllowDrop = true;
+
+            var m = new VisualTreeViewModel();
+            m.RootVisual = this;
+            
+            
+            
+
         }
 
+        public VisualTreeViewModel VisualTreeViewModel { get; set; } = new VisualTreeViewModel();
         protected override void OnDragOver(DragEventArgs e)
         {
             base.OnDragOver(e);
