@@ -702,7 +702,10 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:TypeProviderView}">
           <ControlTemplate.Resources>
+
             <local:GetTypeConverter1 x:Key="GetTypeConverter" />
+            <local:PropertyDescriptorConverter x:Key="PropertyDescriptorConverter" />
+
           </ControlTemplate.Resources>
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
@@ -729,7 +732,10 @@
                 <ListView.View>
                   <GridView>
                     <GridViewColumn Header="Property" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="UI Type Editor" DisplayMemberBinding="{Binding Converter={StaticResource PropertyDescriptorConverter},ConverterParameter=Editor}" />
+                    <GridViewColumn Header="Creation Editor" DisplayMemberBinding="{Binding Converter={StaticResource PropertyDescriptorConverter},ConverterParameter=InstanceCreationEditor}" />
                     <GridViewColumn Header="Type" DisplayMemberBinding="{Binding PropertyType}" />
+
                     <GridViewColumn Header="Component Type" DisplayMemberBinding="{Binding ComponentType}" />
                     <GridViewColumn Header="Browsable" DisplayMemberBinding="{Binding IsBrowsable}" />
                     <GridViewColumn Header="Category" DisplayMemberBinding="{Binding Category}" />

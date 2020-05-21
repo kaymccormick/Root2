@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
@@ -26,6 +27,7 @@ namespace KmDevWpfControls
             , CultureInfo culture
         )
         {
+            // Debug.WriteLine($"{value} {parameter}");
 
             if (value == null)
             {
@@ -35,6 +37,7 @@ namespace KmDevWpfControls
             if (source == null)
                 return null;
 
+            
             if ( ( string ) parameter == "Interfaces" )
             {
                 return source.GetInterfaces ( ) ;

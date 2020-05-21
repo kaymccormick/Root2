@@ -143,6 +143,7 @@
     <Compile Include="IAsyncExpand.cs" />
     <Compile Include="MethodInfoConverter1.cs" />
     <Compile Include="ParameterInfoConverter1.cs" />
+    <Compile Include="PropertyDescriptorConverter.cs" />
     <Compile Include="RectConverter1.cs" />
     <Compile Include="RootNode1.cs" />
     <Compile Include="Subnode1.cs" />
