@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -62,6 +64,73 @@ namespace ControlsDemo
                     }
                 }
 
+            }
+        }
+
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            HashSet<Type> editorTypes = new HashSet<Type>();
+            var a = ViewModel.Assemblies.ToList();
+            foreach (var viewModelAssembly in a)
+            {
+                Debug.WriteLine(a);
+                try
+                {
+                    foreach (var exportedType in viewModelAssembly.ExportedTypes)
+                    {
+//                        Debug.WriteLine(exportedType);
+                        try
+                        {
+                            foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(exportedType))
+                            {
+                                {
+                                    var e3 = property.GetEditor(typeof(UITypeEditor));
+                                    if(e3 != null)
+                                    editorTypes.Add(e3.GetType());
+                                    if (e3 != null && e3.GetType() != typeof(CollectionEditor))
+                                    {
+                                        
+                                        var paint = ((UITypeEditor) e3).GetPaintValueSupported();
+                                        var kind = ((UITypeEditor) e3).GetEditStyle();
+                                        Debug.WriteLine(
+                                            $"{exportedType?.FullName} {paint} {kind} {property.Name} {property.Category} {e3}");
+                                    }
+                                }
+                                {
+                                    var e3 = property.GetEditor(typeof(InstanceCreationEditor));
+                                    if (e3 != null)
+                                        editorTypes.Add(e3.GetType());
+                                    if (e3 != null && e3.GetType() != typeof(CollectionEditor))
+                                    {
+                                        // var paint = ((UITypeEditor)e3).GetPaintValueSupported();
+                                        // var kind = ((UITypeEditor)e3).GetEditStyle();
+                                        Debug.WriteLine($"!!!! {exportedType?.FullName}  {property.Name} {property.Category} {e3}");
+                                    }
+
+                                }
+
+                            }
+                            // var e2 = TypeDescriptor.GetEditor(exportedType, typeof(UITypeEditor));
+                            // if (e2 != null)
+                            // {
+                                // Debug.WriteLine($"{exportedType} {e2}");
+                            // }
+
+                            var e1 = TypeDescriptor.GetEditor(exportedType, typeof(InstanceCreationEditor));
+                            if (e1 != null)
+                            {
+
+                                    editorTypes.Add(e1.GetType());
+
+                                Debug.WriteLine("!!!" +e1);
+                            }
+                        } catch{}
+                    }
+                } catch{}
+            }
+            foreach (var editorType in editorTypes)
+            {
+                Debug.WriteLine(editorType);
             }
         }
     }

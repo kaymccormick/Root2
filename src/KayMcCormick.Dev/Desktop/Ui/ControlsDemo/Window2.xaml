@@ -21,7 +21,8 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <Menu><MenuItem Header="File"><MenuItem Header="Open" Command="Open"/></MenuItem></Menu>
+    <Menu><MenuItem Header="File"><MenuItem Header="Open" Command="Open"/>
+    <MenuItem Header="Special" Click="MenuItem_OnClick"/></MenuItem></Menu>
     <avalondock:DockingManager Grid.Row="1" x:Name="DM" AnchorablesSource="{Binding Anchorables}">
       <avalondock:DockingManager.Layout>
         <avalondock:LayoutRoot>
