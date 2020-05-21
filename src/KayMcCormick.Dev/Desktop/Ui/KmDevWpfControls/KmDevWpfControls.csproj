@@ -43,11 +43,14 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework.Classic" />
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -70,6 +73,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -82,10 +86,12 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssembliesControl1.cs" />
     <Compile Include="AssemblyInfoConverter1.cs" />
+    <Compile Include="AssemblyNode.cs" />
     <Compile Include="AssemblyResourceTree1.cs" />
     <Compile Include="ConversionUtils1.cs" />
     <Compile Include="ConverterViewer.cs" />
@@ -96,11 +102,18 @@
     </Compile>
     <Compile Include="HotedControl.cs" />
     <Compile Include="IAsyncExpand.cs" />
+    <Compile Include="MethodInfoConverter1.cs" />
+    <Compile Include="ParameterInfoConverter1.cs" />
     <Compile Include="RectConverter1.cs" />
     <Compile Include="RootNode1.cs" />
     <Compile Include="Subnode1.cs" />
-    <Compile Include="TablePanel5.cs" />
+    <Compile Include="TablePanel.cs" />
     <Compile Include="TempLoadData1.cs" />
+    <Compile Include="TypeControl.cs" />
+    <Compile Include="TypeDetailsControl.cs" />
+    <Compile Include="TypeInfoConverter1.cs" />
+    <Compile Include="TypeProviderView.cs" />
+    <Compile Include="TypeTreevViewControl.cs" />
     <Compile Include="UiElementTypeConverter1.cs" />
     <Compile Include="VisualConverter.cs" />
     <Compile Include="VisualTreeNode.cs" />

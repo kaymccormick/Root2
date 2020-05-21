@@ -1273,25 +1273,25 @@
               <Path HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1,0,0,0" IsHitTestVisible="false"
                     Width="7" Height="5" Fill="{TemplateBinding Control.Foreground}" Stretch="Fill"
                     Stroke="{TemplateBinding Control.Foreground}" Data="M 0,0 L 2,2 0,4 M 4,0 L 6,2 4,4 " />
-              <Popup x:Name="PART_OverflowPopup" AllowsTransparency="true" Placement="Bottom" Focusable="false"
-                     PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
-                     IsOpen="{Binding Path=IsOverflowOpen, RelativeSource={RelativeSource TemplatedParent}}">
-                <classic:SystemDropShadowChrome FrameworkElement.Name="Shdw" Color="Transparent"
-                                                UIElement.Focusable="true"
-                                                RenderOptions.ClearTypeHint="Enabled"
-                                                FrameworkElement.FocusVisualStyle="{x:Null}">
-                  <Border x:Name="PopupBorder" Background="{TemplateBinding Control.Background}"
-                          BorderBrush="{TemplateBinding Control.BorderBrush}" CornerRadius="2" BorderThickness="1"
-                          Padding="2">
-                    <DockPanel>
-                      <primitives:RibbonQuickAccessToolBarOverflowPanel Name="PART_OverflowPanel"
-                                                                        KeyboardNavigation.TabNavigation="Cycle"
-                                                                        KeyboardNavigation.DirectionalNavigation="Cycle" />
-                      <ContentPresenter Name="OverflowCustomizeMenuHost" DockPanel.Dock="Right" />
-                    </DockPanel>
-                  </Border>
-                </classic:SystemDropShadowChrome>
-              </Popup>
+                <Popup x:Name="PART_OverflowPopup" AllowsTransparency="true" Placement="Bottom" Focusable="false"
+                       PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
+                       IsOpen="{Binding Path=IsOverflowOpen, RelativeSource={RelativeSource TemplatedParent}}">
+                  <classic:SystemDropShadowChrome FrameworkElement.Name="Shdw" Color="Transparent"
+                                                  UIElement.Focusable="true"
+                                                  RenderOptions.ClearTypeHint="Enabled"
+                                                  FrameworkElement.FocusVisualStyle="{x:Null}">
+                    <Border x:Name="PopupBorder" Background="{TemplateBinding Control.Background}"
+                            BorderBrush="{TemplateBinding Control.BorderBrush}" CornerRadius="2" BorderThickness="1"
+                            Padding="2">
+                      <DockPanel>
+                        <primitives:RibbonQuickAccessToolBarOverflowPanel Name="PART_OverflowPanel"
+                                                                          KeyboardNavigation.TabNavigation="Cycle"
+                                                                          KeyboardNavigation.DirectionalNavigation="Cycle" />
+                        <ContentPresenter Name="OverflowCustomizeMenuHost" DockPanel.Dock="Right" />
+                      </DockPanel>
+                    </Border>
+                  </classic:SystemDropShadowChrome>
+                </Popup>
             </Grid>
           </Grid>
           <ControlTemplate.Triggers>

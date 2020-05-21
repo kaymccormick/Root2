@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 
 namespace KmDevWpfControls
 {
-    public class VisualTreeViewModel : INotifyPropertyChanged
+    public sealed class VisualTreeViewModel : INotifyPropertyChanged
     {
         private VisualTreeNode _currentVisual;
         private IEnumerable _rootNodes;
@@ -58,7 +58,7 @@ namespace KmDevWpfControls
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

@@ -5,21 +5,22 @@ Assembly mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934
 	hash=None, flags=None
 Assembly PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35: 
 	hash=None, flags=None
-Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
-	hash=None, flags=None
 Assembly WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35: 
 	hash=None, flags=None
-Assembly PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35: 
+Assembly System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
 	hash=None, flags=None
 Assembly System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
 	hash=None, flags=None
+Assembly PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35: 
+	hash=None, flags=None
 Assembly System.Xaml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
+	hash=None, flags=None
+Assembly WindowsFormsIntegration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35: 
+	hash=None, flags=None
+Assembly System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089: 
 	hash=None, flags=None
 Assembly System.Text.Json, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51: 
 	hash=None, flags=None
-Class XamlGeneratedNamespace.GeneratedInternalTypeHelper: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
-  :System.Windows.Markup.InternalTypeHelper
-    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
 Class KmDevWpfControls.AssembliesControl1: AutoLayout, AnsiClass, Class, Public
   :System.Windows.Controls.Control
     Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
@@ -41,6 +42,115 @@ Class KmDevWpfControls.AssemblyInfoConverter1: AutoLayout, AnsiClass, Class, Pub
   Methods:
     Convert(Object, Type, Object, CultureInfo): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
     ConvertBack(Object, Type, Object, CultureInfo): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+Class KmDevWpfControls.AssemblyNode: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    KmDevWpfControls.ITreeViewNode
+    KmDevWpfControls.ITreeViewItemCollapse
+    System.ComponentModel.INotifyPropertyChanged
+    KmDevWpfControls.IAsyncExpand
+  Properties:
+    System.Reflection.Assembly Assembly 'get set' : 
+    System.Object Header 'get ' : 
+    Boolean IsExpanded 'get set' : 
+    System.Collections.IEnumerable Items 'get set' : 
+    Boolean IsSelected 'get set' : 
+    Int32 Depth 'get set' : 
+  Events:
+    System.ComponentModel.PropertyChangedEventHandler PropertyChanged: 
+  Methods:
+    get_Assembly(): PrivateScope, Public, HideBySig, SpecialName
+    set_Assembly(Assembly): PrivateScope, Public, HideBySig, SpecialName
+    Collapse(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    get_Header(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_IsExpanded(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_IsExpanded(Boolean): PrivateScope, Public, HideBySig, SpecialName
+    get_Items(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_Items(IEnumerable): PrivateScope, Public, HideBySig, SpecialName
+    get_IsSelected(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_IsSelected(Boolean): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    add_PropertyChanged(PropertyChangedEventHandler): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    remove_PropertyChanged(PropertyChangedEventHandler): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_Depth(): PrivateScope, Public, HideBySig, SpecialName
+    set_Depth(Int32): PrivateScope, Public, HideBySig, SpecialName
+    ExpandAsync(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    XX(IEnumerable`1, Int32): PrivateScope, Public, Static, HideBySig
+    Namesp(NamespaceType): PrivateScope, Public, Static, HideBySig
+Class KmDevWpfControls.TypeNode: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(Int32, System.Linq.IGrouping`2[System.String,KmDevWpfControls.NamespaceType]): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    KmDevWpfControls.ITreeViewNode
+    KmDevWpfControls.ITreeViewItemCollapse
+    System.ComponentModel.INotifyPropertyChanged
+    KmDevWpfControls.IAsyncExpand
+  Properties:
+    System.Linq.IGrouping`2[System.String,KmDevWpfControls.NamespaceType] Types 'get set' : 
+    System.Object Header 'get set' : 
+    Boolean IsExpanded 'get set' : 
+    System.Collections.IEnumerable Items 'get set' : 
+    Boolean IsSelected 'get set' : 
+  Events:
+    System.ComponentModel.PropertyChangedEventHandler PropertyChanged: 
+  Methods:
+    get_Types(): PrivateScope, Public, HideBySig, SpecialName
+    set_Types(IGrouping`2): PrivateScope, Public, HideBySig, SpecialName
+    Collapse(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    get_Header(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_Header(Object): PrivateScope, Public, HideBySig, SpecialName
+    get_IsExpanded(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_IsExpanded(Boolean): PrivateScope, Public, HideBySig, SpecialName
+    get_Items(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_Items(IEnumerable): PrivateScope, Public, HideBySig, SpecialName
+    get_IsSelected(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_IsSelected(Boolean): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    add_PropertyChanged(PropertyChangedEventHandler): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    remove_PropertyChanged(PropertyChangedEventHandler): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    ExpandAsync(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+Class KmDevWpfControls.TypeNode2: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(KmDevWpfControls.NamespaceType): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    KmDevWpfControls.ITreeViewNode
+    KmDevWpfControls.ITreeViewItemCollapse
+    System.ComponentModel.INotifyPropertyChanged
+  Properties:
+    KmDevWpfControls.NamespaceType NamespaceType 'get set' : 
+    System.Object Header 'get ' : 
+    Boolean IsExpanded 'get set' : 
+    System.Collections.IEnumerable Items 'get ' : 
+    Boolean IsSelected 'get set' : 
+  Events:
+    System.ComponentModel.PropertyChangedEventHandler PropertyChanged: 
+  Methods:
+    get_NamespaceType(): PrivateScope, Public, HideBySig, SpecialName
+    set_NamespaceType(NamespaceType): PrivateScope, Public, HideBySig, SpecialName
+    Collapse(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    get_Header(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_IsExpanded(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_IsExpanded(Boolean): PrivateScope, Public, HideBySig, SpecialName
+    get_Items(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_IsSelected(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    set_IsSelected(Boolean): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    add_PropertyChanged(PropertyChangedEventHandler): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    remove_PropertyChanged(PropertyChangedEventHandler): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+Class KmDevWpfControls.NamespaceType: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.ComponentModel.INotifyPropertyChanged
+  Properties:
+    System.Type Type 'get set' : 
+    System.String NamespaceParts 'get set' : 
+    System.String NamespacePart 'get set' : 
+  Events:
+    System.ComponentModel.PropertyChangedEventHandler PropertyChanged: 
+  Methods:
+    get_Type(): PrivateScope, Public, HideBySig, SpecialName
+    set_Type(Type): PrivateScope, Public, HideBySig, SpecialName
+    get_NamespaceParts(): PrivateScope, Public, HideBySig, SpecialName
+    set_NamespaceParts(String): PrivateScope, Public, HideBySig, SpecialName
+    get_NamespacePart(): PrivateScope, Public, HideBySig, SpecialName
+    set_NamespacePart(String): PrivateScope, Public, HideBySig, SpecialName
+    add_PropertyChanged(PropertyChangedEventHandler): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    remove_PropertyChanged(PropertyChangedEventHandler): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
 Class KmDevWpfControls.AssemblyResourceTree1: AutoLayout, AnsiClass, Class, Public
   :System.Windows.Controls.Control
     Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
@@ -103,6 +213,20 @@ Class KmDevWpfControls.HotedControl: AutoLayout, AnsiClass, Class, Public
 Interface KmDevWpfControls.IAsyncExpand: AutoLayout, AnsiClass, Class, Public, ClassSemanticsMask, Abstract
   Methods:
     ExpandAsync(): PrivateScope, Public, Virtual, HideBySig, VtableLayoutMask, Abstract
+Class KmDevWpfControls.MethodInfoConverter1: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.Windows.Data.IValueConverter
+  Methods:
+    Convert(Object, Type, Object, CultureInfo): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    ConvertBack(Object, Type, Object, CultureInfo): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+Class KmDevWpfControls.ParameterInfoConverter1: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.Windows.Data.IValueConverter
+  Methods:
+    Convert(Object, Type, Object, CultureInfo): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    ConvertBack(Object, Type, Object, CultureInfo): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
 Class KmDevWpfControls.RectConverter1: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
     Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
   Interfaces:
@@ -217,6 +341,95 @@ Class KmDevWpfControls.TempLoadData1: AutoLayout, AnsiClass, Class, Public, Befo
     get_Exception(): PrivateScope, Public, HideBySig, SpecialName
     set_Exception(Exception): PrivateScope, Public, HideBySig, SpecialName
     ToString(): PrivateScope, Public, Virtual, HideBySig
+Class KmDevWpfControls.TypeControl: AutoLayout, AnsiClass, Class, Public
+  :System.Windows.Controls.Control
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    System.Windows.DependencyProperty TypeProperty : Public, Static, InitOnly
+  Properties:
+    System.Type Type 'get set' : 
+  Methods:
+    get_Type(): PrivateScope, Public, HideBySig, SpecialName
+    set_Type(Type): PrivateScope, Public, HideBySig, SpecialName
+Class KmDevWpfControls.TypeDetailsControl: AutoLayout, AnsiClass, Class, Public
+  :System.Windows.Controls.Control
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    System.Windows.DependencyProperty TypeProperty : Public, Static, InitOnly
+  Properties:
+    System.Type Type 'get set' : 
+  Methods:
+    get_Type(): PrivateScope, Public, HideBySig, SpecialName
+    set_Type(Type): PrivateScope, Public, HideBySig, SpecialName
+Class KmDevWpfControls.TypeInfoConverter1: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.Windows.Data.IValueConverter
+  Methods:
+    Convert(Object, Type, Object, CultureInfo): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    ConvertBack(Object, Type, Object, CultureInfo): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+Class KmDevWpfControls.TypeProviderView: AutoLayout, AnsiClass, Class, Public
+  :System.Windows.Controls.Control
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.ComponentModel.IContainer
+    System.IDisposable
+  Fields:
+    System.Windows.Input.RoutedUICommand LaunchEditor : Public, Static
+    System.Windows.DependencyProperty SelectedPropertyProperty : Public, Static, InitOnly
+    System.Windows.DependencyProperty TypeProperty : Public, Static, InitOnly
+    System.Windows.DependencyProperty ProviderProperty : Public, Static, InitOnly
+    System.Windows.DependencyProperty PropertiesProperty : Public, Static, InitOnly
+    System.Windows.DependencyProperty EditorProperty : Public, Static, InitOnly
+    System.Windows.DependencyProperty InstanceProperty : Public, Static, InitOnly
+    System.Windows.DependencyProperty IsDropDownOpenProperty : Public, Static, InitOnly
+  Properties:
+    System.ComponentModel.PropertyDescriptor SelectedProperty 'get set' : 
+    System.ComponentModel.TypeDescriptionProvider Provider 'get set' : 
+    System.Collections.Generic.IEnumerable`1[System.ComponentModel.PropertyDescriptor] Properties 'get set' : 
+    System.Object Editor 'get set' : 
+    System.Type Type 'get set' : 
+    System.Object Instance 'get set' : 
+    System.ComponentModel.ComponentCollection Components 'get ' : 
+    Boolean IsDropDownOpen 'get set' : 
+  Methods:
+    get_SelectedProperty(): PrivateScope, Public, HideBySig, SpecialName
+    set_SelectedProperty(PropertyDescriptor): PrivateScope, Public, HideBySig, SpecialName
+    get_Provider(): PrivateScope, Public, HideBySig, SpecialName
+    set_Provider(TypeDescriptionProvider): PrivateScope, Public, HideBySig, SpecialName
+    get_Properties(): PrivateScope, Public, HideBySig, SpecialName
+    set_Properties(IEnumerable`1): PrivateScope, Public, HideBySig, SpecialName
+    get_Editor(): PrivateScope, Public, HideBySig, SpecialName
+    set_Editor(Object): PrivateScope, Public, HideBySig, SpecialName
+    get_Type(): PrivateScope, Public, HideBySig, SpecialName
+    set_Type(Type): PrivateScope, Public, HideBySig, SpecialName
+    OnApplyTemplate(): PrivateScope, Public, Virtual, HideBySig
+    get_Instance(): PrivateScope, Public, HideBySig, SpecialName
+    set_Instance(Object): PrivateScope, Public, HideBySig, SpecialName
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    Add(IComponent): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    Add(IComponent, String): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    Remove(IComponent): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask
+    get_Components(): PrivateScope, Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName
+    get_IsDropDownOpen(): PrivateScope, Public, HideBySig, SpecialName
+    set_IsDropDownOpen(Boolean): PrivateScope, Public, HideBySig, SpecialName
+Class KmDevWpfControls.TypeTreevViewControl: AutoLayout, AnsiClass, Class, Public
+  :System.Windows.Controls.Control
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Fields:
+    System.Windows.DependencyProperty SelectedTypeProperty : Public, Static, InitOnly
+    System.Windows.DependencyProperty RootItemsProperty : Public, Static, InitOnly
+  Properties:
+    System.Type SelectedType 'get set' : 
+    System.Collections.Generic.IEnumerable`1[KmDevWpfControls.ITreeViewNode] RootItems 'get set' : 
+    KmDevWpfControls.ITreeViewNode Placeholder 'get ' : 
+  Methods:
+    get_SelectedType(): PrivateScope, Public, HideBySig, SpecialName
+    set_SelectedType(Type): PrivateScope, Public, HideBySig, SpecialName
+    OnApplyTemplate(): PrivateScope, Public, Virtual, HideBySig
+    get_RootItems(): PrivateScope, Public, HideBySig, SpecialName
+    set_RootItems(IEnumerable`1): PrivateScope, Public, HideBySig, SpecialName
+    get_Placeholder(): PrivateScope, Public, Static, HideBySig, SpecialName
 Class KmDevWpfControls.UiElementTypeConverter1: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
   :System.ComponentModel.TypeConverter
     Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
@@ -323,7 +536,7 @@ Class KmDevWpfControls.VisualTreeView1: AutoLayout, AnsiClass, Class, Public
     get_RootVisual(): PrivateScope, Public, HideBySig, SpecialName
     set_RootVisual(Visual): PrivateScope, Public, HideBySig, SpecialName
     OnApplyTemplate(): PrivateScope, Public, Virtual, HideBySig
-Class KmDevWpfControls.VisualTreeViewModel: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+Class KmDevWpfControls.VisualTreeViewModel: AutoLayout, AnsiClass, Class, Public, Sealed, BeforeFieldInit
     Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
   Interfaces:
     System.ComponentModel.INotifyPropertyChanged

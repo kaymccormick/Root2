@@ -67,5 +67,14 @@ namespace WpfUiTests
             w.ShowDialog();
 
         }
+
+        [WpfFact]
+        public void TestTypeDetailscontrol1()
+        {
+            var td = new TypeDetailsControl() {Type = typeof(TypeDetailsControl)};
+            Window w = new Window {Content = td};
+            w.ShowDialog();
+
+        }
     }
 }

@@ -133,7 +133,7 @@ namespace KmDevWpfControls
             _vc = TryFindResource("VisualConverter") as VisualConverter;
             _ctreeView = GetTemplateChild("TreeView") as CustomTreeView;
             _treeView = GetTemplateChild("TreeView") as TreeView;
-            _treeView.SelectedItemChanged += TreeViewOnSelectedItemChanged;
+            if (_treeView != null) _treeView.SelectedItemChanged += TreeViewOnSelectedItemChanged;
         }
 
         private void TreeViewOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
