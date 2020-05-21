@@ -251,7 +251,6 @@
     <Compile Include="RibbonModelView.cs" />
     <Compile Include="RibbonModel\AppCommandTypeConverter.cs" />
     <Compile Include="RibbonModel\ControlKind.cs" />
-    <Compile Include="RibbonModel\Definition\InfrastructureTab.cs" />
     <Compile Include="RibbonModel\GroupItemCollectionEditor.cs" />
     <Compile Include="RibbonModel\IRibbonModelGroupItem.cs" />
     <Compile Include="RibbonModel\RibbonModelAppMenuElementCollection.cs" />
@@ -267,7 +266,7 @@
     <Compile Include="RibbonModel\RibbonModelTwoLineText.cs" />
     <Compile Include="RibbonViewGroupProviderBase.cs" />
     <Compile Include="RibbonViewGroupProviderBaseImpl.cs" />
-    <Compile Include="Ribb\Definition\SuperGRoup.cs" />
+    <Compile Include="RibbonModel\Definition\SuperGroup.cs" />
     <Compile Include="RootNode.cs" />
     <Compile Include="Subnode.cs" />
     <Compile Include="SubnodeData.cs" />
@@ -295,7 +294,6 @@
     <Compile Include="RibbonModel\RibbonModelTab.cs" />
     <Compile Include="RibbonModel\RibbonModelGroup.cs" />
     <Compile Include="RibbonModel\RibbonTabHeaderAttribute.cs" />
-    <Compile Include="RibbonModel\Definition\ManagementTab.cs" />
     <Compile Include="Ribbon\AssembliesRibbonTab.cs" />
     <Compile Include="RibbonModel\DerpTab.cs" />
     <Compile Include="RWindow.xaml.cs">
@@ -628,6 +626,7 @@
     <Resource Include="Themes\RecordSetDest_201.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Ribb\Definition\" />
     <Folder Include="VSS\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

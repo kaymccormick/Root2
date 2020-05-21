@@ -29,5 +29,11 @@ namespace ControlsDemo
             Window w = new MainWindow();
             w.Show();
         }
+
+        private void ButtonBase_OnClick2(object sender, RoutedEventArgs e)
+        {
+            Window w = new Window2();
+            w.Show();
+        }
     }
 }

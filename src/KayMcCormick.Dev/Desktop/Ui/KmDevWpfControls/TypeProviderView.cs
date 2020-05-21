@@ -62,6 +62,14 @@ namespace KmDevWpfControls
         public static readonly DependencyProperty SelectedPropertyProperty = DependencyProperty.Register(
             "SelectedProperty", typeof(PropertyDescriptor), typeof(TypeProviderView), new PropertyMetadata(default(PropertyDescriptor)));
 
+        public static readonly DependencyProperty TypeDescriptorProperty = DependencyProperty.Register(
+            "TypeDescriptor", typeof(ICustomTypeDescriptor), typeof(TypeProviderView), new PropertyMetadata(default(ICustomTypeDescriptor)));
+
+        public ICustomTypeDescriptor TypeDescriptor
+        {
+            get { return (ICustomTypeDescriptor) GetValue(TypeDescriptorProperty); }
+            set { SetValue(TypeDescriptorProperty, value); }
+        }
         public PropertyDescriptor SelectedProperty
         {
             get { return (PropertyDescriptor) GetValue(SelectedPropertyProperty); }
@@ -84,7 +92,19 @@ namespace KmDevWpfControls
         }
 
         public static readonly DependencyProperty ProviderProperty = DependencyProperty.Register(
-            "Provider", typeof(TypeDescriptionProvider), typeof(TypeProviderView), new PropertyMetadata(default(TypeDescriptionProvider)));
+            "Provider", typeof(TypeDescriptionProvider), typeof(TypeProviderView), new PropertyMetadata(default(TypeDescriptionProvider), OnProviderChanged));
+
+        private static void OnProviderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((TypeProviderView) d).TypeProviderChanged((TypeDescriptionProvider) e.OldValue,
+                (TypeDescriptionProvider) e.NewValue);
+        }
+
+        private void TypeProviderChanged(TypeDescriptionProvider eOldValue, TypeDescriptionProvider eNewValue)
+        {
+            Debug.WriteLine(eNewValue.GetType());
+            
+        }
 
         private PropertyDescriptorCollection _properties;
 
@@ -103,16 +123,27 @@ namespace KmDevWpfControls
                 return;
             }
 
-            TypeDescriptionProvider typeDescriptionProvider = TypeDescriptor.GetProvider(newType);
+            TypeDescriptionProvider typeDescriptionProvider = System.ComponentModel.TypeDescriptor.GetProvider(newType);
             Provider = typeDescriptionProvider;
             if (Provider != null)
             {
-                _descriptor = Provider.GetTypeDescriptor(newType);
-                if (_descriptor != null)
+                TypeDescriptor = Provider.GetTypeDescriptor(newType);
+                if (TypeDescriptor != null)
                 {
-                    Editor = _descriptor.GetEditor(typeof(InstanceCreationEditor));
-                    Debug.Write($"{_descriptor}");
-                    Properties = _descriptor.GetProperties().Cast<PropertyDescriptor>();
+                    InstanceCreationEditor = TypeDescriptor.GetEditor(typeof(InstanceCreationEditor));
+                    Editor = TypeDescriptor.GetEditor(typeof(UITypeEditor));
+                    if (Editor != null)
+                    {
+                        var s = ((UITypeEditor) Editor).GetEditStyle();
+                        var p = ((UITypeEditor)Editor).GetPaintValueSupported();
+                        Debug.WriteLine($"{s} {p}");
+                    }
+
+                    
+
+                    Debug.WriteLine($"{TypeDescriptor}");
+                    Properties = TypeDescriptor.GetProperties().Cast<PropertyDescriptor>();
+                    
                     if (_listView != null) _listView.SelectedIndex = 0;
                     
                 }
@@ -128,6 +159,14 @@ namespace KmDevWpfControls
             set { SetValue(PropertiesProperty, value); }
         }
 
+        public static readonly DependencyProperty InstanceCreationEditorProperty = DependencyProperty.Register(
+            "InstanceCreationEditor", typeof(object), typeof(TypeProviderView), new PropertyMetadata(default(object)));
+
+        public object InstanceCreationEditor
+        {
+            get { return (object) GetValue(InstanceCreationEditorProperty); }
+            set { SetValue(InstanceCreationEditorProperty, value); }
+        }
         public static readonly DependencyProperty EditorProperty = DependencyProperty.Register(
             "Editor", typeof(object), typeof(TypeProviderView), new PropertyMetadata(default(object)));
 

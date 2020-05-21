@@ -10,6 +10,7 @@
     <Grid>
     <kmDevWpfControls:TablePanel>
       <Button Content="Type Controls" Click="ButtonBase_OnClick"/>
+      <Button Content="Docking Window" Click="ButtonBase_OnClick2"/>
     </kmDevWpfControls:TablePanel>
     </Grid>
 </Window>

@@ -18,7 +18,7 @@ namespace KmDevWpfControls
 
         public AssemblyNode()
         {
-            Items = Enumerable.Repeat(TypeTreevViewControl.Placeholder, 1);
+            Items = Enumerable.Repeat(TypeTreeViewControl.Placeholder, 1);
         }
 
         public Assembly Assembly
@@ -166,7 +166,7 @@ namespace KmDevWpfControls
             {
                 Header = types.Key;
             }
-            Items = Enumerable.Repeat(TypeTreevViewControl.Placeholder, 1);
+            Items = Enumerable.Repeat(TypeTreeViewControl.Placeholder, 1);
             Types = types;
         }
 

@@ -7,6 +7,8 @@ using System.Xaml;
 using AnalysisAppLib;
 using AnalysisAppLib.Properties;
 using AnalysisControls;
+using AvalonDock;
+using AvalonDock.Layout;
 using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -137,6 +139,22 @@ namespace ProjTests
             r.MergedDictionaries.Add(resources);
             var w = new Window { Content = control, ShowActivated = true, Resources = r };
             w.ShowDialog();
+        }
+
+        public static DockingManager CreateDockingManager(out LayoutDocumentPane pane,
+            out LayoutDocumentPaneGroup @group,
+            out LayoutPanel rootPanel, out LayoutRoot layout)
+        {
+            var m = new DockingManager();
+            
+            pane = new LayoutDocumentPane();
+
+            @group = new LayoutDocumentPaneGroup(pane);
+
+            rootPanel = new LayoutPanel(@group);
+            layout = new LayoutRoot { RootPanel = rootPanel };
+            m.Layout = layout;
+            return m;
         }
     }
 

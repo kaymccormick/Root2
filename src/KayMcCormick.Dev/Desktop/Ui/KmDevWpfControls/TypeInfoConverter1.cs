@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
@@ -60,6 +61,20 @@ namespace KmDevWpfControls
             {
                 return source.GetProperties();
             }
+
+            if ((string) parameter == "Ancestors")
+            {
+                var a = new List<Type>();
+                var b = source.IsGenericType ? source.GetGenericTypeDefinition() : source;
+                while (b != null)
+                {
+                    a.Add(b);
+                    b = b.BaseType;
+                }
+
+                return ((IEnumerable<Type>)a).Reverse();
+            }
+            
 
             
             return null ;

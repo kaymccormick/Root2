@@ -173,6 +173,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\AvalonDock\source\Components\AvalonDock.Themes.Aero\AvalonDock.Themes.Aero.csproj">
+      <Project>{9F4216D2-DE01-457F-ABD9-57FF072C2BF1}</Project>
+      <Name>AvalonDock.Themes.Aero</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\AvalonDock\source\Components\AvalonDock\AvalonDock.csproj">
       <Project>{11221345-bc85-488c-8e5c-395c0f848682}</Project>
       <Name>AvalonDock</Name>

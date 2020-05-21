@@ -65,7 +65,7 @@ using AnalysisControls;
 using AnalysisControls.Commands;
 using AnalysisControls.Converters;
 using AnalysisControls.Properties;
-using AnalysisControls.Ribb.Definition;
+
 using AnalysisControls.RibbonModel;
 using AnalysisControls.RibbonModel.ContextualTabGroups;
 using AnalysisControls.RibbonModel.Definition;
@@ -75,6 +75,7 @@ using Autofac.Features.AttributeFilters;
 using Autofac.Features.Metadata;
 using AvalonDock;
 using AvalonDock.Layout;
+using AvalonDock.Themes;
 using Castle.DynamicProxy;
 using CsvHelper;
 using CsvHelper.Excel;
@@ -2516,43 +2517,11 @@ namespace ProjTests
             {
                 instance.AddModule(new AnalysisControlsModule());
                 instance.AddModule(new AnalysisAppLibModule());
+                instance.AddModule(new Client2Module1());
                 instance.Initialize();
                 var lifetimeScope = instance.GetLifetimeScope(builder =>
                 {
-                    // builder.Register((c, o) => RibbonBuilder1.RibbonModelBuilder(c.Resolve<RibbonModelApplicationMenu>(), c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>(), c.Resolve<IEnumerable<RibbonModelTab>>(), c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>(), new JsonSerializerOptions()));
-                    builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
-                    builder.RegisterType<ClientModel>().AsSelf().SingleInstance().AsImplementedInterfaces()
-                        .WithCallerMetadata();
-                    builder.RegisterType<RibbonModelApplicationMenu>();
-                    builder.RegisterType<FunTabProvider>().As<IRibbonModelProvider<RibbonModelTab>>().SingleInstance()
-                        .WithAttributeFiltering();
-                    builder.RegisterType<RibbonViewGroupProviderBaseImpl>().AsImplementedInterfaces()
-                        .WithCallerMetadata().SingleInstance().WithAttributeFiltering();
-                    builder.RegisterType<SuperGRoup>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance()
-                        .WithAttributeFiltering();
-                    builder.RegisterType<InfrastructureTab>().As<RibbonModelTab>().SingleInstance()
-                        .WithAttributeFiltering()
-                        // .OnActivated(args => args.Instance.ClientModel = args.Context.Resolve<IClientModel>())
-                        ;
-                    builder.RegisterType<ManagementTab>().As<RibbonModelTab>().SingleInstance()
-                        .WithAttributeFiltering();
-                    builder.RegisterType<AssembliesRibbonTab>().As<RibbonModelTab>().SingleInstance()
-                        .WithAttributeFiltering();
-                    builder.RegisterType<DerpTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
-                    builder.RegisterType<AssembliesTypesGroup>().As<RibbonModelGroup>().SingleInstance()
-                        .WithAttributeFiltering();
-                    builder.RegisterType<DisplayableAppCommandGroup>().As<RibbonModelGroup>().SingleInstance()
-                        .WithAttributeFiltering();
-                    builder.RegisterType<BaseLibCommandGroup>().As<RibbonModelGroup>().SingleInstance()
-                        .WithAttributeFiltering();
-                    builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering();
-                    builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering();
-                    builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces().WithAttributeFiltering();
-                    builder.RegisterType<AppCommandTypeConverter>().AsSelf();
-                    builder.RegisterType<ObjectStringTypeConverter>().AsSelf();
-                    builder.RegisterType<ClientModel>().AsSelf().AsImplementedInterfaces();
-                    builder.RegisterType<AppCommandTypeConverter>().AsSelf();
-                    builder.RegisterInstance(Logger).As<ILogger>();
+
                 });
                 var cx = lifetimeScope.Resolve<IControlsProvider>();
                 foreach (var cxType in cx.Types) TypeDescriptor.AddProvider(cx.Provider, cxType);
@@ -2752,6 +2721,21 @@ namespace ProjTests
             //ScrollViewer s = new ScrollViewer() {Content = v};
             Window w = new Window {Content = v, FontSize= 20};
 	    //v.RootItems.Add(new VisualTreeNode { Visual = w });
+            w.ShowDialog();
+        }
+
+        [WpfFact]
+        public void DockingTest()
+        {
+            var dm = ProjTestsHelper.CreateDockingManager(out var layoutDocumentPane, out var layoutDocumentPaneGroup,
+                out var layoutRootPanel, out var layoutRoot);
+            dm.Theme = new AeroTheme();
+            Window w = new Window {Content = dm};
+            var anchorables = new ObservableCollection<LayoutAnchorable>();
+            var table1 = new TablePanel();
+            table1.Children.Add(new Button{Content="hello"});
+            anchorables.Add(new LayoutAnchorable(){Content = table1});
+            dm.AnchorablesSource = anchorables;
             w.ShowDialog();
         }
     }

@@ -25,7 +25,7 @@ using AnalysisAppLib;
 using AnalysisControls;
 using AnalysisControls.Commands;
 using AnalysisControls.Converters;
-using AnalysisControls.Ribb.Definition;
+
 using AnalysisControls.RibbonModel;
 using AnalysisControls.RibbonModel.Definition;
 using AnalysisControls.ViewModel;
@@ -196,12 +196,8 @@ namespace Client2
                 .WithCallerMetadata();
             builder.RegisterType<RibbonViewGroupProviderBaseImpl>().AsImplementedInterfaces().WithCallerMetadata()
                 .SingleInstance().WithAttributeFiltering();
-            builder.RegisterType<SuperGRoup>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance()
+            builder.RegisterType<SuperGroup>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance()
                 .WithAttributeFiltering();
-            builder.RegisterType<InfrastructureTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering()
-                // .OnActivated(args => args.Instance.ClientModel = args.Context.Resolve<IClientModel>())
-                ;
-            builder.RegisterType<ManagementTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
             builder.RegisterType<CodeAnalysisContextualTabGroupProvider>().AsImplementedInterfaces()
                 .WithCallerMetadata();
             builder.RegisterType<AssembliesRibbonTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();

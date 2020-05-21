@@ -57,7 +57,7 @@
       <TextBlock Margin="10,0,10,0" Text="{Binding Provider,ElementName=t}" />
       <TextBlock Margin="10,0,10,0" Text="{Binding Properties.Count,ElementName=t}" />
     </StackPanel>
-    <kmDevWpfControls:TypeTreevViewControl Grid.Row="1" Grid.Column="0" x:Name="tt"/>
+    <kmDevWpfControls:TypeTreeViewControl Grid.Row="1" Grid.Column="0" x:Name="tt"/>
     <kmDevWpfControls:TypeProviderView Grid.Column="1" Grid.Row="1" Type="{Binding ElementName=tt,Path=SelectedType}" x:Name="t" />
     <kmDevWpfControls:TypeDetailsControl Grid.Column="0" BorderBrush="Red" BorderThickness="0"  HorizontalAlignment="Stretch" Grid.ColumnSpan="2"  Grid.Row="2" Type="{Binding ElementName=tt,Path=SelectedType}"></kmDevWpfControls:TypeDetailsControl>
   </Grid>

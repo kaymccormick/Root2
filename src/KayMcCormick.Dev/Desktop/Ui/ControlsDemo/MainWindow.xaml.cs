@@ -31,7 +31,13 @@ namespace ControlsDemo
     {
         public MainWindow()
         {
+            var deserialize = JsonSerializer.Deserialize<List<XX>>(File.ReadAllText(@"C:\temp\editors1.json"));
             GrovelTypes();
+            foreach (var (item1, item2) in deserialize.Select(xx => Tuple.Create(Type.GetType(xx.Item1), Type.GetType(xx.Item2))))
+            {
+                EditorTypes.Add(new TypeNode2(new NamespaceType() { Type = item1 }));
+            }
+
 
             InitializeComponent();
             AllowDrop = true;
@@ -39,25 +45,9 @@ namespace ControlsDemo
             VisualTreeViewModel.RootVisual = this;
         }
 
-        private void GrovelTypes()
+        private static void GrovelTypes()
         {
             LoadAssemblies();
-
-            var xx12 = JsonSerializer.Deserialize<List<XX>>(File.ReadAllText(@"C:\temp\editors1.json"));
-#if false
-var x11 =
- JsonSerializer.Deserialize<List<List<Tuple<List<string>, List<Tuple<string, string>>>>>>(File.ReadAllText(@"C:\temp\editors1.json"));
-            foreach (var tuples in x11)
-            {
-                var xx = tuples.Select(t =>
-                    string.Join(", ", t.Item1) + " " +
-                    string.Join(", ", t.Item2.Select(ttt => $"{ttt.Item1}={ttt.Item2}")));
-            }
-#endif
-            foreach (var (item1, item2) in xx12.Select(xx => Tuple.Create(Type.GetType(xx.Item1), Type.GetType(xx.Item2))))
-            {
-                EditorTypes.Add(new TypeNode2(new NamespaceType() {Type = item1}));
-            }
 
             //EditorSet = EditorTypes.ToHashSet();
          

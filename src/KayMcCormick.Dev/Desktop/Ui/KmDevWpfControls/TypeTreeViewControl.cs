@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -43,29 +46,69 @@ namespace KmDevWpfControls
     /// Step 2)
     /// Go ahead and use your control in the XAML file.
     ///
-    ///     <MyNamespace:TypeTreevViewControl/>
+    ///     <MyNamespace:TypeTreeViewControl/>
     ///
     /// </summary>
-    public class TypeTreevViewControl : Control
+    public class TypeTreeViewControl : Control
     {
+        private ObservableCollection<ITreeViewNode> _internalRootItems = new ObservableCollection<ITreeViewNode>();
         public static readonly DependencyProperty SelectedTypeProperty = DependencyProperty.Register(
-            "SelectedType", typeof(Type), typeof(TypeTreevViewControl), new PropertyMetadata(default(Type)));
+            "SelectedType", typeof(Type), typeof(TypeTreeViewControl), new PropertyMetadata(default(Type)));
 
+        public static readonly DependencyProperty AssembliesProperty = DependencyProperty.Register(
+            "Assemblies", typeof(IEnumerable<Assembly>), typeof(TypeTreeViewControl), new PropertyMetadata(default(IEnumerable<Assembly>), PropertyChangedCallback));
+
+        private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((TypeTreeViewControl)d).OnAssembliesChanged((IEnumerable<Assembly>)e.OldValue, (IEnumerable<Assembly>)e.NewValue);
+        }
+
+        private void OnAssembliesChanged(IEnumerable<Assembly> oldVal, IEnumerable<Assembly> newVal)
+        {
+            if (oldVal is INotifyCollectionChanged col)
+            {
+                col.CollectionChanged -= ColOnCollectionChanged;
+            }
+            _internalRootItems.Clear();
+            foreach (var assembly in newVal)
+            {
+                _internalRootItems.Add(new AssemblyNode() {Assembly = assembly});
+            }
+
+            if (newVal is INotifyCollectionChanged col2)
+            {
+                col2.CollectionChanged += ColOnCollectionChanged;
+            }
+        }
+
+        private void ColOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            foreach (var eNewItem in e.NewItems)
+            {
+                _internalRootItems.Add(new AssemblyNode(){Assembly = (Assembly) eNewItem});
+            }
+        }
+
+        public IEnumerable<Assembly> Assemblies
+        {
+            get { return (IEnumerable<Assembly>) GetValue(AssembliesProperty); }
+            set { SetValue(AssembliesProperty, value); }
+        }
         public Type SelectedType
         {
             get { return (Type) GetValue(SelectedTypeProperty); }
             set { SetValue(SelectedTypeProperty, value); }
         }
-        static TypeTreevViewControl()
+        static TypeTreeViewControl()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(TypeTreevViewControl), new FrameworkPropertyMetadata(typeof(TypeTreevViewControl)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(TypeTreeViewControl), new FrameworkPropertyMetadata(typeof(TypeTreeViewControl)));
         }
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
             _treeView = GetTemplateChild("TreeView") as TreeView;
-            _treeView.SelectedItemChanged += TreeViewOnSelectedItemChanged;
+            if (_treeView != null) _treeView.SelectedItemChanged += TreeViewOnSelectedItemChanged;
         }
 
         private void TreeViewOnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -76,11 +119,10 @@ namespace KmDevWpfControls
             }
         }
 
-        public TypeTreevViewControl()
+        public TypeTreeViewControl()
         {
             CommandBindings.Add(new CommandBinding(CustomTreeView.ToggleNodeIsExpanded, Executed));
-            RootItems = AppDomain.CurrentDomain.GetAssemblies()
-                .Select(assembly => new AssemblyNode {Assembly = assembly});
+            RootItems = _internalRootItems;
         }
 
         private async void Executed(object sender, ExecutedRoutedEventArgs e)
@@ -112,7 +154,7 @@ namespace KmDevWpfControls
         }
 
         public static readonly DependencyProperty RootItemsProperty = DependencyProperty.Register(
-            "RootItems", typeof(IEnumerable<ITreeViewNode>), typeof(TypeTreevViewControl), new PropertyMetadata(default(IEnumerable<ITreeViewNode>)));
+            "RootItems", typeof(IEnumerable<ITreeViewNode>), typeof(TypeTreeViewControl), new PropertyMetadata(default(IEnumerable<ITreeViewNode>)));
 
         private TreeView _treeView;
 

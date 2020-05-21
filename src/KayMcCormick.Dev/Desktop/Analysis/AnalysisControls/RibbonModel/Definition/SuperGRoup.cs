@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using AnalysisControls.RibbonModel;
-using Autofac;
 
-namespace AnalysisControls.Ribb.Definition
+namespace AnalysisControls.RibbonModel.Definition
 {
     /// <summary>
     /// 
     /// </summary>
-    public class SuperGRoup : RibbonViewGroupProviderBase
+    public class SuperGroup : RibbonViewGroupProviderBase
     {
         /// <summary>
         /// 

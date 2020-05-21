@@ -50,7 +50,7 @@ namespace AnalysisControls
             }
 
             var solution = await workspace.OpenSolutionAsync(optionsSolutionFile,
-                new ProgressWithCompletion<ProjectLoadProgress>(progress => { }), null, CancellationToken.None);
+                new ProgressWithCompletion<ProjectLoadProgress>(progress => { }), CancellationToken.None);
             var documentsOut = new List < CodeElementDocumentation > ( ) ;
             var solutionProjects = solution.Projects ;
 
