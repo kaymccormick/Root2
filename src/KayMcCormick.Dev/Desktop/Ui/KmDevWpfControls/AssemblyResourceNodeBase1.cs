@@ -34,7 +34,9 @@ namespace KmDevWpfControls
         }
 
         private NodeExpandedState1 _expandedState = NodeExpandedState1.Indeterminate;
+#pragma warning disable 169
         private Task<TempLoadData1> _loadTask;
+#pragma warning restore 169
         private Dispatcher _dispatcher;
         private TaskScheduler _taskScheduler;
 

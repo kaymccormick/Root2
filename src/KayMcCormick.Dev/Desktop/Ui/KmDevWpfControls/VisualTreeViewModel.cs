@@ -11,7 +11,6 @@ namespace KmDevWpfControls
     public sealed class VisualTreeViewModel : INotifyPropertyChanged
     {
         private VisualTreeNode _currentVisual;
-        private IEnumerable _rootNodes;
         private ObservableCollection<VisualTreeNode> _internalItems = new ObservableCollection<VisualTreeNode>();
         private Visual _rootVisual;
 

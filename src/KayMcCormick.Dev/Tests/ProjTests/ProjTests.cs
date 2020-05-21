@@ -945,7 +945,7 @@ namespace ProjTests
             // ReSharper disable once UnusedVariable
             var compilationUnitSyntax = syntaxTree.GetCompilationUnitRoot();
             var tcs = new TaskCompletionSource<bool>();
-            Task.Run(() => codeControl.Refresh())
+            var rtask = Task.Run(() => codeControl.Refresh())
                 .ContinueWith(task => tcs.SetResult(true));
 
             w.Show();
@@ -1496,7 +1496,7 @@ namespace ProjTests
             }
         }
 
-        public async void OnWorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args)
+        public static async void OnWorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args)
         {
             DebugUtils.WriteLine(args.Kind.ToString());
             var project = args.NewSolution.GetProject(args.ProjectId);
@@ -2582,7 +2582,7 @@ namespace ProjTests
                 var line = ConversionUtils.DoConvertToString(model1.GetAppTypeInfos().First(), new StringBuilder(), false);
                 DebugUtils.WriteLine(line.Length.ToString());
                 return;
-                DebugUtils.WriteLine(line);
+             
                 var model = lifetimeScope.Resolve<ClientModel>();
                 foreach (var primaryRibbonRibbonItem in model.PrimaryRibbon.RibbonItems)
                 {

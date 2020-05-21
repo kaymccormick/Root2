@@ -77,7 +77,7 @@ var x11 = JsonSerializer.Deserialize<List<List<Tuple<List<string>, List<Tuple<st
                 {
                     return a.GetExportedTypes();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     return Enumerable.Empty<Type>();
                 }

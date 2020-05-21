@@ -24,9 +24,9 @@
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <kmDevWpfControls:TablePanel5>
+        <kmDevWpfControls:TablePanel>
           <TextBlock Text="{Binding DescendantBounds}" />
-        </kmDevWpfControls:TablePanel5>
+        </kmDevWpfControls:TablePanel>
         <ListView ItemsSource="{Binding Properties_}">
           <ListView.View>
             <GridView>

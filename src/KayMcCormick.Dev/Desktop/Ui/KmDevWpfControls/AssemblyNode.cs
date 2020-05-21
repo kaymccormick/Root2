@@ -81,7 +81,6 @@ namespace KmDevWpfControls
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private NamespaceType x;
         private Assembly _assembly;
         private int _depth;
 

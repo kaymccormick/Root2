@@ -23,7 +23,7 @@ namespace KmDevWpfControls
         /// <summary>
         /// 
         /// </summary>
-        ObservableCollection<IAssemblyResourceNode> Items { get; }
+        //ObservableCollection<IAssemblyResourceNode> Items { get; }
 
         /// <summary>
         /// 
