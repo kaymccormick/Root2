@@ -187,8 +187,9 @@ namespace KayMcCormick.Lib.Wpf
         {
 
             bool TraceAll = false;
-            bool tracenone = true;
+            bool tracenone = false;
             PresentationTraceSources.Refresh ( ) ;
+            
             foreach (var propertyInfo in typeof(PresentationTraceSources).GetProperties(BindingFlags.Static | BindingFlags.Public))
             {
                 if (propertyInfo.PropertyType == typeof(TraceSource))
@@ -198,7 +199,7 @@ namespace KayMcCormick.Lib.Wpf
                     t.Listeners.Add(new ConsoleTraceListener());
                 }
             }
-            return;
+            
             if ( ! DoTracing )
             {
                 return ;

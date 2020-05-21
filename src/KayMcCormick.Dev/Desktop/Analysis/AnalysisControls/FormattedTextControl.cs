@@ -792,7 +792,11 @@ namespace AnalysisControls
                                 new List<CharacterCell>();
                             var emSize = rectGlyphRun.FontRenderingEmSize;
 
-                            for (var i = 0; i < rectGlyphRun.Characters.Count; i++)
+                            if (rectGlyphRun.Characters.Count > rectGlyphRun.GlyphIndices.Count)
+                            {
+                                DebugUtils.WriteLine($"Character mismatch");
+                            }
+                            for (var i = 0; i < rectGlyphRun.GlyphIndices.Count; i++)
                             {
                                 size.Width += rectGlyphRun.AdvanceWidths[i];
                                 var gi = rectGlyphRun.GlyphIndices[i];

@@ -24,6 +24,7 @@ using AnalysisControls.Properties;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
+using KmDevWpfControls;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -34,6 +35,8 @@ using Microsoft.VisualStudio.Threading;
 using NLog;
 using Path = System.IO.Path;
 using SyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
+using TablePanel = KayMcCormick.Lib.Wpf.TablePanel;
+using TypeControl = KayMcCormick.Lib.Wpf.TypeControl;
 
 namespace AnalysisControls
 {
@@ -229,10 +232,11 @@ namespace AnalysisControls
         {
 //            AddModelDoc();
             AddRibbonModelViewDoc();
-//            AddAssembliesDoc();
-//            AddPropertiesGridDoc();
+            //            AddAssembliesDoc();
+            //            AddPropertiesGridDoc();
             AddVisualTreeViewDoc();
-//            AddControlsDoc();
+            AddTypeProvider();
+                        AddControlsDocq();
         }
 
         private void AddVisualTreeViewDoc()
@@ -244,6 +248,14 @@ namespace AnalysisControls
             Documents.Add(doc);
         }
 
+        private void AddTypeProvider()
+        {
+            var c = new TypeProviderUserControl();
+            var doc = DocModel.CreateInstance();
+            doc.Title = "Type Provider";
+            doc.Content = c;
+            Documents.Add(doc);
+        }
         private void AddRibbonModelViewDoc()
         {
             var c = new RibbonModelView();
@@ -259,6 +271,13 @@ namespace AnalysisControls
             var item = DocModel.CreateInstance();
             item.Title = "Controls";
             item.Content = new ControlView();
+            Documents.Add(item);
+        }
+        private void AddControlsDocq()
+        {
+            var item = DocModel.CreateInstance();
+            item.Title = "Controls";
+            item.Content = new TraceView();
             Documents.Add(item);
         }
 
@@ -409,7 +428,10 @@ namespace AnalysisControls
                         _workspaceView,
                     Title = "Workspace"
                 });
-                _workspace.WorkspaceChanged += WorkspaceOnWorkspaceChanged;
+                _workspace.WorkspaceChanged += (sender, args) =>
+                {
+                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => WorkspaceOnWorkspaceChanged(sender, args)));
+                };
                 _workspace.DocumentOpened += WorkspaceOnDocumentOpened;
                 _workspace.DocumentActiveContextChanged += WorkspaceOnDocumentActiveContextChanged;
                 _workspace.DocumentClosed += WorkspaceOnDocumentClosed;

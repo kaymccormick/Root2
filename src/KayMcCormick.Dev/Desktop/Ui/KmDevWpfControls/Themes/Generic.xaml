@@ -6,7 +6,8 @@
   xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
   xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System"
   xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
-  xmlns:system="clr-namespace:System;assembly=mscorlib">
+  xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:diagnostics="clr-namespace:System.Diagnostics;assembly=System">
   <Style TargetType="{x:Type local:CustomControl1}">
     <Setter Property="Template">
       <Setter.Value>
@@ -690,8 +691,7 @@
         <ControlTemplate TargetType="{x:Type local:HotedControl}">
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}">
-          </Border>
+                  BorderThickness="{TemplateBinding BorderThickness}" />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -722,7 +722,7 @@
               </Grid.RowDefinitions>
               <ToolBarTray>
                 <ToolBar Band="1" BandIndex="1">
-                  <local:TypeControl Type="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Type}"/>
+                  <local:TypeControl Type="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Type}" />
                   <Button Content="Editor" Command="local:TypeProviderView.LaunchEditor" x:Name="Edit" />
                 </ToolBar>
               </ToolBarTray>
@@ -732,8 +732,10 @@
                 <ListView.View>
                   <GridView>
                     <GridViewColumn Header="Property" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="UI Type Editor" DisplayMemberBinding="{Binding Converter={StaticResource PropertyDescriptorConverter},ConverterParameter=Editor}" />
-                    <GridViewColumn Header="Creation Editor" DisplayMemberBinding="{Binding Converter={StaticResource PropertyDescriptorConverter},ConverterParameter=InstanceCreationEditor}" />
+                    <GridViewColumn Header="UI Type Editor"
+                                    DisplayMemberBinding="{Binding Converter={StaticResource PropertyDescriptorConverter},ConverterParameter=Editor}" />
+                    <GridViewColumn Header="Creation Editor"
+                                    DisplayMemberBinding="{Binding Converter={StaticResource PropertyDescriptorConverter},ConverterParameter=InstanceCreationEditor}" />
                     <GridViewColumn Header="Type" DisplayMemberBinding="{Binding PropertyType}" />
 
                     <GridViewColumn Header="Component Type" DisplayMemberBinding="{Binding ComponentType}" />
@@ -761,14 +763,14 @@
                      PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
                      IsOpen="{Binding Path=IsOverflowOpen, RelativeSource={RelativeSource TemplatedParent}}">
                 <themes:SystemDropShadowChrome FrameworkElement.Name="Shdw" Color="Transparent"
-                                                UIElement.Focusable="true"
-                                                RenderOptions.ClearTypeHint="Enabled"
-                                                FrameworkElement.FocusVisualStyle="{x:Null}">
+                                               UIElement.Focusable="true"
+                                               RenderOptions.ClearTypeHint="Enabled"
+                                               FrameworkElement.FocusVisualStyle="{x:Null}">
                   <Border x:Name="PopupBorder" Background="{TemplateBinding Control.Background}"
                           BorderBrush="{TemplateBinding Control.BorderBrush}" CornerRadius="2" BorderThickness="1"
                           Padding="2">
                     <DockPanel>
-                      <WindowsFormsHost Grid.Column="0"  x:Name="WindowsFormsHost" Grid.Row="2" Grid.ColumnSpan="2"/>
+                      <WindowsFormsHost Grid.Column="0" x:Name="WindowsFormsHost" Grid.Row="2" Grid.ColumnSpan="2" />
                     </DockPanel>
                   </Border>
                 </themes:SystemDropShadowChrome>
@@ -1230,8 +1232,8 @@
                           <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                           </Grid.RowDefinitions>
-                          <ItemsControl 
-                                        ItemsSource="{Binding Converter={StaticResource TypeInfoConverter},ConverterParameter=Ancestors}">
+                          <ItemsControl
+                            ItemsSource="{Binding Converter={StaticResource TypeInfoConverter},ConverterParameter=Ancestors}">
                             <ItemsControl.ItemTemplate>
                               <DataTemplate DataType="{x:Type system:Type}">
                                 <TextBlock FontSize="14" Text="{Binding}" />
@@ -1264,12 +1266,13 @@
                           <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=IsGenericType}" />
                           <TextBlock Grid.Row="1" Grid.Column="0" Text="Generic Type Definition" />
                           <local:TypeControl Grid.Row="1" Grid.Column="1" FontSize="14"
-                                                Type="{Binding Converter={StaticResource TypeInfoConverter},ConverterParameter=GenericTypeDefinition}" />
+                                             Type="{Binding Converter={StaticResource TypeInfoConverter},ConverterParameter=GenericTypeDefinition}" />
                         </Grid>
                       </GroupBox>
                       <GroupBox Padding="3" Grid.Row="5" Grid.Column="0" Header="Interfaces">
-                        <ItemsControl DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent},Path=Type}"
-                                      ItemsSource="{Binding Converter={StaticResource TypeInfoConverter},ConverterParameter=Interfaces}">
+                        <ItemsControl
+                          DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent},Path=Type}"
+                          ItemsSource="{Binding Converter={StaticResource TypeInfoConverter},ConverterParameter=Interfaces}">
                           <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="{x:Type system:Type}">
                               <TextBlock Grid.Row="1" Grid.Column="1" FontSize="14" Text="{Binding}"
@@ -1359,7 +1362,7 @@
                                         </ItemsControl.ItemTemplate>
                                       </ItemsControl>
                                       <local:TypeControl FontWeight="Bold" VerticalContentAlignment="Center"
-                                                            Type="{Binding Type}" />
+                                                         Type="{Binding Type}" />
                                       <TextBlock Text=" " />
                                       <TextBlock Text="{Binding Name}" />
                                       <TextBlock Text=", " />
@@ -1427,7 +1430,7 @@
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
 
-<TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Type.FullName}"/>
+            <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Type.FullName}" />
           </Border>
         </ControlTemplate>
       </Setter.Value>
@@ -1435,6 +1438,55 @@
   </Style>
 
 
+  <Style TargetType="{x:Type local:TraceSourcesView}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:TraceSourcesView}">
+          <ControlTemplate.Resources>
+            <DataTemplate DataType="{x:Type diagnostics:TraceSource}">
+              <local:TablePanel>
+                <TextBlock Text="{Binding Name}"></TextBlock>
+                <TextBlock Text="{Binding Switch.DisplayName}"></TextBlock>
+                <TextBlock Text="{Binding Switch.Description}"></TextBlock>
+                <TextBlock Text="{Binding Switch.Level}"></TextBlock>
+              </local:TablePanel>
 
+            </DataTemplate>
+          </ControlTemplate.Resources>
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
 
+              <ListView x:Name="ListView" ItemsSource="{Binding Source={x:Static local:TraceSourcesView.Sources}}">
+                <ListView.View>
+                  <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Listeners.Count}" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Switch.Level}" />
+                  </GridView>
+                </ListView.View>
+              </ListView>
+              <ContentPresenter Grid.Row="1" Content="{Binding ElementName=ListView,Path=SelectedItem}"></ContentPresenter>
+              <ListView Grid.Row="1" Grid.Column="1" x:Name="istView" ItemsSource="{Binding ElementName=ListView,Path=SelectedItem.Listeners}">
+                <ListView.View>
+                  <GridView>
+                    <GridViewColumn Header="1" DisplayMemberBinding="{Binding Name}" />
+                  </GridView>
+                </ListView.View>
+              </ListView>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 </ResourceDictionary>

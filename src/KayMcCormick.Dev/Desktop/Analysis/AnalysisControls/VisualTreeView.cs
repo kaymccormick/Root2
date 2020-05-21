@@ -151,7 +151,7 @@ namespace AnalysisControls
                             {
                                 if (Transform_ != null)
                                 {
-                                    var t = Transform_.TransformBounds(Drawing1.Bounds);
+                                    var t = Transform_.TransformBounds(drawingGroup.Bounds);
                                     TransformedBounds = new Rect((int) t.X, (int) t.Y, (int) t.Width, (int) t.Height);
                                 }
                             }

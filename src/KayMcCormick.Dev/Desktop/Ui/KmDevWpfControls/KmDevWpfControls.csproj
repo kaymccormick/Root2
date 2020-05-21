@@ -149,6 +149,10 @@
     <Compile Include="Subnode1.cs" />
     <Compile Include="TablePanel.cs" />
     <Compile Include="TempLoadData1.cs" />
+    <Compile Include="TraceSourcesView.cs" />
+    <Compile Include="TraceView.xaml.cs">
+      <DependentUpon>TraceView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TypeControl.cs" />
     <Compile Include="TypeDetailsControl.cs" />
     <Compile Include="TypeInfoConverter1.cs" />
@@ -172,6 +176,10 @@
     <Compile Include="CustomControl1.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="TraceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TypeProviderUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

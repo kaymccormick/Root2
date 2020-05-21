@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -73,5 +75,20 @@ namespace WpfUiTests
             var w = new Window {Content = td};
             w.ShowDialog();
         }
+        [WpfFact]
+        public void TestTraceView()
+        {
+            var td = new TraceView();
+            var w = new Window {Content = td};
+            w.ShowDialog();
+        }
+
+        [Fact]
+        public void T1()
+        {
+           var p = TypeDescriptor.GetProperties(typeof(XmlWriterTraceListener));
+
+        }
+
     }
 }
