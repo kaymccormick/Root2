@@ -691,19 +691,6 @@
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
-            <avalondock:DockingManager>
-              <avalondock:LayoutRoot>
-                <avalondock:LayoutPanel>
-                  <avalondock:LayoutDocumentPaneGroup>
-                    <avalondock:LayoutDocumentPane>
-                      <avalondock:LayoutDocument Title="Assemblies">
-                        <local:AssembliesControl1 x:Name="AssembliesControl1" />
-                      </avalondock:LayoutDocument>
-                    </avalondock:LayoutDocumentPane>
-                  </avalondock:LayoutDocumentPaneGroup>
-                </avalondock:LayoutPanel>
-              </avalondock:LayoutRoot>
-            </avalondock:DockingManager>
           </Border>
         </ControlTemplate>
       </Setter.Value>

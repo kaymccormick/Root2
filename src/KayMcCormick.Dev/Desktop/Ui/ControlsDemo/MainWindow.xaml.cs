@@ -31,6 +31,98 @@ namespace ControlsDemo
     {
         public MainWindow()
         {
+            GrovelTypes();
+
+            InitializeComponent();
+            AllowDrop = true;
+            tt.RootItems = EditorTypes;
+            VisualTreeViewModel.RootVisual = this;
+        }
+
+        private void GrovelTypes()
+        {
+            LoadAssemblies();
+
+            var xx12 = JsonSerializer.Deserialize<List<XX>>(File.ReadAllText(@"C:\temp\editors1.json"));
+#if false
+var x11 =
+ JsonSerializer.Deserialize<List<List<Tuple<List<string>, List<Tuple<string, string>>>>>>(File.ReadAllText(@"C:\temp\editors1.json"));
+            foreach (var tuples in x11)
+            {
+                var xx = tuples.Select(t =>
+                    string.Join(", ", t.Item1) + " " +
+                    string.Join(", ", t.Item2.Select(ttt => $"{ttt.Item1}={ttt.Item2}")));
+            }
+#endif
+            foreach (var (item1, item2) in xx12.Select(xx => Tuple.Create(Type.GetType(xx.Item1), Type.GetType(xx.Item2))))
+            {
+                EditorTypes.Add(new TypeNode2(new NamespaceType() {Type = item1}));
+            }
+
+            //EditorSet = EditorTypes.ToHashSet();
+         
+            var selectMany = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a =>
+            {
+                try
+                {
+                    return a.GetExportedTypes();
+                }
+                catch (Exception)
+                {
+                    return Enumerable.Empty<Type>();
+                }
+            });
+            List<Tuple<string, string>> editors = new List<Tuple<string, string>>();
+            foreach (var type in selectMany)
+            {
+                var p = TypeDescriptor.GetEditor(type, typeof(UITypeEditor));
+                if (p != null)
+                {
+                    editors.Add(Tuple.Create(type.AssemblyQualifiedName, p.GetType().FullName));
+                }
+            }
+
+            File.WriteAllText(@"C:\temp\editors.json",
+                JsonSerializer.Serialize(editors, new JsonSerializerOptions() {WriteIndented = true}));
+            foreach (var type in new[] {typeof(EditorAttribute), typeof(TypeConverterAttribute)})
+            {
+                var out1 = new List<IEnumerable<Tuple<List<string>, IEnumerable<Tuple<string, string>>>>>();
+//                List<Tuple<string, string, string>> c = new List<Tuple<string, string, string>>();
+                foreach (var type1 in selectMany.Where(zz => zz.GetCustomAttributes(type).Any()))
+                {
+                    IEnumerable<Tuple<List<string>, IEnumerable<Tuple<string, string>>>> enumerable = type1.CustomAttributes
+                        .Where(z => z.AttributeType == type).Select(zz =>
+                            Tuple.Create(zz.ConstructorArguments.Select(zzz => zzz.Value.ToString()).ToList(),
+                                zz.NamedArguments.Select(Z => Tuple.Create(Z.MemberName, Z.TypedValue.Value.ToString()))));
+                    out1.Add(enumerable);
+
+                    //c.Add(Tuple.Create(type.FullName, type1.FullName, converterTypeName));
+                }
+
+                File.WriteAllText(@"C:\temp\" + type.Name + ".json",
+                    JsonSerializer.Serialize(out1, new JsonSerializerOptions() {WriteIndented = true}));
+            }
+
+            foreach (var grouping in selectMany
+                .Select(x => new {x, x.CustomAttributes}).Where(z => z.CustomAttributes.Any()).SelectMany(z =>
+                    z.CustomAttributes.Select(zz => new {zz, z.x}).GroupBy(arg => arg.zz.AttributeType.FullName)))
+            {
+                switch (grouping.Key)
+                {
+                    //System.Reflection.DefaultMemberAttribute
+                    //System.ComponentModel.TypeConverterAttribut
+                    case "System.Runtime.CompilerServices.TypeForwardedFromAttribute":
+                        continue;
+                }
+
+                foreach (var x1 in grouping)
+                    Debug.WriteLine(
+                        $"{grouping.Key} {x1.x.FullName} {String.Join(", ", x1.zz.ConstructorArguments)} {String.Join(", ", x1.zz.NamedArguments.Select(argument => $"{argument.MemberName}={argument.TypedValue.Value}"))}");
+            }
+        }
+
+        private static void LoadAssemblies()
+        {
             var loaded = AppDomain.CurrentDomain.GetAssemblies().Select(x => x.FullName).ToHashSet();
 
             void RecursiveLoad(AssemblyName name)
@@ -53,82 +145,6 @@ namespace ControlsDemo
             }
 
             foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies()) RecursiveLoad(name);
-
-var xx12 = JsonSerializer.Deserialize<List<XX>>(File.ReadAllText(@"C:\temp\editors1.json"));
-#if false
-var x11 = JsonSerializer.Deserialize<List<List<Tuple<List<string>, List<Tuple<string, string>>>>>>(File.ReadAllText(@"C:\temp\editors1.json"));
-            foreach (var tuples in x11)
-            {
-                var xx = tuples.Select(t =>
-                    string.Join(", ", t.Item1) + " " +
-                    string.Join(", ", t.Item2.Select(ttt => $"{ttt.Item1}={ttt.Item2}")));
-            }
-	    #endif
-            foreach (var (item1, item2) in xx12.Select(xx => Tuple.Create(Type.GetType(xx.Item1), Type.GetType(xx.Item2))))
-            {
-                EditorTypes.Add(new TypeNode2(new NamespaceType() {Type = item1}));
-            }
-
-            //EditorSet = EditorTypes.ToHashSet();
-            PresentationTraceSources.Refresh();
-            var selectMany = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a =>
-            {
-                try
-                {
-                    return a.GetExportedTypes();
-                }
-                catch (Exception)
-                {
-                    return Enumerable.Empty<Type>();
-                }
-            });
-            List<Tuple<string, string>> editors = new List<Tuple<string, string>>();
-            foreach (var type in selectMany)
-            {
-                var p = TypeDescriptor.GetEditor(type, typeof(UITypeEditor));
-                if (p != null)
-                {
-                    
-                    editors.Add(Tuple.Create(type.AssemblyQualifiedName, p.GetType().FullName));
-                }
-            }
-            File.WriteAllText(@"C:\temp\editors.json", JsonSerializer.Serialize(editors, new JsonSerializerOptions(){WriteIndented = true}));
-            foreach (var type in new[] {typeof(EditorAttribute), typeof(TypeConverterAttribute)})
-            {
-                var out1 = new List<IEnumerable<Tuple<List<string>, IEnumerable<Tuple<string, string>>>>>();
-//                List<Tuple<string, string, string>> c = new List<Tuple<string, string, string>>();
-                foreach (var type1 in selectMany.Where(zz => zz.GetCustomAttributes(type).Any()))
-                {
-                    IEnumerable<Tuple<List<string>, IEnumerable<Tuple<string, string>>>> enumerable = type1.CustomAttributes.Where(z => z.AttributeType == type).Select(zz =>
-                        Tuple.Create(zz.ConstructorArguments.Select(zzz => zzz.Value.ToString()).ToList(),
-                            zz.NamedArguments.Select(Z => Tuple.Create(Z.MemberName, Z.TypedValue.Value.ToString()))));
-                    out1.Add(enumerable);
-
-                    //c.Add(Tuple.Create(type.FullName, type1.FullName, converterTypeName));
-                }
-
-                File.WriteAllText(@"C:\temp\" + type.Name + ".json", JsonSerializer.Serialize(out1, new JsonSerializerOptions(){WriteIndented = true}));
-            }
-
-            foreach (var grouping in selectMany
-                .Select(x => new {x, x.CustomAttributes}).Where(z => z.CustomAttributes.Any()).SelectMany(z =>
-                    z.CustomAttributes.Select(zz => new {zz, z.x}).GroupBy(arg => arg.zz.AttributeType.FullName)))
-            {
-                switch (grouping.Key)
-                {
-                    //System.Reflection.DefaultMemberAttribute
-                    //System.ComponentModel.TypeConverterAttribut
-                    case "System.Runtime.CompilerServices.TypeForwardedFromAttribute":
-                        continue;
-                     
-                }
-                foreach (var x1 in grouping) Debug.WriteLine($"{grouping.Key} {x1.x.FullName} {String.Join(", ",x1.zz.ConstructorArguments)} {String.Join(", ", x1.zz.NamedArguments.Select(argument => $"{argument.MemberName}={argument.TypedValue.Value}"))}");
-            }
-
-            InitializeComponent();
-            AllowDrop = true;
-            tt.RootItems = EditorTypes;
-            VisualTreeViewModel.RootVisual = this;
         }
 
         public HashSet<Type> EditorSet { get; set; }

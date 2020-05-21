@@ -191,6 +191,8 @@ namespace KmDevWpfControls
             state.Node.ExpandedState = NodeExpandedState1.Expanded;
         }
 
+        public int ItemsCount { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -256,6 +258,7 @@ namespace KmDevWpfControls
         public NodeExpandedState1 ExpandedState { get; }
         public bool IsExpanded { get; }
         public NodeDataLoadState1 DataState { get; set; }
+        public int ItemsCount { get; set; }
 
         public Task<IDataObject> CheckLoadItemsAsync()
         {

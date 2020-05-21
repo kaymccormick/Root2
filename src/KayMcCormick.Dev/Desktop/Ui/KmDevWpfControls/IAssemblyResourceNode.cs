@@ -40,6 +40,8 @@ namespace KmDevWpfControls
         /// </summary>
         NodeDataLoadState1 DataState { get; set; }
 
+        int ItemsCount { get; set; }
+
         /// <summary>
         /// 
         /// </summary>

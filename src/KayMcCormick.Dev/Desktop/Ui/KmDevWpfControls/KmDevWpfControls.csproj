@@ -41,7 +41,7 @@
       <HintPath>..\..\..\packages\JetBrains.Annotations.2020.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+      <HintPath>..\..\..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Classic" />
     <Reference Include="System" />
@@ -97,9 +97,6 @@
     <Compile Include="ConverterViewer.cs" />
     <Compile Include="CustomToggleButton1.cs" />
     <Compile Include="GetTypeConverter1.cs" />
-    <Compile Include="HostedDockingManager.xaml.cs">
-      <DependentUpon>HostedDockingManager.xaml</DependentUpon>
-    </Compile>
     <Compile Include="HotedControl.cs" />
     <Compile Include="IAsyncExpand.cs" />
     <Compile Include="MethodInfoConverter1.cs" />
@@ -119,10 +116,9 @@
     <Compile Include="VisualTreeNode.cs" />
     <Compile Include="VisualTreeView1.cs" />
     <Compile Include="VisualTreeViewModel.cs" />
-    <Page Include="HostedDockingManager.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="VisualTreeViewWindow.xaml.cs">
+      <DependentUpon>VisualTreeViewWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -130,6 +126,10 @@
     <Compile Include="CustomControl1.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="VisualTreeViewWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomTreeView.cs" />
@@ -161,12 +161,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\..\AvalonDock\source\Components\AvalonDock\AvalonDock.csproj">
-      <Project>{11221345-BC85-488C-8E5C-395C0F848682}</Project>
-      <Name>AvalonDock</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

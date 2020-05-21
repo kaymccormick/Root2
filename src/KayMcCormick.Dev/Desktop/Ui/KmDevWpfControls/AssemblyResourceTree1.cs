@@ -167,7 +167,7 @@ namespace KmDevWpfControls
                 var itemFromContainer = _treeView.ItemContainerGenerator.ItemFromContainer(dependencyObject);
                 if (!(itemFromContainer is IAssemblyResourceNode node)) return;
                 //Debug.WriteLine("param is " + node);
-                if (node.Items.Any() && node.ExpandedState != NodeExpandedState1.Expanded)
+                if (node.ItemsCount != 0 && node.ExpandedState != NodeExpandedState1.Expanded)
                     //  Debug.WriteLine("can execute");
                     e.CanExecute = true;
                 else if (node.ExpandedState == NodeExpandedState1.Expanded) e.CanExecute = true;

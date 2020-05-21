@@ -17,64 +17,61 @@ namespace WpfUiTests
         [WpfFact]
         public void Test1()
         {
-            List<object> items = new List<object> {"test"};
-            Grid g = new Grid();
-            
-            CustomTreeView t1 = new CustomTreeView();
+            var items = new List<object> {"test"};
+            var g = new Grid();
+
+            var t1 = new CustomTreeView();
             g.Children.Add(t1);
             g.RenderTransform = new ScaleTransform(2, 2);
             t1.ItemsSource = items;
-            Window w = new Window {Content = g};
+            var w = new Window {Content = g};
             w.ShowDialog();
         }
-
 
 
         [WpfFact]
         public void TestAssembliesControl()
         {
             var ac = new AssembliesControl1();
-            Grid g = new Grid();
+            var g = new Grid();
             g.Children.Add(ac);
             //g.RenderTransform = new ScaleTransform(2, 2);
-            Window w = new Window { Content = g, FontSize = 20.0 };
+            var w = new Window {Content = g, FontSize = 20.0};
             w.ShowDialog();
         }
 
         [WpfFact]
         public void TestAssemblyResourcesTree1()
         {
-            var ac = new AssemblyResourceTree1 {Assembly = typeof(KmDevWpfControls.AssembliesControl1).Assembly};
-            Grid g = new Grid();
+            var ac = new AssemblyResourceTree1 {Assembly = typeof(AssembliesControl1).Assembly};
+            var g = new Grid();
             g.Children.Add(ac);
             //g.RenderTransform = new ScaleTransform(2, 2);
-            Window w = new Window { Content = g, FontSize = 20.0 };
+            var w = new Window {Content = g, FontSize = 20.0};
             w.ShowDialog();
         }
+
         [WpfFact]
         public void TestVisualTreeView1()
         {
             var ac = new VisualTreeView1();
-            Grid g = new Grid();
+            var g = new Grid();
             g.Children.Add(ac);
             //g.RenderTransform = new ScaleTransform(2, 2);
-            Window w = new Window { Content = g, FontSize = 20.0 };
-       
-            var m = new VisualTreeViewModel();
-            m.RootVisual = w;
-        ac.SetBinding(VisualTreeView1.RootVisualProperty, new Binding("CurrentVisual") { Source =m});
+            var w = new Window {Content = g, FontSize = 20.0};
+
+            var m = new VisualTreeViewModel {RootVisual = w};
+            ac.SetBinding(VisualTreeView1.RootVisualProperty, new Binding("CurrentVisual") {Source = m});
 
             w.ShowDialog();
-
         }
 
         [WpfFact]
-        public void TestTypeDetailscontrol1()
+        public void TestTypeDetailsControl1()
         {
             var td = new TypeDetailsControl() {Type = typeof(TypeDetailsControl)};
-            Window w = new Window {Content = td};
+            var w = new Window {Content = td};
             w.ShowDialog();
-
         }
     }
 }

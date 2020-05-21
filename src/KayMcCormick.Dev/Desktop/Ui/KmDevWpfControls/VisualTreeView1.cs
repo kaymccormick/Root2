@@ -94,7 +94,7 @@ namespace KmDevWpfControls
         }
         public VisualTreeView1()
         {
-            SetBinding(RootItemsProperty, new Binding("RootVisual") {Source = this,Converter = _vc});
+//            SetBinding(RootItemsProperty, new Binding("RootVisual") {Source = this,Converter = _vc});
 //            RootItems.Add(new VisualTreeNode{Visual = Window.GetWindow(this)});
             CommandBindings.Add(new CommandBinding(CustomTreeView.ToggleNodeIsExpanded, OnToggleExecuted));
         }
