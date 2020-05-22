@@ -16,5 +16,6 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="eNewItems"></param>
         void AppendRange(IEnumerable eNewItems);
+        void SetSource(IEnumerable source);
     }
 }

@@ -185,7 +185,7 @@ namespace KayMcCormick.Lib.Wpf
         /// </summary>
         protected virtual void SetupTracing ( )
         {
-
+            return;
             bool TraceAll = false;
             bool tracenone = false;
             PresentationTraceSources.Refresh ( ) ;

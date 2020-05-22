@@ -164,7 +164,7 @@ namespace AnalysisControls
         }
     }
 
-    public interface IReadWriteTextSource
+    public interface IReadWriteTextSource : ICustomTextSource
     {
     }
 }

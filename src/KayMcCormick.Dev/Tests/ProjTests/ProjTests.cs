@@ -2748,16 +2748,6 @@ namespace ProjTests
 
         }
 
-        [WpfFact]
-        public void TestTree1()
-        {
-            VisualTreeView v = new VisualTreeView();
-            //v.RenderTransform = new ScaleTransform(2, 2);
-            //ScrollViewer s = new ScrollViewer() {Content = v};
-            Window w = new Window {Content = v, FontSize= 20};
-	    //v.RootItems.Add(new VisualTreeNode { Visual = w });
-            w.ShowDialog();
-        }
 
 
         [WpfFact]

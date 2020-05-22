@@ -98,6 +98,6 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <param name="source"></param>
-        void SetSource(IEnumerable source);
+            
     }
 }

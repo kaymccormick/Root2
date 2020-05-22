@@ -32,7 +32,7 @@ namespace TestApp
     /// </summary>
     internal sealed partial class App : Application
     {
-        private TextControl _textControl;
+        private ElementTextFormatterControl _elementTextFormatterControl;
 
         public App ( ) {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException;
@@ -62,13 +62,13 @@ namespace TestApp
             listenerTypes.Add(typeof(TestListener));
             ObservableCollection<TraceEntry> s = new ObservableCollection<TraceEntry>();
             
-            _textControl = new TextControl()
+            _elementTextFormatterControl = new ElementTextFormatterControl()
             {
                 ElementType = typeof(TraceEntry),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
-            _textControl.SetValue(TextControl.ProcessActionProperty, new GenericTextSource<TraceEntry>.ProcessDelegate((GenericTextSource<TraceEntry> src, TraceEntry x) =>
+            _elementTextFormatterControl.SetValue(ElementTextFormatterControl.ProcessActionProperty, new GenericTextSource<TraceEntry>.ProcessDelegate((GenericTextSource<TraceEntry> src, TraceEntry x) =>
             {
                 var b = src.BasicProps();
                 src.AddTextRun(new CustomTextCharacters(x.Data.ToString(),
@@ -85,8 +85,8 @@ namespace TestApp
             
             var td = new TraceView() { ListenerTypes = listenerTypes };
             g.Children.Add(td);
-            g.Children.Add(_textControl);
-            _textControl.SetValue(Grid.RowProperty, 1);
+            g.Children.Add(_elementTextFormatterControl);
+            _elementTextFormatterControl.SetValue(Grid.RowProperty, 1);
             td.TraceListenerCreated += TdOnTraceListenerCreated;
 
             Window w = new Window { Content = g, FontSize = 20 };
@@ -205,7 +205,7 @@ namespace TestApp
 
             if (e.Instance is TestListener t)
             {
-                _textControl.Source = t.Elements;
+                _elementTextFormatterControl.Source = t.Elements;
             }
         }
 

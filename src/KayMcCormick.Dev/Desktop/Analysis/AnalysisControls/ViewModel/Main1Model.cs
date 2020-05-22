@@ -241,7 +241,7 @@ namespace AnalysisControls.ViewModel
 
         private void AddVisualTreeViewDoc()
         {
-            var c = new VisualTreeView();
+            var c = new VisualTreeView1();
             var doc = DocModel.CreateInstance();
             doc.Title = "Visual Tree View";
             doc.Content = c;

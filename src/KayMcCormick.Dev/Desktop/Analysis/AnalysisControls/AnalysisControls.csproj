@@ -336,6 +336,7 @@
     <Compile Include="TextSource0.cs" />
     <Compile Include="TextSourceService.cs" />
     <Compile Include="TraceEntry.cs" />
+    <Compile Include="TypeDescriptorsModule.cs" />
     <Compile Include="TypeDescriptors\AnalysisCustomTypeDescriptor.cs" />
     <Compile Include="TypeDescriptors\ControlsProvider.cs" />
     <Compile Include="TypeDescriptors\CustomTypes.cs" />
@@ -351,7 +352,6 @@
     <Compile Include="ViewModel\ComponentTypesViewModel.cs" />
     <Compile Include="ViewModel\Main1Model.cs" />
     <Compile Include="VisibileIfNotVisible.cs" />
-    <Compile Include="VisualTreeView.cs" />
     <Compile Include="WorkspaceControl.xaml.cs">
       <DependentUpon>WorkspaceControl.xaml</DependentUpon>
     </Compile>

@@ -13,11 +13,13 @@ using CommandLine;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Application;
+using KayMcCormick.Dev.Container;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
 using NLog;
 using NLog.Targets;
 using static NLog.LogManager ;
+using Module = Autofac.Module;
 
 namespace Client2
 {
@@ -38,7 +40,7 @@ namespace Client2
                 , disableLogging
                 , disableRuntimeConfiguration
                 , disableServiceHost
-                , new IModule[] { new Client2Module ( ) , new AnalysisControlsModule ( ) }
+                , new IModule[] { new Client2Module(),new Client2Module1 ( ) , new AnalysisControlsModule ( ), new TypeDescriptorsModule(),  }
                 , ( ) => PopulateJsonConverters ( disableLogging )
                  )
 
@@ -187,6 +189,7 @@ namespace Client2
                              messageText
                            , applicationError
                            , MessageBoxButton.OK
+  
                            , MessageBoxImage.Error
                             ) ;
         }
@@ -197,5 +200,17 @@ namespace Client2
             return TryFindResource ( resourceKey ) ;
         }
         #endregion
+    }
+
+    internal class Client2Module :Module
+    {
+        /// <inheritdoc />
+        protected override void Load(ContainerBuilder builder)
+        {
+             builder.Register((c) =>
+                    new Client2Window1(c.Resolve<ILifetimeScope>(), c.Resolve<ClientModel>(),
+                        c.ResolveOptional<MyCacheTarget2>()))
+                                .As<Window>().WithCallerMetadata();
+        }
     }
 }

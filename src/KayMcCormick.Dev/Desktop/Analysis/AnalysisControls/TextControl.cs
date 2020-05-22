@@ -203,7 +203,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public IAppendableTextSource Store { get; private set; }
+        public IReadWriteTextSource Store { get; private set; }
 
         private DrawingBrush _myDrawingBrush = new DrawingBrush();
         private DrawingGroup _textDest = new DrawingGroup();
@@ -266,8 +266,8 @@ namespace AnalysisControls
             if (!UiLoaded)
                 return false;
 
-            var ii = Activator.CreateInstance(typeof(GenericTextSource<>).MakeGenericType(ElementType));
-            Store = (IAppendableTextSource) ii;
+            
+            Store = (IReadWriteTextSource) new TextSource0();
             
             Store.EmSize = EmSize;
             
@@ -436,22 +436,6 @@ namespace AnalysisControls
                 return _paraProps;
             }
             set { _paraProps = value; }
-        }
-
-        public static readonly DependencyProperty ProcessActionProperty = DependencyProperty.Register(
-            "ProcessAction", typeof(object), typeof(TextControl), new PropertyMetadata(default(Delegate), OnProcessActionChanged));
-
-
-        private static void OnProcessActionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((TextControl) d).OnProcessActionChanged((Delegate) e.OldValue, (Delegate) e.NewValue);
-        }
-
-
-
-        protected virtual void OnProcessActionChanged(Delegate oldValue, Delegate newValue)
-        {
-            ((ITextSourceProcess)    Store)?.SetProcess(newValue);
         }
 
         private FontFamily _fontFamily;

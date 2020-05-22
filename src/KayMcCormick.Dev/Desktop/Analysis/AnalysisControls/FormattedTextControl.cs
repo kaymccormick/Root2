@@ -1233,12 +1233,6 @@ namespace AnalysisControls
         }
 
         /// <inheritdoc />
-        protected override AutomationPeer OnCreateAutomationPeer()
-        {
-            return new CodeAutomationPeer(this);
-        }
-
-        /// <inheritdoc />
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             IsSelecting = false;
@@ -1281,7 +1275,10 @@ namespace AnalysisControls
 
        
     }
-
+    #if false
+    /// <summary>
+    /// 
+    /// </summary>
     public class CodeAutomationPeer : TextAutomationPeer
     {
         public CodeAutomationPeer(FormattedTextControl formattedTextControl): base(formattedTextControl)
@@ -1347,4 +1344,5 @@ namespace AnalysisControls
             return base.GetPattern(patternInterface);
         }
     }
+#endif
 }
