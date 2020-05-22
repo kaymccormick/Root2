@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -1232,6 +1233,12 @@ namespace AnalysisControls
         }
 
         /// <inheritdoc />
+        protected override AutomationPeer OnCreateAutomationPeer()
+        {
+            return new CodeAutomationPeer(this);
+        }
+
+        /// <inheritdoc />
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             IsSelecting = false;
@@ -1273,5 +1280,71 @@ namespace AnalysisControls
         }
 
        
+    }
+
+    public class CodeAutomationPeer : TextAutomationPeer
+    {
+        public CodeAutomationPeer(FormattedTextControl formattedTextControl): base(formattedTextControl)
+        {
+        }
+
+        /// <inheritdoc />
+        protected override AutomationControlType GetAutomationControlTypeCore()
+        {
+            return AutomationControlType.Document;
+        }
+
+        /// <inheritdoc />
+        public override object GetPattern(PatternInterface patternInterface)
+        {
+            switch (patternInterface)
+            {
+                case PatternInterface.Invoke:
+                    break;
+                case PatternInterface.Selection:
+                    break;
+                case PatternInterface.Value:
+                    break;
+                case PatternInterface.RangeValue:
+                    break;
+                case PatternInterface.Scroll:
+                    break;
+                case PatternInterface.ScrollItem:
+                    break;
+                case PatternInterface.ExpandCollapse:
+                    break;
+                case PatternInterface.Grid:
+                    break;
+                case PatternInterface.GridItem:
+                    break;
+                case PatternInterface.MultipleView:
+                    break;
+                case PatternInterface.Window:
+                    break;
+                case PatternInterface.SelectionItem:
+                    break;
+                case PatternInterface.Dock:
+                    break;
+                case PatternInterface.Table:
+                    break;
+                case PatternInterface.TableItem:
+                    break;
+                case PatternInterface.Toggle:
+                    break;
+                case PatternInterface.Transform:
+                    break;
+                case PatternInterface.Text:
+                    break;
+                case PatternInterface.ItemContainer:
+                    break;
+                case PatternInterface.VirtualizedItem:
+                    break;
+                case PatternInterface.SynchronizedInput:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(patternInterface), patternInterface, null);
+            }
+            return base.GetPattern(patternInterface);
+        }
     }
 }

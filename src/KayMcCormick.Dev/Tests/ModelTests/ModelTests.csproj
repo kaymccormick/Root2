@@ -98,13 +98,13 @@
       <Version>16.6.13</Version>
     </PackageReference>
     <PackageReference Include="Moq">
-      <Version>4.13.1</Version>
+      <Version>4.14.1</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
       <Version>4.7.2</Version>
     </PackageReference>
     <PackageReference Include="System.Threading.Tasks.Dataflow">
-      <Version>4.11.0</Version>
+      <Version>4.11.1</Version>
     </PackageReference>
     <PackageReference Include="System.Threading.Tasks.Extensions">
       <Version>4.5.4</Version>

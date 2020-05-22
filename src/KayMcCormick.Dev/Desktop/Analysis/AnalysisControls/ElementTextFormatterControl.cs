@@ -20,10 +20,78 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class TextControl : Control, ILineDrawer
+    public class ElementTextFormatterControl : Control, ILineDrawer
     {
 
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
+            "Source", typeof(IEnumerable), typeof(ElementTextFormatterControl), new PropertyMetadata(default(IEnumerable), OnSourceChanged));
+
+        public IEnumerable Source
+        {
+            get { return (IEnumerable) GetValue(SourceProperty); }
+            set { SetValue(SourceProperty, value); }
+        }
+
+        private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((ElementTextFormatterControl) d).OnSourceChanged((IEnumerable) e.OldValue, (IEnumerable) e.NewValue);
+        }
+
+
+
+        protected virtual void OnSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+        {
+            if(oldValue != null)
+            {
+                var oldview = CollectionViewSource.GetDefaultView(newValue);
+                if (oldview != null)
+                {
+                    oldview.CollectionChanged -= ViewOnCollectionChanged;
+                }
+
+            }
+            var view = CollectionViewSource.GetDefaultView(newValue);
+            if (view != null)
+            {
+                view.CollectionChanged += ViewOnCollectionChanged;
+            }
+        }
+
+     
+     
+
+        private void ViewOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    if (e.NewStartingIndex + e.NewItems.Count == Source.Cast<object>().Count())
+                    {
+                        if (Store != null)
+                        {
+                            ((IAppendableTextSource) Store).AppendRange(e.NewItems);
+                            UpdateFormattedTextPartial();
+                        }
+                    }
+
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         private void UpdateFormattedTextPartial()
         {
             DebugUtils.WriteLine(nameof(UpdateFormattedText));
@@ -219,26 +287,26 @@ namespace AnalysisControls
         /// </summary>
         protected double MaxY { get; set; }
 
-        static TextControl()
+        static ElementTextFormatterControl()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(TextControl),
-                new FrameworkPropertyMetadata(typeof(TextControl)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ElementTextFormatterControl),
+                new FrameworkPropertyMetadata(typeof(ElementTextFormatterControl)));
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public TextControl()
+        public ElementTextFormatterControl()
 
         {
             PixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
         }
 
         public static readonly DependencyProperty DisplaySymbolProperty = DependencyProperty.Register(
-            "DisplaySymbol", typeof(ISymbol), typeof(TextControl), new PropertyMetadata(default(ISymbol)));
+            "DisplaySymbol", typeof(ISymbol), typeof(ElementTextFormatterControl), new PropertyMetadata(default(ISymbol)));
 
         public static readonly DependencyProperty ElementTypeProperty = DependencyProperty.Register(
-            "ElementType", typeof(Type), typeof(TextControl), new PropertyMetadata(default(Type), OnElementTypeChanged));
+            "ElementType", typeof(Type), typeof(ElementTextFormatterControl), new PropertyMetadata(default(Type), OnElementTypeChanged));
 
         public Type ElementType
         {
@@ -248,7 +316,7 @@ namespace AnalysisControls
 
         private static void OnElementTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((TextControl) d).OnElementTypeChanged((Type) e.OldValue, (Type) e.NewValue);
+            ((ElementTextFormatterControl) d).OnElementTypeChanged((Type) e.OldValue, (Type) e.NewValue);
         }
 
 
@@ -268,9 +336,11 @@ namespace AnalysisControls
 
             var ii = Activator.CreateInstance(typeof(GenericTextSource<>).MakeGenericType(ElementType));
             Store = (IAppendableTextSource) ii;
-            
+            ((ITextSourceProcess) Store).SetProcess((Delegate) GetValue(ProcessActionProperty));
             Store.EmSize = EmSize;
-            
+            if (Source == null)
+                return false;
+            Store.SetSource(Source); 
             Store.Init();
             _baseProps = Store.BaseProps;
             return UpdateFormattedText();
@@ -382,7 +452,7 @@ namespace AnalysisControls
             }
             _updatingTabs = false;
 
-            MaxX = maxX;
+                MaxX = maxX;
             MaxY = maxY;
             _rectangle.Width = maxX;
             _rectangle.Height = maxY;
@@ -439,12 +509,12 @@ namespace AnalysisControls
         }
 
         public static readonly DependencyProperty ProcessActionProperty = DependencyProperty.Register(
-            "ProcessAction", typeof(object), typeof(TextControl), new PropertyMetadata(default(Delegate), OnProcessActionChanged));
+            "ProcessAction", typeof(object), typeof(ElementTextFormatterControl), new PropertyMetadata(default(Delegate), OnProcessActionChanged));
 
 
         private static void OnProcessActionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((TextControl) d).OnProcessActionChanged((Delegate) e.OldValue, (Delegate) e.NewValue);
+            ((ElementTextFormatterControl) d).OnProcessActionChanged((Delegate) e.OldValue, (Delegate) e.NewValue);
         }
 
 

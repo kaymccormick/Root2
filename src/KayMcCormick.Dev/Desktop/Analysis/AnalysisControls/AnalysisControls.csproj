@@ -330,8 +330,10 @@
     <Compile Include="TestListener.cs" />
     <Compile Include="TestProperty1.cs" />
     <Compile Include="TextCaret.cs" />
+    <Compile Include="ElementTextFormatterControl.cs" />
     <Compile Include="TextControl.cs" />
     <Compile Include="TextPropertiesManager.cs" />
+    <Compile Include="TextSource0.cs" />
     <Compile Include="TextSourceService.cs" />
     <Compile Include="TraceEntry.cs" />
     <Compile Include="TypeDescriptors\AnalysisCustomTypeDescriptor.cs" />
@@ -588,6 +590,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime">
       <Version>16.5.0</Version>
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Locator">
       <Version>1.2.6</Version>
@@ -611,13 +614,13 @@
       <Version>16.6.13</Version>
     </PackageReference>
     <PackageReference Include="Moq">
-      <Version>4.13.1</Version>
+      <Version>4.14.1</Version>
     </PackageReference>
     <PackageReference Include="ReactiveUI.WPF">
-      <Version>11.3.7</Version>
+      <Version>11.4.1</Version>
     </PackageReference>
     <PackageReference Include="System.Composition.AttributedModel">
-      <Version>1.0.31</Version>
+      <Version>1.4.1</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
       <Version>4.7.1</Version>

@@ -177,7 +177,7 @@ namespace ProjTests
         private string solutionPath =
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\ManagedProd.sln";
 
-        private TextControl _textControl;
+        private ElementTextFormatterControl _elementTextFormatterControl;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests(
@@ -2765,12 +2765,12 @@ namespace ProjTests
         {
             ObservableCollection<TestElement> s = new ObservableCollection<TestElement>();
             s.Add(new TestElement(){Text="poo"});
-            TextControl t = new TextControl()
+            ElementTextFormatterControl t = new ElementTextFormatterControl()
             {
                 Source = s, ElementType = typeof(TestElement), HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
-            t.SetValue(TextControl.ProcessActionProperty, new GenericTextSource<TestElement>.ProcessDelegate((GenericTextSource<TestElement> src, TestElement x) =>
+            t.SetValue(ElementTextFormatterControl.ProcessActionProperty, new GenericTextSource<TestElement>.ProcessDelegate((GenericTextSource<TestElement> src, TestElement x) =>
             {
                 var b = src.BasicProps();
                 src.AddTextRun(new CustomTextCharacters(x.Text,
@@ -2805,13 +2805,13 @@ namespace ProjTests
             listenerTypes.Add(typeof(TestListener));
             ObservableCollection<TraceEntry> s = new ObservableCollection<TraceEntry>();
             
-            _textControl = new TextControl()
+            _elementTextFormatterControl = new ElementTextFormatterControl()
             {
                 ElementType = typeof(TraceEntry),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
-            _textControl.SetValue(TextControl.ProcessActionProperty, new GenericTextSource<TraceEntry>.ProcessDelegate((GenericTextSource<TraceEntry> src, TraceEntry x) =>
+            _elementTextFormatterControl.SetValue(ElementTextFormatterControl.ProcessActionProperty, new GenericTextSource<TraceEntry>.ProcessDelegate((GenericTextSource<TraceEntry> src, TraceEntry x) =>
             {
                 var b = src.BasicProps();
                 src.AddTextRun(new CustomTextCharacters(x.Data.ToString(), 
@@ -2825,9 +2825,24 @@ namespace ProjTests
             var td = new TraceView() {ListenerTypes = listenerTypes};
             td.TraceListenerCreated += TdOnTraceListenerCreated;
             p.Children.Add(td);
-            p.Children.Add(_textControl);
+            p.Children.Add(_elementTextFormatterControl);
 
             Window w = new Window { Content = p, FontSize = 20 };
+            w.ShowDialog();
+        }
+
+        [WpfFact]
+        public void TestTextControl1()
+        {
+            var tt = new TextControl()
+            {
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+            
+            //p.Children.Add(_elementTextFormatterControl);
+
+            Window w = new Window { Content = tt, FontSize = 20 };
             w.ShowDialog();
         }
 
@@ -2835,7 +2850,7 @@ namespace ProjTests
             {
                 if (e.Instance is TestListener t)
                 {
-                    _textControl.Source = t.Elements;
+                    _elementTextFormatterControl.Source = t.Elements;
                 }
         }
     }
