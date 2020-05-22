@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
+using JetBrains.Annotations;
 
 namespace AnalysisControls
 {
@@ -184,6 +185,24 @@ namespace AnalysisControls
         private readonly Brush _backgroundBrush;
         private readonly BaselineAlignment _baselineAlignment;
         private readonly CultureInfo _culture;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newRender"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public GenericTextRunProperties([NotNull] FontRendering newRender)
+        {
+            if (newRender == null) throw new ArgumentNullException(nameof(newRender));
+            _typeface = newRender.Typeface;
+            _emSize = newRender.FontSize;
+            _emHintingSize = newRender.FontSize;
+            _textDecorations = newRender.TextDecorations;
+            _foregroundBrush = newRender.TextColor;
+            _backgroundBrush = null;
+            _baselineAlignment = BaselineAlignment.Baseline;
+            _culture = CultureInfo.CurrentUICulture;
+        }
 
         #endregion
 

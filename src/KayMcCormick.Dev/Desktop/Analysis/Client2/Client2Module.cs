@@ -200,8 +200,6 @@ namespace Client2
                 .WithAttributeFiltering();
             builder.RegisterType<CodeAnalysisContextualTabGroupProvider>().AsImplementedInterfaces()
                 .WithCallerMetadata();
-            builder.RegisterType<AssembliesRibbonTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
-            builder.RegisterType<DerpTab>().As<RibbonModelTab>().SingleInstance().WithAttributeFiltering();
             builder.RegisterType<AssembliesTypesGroup>().As<RibbonModelGroup>().SingleInstance()
                 .WithAttributeFiltering();
             builder.RegisterType<DisplayableAppCommandGroup>().As<RibbonModelGroup>().SingleInstance()

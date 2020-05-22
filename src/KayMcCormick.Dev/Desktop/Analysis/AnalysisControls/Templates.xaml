@@ -17,9 +17,7 @@
   xmlns:operations="clr-namespace:Microsoft.CodeAnalysis.Operations;assembly=Microsoft.CodeAnalysis">
   <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter"/>
   <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
-  <DataTemplate DataType="{x:Type system:Type}">
-  <analysisControls:CustomControl2 Type="{Binding}"></analysisControls:CustomControl2>
-</DataTemplate>
+ 
   <DataTemplate DataType="{x:Type system:DateTime}">
     <TextBlock Text="{Binding}"/>
   </DataTemplate>

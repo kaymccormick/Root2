@@ -37,5 +37,9 @@ namespace AnalysisControls
         public CustomTextEndOfLine(int length, TextRunProperties textRunProperties, TextSpan span) : base(length, textRunProperties)
         {
         }
+
+        public CustomTextEndOfLine(int length) : base(length)
+        {
+        }
     }
 }

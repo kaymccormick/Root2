@@ -2,6 +2,7 @@ using System ;
 using System.Text.Json ;
 using AnalysisAppLib ;
 using AnalysisAppLib.Serialization ;
+using AnalysisControls.Serialization;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev.Serialization ;
 using KayMcCormick.Lib.Wpf.JSON ;

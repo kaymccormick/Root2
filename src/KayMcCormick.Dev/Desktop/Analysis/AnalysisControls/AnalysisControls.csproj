@@ -96,7 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AllCommands.cs" />
-    <Compile Include="AnalysisCustomTypeDescriptor.cs" />
+    <Compile Include="IPropertiesAdapter.cs" />
     <Compile Include="AnalysisCommands.cs" />
     <Compile Include="AnalysisControlsModule.cs" />
     <Compile Include="AnchorableModel.cs" />
@@ -118,7 +118,6 @@
     <Compile Include="CodeDiagnostics.cs" />
     <Compile Include="CodeProps.cs" />
     <Compile Include="CodeRenderer.cs" />
-    <Compile Include="CodeRendererVisual.cs" />
     <Compile Include="CodeToolTipContent.cs" />
     <Compile Include="ComboBoxTemplateSelector.cs" />
     <Compile Include="CommandProgress.cs" />
@@ -127,7 +126,6 @@
     <Compile Include="CompilationControl.cs" />
     <Compile Include="CompilationError.cs" />
     <Compile Include="ControlsAppInstance.cs" />
-    <Compile Include="ControlsProvider.cs" />
     <Compile Include="Controls\TraceSourcesView.cs" />
     <Compile Include="ControlView.cs" />
     <Compile Include="ConversionUtils.cs" />
@@ -150,7 +148,6 @@
     <Compile Include="CustomToggleButton.cs" />
     <Compile Include="CustomTreeView.cs" />
     <Compile Include="CustomTreeViewItem.cs" />
-    <Compile Include="CustomTypes.cs" />
     <Compile Include="DataLoadStrategy.cs" />
     <Compile Include="DefaultTypefaceManager.cs" />
     <Compile Include="DevTypeControl.cs" />
@@ -180,17 +177,22 @@
     <Compile Include="FormattingHelper.cs" />
     <Compile Include="GenericTextParagraphProperties.cs" />
     <Compile Include="GenericTextRunProperties.cs" />
+    <Compile Include="GenericTextSource.cs" />
     <Compile Include="GuidConverter.cs" />
     <Compile Include="IAppControl.cs" />
     <Compile Include="IAppCustomControl.cs" />
+    <Compile Include="IAppendableTextSource.cs" />
     <Compile Include="IClientModel.cs" />
     <Compile Include="ICustomSpan.cs" />
+    <Compile Include="ICustomTextSource.cs" />
+    <Compile Include="ILineDrawer.cs" />
     <Compile Include="INodeData.cs" />
     <Compile Include="InputBindingsManager.cs" />
     <Compile Include="Interfaces\INodePanel.cs" />
     <Compile Include="Interfaces\ISpanToolTip.cs" />
     <Compile Include="IReadWriteTextRunProperties.cs" />
     <Compile Include="IRibbonModelProvider.cs" />
+    <Compile Include="ISyntaxTextSource.cs" />
     <Compile Include="ITextPropertiesManager.cs" />
     <Compile Include="ITypefaceManager.cs" />
     <Compile Include="JsonConverters.cs" />
@@ -268,6 +270,7 @@
     <Compile Include="RibbonViewGroupProviderBaseImpl.cs" />
     <Compile Include="RibbonModel\Definition\SuperGroup.cs" />
     <Compile Include="RootNode.cs" />
+    <Compile Include="Serialization\JsonSimpleFrameworkElementConverterFactory.cs" />
     <Compile Include="Subnode.cs" />
     <Compile Include="SubnodeData.cs" />
     <Compile Include="SuperGRoup.cs" />
@@ -294,8 +297,6 @@
     <Compile Include="RibbonModel\RibbonModelTab.cs" />
     <Compile Include="RibbonModel\RibbonModelGroup.cs" />
     <Compile Include="RibbonModel\RibbonTabHeaderAttribute.cs" />
-    <Compile Include="Ribbon\AssembliesRibbonTab.cs" />
-    <Compile Include="RibbonModel\DerpTab.cs" />
     <Compile Include="RWindow.xaml.cs">
       <DependentUpon>RWindow.xaml</DependentUpon>
     </Compile>
@@ -319,6 +320,7 @@
     <Compile Include="SyntaxTypeComboBox.cs" />
     <Compile Include="SyntaxWalker2.cs" />
     <Compile Include="SyntaxWalkerF.cs" />
+    <Compile Include="TabTextRun.cs" />
     <Compile Include="TaskState.cs" />
     <Compile Include="TemplateWindow.xaml.cs">
       <DependentUpon>TemplateWindow.xaml</DependentUpon>
@@ -326,12 +328,19 @@
     <Compile Include="TempLoadData.cs" />
     <Compile Include="TempLoadData11.cs" />
     <Compile Include="TestConverter2.cs" />
+    <Compile Include="TestListener.cs" />
+    <Compile Include="TestProperty1.cs" />
     <Compile Include="TextCaret.cs" />
+    <Compile Include="TextControl.cs" />
     <Compile Include="TextPropertiesManager.cs" />
     <Compile Include="TextSourceService.cs" />
+    <Compile Include="TraceEntry.cs" />
+    <Compile Include="TypeDescriptors\AnalysisCustomTypeDescriptor.cs" />
+    <Compile Include="TypeDescriptors\ControlsProvider.cs" />
+    <Compile Include="TypeDescriptors\CustomTypes.cs" />
+    <Compile Include="TypeDescriptors\UiElementTypeConverter.cs" />
     <Compile Include="TypesViewModelFactory.cs" />
     <Compile Include="UiConverter.cs" />
-    <Compile Include="UiElementTypeConverter.cs" />
     <Compile Include="UserControl1.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -350,7 +359,6 @@
     <Compile Include="XamlFuncs.cs" />
     <Compile Include="XmlDocElements.cs" />
     <EmbeddedResource Include="Program-Parse.cs" />
-    <Compile Include="JsonSimpleFrameworkElementConverter.cs" />
     <Compile Include="ProvideCompilationUnitSyntax.cs" />
     <Compile Include="PythonControl.xaml.cs">
       <DependentUpon>PythonControl.xaml</DependentUpon>

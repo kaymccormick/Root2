@@ -282,14 +282,6 @@ namespace AnalysisControls
             PixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
         }
 
-        public static readonly DependencyProperty DisplaySymbolProperty = DependencyProperty.Register(
-            "DisplaySymbol", typeof(ISymbol), typeof(LogEventInstancesControl), new PropertyMetadata(default(ISymbol)));
-
-        public ISymbol DisplaySymbol
-        {
-            get { return (ISymbol) GetValue(DisplaySymbolProperty); }
-            set { SetValue(DisplaySymbolProperty, value); }
-        }
         /// <summary>
         /// 
         /// </summary>

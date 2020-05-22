@@ -79,6 +79,7 @@ using AvalonDock.Themes;
 using Castle.DynamicProxy;
 using CsvHelper;
 using CsvHelper.Excel;
+
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Application;
@@ -91,6 +92,7 @@ using KayMcCormick.Lib.Wpf;
 using KayMcCormick.Lib.Wpf.Command;
 using KayMcCormick.Lib.Wpf.JSON;
 using KayMcCormick.Lib.Wpf.ViewModel;
+using KmDevWpfControls;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -103,6 +105,7 @@ using Binding = System.Windows.Data.Binding;
 using Button = System.Windows.Controls.Button;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using Condition = System.Windows.Automation.Condition;
+using ConversionUtils = AnalysisControls.ConversionUtils;
 using File = System.IO.File;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using ListBox = System.Windows.Controls.ListBox;
@@ -111,6 +114,7 @@ using Orientation = System.Windows.Controls.Orientation;
 using Process = System.Diagnostics.Process;
 using RegionInfo = AnalysisControls.RegionInfo;
 using String = System.String;
+using TablePanel = KayMcCormick.Lib.Wpf.TablePanel;
 using TextBlock = System.Windows.Controls.TextBlock;
 using Window = System.Windows.Window;
 using XamlReader = System.Windows.Markup.XamlReader;
@@ -171,6 +175,8 @@ namespace ProjTests
 
         private string solutionPath =
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\ManagedProd.sln";
+
+        private TextControl _textControl;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests(
@@ -236,6 +242,34 @@ namespace ProjTests
                 );
                 var substType =
                     XmlDocElements.SubstituteType(field, typeSyntax, cMap, model);
+            }
+        }
+        [WpfFact]
+        public void TestProviderView()
+        {
+            using (var instance = new ApplicationInstance(
+                new ApplicationInstance.
+                    ApplicationInstanceConfiguration(
+                        _output
+                            .WriteLine
+                        , ApplicationGuid
+                    )
+            ))
+            {
+                instance.AddModule(new AnalysisControlsModule());
+                instance.AddModule(new AnalysisAppLibModule());
+                instance.Initialize();
+                var lifetimeScope = instance.GetLifetimeScope();
+                var provider = lifetimeScope.Resolve<ControlsProvider>();
+                foreach (var providerType in provider.Types)
+                {
+                    DebugUtils.WriteLine(providerType.FullName);
+                    TypeDescriptor.AddProvider(provider, providerType);
+                }
+                TypeProviderUserControl d = new TypeProviderUserControl();
+                Window w = new Window {Content = d};
+                w.ShowDialog();
+
             }
         }
 
@@ -2110,7 +2144,7 @@ namespace ProjTests
             var t = p.ProvideModelItem();
             m.RibbonItems.Add(t);
             var x = new RibbonViewGroupProviderBaseImpl();
-            t.Items.Add(x.ProvideModelItem());
+            t.ItemsCollection.Add(x.ProvideModelItem());
             var window = new TemplateWindow();
             window.Content = new Ribbon {ItemsSource = m.RibbonItems};
             window.ShowDialog();
@@ -2661,7 +2695,7 @@ namespace ProjTests
             var tabs = new List<RibbonModelTab>();
             var tab1 = new RibbonModelTab() {Header = "tab1"};
             RibbonModelGroup group1 = new RibbonModelGroup(){Header="GRoup 1"};
-            tab1.Items.Add(group1);
+            tab1.ItemsCollection.Add(group1);
             var tab2 = new RibbonModelTab() { Header = "tab2", ContextualTabGroupHeader = ctxTabGroup.Header};
             tabs.Add(tab1);
             tabs.Add(tab2);
@@ -2724,6 +2758,30 @@ namespace ProjTests
             w.ShowDialog();
         }
 
+
+        [WpfFact]
+        public void TestText1()
+        {
+            ObservableCollection<TestElement> s = new ObservableCollection<TestElement>();
+            s.Add(new TestElement(){Text="poo"});
+            TextControl t = new TextControl()
+            {
+                Source = s, ElementType = typeof(TestElement), HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+            t.SetValue(TextControl.ProcessActionProperty, new GenericTextSource<TestElement>.ProcessDelegate((GenericTextSource<TestElement> src, TestElement x) =>
+            {
+                var b = src.BasicProps();
+                src.AddTextRun(new CustomTextCharacters(x.Text,
+                    new BasicTextRunProperties(b)));
+
+            }));
+            //v.RenderTransform = new ScaleTransform(2, 2);
+            //ScrollViewer s = new ScrollViewer() {Content = v};
+            Window w = new Window { Content = t, FontSize = 20 };
+            w.ShowDialog();
+        }
+
         [WpfFact]
         public void DockingTest()
         {
@@ -2738,5 +2796,51 @@ namespace ProjTests
             dm.AnchorablesSource = anchorables;
             w.ShowDialog();
         }
+        [WpfFact]
+        public void TestTraceView()
+        {
+            ObservableCollection<Type> listenerTypes = new ObservableCollection<Type>();
+            listenerTypes.Add(typeof(ConsoleTraceListener));
+            listenerTypes.Add(typeof(TestListener));
+            ObservableCollection<TraceEntry> s = new ObservableCollection<TraceEntry>();
+            
+            _textControl = new TextControl()
+            {
+                ElementType = typeof(TraceEntry),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+            _textControl.SetValue(TextControl.ProcessActionProperty, new GenericTextSource<TraceEntry>.ProcessDelegate((GenericTextSource<TraceEntry> src, TraceEntry x) =>
+            {
+                var b = src.BasicProps();
+                src.AddTextRun(new CustomTextCharacters(x.Data.ToString(), 
+                    new BasicTextRunProperties(b)));
+                src.AddTextRun(new CustomTextEndOfLine(2));
+
+            }));
+            //v.RenderTransform = new ScaleTransform(2, 2);
+            //ScrollViewer s = new ScrollViewer() {Content = v};
+            StackPanel p = new StackPanel();
+            var td = new TraceView() {ListenerTypes = listenerTypes};
+            td.TraceListenerCreated += TdOnTraceListenerCreated;
+            p.Children.Add(td);
+            p.Children.Add(_textControl);
+
+            Window w = new Window { Content = p, FontSize = 20 };
+            w.ShowDialog();
+        }
+
+        private void TdOnTraceListenerCreated(object sender, TraceListenerCreatedEventArgs e)
+            {
+                if (e.Instance is TestListener t)
+                {
+                    _textControl.Source = t.Elements;
+                }
+        }
+    }
+
+    public class TestElement
+    {
+        public string Text { get; set; }
     }
 }

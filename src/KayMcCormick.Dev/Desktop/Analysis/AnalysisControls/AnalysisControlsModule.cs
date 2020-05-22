@@ -32,6 +32,7 @@ using System.Windows.Markup;
 using System.Windows.Threading;
 using AnalysisAppLib;
 using AnalysisAppLib.ViewModel;
+using AnalysisControls.TypeDescriptors;
 using AnalysisControls.ViewModel;
 using AnalysisControls.Views;
 using Autofac;
@@ -66,9 +67,6 @@ namespace AnalysisControls
         protected override void Load(ContainerBuilder builder)
         {
 
-            builder.RegisterType<AssemblyResourceTree>().AsSelf().AsImplementedInterfaces();
-            builder.RegisterType<FormattedTextControl>().AsSelf().AsImplementedInterfaces();
-            builder.RegisterType<AssembliesControl>().AsSelf().AsImplementedInterfaces();
             builder.RegisterType<SyntaxNodeProperties>().AsImplementedInterfaces();
             builder.RegisterType<MiscInstanceInfoProvider>()
                 .AsSelf()
@@ -271,11 +269,6 @@ namespace AnalysisControls
                 .WithCallerMetadata();
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool RibbonFunc2 { get; set; }
 
         private IDisplayableAppCommand ControlViewCommandAdapter2(IComponentContext arg1, IEnumerable<Parameter> arg2,
             Meta<Lazy<IControlView>> arg3)

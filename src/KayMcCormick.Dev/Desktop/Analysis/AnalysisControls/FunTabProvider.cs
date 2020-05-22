@@ -31,7 +31,7 @@ namespace AnalysisControls
                     foreach (var ribbonModelProvider in _provs)
                     {
                         var item = ribbonModelProvider.ProvideModelItem();
-                        tab.Items.Add(item);
+                        tab.ItemsCollection.Add(item);
                     }
                 }
                 else

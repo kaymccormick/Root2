@@ -782,7 +782,7 @@ namespace AnalysisControls
                 new FontFamily("GlobalMonospace.CompositeFont"));
         }
 
-        public void PrepareDrawLines(LineContext lineContext)
+        public void PrepareDrawLines(LineContext lineContext, bool clear)
         {
         }
 

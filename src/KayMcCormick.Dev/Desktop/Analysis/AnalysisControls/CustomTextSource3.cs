@@ -22,108 +22,6 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public interface ICustomTextSource
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        Compilation Compilation { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        int Length { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        FontRendering FontRendering { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        SyntaxNode Node { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        SyntaxTree Tree { get; set; }
-
-        FontFamily Family { get; set; }
-        double EmSize { get; set; }
-        GenericTextRunProperties BaseProps { get; }
-        List<CompilationError> Errors { get; set; }
-        List<TextRun> ErrorRuns { get; }
-        int EolLength { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        FontRendering Rendering { get; set; }
-
-        double PixelsPerDip { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="textSourceCharacterIndex"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        TextRun GetTextRun(int textSourceCharacterIndex);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="textSourceCharacterIndexLimit"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        TextSpan<CultureSpecificCharacterBufferRange> GetPrecedingText(
-            int textSourceCharacterIndexLimit);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="textSourceCharacterIndex"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        int GetTextEffectCharacterIndexFromTextSourceCharacterIndex(int textSourceCharacterIndex);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        BasicTextRunProperties BasicProps();
-
-        TextRunProperties PropsFor(SymbolDisplayPart symbolDisplayPart, ISymbol symbol);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="trivia"></param>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        TextRunProperties PropsFor(in SyntaxTrivia trivia, string text);
-
-        void GenerateText();
-        TextRunProperties MakeProperties(object arg, string text);
-        void TakeTextRun(TextRun obj);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="token"></param>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        TextRunProperties PropsFor(SyntaxToken token, string text);
-
-        void Init();
-        void UpdateCharMap();
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
     public class CustomTextSource3 : AppTextSource, ICustomTextSource
     {
         /// <summary>
@@ -247,7 +145,7 @@ namespace AnalysisControls
             return xx;
         }
 
-        public override TextRunProperties PropsFor(SymbolDisplayPart symbolDisplayPart, ISymbol symbol)
+        public TextRunProperties PropsFor(SymbolDisplayPart symbolDisplayPart, ISymbol symbol)
         {
             throw new NotImplementedException();
         }
@@ -504,6 +402,11 @@ namespace AnalysisControls
                     //DebugUtils.WriteLine(gp.SyntaxToken.ToString(), DebugCategory.TextFormatting);
                 }
             }
+        }
+
+        /// <inheritdoc />
+        public void SetSource(IEnumerable source)
+        {
         }
     }
 }

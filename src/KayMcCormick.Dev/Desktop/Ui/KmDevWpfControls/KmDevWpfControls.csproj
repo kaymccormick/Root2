@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <ProjectGuid>{62D5B790-0E4F-4552-88A1-5390DB6F31F2}</ProjectGuid>
     <OutputType>library</OutputType>
     <RootNamespace>KmDevWpfControls</RootNamespace>
@@ -135,6 +135,7 @@
     <Compile Include="AssemblyInfoConverter1.cs" />
     <Compile Include="AssemblyNode.cs" />
     <Compile Include="AssemblyResourceTree1.cs" />
+    <Compile Include="CheckableModelItem.cs" />
     <Compile Include="ConversionUtils1.cs" />
     <Compile Include="ConverterViewer.cs" />
     <Compile Include="CustomToggleButton1.cs" />
@@ -161,6 +162,7 @@
       <DependentUpon>TypeProviderUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="TypeProviderView.cs" />
+    <Compile Include="TypeTemplateSelector.cs" />
     <Compile Include="TypeTreeViewControl.cs" />
     <Compile Include="UiElementTypeConverter1.cs" />
     <Compile Include="VisualConverter.cs" />

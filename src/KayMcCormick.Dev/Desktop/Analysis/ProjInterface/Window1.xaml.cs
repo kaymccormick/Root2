@@ -25,6 +25,7 @@ using AnalysisAppLib ;
 using AnalysisAppLib.Project ;
 using AnalysisAppLib.Syntax ;
 using AnalysisControls ;
+using AnalysisControls.TypeDescriptors;
 using AnalysisControls.ViewModel;
 using Autofac ;
 using Autofac.Features.Metadata ;

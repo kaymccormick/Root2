@@ -47,6 +47,11 @@ namespace AnalysisControls
             Span = span;
         }
 
+        public CustomTextCharacters(string characterString, TextRunProperties textRunProperties) : base(characterString, textRunProperties)
+        {
+            _text = characterString;
+        }
+
         /// <summary>
         /// 
         /// </summary>

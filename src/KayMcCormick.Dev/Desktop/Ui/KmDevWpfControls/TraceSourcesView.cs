@@ -69,6 +69,26 @@ namespace KmDevWpfControls
 
         private ListView _listView;
 
+        public static readonly DependencyProperty SelectedTraceSourceProperty = DependencyProperty.Register(
+            "SelectedTraceSource", typeof(TraceSource), typeof(TraceSourcesView), new PropertyMetadata(default(TraceSource), OnSelectedTraceSourceChanged));
+
+        public TraceSource SelectedTraceSource
+        {
+            get { return (TraceSource) GetValue(SelectedTraceSourceProperty); }
+            set { SetValue(SelectedTraceSourceProperty, value); }
+        }
+
+        private static void OnSelectedTraceSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((TraceSourcesView) d).OnSelectedTraceSourceChanged((TraceSource) e.OldValue, (TraceSource) e.NewValue);
+        }
+
+
+
+        protected virtual void OnSelectedTraceSourceChanged(TraceSource oldValue, TraceSource newValue)
+        {
+        }
+
         static TraceSourcesView()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TraceSourcesView), new FrameworkPropertyMetadata(typeof(TraceSourcesView)));

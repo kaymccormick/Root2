@@ -116,7 +116,7 @@ namespace AnalysisAppLib
 
             builder.RegisterType<AppDbContext>().As<IAppDbContext1>().AsSelf().WithCallerMetadata().SingleInstance();
             builder.RegisterInstance(_activations);            
-            builder.RegisterType<ResourceNodeInfo>().As<IHierarchicalNode>();
+            //builder.RegisterType<ResourceNodeInfo>().As<IHierarchicalNode>();
             builder.RegisterGeneric(typeof(ReplaySubject<>)).SingleInstance();
             
             builder.RegisterType < SyntaxTypesService > ( )
@@ -215,18 +215,18 @@ namespace AnalysisAppLib
             }
 
             #region MS LOGIN
-            builder.Register ( MakePublicClientApplication )
-                   .As < IPublicClientApplication > ( )
-                   .WithCallerMetadata ( ) ;
+            // builder.Register ( MakePublicClientApplication )
+                   // .As < IPublicClientApplication > ( )
+                   // .WithCallerMetadata ( ) ;
 
-            builder.Register (
-                              ( ctx , p ) => {
-                                  var bearerToken = p.TypedAs < string > ( ) ;
-                                  return MakeGraphServiceClient ( bearerToken ) ;
-                              }
-                             )
-                   .AsSelf ( )
-                   .WithCallerMetadata ( ) ;
+            // builder.Register (
+                              // ( ctx , p ) => {
+                                  // var bearerToken = p.TypedAs < string > ( ) ;
+                                  // return MakeGraphServiceClient ( bearerToken ) ;
+                              // }
+                             // )
+                   // .AsSelf ( )
+                   // .WithCallerMetadata ( ) ;
             #endregion
         }
 

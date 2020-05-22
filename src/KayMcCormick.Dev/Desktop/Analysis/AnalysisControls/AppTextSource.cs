@@ -30,14 +30,6 @@ namespace AnalysisControls
         /// <returns></returns>
         public abstract BasicTextRunProperties BasicProps();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="symbolDisplayPart"></param>
-        /// <param name="symbol"></param>
-        /// <returns></returns>
-        public abstract TextRunProperties PropsFor(SymbolDisplayPart symbolDisplayPart, ISymbol symbol);
-
 
         /// <summary>
         /// 

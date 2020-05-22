@@ -107,10 +107,6 @@ namespace AnalysisControls
             throw new System.NotImplementedException();
         }
 
-        public override TextRunProperties PropsFor(SymbolDisplayPart symbolDisplayPart, ISymbol symbol)
-        {
-            throw new System.NotImplementedException();
-        }
 
         public override void TextInput(int InsertionPoint, string text)
         {
@@ -160,12 +156,5 @@ namespace AnalysisControls
             Brushes.LightBlue, Brushes.GreenYellow, Brushes.Aquamarine, Brushes.DarkOrange, Brushes.Crimson,
             Brushes.Black
         };
-    }
-
-    internal class TabTextRun : TextCharacters
-    {
-        public TabTextRun(string s, BasicTextRunProperties basicTextRunProperties) : base(s, basicTextRunProperties)
-        {
-        }
     }
 }

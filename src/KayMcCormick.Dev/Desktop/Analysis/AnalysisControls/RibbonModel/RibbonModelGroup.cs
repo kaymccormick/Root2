@@ -6,11 +6,19 @@ using System.Windows.Markup;
 
 namespace AnalysisControls.RibbonModel
 {
+    public interface IRibbonModelGroup : IRibbonModelItem
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        RibbonModelGroupItemCollection Items { get; }
+    }
+
     /// <summary>
     /// 
     /// </summary>
     [ContentProperty("Items")]
-    public class RibbonModelGroup : RibbonModelItem
+    public class RibbonModelGroup : RibbonModelItem, IRibbonModelGroup
     {
         /// <inheritdoc />
         public override string ToString()

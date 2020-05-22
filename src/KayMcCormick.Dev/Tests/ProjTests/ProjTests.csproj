@@ -193,6 +193,10 @@
       <Project>{bcc116d4-a7b9-4bb8-ae90-5d95e60b41cc}</Project>
       <Name>FindLogUsages</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Desktop\Ui\KmDevWpfControls\KmDevWpfControls.csproj">
+      <Project>{62D5B790-0E4F-4552-88A1-5390DB6F31F2}</Project>
+      <Name>KmDevWpfControls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Desktop\WpfLib\WpfLib.csproj">
       <Project>{2012CAA5-09C0-4E58-81B4-5007C9D31DB9}</Project>
       <Name>WpfLib</Name>

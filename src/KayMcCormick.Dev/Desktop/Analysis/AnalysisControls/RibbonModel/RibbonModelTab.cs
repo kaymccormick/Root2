@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
@@ -12,12 +13,45 @@ namespace AnalysisControls.RibbonModel
     /// <summary>
     /// 
     /// </summary>
+    public interface IRibbonModelTab
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        Visibility Visibility { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        object ContextualTabGroupHeader { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        object Header { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        IEnumerable<IRibbonModelGroup> Items { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+// ReSharper disable once UnusedAutoPropertyAccessor.Global
+        PrimaryRibbonModel RibbonModel { get; set; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
 [ContentProperty("Items")]
-    public class RibbonModelTab : INotifyPropertyChanged, ISupportInitialize
+    public class RibbonModelTab : INotifyPropertyChanged, ISupportInitialize, IRibbonModelTab
     {
         private Visibility _visibility = Visibility.Visible;
         private object _contextualTabGroupHeader;
         private object _header;
+        private readonly ObservableCollection<IRibbonModelGroup> _items = new ObservableCollection<IRibbonModelGroup>();
 
         /// <summary>
         /// 
@@ -70,7 +104,10 @@ namespace AnalysisControls.RibbonModel
         /// 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public ObservableCollection<RibbonModelGroup> Items { get; } = new ObservableCollection<RibbonModelGroup>();
+        public IEnumerable<IRibbonModelGroup> Items
+        {
+            get { return _items; }
+        }
 
         /// <summary>
         /// 
@@ -80,6 +117,8 @@ namespace AnalysisControls.RibbonModel
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public PrimaryRibbonModel RibbonModel { get; set; }
 
+        public ICollection<IRibbonModelGroup> ItemsCollection => _items;
+
         /// <summary>
         /// 
         /// </summary>
@@ -88,7 +127,7 @@ namespace AnalysisControls.RibbonModel
         public RibbonModelGroup CreateGroup(string @group)
         {
             var r = new RibbonModelGroup() {Header = @group};
-            Items.Add(r);
+            ItemsCollection.Add(r);
             return r;
         }
 

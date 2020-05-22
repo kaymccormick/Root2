@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Tracing;
@@ -16,8 +17,10 @@ using System.Windows.Threading ;
 using System.Xaml;
 using AnalysisAppLib;
 using AnalysisControls;
+
 using JetBrains.Annotations ;
 using KayMcCormick.Dev;
+using KmDevWpfControls;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using XamlReader = System.Windows.Markup.XamlReader;
@@ -29,6 +32,8 @@ namespace TestApp
     /// </summary>
     internal sealed partial class App : Application
     {
+        private TextControl _textControl;
+
         public App ( ) {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomainOnFirstChanceException;
             DispatcherUnhandledException += OnDispatcherUnhandledException;
@@ -52,6 +57,40 @@ namespace TestApp
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            ObservableCollection<Type> listenerTypes = new ObservableCollection<Type>();
+            listenerTypes.Add(typeof(ConsoleTraceListener));
+            listenerTypes.Add(typeof(TestListener));
+            ObservableCollection<TraceEntry> s = new ObservableCollection<TraceEntry>();
+            
+            _textControl = new TextControl()
+            {
+                ElementType = typeof(TraceEntry),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Top
+            };
+            _textControl.SetValue(TextControl.ProcessActionProperty, new GenericTextSource<TraceEntry>.ProcessDelegate((GenericTextSource<TraceEntry> src, TraceEntry x) =>
+            {
+                var b = src.BasicProps();
+                src.AddTextRun(new CustomTextCharacters(x.Data.ToString(),
+                    new BasicTextRunProperties(b)));
+                src.AddTextRun(new CustomTextEndOfLine(2));
+
+            }));
+            //v.RenderTransform = new ScaleTransform(2, 2);
+            //ScrollViewer s = new ScrollViewer() {Content = v};
+            Grid g = new Grid();
+            g.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) }); g.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            g.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+//            StackPanel p = new StackPanel() {VerticalAlignment = VerticalAlignment.Stretch};
+            
+            var td = new TraceView() { ListenerTypes = listenerTypes };
+            g.Children.Add(td);
+            g.Children.Add(_textControl);
+            _textControl.SetValue(Grid.RowProperty, 1);
+            td.TraceListenerCreated += TdOnTraceListenerCreated;
+
+            Window w = new Window { Content = g, FontSize = 20 };
+            w.ShowDialog();
 #if false
             foreach (var eventSource in EventSource.GetSources())
             {
@@ -116,12 +155,12 @@ namespace TestApp
                 c.Children.Add(left);
                 c.Children.Add(panel);
                 using (var hexa = new WpfHexaEditor.HexEditor())
+
                 {
                     c.Children.Add(hexa);
-
                     //panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
-                    Window w = new Window { Content = c };
-                    w.ShowDialog();
+                    Window www = new Window { Content = c };
+                    www.ShowDialog();
                 }
             }
 
@@ -159,6 +198,15 @@ namespace TestApp
 
             // w.ShowActivated = true;
             // w.ShowDialog();
+        }
+
+        private void TdOnTraceListenerCreated(object sender, TraceListenerCreatedEventArgs e)
+        {
+
+            if (e.Instance is TestListener t)
+            {
+                _textControl.Source = t.Elements;
+            }
         }
 
         public void TestSyntaxControl(SyntaxNodeControl control)

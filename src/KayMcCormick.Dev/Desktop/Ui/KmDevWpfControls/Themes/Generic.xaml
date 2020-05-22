@@ -1443,6 +1443,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:TraceSourcesView}">
           <ControlTemplate.Resources>
+            <local:GetTypeConverter1 x:Key="GetTypeConverter"></local:GetTypeConverter1>
             <DataTemplate DataType="{x:Type diagnostics:TraceSource}">
               <local:TablePanel>
                 <TextBlock Text="{Binding Name}"></TextBlock>
@@ -1466,12 +1467,21 @@
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
 
-              <ListView x:Name="ListView" ItemsSource="{Binding Source={x:Static local:TraceSourcesView.Sources}}">
+              <ListView SelectedItem="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SelectedTraceSource,Mode=TwoWay}"  x:Name="ListView" ItemsSource="{Binding Source={x:Static local:TraceSourcesView.Sources}}">
                 <ListView.View>
                   <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding Name}" />
                     <GridViewColumn DisplayMemberBinding="{Binding Listeners.Count}" />
-                    <GridViewColumn DisplayMemberBinding="{Binding Switch.Level}" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Switch.Description}" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Switch.DisplayName}" />
+                    <GridViewColumn >
+                      <GridViewColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type diagnostics:TraceSource}">
+                          <local:EnumFlagsSelector EnumValue="{Binding Switch.Level,Mode=TwoWay}"  EditStyle="ComboBox" EnumType="diagnostics:SourceLevels"></local:EnumFlagsSelector>
+                        </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Switch,Converter={StaticResource GetTypeConverter}}" />
                   </GridView>
                 </ListView.View>
               </ListView>
@@ -1480,7 +1490,10 @@
                 <ListView.View>
                   <GridView>
                     <GridViewColumn Header="1" DisplayMemberBinding="{Binding Name}" />
-                  </GridView>
+                    <GridViewColumn Header="1" DisplayMemberBinding="{Binding Converter={StaticResource GetTypeConverter}}" />
+                    <GridViewColumn Header="1" DisplayMemberBinding="{Binding TraceOutputOptions}" />
+
+</GridView>
                 </ListView.View>
               </ListView>
             </Grid>
@@ -1498,7 +1511,7 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
                       <WrapPanel>
-                      <TextBox MinWidth="100"  x:Name="TextBox"></TextBox>
+                      <TextBox Text="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Filename,Mode=TwoWay}"  MinWidth="100"  x:Name="TextBox"></TextBox>
                         <Button Content="Select _File" Command="Open"></Button>
                       </WrapPanel>
           </Border>
@@ -1506,4 +1519,47 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+  <ControlTemplate TargetType="{x:Type local:EnumFlagsSelector}" x:Key="{x:Static local:EnumEditStyle.ComboBox}">
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <ComboBox ItemsSource="{TemplateBinding Items}" Text="{TemplateBinding Text}"
+            >
+              <ComboBox.ItemTemplate>
+                <DataTemplate>
+                  <CheckBox Content="{Binding Item}"  IsChecked="{Binding IsChecked,Mode=TwoWay}"></CheckBox>
+                </DataTemplate>
+              </ComboBox.ItemTemplate>
+            </ComboBox>
+          </Border>
+        </ControlTemplate>
+
+  
+        <ControlTemplate TargetType="{x:Type local:EnumFlagsSelector}" x:Key="{x:Static local:EnumEditStyle.ItemsControl}">
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <ItemsControl ItemsSource="{TemplateBinding Items}"
+            >
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <CheckBox Content="{Binding Item}" IsChecked="{Binding IsChecked,Mode=TwoWay}"></CheckBox>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </Border>
+        </ControlTemplate>
+  <Style TargetType="{x:Type local:EnumFlagsSelector}">
+    <Style.Triggers>
+      <Trigger Property="EditStyle" Value="ComboBox">
+        <Setter Property="Control.Template" Value="{StaticResource {x:Static local:EnumEditStyle.ComboBox}}" />
+      </Trigger>
+      <Trigger Property="EditStyle" Value="ItemsControl">
+        <Setter Property="Control.Template" Value="{StaticResource {x:Static local:EnumEditStyle.ItemsControl}}" />
+      </Trigger>
+    </Style.Triggers>
+
+  </Style>
+
 </ResourceDictionary>

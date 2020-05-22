@@ -17,7 +17,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class SymbolTextSource : AppTextSource
+    public class SymbolTextSource : AppTextSource, ISyntaxTextSource
     {
         /// <summary>
         /// 
@@ -38,8 +38,14 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public CSharpCompilation Compilation { get; set; }
+        public Compilation Compilation { get; set; }
         public override GenericTextRunProperties BaseProps { get; }
+
+        /// <inheritdoc />
+        public int EolLength { get; }
+
+        /// <inheritdoc />
+        public FontRendering Rendering { get; set; }
         public override int Length { get; protected set; }
 
         // Used by the TextFormatter object to retrieve a run of text from the text source.
@@ -120,6 +126,24 @@ namespace AnalysisControls
             return xx;
         }
 
+        /// <inheritdoc />
+        void ICustomTextSource.GenerateText()
+        {
+            GenerateText();
+        }
+
+        /// <inheritdoc />
+        public TextRunProperties MakeProperties(object arg, string text)
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
+        void ICustomTextSource.TakeTextRun(TextRun obj)
+        {
+            TakeTextRun(obj);
+        }
+
         #region Properties
 
         /// <summary>
@@ -158,7 +182,7 @@ namespace AnalysisControls
             }
         }
 
-        public override TextRunProperties PropsFor(SymbolDisplayPart symbolDisplayPart, ISymbol symbol)
+        public TextRunProperties PropsFor(SymbolDisplayPart symbolDisplayPart, ISymbol symbol)
         {
             List<Brush> brushes = new List<Brush>();
 
@@ -264,6 +288,12 @@ namespace AnalysisControls
 
                 return props;
             }
+
+        /// <inheritdoc />
+        public TextRunProperties PropsFor(in SyntaxTrivia trivia, string text)
+        {
+            return null;
+        }
 
         public override void TextInput(int InsertionPoint, string text)
         {
@@ -376,6 +406,16 @@ namespace AnalysisControls
         public override void Init()
         {
             GenerateText();
+        }
+
+        /// <inheritdoc />
+        public void UpdateCharMap()
+        {
+        }
+
+        /// <inheritdoc />
+        public void SetSource(IEnumerable source)
+        {
         }
     }
 }

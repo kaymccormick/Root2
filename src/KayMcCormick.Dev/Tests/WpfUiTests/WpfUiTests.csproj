@@ -117,6 +117,7 @@
     <ProjectReference Include="..\..\Desktop\Ui\KmDevWpfControls\KmDevWpfControls.csproj">
       <Project>{62D5B790-0E4F-4552-88A1-5390DB6F31F2}</Project>
       <Name>KmDevWpfControls</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

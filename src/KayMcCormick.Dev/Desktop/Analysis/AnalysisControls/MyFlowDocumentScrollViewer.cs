@@ -11,6 +11,7 @@
 #endregion
 using System.Windows ;
 using System.Windows.Controls ;
+using System.Windows.Documents;
 using System.Windows.Media ;
 using JetBrains.Annotations ;
 using NLog ;
@@ -125,5 +126,10 @@ namespace AnalysisControls
 
             return panelDesiredSize ;
         }
+    }
+
+    public class MyDoc : FlowDocument
+    {
+
     }
 }

@@ -65,7 +65,7 @@ namespace AnalysisControls
 	    var PasteButton = new RibbonModelItemButton { Label = "Paste", Command = ApplicationCommands.Paste };
 	    var Group1 = new RibbonModelGroup { Header = "Paste" };
 	    Group1.Items.Add(PasteButton);
-	    HomeTab.Items.Add(Group1);
+	    HomeTab.ItemsCollection.Add(Group1);
 	    r.RibbonItems.Add(HomeTab);
 	    
             foreach (var ribbonModelProvider in tabProviders)
