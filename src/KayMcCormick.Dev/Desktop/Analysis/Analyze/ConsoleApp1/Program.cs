@@ -28,6 +28,7 @@ using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Attributes ;
+using KayMcCormick.Dev.Command;
 using KayMcCormick.Dev.Logging ;
 using KayMcCormick.Lib.Wpf.Command ;
 using Microsoft.Build.Locator ;

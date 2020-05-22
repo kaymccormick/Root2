@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AnalysisControls.ViewModel;
 using Autofac;
 using Autofac.Core;
 using JetBrains.Annotations;

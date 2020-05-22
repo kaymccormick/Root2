@@ -12,6 +12,7 @@
 using System.Threading.Tasks ;
 using AnalysisAppLib;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Command;
 
 namespace ConsoleAnalysis
 {

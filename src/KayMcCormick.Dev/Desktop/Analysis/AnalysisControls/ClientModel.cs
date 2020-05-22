@@ -6,6 +6,7 @@ using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
 using System.Windows.Threading;
 using AnalysisControls.RibbonModel;
+using AnalysisControls.ViewModel;
 using JetBrains.Annotations;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;

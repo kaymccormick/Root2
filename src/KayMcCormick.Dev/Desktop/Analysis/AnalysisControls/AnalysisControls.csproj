@@ -207,7 +207,6 @@
     <Compile Include="LogEventInstancesControl.cs" />
     <Compile Include="LogEventsSource.cs" />
     <Compile Include="Main1.cs" />
-    <Compile Include="Main1Model.cs" />
     <Compile Include="MessagesModel.cs" />
     <Compile Include="MetaLazyTypeConverter.cs" />
     <Compile Include="MiscCommands.cs" />
@@ -348,6 +347,7 @@
       <DependentUpon>UserControl1.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\ComponentTypesViewModel.cs" />
+    <Compile Include="ViewModel\Main1Model.cs" />
     <Compile Include="VisibileIfNotVisible.cs" />
     <Compile Include="VisualTreeView.cs" />
     <Compile Include="WorkspaceControl.xaml.cs">

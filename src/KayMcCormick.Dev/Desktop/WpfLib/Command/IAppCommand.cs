@@ -13,6 +13,7 @@
 using System.ComponentModel;
 using System.Windows.Input ;
 using KayMcCormick.Dev ;
+using KayMcCormick.Dev.Command;
 
 namespace KayMcCormick.Lib.Wpf.Command
 {

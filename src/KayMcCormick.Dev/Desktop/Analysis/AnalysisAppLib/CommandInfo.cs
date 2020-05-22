@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using Autofac.Features.Metadata;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
+using KayMcCormick.Dev.Command;
 
 namespace AnalysisAppLib
 {

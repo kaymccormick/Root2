@@ -117,6 +117,7 @@
     <Compile Include="Attributes\TitleMetadataAttribute.cs" />
     <Compile Include="BaseLibTypeConverter.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="Command\IBaseLibCommand.cs" />
     <Compile Include="DebugCategory.cs" />
     <Compile Include="IAddRuntimeResource.cs" />
     <Compile Include="ICommandMetadata.cs" />
@@ -127,7 +128,6 @@
     <Compile Include="Configuration\ContainerHelperSettings.cs" />
     <Compile Include="Configuration\LoggingSection.cs" />
     <Compile Include="Container\IocExt.cs" />
-    <Compile Include="IBaseLibCommand.cs" />
     <Compile Include="IDisplayable.cs" />
     <Compile Include="IHierarchicalNode.cs" />
     <Compile Include="IProvidesKey.cs" />

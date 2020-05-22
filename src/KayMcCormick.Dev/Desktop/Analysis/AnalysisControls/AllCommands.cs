@@ -10,6 +10,7 @@ using AnalysisAppLib;
 using Autofac.Features.Metadata;
 using AvalonDock.Layout;
 using KayMcCormick.Dev;
+using KayMcCormick.Dev.Command;
 using KayMcCormick.Lib.Wpf.Command;
 
 namespace AnalysisControls{

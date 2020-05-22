@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using AnalysisControls;
+using AnalysisControls.ViewModel;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;

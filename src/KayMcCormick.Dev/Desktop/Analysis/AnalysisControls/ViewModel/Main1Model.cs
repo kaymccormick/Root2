@@ -38,7 +38,7 @@ using SyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 using TablePanel = KayMcCormick.Lib.Wpf.TablePanel;
 using TypeControl = KayMcCormick.Lib.Wpf.TypeControl;
 
-namespace AnalysisControls
+namespace AnalysisControls.ViewModel
 {
     /// <summary>
     /// 

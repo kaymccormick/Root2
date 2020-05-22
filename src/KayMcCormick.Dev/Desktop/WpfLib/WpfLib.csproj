@@ -144,6 +144,7 @@
     <Compile Include="KeyConverter.cs" />
     <Compile Include="LayoutService.cs" />
     <Compile Include="LifetimeScopeExtension.cs" />
+    <Compile Include="ListViewTestSel.cs" />
     <Compile Include="MethodInfoConverter.cs" />
     <Compile Include="NamespaceNode.cs" />
     <Compile Include="NavState.cs" />

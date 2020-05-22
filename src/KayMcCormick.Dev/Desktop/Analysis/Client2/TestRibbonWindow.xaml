@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Client2"
         xmlns:anal="http://kaymccormick.com/xaml/analysis"
         xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+        xmlns:viewModel="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControls"
         mc:Ignorable="d"
         Title="TestPrimaryRibbonWindow" Height="450" Width="800">
     <Grid>
@@ -89,7 +90,7 @@
             </RibbonApplicationMenu>
           </Ribbon.ApplicationMenu>
       </Ribbon>
-      <anal:Main1 Grid.Row="1" Grid.Column="0" x:Name="Main1" ViewModel="{kmWpf:Resolve anal:Main1Model,Throw=false}"/>
+      <anal:Main1 Grid.Row="1" Grid.Column="0" x:Name="Main1" ViewModel="{kmWpf:Resolve viewModel:Main1Model,Throw=false}"/>
     </Grid>
   </Grid>
 </RibbonWindow>

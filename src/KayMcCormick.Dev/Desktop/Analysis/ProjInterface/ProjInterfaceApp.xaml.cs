@@ -9,6 +9,7 @@ using System.Windows ;
 using System.Windows.Input;
 using AnalysisAppLib ;
 using AnalysisControls ;
+using AnalysisControls.ViewModel;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Lifetime ;

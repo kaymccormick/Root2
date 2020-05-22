@@ -29,7 +29,7 @@ WPFPage::WPFPage(int allottedWidth, int allotedHeight)
 
   void(__clrcall * logM)(String ^ message);
   logM = logM1;
-  AnalysisControls::Main1Model::SelectVsInstance();
+  AnalysisControls::ViewModel::Main1Model::SelectVsInstance();
   auto con = gcnew KayMcCormick::Dev::Logging::AppLoggingConfiguration();
   con->Trace();
 	

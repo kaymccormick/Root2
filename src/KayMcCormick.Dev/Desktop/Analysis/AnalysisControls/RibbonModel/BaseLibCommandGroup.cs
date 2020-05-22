@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AnalysisAppLib;
 using Autofac.Features.Metadata;
 using KayMcCormick.Dev;
+using KayMcCormick.Dev.Command;
 using KayMcCormick.Lib.Wpf.Command;
 
 namespace AnalysisControls.RibbonModel

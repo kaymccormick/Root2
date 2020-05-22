@@ -1,9 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using KayMcCormick.Dev.Command ;
 
-namespace KayMcCormick.Dev
+namespace KayMcCormick.Dev.Command
 {
     /// <summary>
     /// Base command provided by low-level class lib

@@ -14,6 +14,7 @@
               xmlns:definition="clr-namespace:AnalysisControls.RibbonModel.Definition;assembly=AnalysisControls"
               xmlns:aal="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
               xmlns:system="clr-namespace:System;assembly=mscorlib"
+              xmlns:viewModel="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControls"
               mc:Ignorable="d"
               Background="Blue"
               Loaded="Client2Window1_OnLoaded"
@@ -86,7 +87,7 @@
           <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" FooterPaneContent="{Binding AppMenu.FooterPaneContent}"/>
         </anal:MyRibbon.ApplicationMenu>
       </anal:MyRibbon>
-      <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"  ViewModel="{kmWpf:Resolve anal:Main1Model}"/>
+      <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"  ViewModel="{kmWpf:Resolve viewModel:Main1Model}"/>
     </Grid>
   </Grid>
 

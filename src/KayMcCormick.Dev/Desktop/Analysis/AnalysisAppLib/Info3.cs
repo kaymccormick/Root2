@@ -1,6 +1,7 @@
 ﻿using Autofac.Features.Metadata;
 using KayMcCormick.Dev;
 using System.Collections.Generic;
+using KayMcCormick.Dev.Command;
 
 namespace AnalysisAppLib
 {
