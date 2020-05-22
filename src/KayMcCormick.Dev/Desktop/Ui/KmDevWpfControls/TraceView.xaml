@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:KmDevWpfControls"
+             xmlns:diagnostics="clr-namespace:System.Diagnostics;assembly=System"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.CommandBindings>
@@ -14,6 +15,7 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
+      <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
@@ -22,7 +24,36 @@
     <ToolBarTray>
       <ToolBar><Button Content="Refresh" Command="Refresh"/>
         <Button Content="New" Command="New"/>
+        <ComboBox Text="Add" x:Name="Combo" SelectedIndex="0">
+          <x:Type Type="diagnostics:XmlWriterTraceListener"></x:Type>
+        </ComboBox>
       </ToolBar></ToolBarTray>
     <local:TraceSourcesView Grid.Row="1" x:Name="view"></local:TraceSourcesView>
+    <Grid Grid.Row="2">
+      <Grid.Resources>
+        <DataTemplate DataType="{x:Type diagnostics:XmlWriterTraceListener}">
+        </DataTemplate>
+      </Grid.Resources>
+      <ContentPresenter>
+    <ContentPresenter.Resources>
+  
+    </ContentPresenter.Resources>
+        <ContentPresenter.Content>
+        <local:TablePanel>
+          <TextBlock Text="File"/>
+          <local:FileInputBox></local:FileInputBox>
+          <TextBlock Text="Options"/>
+          <ItemsControl ItemsSource="{Binding Source={x:Static local:TraceView.TraceOptions}}"
+                        >
+<ItemsControl.ItemTemplate>
+  <DataTemplate>
+    <CheckBox Content="{Binding Item}" IsChecked="{Binding IsChecked}"></CheckBox>
+  </DataTemplate>
+</ItemsControl.ItemTemplate>
+          </ItemsControl>
+          </local:TablePanel>
+        </ContentPresenter.Content>
+      </ContentPresenter>
+    </Grid>
   </Grid>
 </UserControl>

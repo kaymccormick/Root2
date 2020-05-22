@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
 
 namespace KmDevWpfControls
 {
-    public class TablePanel : Panel
+    [ContentWrapper(typeof(string))]
+    public class TablePanel : Panel, IAddChild
     {
         public static readonly DependencyProperty ColumnSpacingProperty = DependencyProperty.Register(
             "ColumnSpacing", typeof(double), typeof(TablePanel), new PropertyMetadata(default(double), OnColumnSpacingUpdated));

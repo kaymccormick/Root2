@@ -1489,4 +1489,21 @@
       </Setter.Value>
     </Setter>
   </Style>
+
+    <Style TargetType="{x:Type local:FileInputBox}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:FileInputBox}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                      <WrapPanel>
+                      <TextBox MinWidth="100"  x:Name="TextBox"></TextBox>
+                        <Button Content="Select _File" Command="Open"></Button>
+                      </WrapPanel>
+          </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

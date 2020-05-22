@@ -138,6 +138,7 @@
     <Compile Include="ConversionUtils1.cs" />
     <Compile Include="ConverterViewer.cs" />
     <Compile Include="CustomToggleButton1.cs" />
+    <Compile Include="FileInputBox.cs" />
     <Compile Include="GetTypeConverter1.cs" />
     <Compile Include="HotedControl.cs" />
     <Compile Include="IAsyncExpand.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -38,6 +39,18 @@ namespace KmDevWpfControls
             //XmlWriterTraceListener a = new XmlWriterTraceListener();
                         
 
+        }
+
+        public static IEnumerable TraceOptions { get; set; } = Enum.GetValues(typeof(TraceOptions)).Cast<TraceOptions>().Select(o=>new CheckableModelItem<TraceOptions>(o));
+    }
+
+    public class CheckableModelItem<T>
+    {
+        public T Item { get; }
+
+        public CheckableModelItem(T item)
+        {
+            Item = item;
         }
     }
 }
