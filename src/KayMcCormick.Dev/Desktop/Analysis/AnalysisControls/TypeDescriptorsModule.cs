@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -78,6 +79,8 @@ namespace AnalysisControls
             kayTypes.Add(typeof(PropertyPath));
             kayTypes.Add(typeof(PropertyInfo));
             kayTypes.Add(typeof(MemberInfo));
+            kayTypes.Add(typeof(FileInfo));
+            kayTypes.Add(typeof(DirectoryInfo));
             var collection = typeof(CSharpSyntaxNode).Assembly.GetExportedTypes()
                 .Where(t => typeof(CSharpSyntaxNode).IsAssignableFrom(t)).ToList();
             foreach (var type in collection)

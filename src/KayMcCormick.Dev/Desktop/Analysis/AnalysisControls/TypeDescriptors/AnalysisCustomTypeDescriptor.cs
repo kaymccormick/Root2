@@ -126,6 +126,7 @@ namespace AnalysisControls.TypeDescriptors
             ILogger logger
         )
         {
+
             // DebugUtils.WriteLine("Constructor " + GetType().FullName + " " + type.FullName);
             // _funcConverter          = funcConverter ;
             _uiElementTypeConverter = uiElementTypeConverter ;

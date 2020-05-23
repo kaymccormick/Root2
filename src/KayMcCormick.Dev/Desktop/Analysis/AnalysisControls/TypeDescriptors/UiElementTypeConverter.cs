@@ -20,41 +20,50 @@ using KayMcCormick.Lib.Wpf.Properties;
 
 namespace AnalysisControls.TypeDescriptors
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class UiElementTypeConverter : TypeConverter
+    public class GenericInterface :Control
     {
-        private ILifetimeScope _scope;
+        private Border _border;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="scope"></param>
-        public UiElementTypeConverter(ILifetimeScope scope)
+        static GenericInterface()
         {
-            _scope = scope;
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(GenericInterface),
+                new FrameworkPropertyMetadata(typeof(GenericInterface)));
+
         }
 
         /// <inheritdoc />
-        public override object ConvertTo(
-            ITypeDescriptorContext context
-            , CultureInfo culture
-            , object value
-            , Type destinationType
-        )
+        public override void OnApplyTemplate()
         {
-            DebugUtils.WriteLine(
-                $"{context?.Instance} {context?.PropertyDescriptor?.Name} {context?.Container} {value} {destinationType.FullName}");
-            if (destinationType == typeof(UIElement)) return ConvertToUiElement(value);
-            if (destinationType == typeof(string))
-            {
-                StringBuilder sb = new StringBuilder();
-                return ConversionUtils.DoConvertToString(value, sb).ToString();
-            }
+            base.OnApplyTemplate();
+            _border = (Border) GetTemplateChild("Border");
+            if (Target != null) _border.Child = ConvertToUiElement(Target);
+        }
 
-        //    throw new AppInvalidOperationException();
-            return base.ConvertTo(context, culture, value, destinationType);
+        public static readonly DependencyProperty TargetProperty = DependencyProperty.Register(
+            "Target", typeof(object), typeof(GenericInterface), new PropertyMetadata(default(object), OnTargetChanged));
+
+        public object Target
+        {
+            get { return (object) GetValue(TargetProperty); }
+            set { SetValue(TargetProperty, value); }
+        }
+
+        private static void OnTargetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((GenericInterface) d).OnTargetChanged((object) e.OldValue, (object) e.NewValue);
+        }
+
+
+
+        protected virtual void OnTargetChanged(object oldValue, object newValue)
+        {
+            if (newValue != null)
+                if (_border != null)
+                    _border.Child = ConvertToUiElement(newValue);
+        }
+
+        public GenericInterface()
+        {
         }
 
         /// <summary>
@@ -62,10 +71,15 @@ namespace AnalysisControls.TypeDescriptors
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        protected virtual UIElement ConvertToUiElement(object value)
+        public virtual UIElement ConvertToUiElement(object value)
         {
             var g = ControlForValue(value, 0);
             return g;
+        }
+
+        public UIElement CreateUiElement()
+        {
+            return new Grid();
         }
 
         /// <summary>
@@ -264,7 +278,7 @@ namespace AnalysisControls.TypeDescriptors
             var header1 = new TextBlock()
             {
                 Margin = new Thickness(5, 0, 0, 5), Padding = new Thickness(5),
-                Text = Resources.UiElementTypeConverter__ControlForValue_Property_Name,
+                Text =  "Property_Name",
                 TextWrapping = TextWrapping.NoWrap, Background = solidColorBrush
             };
             var header2 = new TextBlock()
@@ -272,9 +286,9 @@ namespace AnalysisControls.TypeDescriptors
                 Text = "Value", TextWrapping = TextWrapping.NoWrap,
                 Padding = new Thickness(5), Background = solidColorBrush
             };
-            var header3 = new TextBlock()
-            {
-                Text = Resources.UiElementTypeConverter__ControlForValue_Property_Type,
+        var header3 = new TextBlock()
+        {
+            Text = "Property_Type",
                 Padding = new Thickness(5), TextWrapping = TextWrapping.NoWrap, Margin = new Thickness(0, 0, 5, 0),
                 Background = solidColorBrush
             };
@@ -435,6 +449,61 @@ namespace AnalysisControls.TypeDescriptors
             grid.SetValue(TextElement.FontSizeProperty, 12.0);
             return grid;
         }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class UiElementTypeConverter : TypeConverter
+    {
+        private ILifetimeScope _scope;
+        private readonly GenericInterface _genericInterface;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="scope"></param>
+        public UiElementTypeConverter(ILifetimeScope scope)
+        {
+            _scope = scope;
+            _genericInterface = new GenericInterface();
+        }
+
+        public GenericInterface GenericInterface
+        {
+            get { return _genericInterface; }
+        }
+
+        /// <inheritdoc />
+        public override object ConvertTo(
+            ITypeDescriptorContext context
+            , CultureInfo culture
+            , object value
+            , Type destinationType
+        )
+        {
+            DebugUtils.WriteLine(
+                $"{context?.Instance} {context?.PropertyDescriptor?.Name} {context?.Container} {value} {destinationType.FullName}");
+            if (destinationType == typeof(UIElement)) return ConvertToUiElement(value);
+            if (destinationType == typeof(string))
+            {
+                StringBuilder sb = new StringBuilder();
+                return ConversionUtils.DoConvertToString(value, sb).ToString();
+            }
+
+        //    throw new AppInvalidOperationException();
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        protected virtual UIElement ConvertToUiElement(object value)
+        {
+            return _genericInterface.ConvertToUiElement(value);
+        }
 
 
         #region Overrides of TypeConverter
@@ -454,7 +523,7 @@ namespace AnalysisControls.TypeDescriptors
 
         protected UIElement CreateUiElement()
         {
-            return new Grid();
+            return _genericInterface.CreateUiElement();
         }
 
         #endregion

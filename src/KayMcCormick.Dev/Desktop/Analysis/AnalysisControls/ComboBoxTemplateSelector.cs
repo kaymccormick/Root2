@@ -39,11 +39,11 @@ namespace AnalysisControls
                 }
             }
 
-            if (item != null)
-            {
-                var r = parentItemsControl.TryFindResource(new DataTemplateKey(item.GetType())) as DataTemplate;
-                return r;
-            }
+            // if (item != null)
+            // {
+                // var r = parentItemsControl.TryFindResource(new DataTemplateKey(item.GetType())) as DataTemplate;
+                // return r;
+            // }
             return base.SelectTemplate(item, parentItemsControl);
         }
     }

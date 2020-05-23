@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using AnalysisControls.Properties;
 using AnalysisControls.RibbonModel;
 using KayMcCormick.Dev;
 
@@ -31,8 +32,9 @@ namespace AnalysisControls
             var g = tab.CreateGroup("Group 1");
             g.CreateButton("Test Button");
             var files = g.CreateRibbonMenuButton("Files");
-            var d = new DirectoryInfo(@"C:\temp\filesmenu"); //@ Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
-            files.Items= d.EnumerateFileSystemInfos();
+            var d = new DirectoryInfo(
+                @"C:\temp\filesmenu"); //@ Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+            files.Items = d.EnumerateFileSystemInfos();
             if (_provs.Any())
                 foreach (var ribbonModelProvider in _provs)
                 {
@@ -42,6 +44,20 @@ namespace AnalysisControls
             else
                 DebugUtils.WriteLine("No providers for tab item groups");
 
+            return tab;
+        }
+    }
+
+    public class CodeTab1 : IRibbonModelProvider<RibbonModelTab>
+    {
+        private IEnumerable<IRibbonModelProvider<RibbonModelGroup>> _provs;
+
+        /// <inheritdoc />
+        public RibbonModelTab ProvideModelItem()
+        {
+            var tab = new RibbonModelTab();
+            tab.Header = "Code";
+            tab.ContextualTabGroupHeader = RibbonResources.ContextualTabGroupHeader_CodeAnalysis;
             return tab;
         }
     }

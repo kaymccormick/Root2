@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing.Design;
@@ -32,6 +33,7 @@ using System.Reactive.Subjects;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.ExceptionServices;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
@@ -65,7 +67,6 @@ using AnalysisControls;
 using AnalysisControls.Commands;
 using AnalysisControls.Converters;
 using AnalysisControls.Properties;
-
 using AnalysisControls.RibbonModel;
 using AnalysisControls.RibbonModel.ContextualTabGroups;
 using AnalysisControls.RibbonModel.Definition;
@@ -80,7 +81,6 @@ using AvalonDock.Themes;
 using Castle.DynamicProxy;
 using CsvHelper;
 using CsvHelper.Excel;
-
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Application;
@@ -106,14 +106,17 @@ using Binding = System.Windows.Data.Binding;
 using Button = System.Windows.Controls.Button;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using Condition = System.Windows.Automation.Condition;
+using Control = System.Windows.Forms.Control;
 using ConversionUtils = AnalysisControls.ConversionUtils;
 using File = System.IO.File;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using Label = System.Windows.Forms.Label;
 using ListBox = System.Windows.Controls.ListBox;
 using MethodInfo = System.Reflection.MethodInfo;
 using Orientation = System.Windows.Controls.Orientation;
 using Process = System.Diagnostics.Process;
 using RegionInfo = AnalysisControls.RegionInfo;
+using Size = System.Drawing.Size;
 using String = System.String;
 using TablePanel = KayMcCormick.Lib.Wpf.TablePanel;
 using TextBlock = System.Windows.Controls.TextBlock;
@@ -245,6 +248,7 @@ namespace ProjTests
                     XmlDocElements.SubstituteType(field, typeSyntax, cMap, model);
             }
         }
+
         [WpfFact]
         public void TestProviderView()
         {
@@ -267,10 +271,10 @@ namespace ProjTests
                     DebugUtils.WriteLine(providerType.FullName);
                     TypeDescriptor.AddProvider(provider, providerType);
                 }
-                TypeProviderUserControl d = new TypeProviderUserControl();
-                Window w = new Window {Content = d};
-                w.ShowDialog();
 
+                var d = new TypeProviderUserControl();
+                var w = new Window {Content = d};
+                w.ShowDialog();
             }
         }
 
@@ -1325,7 +1329,7 @@ namespace ProjTests
                 var lifetimeScope = instance.GetLifetimeScope();
 
                 var t1 = new UiElementTypeConverter(lifetimeScope);
-                var t = t1.ControlForValue(typeof(ProjTests), 1);
+                var t = t1.GenericInterface.ControlForValue(typeof(ProjTests), 1);
                 var ff = new ScrollViewer() {Content = t};
                 var w1 = new Window {Content = ff};
                 w1.ShowDialog();
@@ -1462,7 +1466,7 @@ namespace ProjTests
 
                 foreach (var displayableAppCommand in lifetimeScope.Resolve<IEnumerable<IDisplayableAppCommand>>())
                     DebugUtils.WriteLine(displayableAppCommand.DisplayName);
-                
+
                 var w = new RibbonWindow();
                 var dp = new DockPanel();
                 var progresses = new ObservableCollection<CommandProgress>();
@@ -1823,7 +1827,8 @@ namespace ProjTests
             {
                 if (allLineInfo == null)
                     throw new AppInvalidOperationException();
-                if (allLineInfo.Regions == null) throw new AppInvalidOperationException(allLineInfo.LineNumber.ToString());
+                if (allLineInfo.Regions == null)
+                    throw new AppInvalidOperationException(allLineInfo.LineNumber.ToString());
                 foreach (var regionInfo in allLineInfo.Regions)
                 {
                     if (regionInfo == null) throw new AppInvalidOperationException();
@@ -1980,7 +1985,6 @@ namespace ProjTests
         }
 
 
-        
         public void TestAllCommand()
         {
             using (var instance = new ApplicationInstance(
@@ -2150,7 +2154,7 @@ namespace ProjTests
             window.Content = new Ribbon {ItemsSource = m.RibbonItems};
             window.ShowDialog();
         }
-        
+
 
         private void Documents_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -2382,7 +2386,8 @@ namespace ProjTests
                 Document = DocModel.CreateInstance()
             };
             c.Document.Title = "test";
-            c.Document.Content = new Frame {Content = new Page {Content = new TextBlock {Text = "Test", FontSize = 40.0}}};
+            c.Document.Content = new Frame
+                {Content = new Page {Content = new TextBlock {Text = "Test", FontSize = 40.0}}};
 
             var w = new Window {Content = c};
             w.ShowDialog();
@@ -2411,13 +2416,13 @@ namespace ProjTests
             c.Children.Add(panel);
             // using (var hexa = new WpfHexaEditor.HexEditor())
             // {
-                // c.Children.Add(hexa);
+            // c.Children.Add(hexa);
 
-                // panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
+            // panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
 
-                var w = new Window {Content = c};
-                w.Loaded += (sender, args) => { model.SelectedAssembly = typeof(AnalysisControlsModule).Assembly; };
-                w.ShowDialog();
+            var w = new Window {Content = c};
+            w.Loaded += (sender, args) => { model.SelectedAssembly = typeof(AnalysisControlsModule).Assembly; };
+            w.ShowDialog();
             // }
         }
 
@@ -2483,7 +2488,7 @@ namespace ProjTests
                 var cx = lifetimeScope.Resolve<IControlsProvider>();
                 foreach (var cxType in cx.Types) TypeDescriptor.AddProvider(cx.Provider, cxType);
                 var props = TypeDescriptor.GetProperties(typeof(RibbonModelItem));
-                
+
                 foreach (PropertyDescriptor prop in props)
                     if (prop.Name == "AppCommand")
                     {
@@ -2554,10 +2559,7 @@ namespace ProjTests
                 instance.AddModule(new AnalysisAppLibModule());
                 instance.AddModule(new Client2Module1());
                 instance.Initialize();
-                var lifetimeScope = instance.GetLifetimeScope(builder =>
-                {
-
-                });
+                var lifetimeScope = instance.GetLifetimeScope(builder => { });
                 var cx = lifetimeScope.Resolve<IControlsProvider>();
                 foreach (var cxType in cx.Types) TypeDescriptor.AddProvider(cx.Provider, cxType);
 
@@ -2565,9 +2567,9 @@ namespace ProjTests
                 Action<string> x = (m) => DebugUtils.WriteLine(m);
                 var props = TypeDescriptor.GetProperties(typeof(CompilationUnitSyntax));
                 foreach (PropertyDescriptor prop in props)
-                    
+
                 {
-                    DebugUtils.WriteLine("Name: "+ prop.Name);
+                    DebugUtils.WriteLine("Name: " + prop.Name);
                     x($"Type: {ConversionUtils.TypeToText(prop.PropertyType)}");
                     x($"ComponentType {prop.ComponentType}");
                     x($"IsReadonly {prop.IsReadOnly}");
@@ -2576,22 +2578,23 @@ namespace ProjTests
                     x($"Description {prop.Description}");
                     x($"Child properties {prop.GetChildProperties()}");
                     foreach (Attribute propAttribute in prop.Attributes)
-                    {
                         DebugUtils.WriteLine($"{propAttribute.GetType()}");
-                    }
 
                     var editor = prop.GetEditor(typeof(UITypeEditor));
                     DebugUtils.WriteLine(editor?.GetType().ToString());
                 }
-                var line = ConversionUtils.DoConvertToString(model1.GetAppTypeInfos().First(), new StringBuilder(), false);
+
+                var line = ConversionUtils.DoConvertToString(model1.GetAppTypeInfos().First(), new StringBuilder(),
+                    false);
                 DebugUtils.WriteLine(line.Length.ToString());
                 return;
-             
+
                 var model = lifetimeScope.Resolve<ClientModel>();
                 foreach (var primaryRibbonRibbonItem in model.PrimaryRibbon.RibbonItems)
                 {
                     var conv = TypeDescriptor.GetConverter(primaryRibbonRibbonItem);
-                    DebugUtils.WriteLine(ConversionUtils.DoConvertToString(primaryRibbonRibbonItem, new StringBuilder(), false)
+                    DebugUtils.WriteLine(ConversionUtils
+                        .DoConvertToString(primaryRibbonRibbonItem, new StringBuilder(), false)
                         .ToString());
 //conv.CanConvertTo(typeof(string)) ? conv.ConvertTo(primaryRibbonRibbonItem, typeof(string))?.ToString() ?? "null" : primaryRibbonRibbonItem.ToString());
                 }
@@ -2603,7 +2606,6 @@ namespace ProjTests
         {
             var code = new CodeRenderer
             {
-
                 FontFamily = new FontFamily("Lucida Console"), FontSize = 16.0, Foreground = Brushes.Pink
             };
             code.BeginInit();
@@ -2665,10 +2667,9 @@ namespace ProjTests
         public void TestSerializer()
         {
             var w = MarkupWriter.GetMarkupObjectFor(this);
-            
-	var writer = XmlWriter.Create(new StringWriter());
-        var s = new XamlDesignerSerializationManager(writer);
-        
+
+            var writer = XmlWriter.Create(new StringWriter());
+            var s = new XamlDesignerSerializationManager(writer);
         }
 
         [WpfFact]
@@ -2689,19 +2690,20 @@ namespace ProjTests
             var dictionary = new ResourceDictionary();
             dictionary.MergedDictionaries.Add(ribbonModel);
             dictionary.MergedDictionaries.Add(appRibbonResources);
-            RibbonModelApplicationMenu appMenu = new RibbonModelApplicationMenu();
+            var appMenu = new RibbonModelApplicationMenu();
             var groups = new List<RibbonModelContextualTabGroup>();
             var ctxTabGroup = new RibbonModelContextualTabGroup {Header = "Contextual Tab Group 1"};
             groups.Add(ctxTabGroup);
             var tabs = new List<RibbonModelTab>();
             var tab1 = new RibbonModelTab() {Header = "tab1"};
-            RibbonModelGroup group1 = new RibbonModelGroup(){Header="GRoup 1"};
+            var group1 = new RibbonModelGroup() {Header = "GRoup 1"};
             tab1.ItemsCollection.Add(group1);
-            var tab2 = new RibbonModelTab() { Header = "tab2", ContextualTabGroupHeader = ctxTabGroup.Header};
+            var tab2 = new RibbonModelTab() {Header = "tab2", ContextualTabGroupHeader = ctxTabGroup.Header};
             tabs.Add(tab1);
             tabs.Add(tab2);
             var providers = new List<IRibbonModelProvider<RibbonModelTab>>();
-            PrimaryRibbonModel model = null;//RibbonBuilder1.RibbonModelBuilder(appMenu, groups, tabs, providers, new JsonSerializerOptions());
+            PrimaryRibbonModel
+                model = null; //RibbonBuilder1.RibbonModelBuilder(appMenu, groups, tabs, providers, new JsonSerializerOptions());
             Assert.NotNull(model);
             Assert.NotEmpty(model.RibbonItems);
             Assert.NotEmpty(model.ContextualTabGroups);
@@ -2709,20 +2711,20 @@ namespace ProjTests
 
             var grid = new Grid();
             grid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(1, GridUnitType.Star)});
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            grid.RowDefinitions.Add(new RowDefinition {Height = GridLength.Auto});
+            grid.RowDefinitions.Add(new RowDefinition {Height = new GridLength(1, GridUnitType.Star)});
             grid.RenderTransform = new ScaleTransform(2, 2);
             grid.Children.Add(myRibbon);
-            var w = new Window { Content = grid, Resources = dictionary };
+            var w = new Window {Content = grid, Resources = dictionary};
             var templ = w.TryFindResource("AppRibbonModelTabTemplate");
             Assert.NotNull(templ);
             myRibbon.TabHeaderTemplate = (DataTemplate) templ;
-            myRibbon.SetBinding(MyRibbon.ItemsSourceProperty, new Binding {Source = model.RibbonItems});
+            myRibbon.SetBinding(ItemsControl.ItemsSourceProperty, new Binding {Source = model.RibbonItems});
             var r1 = w.TryFindResource("AppRibbonTabHeaderStyle");
             w.LayoutTransform = new ScaleTransform(2, 2);
             //w.RenderTransform = new ScaleTransform(2, 2);
             Assert.NotNull(r1);
-            
+
             var style1 = (Style) r1;
             myRibbon.TabHeaderStyle = style1;
             var res2 = w.TryFindResource("AppMyRibbonItemContainerStyle");
@@ -2743,33 +2745,30 @@ namespace ProjTests
             myRibbon.QuickAccessToolBar = qat;
 
             w.ShowDialog();
-            
-            
-
         }
-
 
 
         [WpfFact]
         public void TestText1()
         {
-            ObservableCollection<TestElement> s = new ObservableCollection<TestElement>();
-            s.Add(new TestElement(){Text="poo"});
-            ElementTextFormatterControl t = new ElementTextFormatterControl()
+            var s = new ObservableCollection<TestElement>();
+            s.Add(new TestElement() {Text = "poo"});
+            var t = new ElementTextFormatterControl()
             {
                 Source = s, ElementType = typeof(TestElement), HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
-            t.SetValue(ElementTextFormatterControl.ProcessActionProperty, new GenericTextSource<TestElement>.ProcessDelegate((GenericTextSource<TestElement> src, TestElement x) =>
-            {
-                var b = src.BasicProps();
-                src.AddTextRun(new CustomTextCharacters(x.Text,
-                    new BasicTextRunProperties(b)));
-
-            }));
+            t.SetValue(ElementTextFormatterControl.ProcessActionProperty,
+                new GenericTextSource<TestElement>.ProcessDelegate(
+                    (GenericTextSource<TestElement> src, TestElement x) =>
+                    {
+                        var b = src.BasicProps();
+                        src.AddTextRun(new CustomTextCharacters(x.Text,
+                            new BasicTextRunProperties(b)));
+                    }));
             //v.RenderTransform = new ScaleTransform(2, 2);
             //ScrollViewer s = new ScrollViewer() {Content = v};
-            Window w = new Window { Content = t, FontSize = 20 };
+            var w = new Window {Content = t, FontSize = 20};
             w.ShowDialog();
         }
 
@@ -2779,46 +2778,93 @@ namespace ProjTests
             var dm = ProjTestsHelper.CreateDockingManager(out var layoutDocumentPane, out var layoutDocumentPaneGroup,
                 out var layoutRootPanel, out var layoutRoot);
             dm.Theme = new AeroTheme();
-            Window w = new Window {Content = dm};
+            var w = new Window {Content = dm};
             var anchorables = new ObservableCollection<LayoutAnchorable>();
             var table1 = new TablePanel();
-            table1.Children.Add(new Button{Content="hello"});
-            anchorables.Add(new LayoutAnchorable(){Content = table1});
+            table1.Children.Add(new Button {Content = "hello"});
+            anchorables.Add(new LayoutAnchorable() {Content = table1});
             dm.AnchorablesSource = anchorables;
             w.ShowDialog();
         }
+
         [WpfFact]
         public void TestTraceView()
         {
-            ObservableCollection<Type> listenerTypes = new ObservableCollection<Type>();
+            var listenerTypes = new ObservableCollection<Type>();
             listenerTypes.Add(typeof(ConsoleTraceListener));
             listenerTypes.Add(typeof(TestListener));
-            ObservableCollection<TraceEntry> s = new ObservableCollection<TraceEntry>();
-            
+            var s = new ObservableCollection<TraceEntry>();
+
             _elementTextFormatterControl = new ElementTextFormatterControl()
             {
                 ElementType = typeof(TraceEntry),
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
-            _elementTextFormatterControl.SetValue(ElementTextFormatterControl.ProcessActionProperty, new GenericTextSource<TraceEntry>.ProcessDelegate((GenericTextSource<TraceEntry> src, TraceEntry x) =>
-            {
-                var b = src.BasicProps();
-                src.AddTextRun(new CustomTextCharacters(x.Data.ToString(), 
-                    new BasicTextRunProperties(b)));
-                src.AddTextRun(new CustomTextEndOfLine(2));
-
-            }));
+            _elementTextFormatterControl.SetValue(ElementTextFormatterControl.ProcessActionProperty,
+                new GenericTextSource<TraceEntry>.ProcessDelegate((GenericTextSource<TraceEntry> src, TraceEntry x) =>
+                {
+                    var b = src.BasicProps();
+                    src.AddTextRun(new CustomTextCharacters(x.Data.ToString(),
+                        new BasicTextRunProperties(b)));
+                    src.AddTextRun(new CustomTextEndOfLine(2));
+                }));
             //v.RenderTransform = new ScaleTransform(2, 2);
             //ScrollViewer s = new ScrollViewer() {Content = v};
-            StackPanel p = new StackPanel();
+            var p = new StackPanel();
             var td = new TraceView() {ListenerTypes = listenerTypes};
             td.TraceListenerCreated += TdOnTraceListenerCreated;
             p.Children.Add(td);
             p.Children.Add(_elementTextFormatterControl);
 
-            Window w = new Window { Content = p, FontSize = 20 };
+            var w = new Window {Content = p, FontSize = 20};
             w.ShowDialog();
+        }
+
+        [WpfFact]
+        public void Test1234()
+        {
+            var x = new DesignSurface();
+            x.BeginLoad(typeof(Form));
+            x.Loaded += X_Loaded;
+            if (x.View is Control c)
+            {
+                PropertyGrid pg =   new PropertyGrid();
+                var genericInterface = new GenericInterface();
+                pg.SelectedGridItemChanged += (sender, args) =>
+                {
+                    genericInterface.Target = args.NewSelection.Value;
+                };
+                var ss=x.GetService(typeof(ISelectionService)) as ISelectionService;
+                
+                ss.SelectionChanged += (sender, args) =>
+                {
+                    pg.SelectedObject = ss.PrimarySelection;
+                    genericInterface.Target = ss.PrimarySelection;
+                };
+                var c1 = new AppComponent();
+                x.ComponentContainer.Add(c1);
+                var windowsFormsHost = new WindowsFormsHost {Child = c};
+                var sss =new Grid();
+                sss.ColumnDefinitions.Add(new ColumnDefinition());
+                sss.ColumnDefinitions.Add(new ColumnDefinition());
+                sss.RowDefinitions.Add(new RowDefinition());
+                sss.RowDefinitions.Add(new RowDefinition());
+                sss.Children.Add(windowsFormsHost);
+                var windowsFormsHost2 = new WindowsFormsHost { Child = pg };
+                sss.Children.Add(windowsFormsHost2);
+                windowsFormsHost2.SetValue(Grid.ColumnProperty, 1);
+                
+                sss.Children.Add(genericInterface);
+                genericInterface.SetValue(Grid.RowProperty, 1);
+
+                var w = new Window() {Content = sss};
+                w.ShowDialog();
+            }
+        }
+
+        private void X_Loaded(object sender, LoadedEventArgs e)
+        {
         }
 
         [WpfFact]
@@ -2831,7 +2877,7 @@ namespace ProjTests
             };
 
             //p.Children.Add(_elementTextFormatterControl);
-            Window w = new Window { Content = tt, FontSize = 20 };
+            var w = new Window {Content = tt, FontSize = 20};
             w.Loaded += (sender, args) =>
             {
                 tt.HandleInput("test");
@@ -2841,16 +2887,158 @@ namespace ProjTests
         }
 
         private void TdOnTraceListenerCreated(object sender, TraceListenerCreatedEventArgs e)
-            {
-                if (e.Instance is TestListener t)
-                {
-                    _elementTextFormatterControl.Source = t.Elements;
-                }
+        {
+            if (e.Instance is TestListener t) _elementTextFormatterControl.Source = t.Elements;
         }
+    }
+
+    [EditorAttribute(typeof(ExampleComponentEditor), typeof(ComponentEditor))]
+    public class AppComponent : Component
+    {
+        [Description("Fun times")]
+        [DisplayName("Test")]
+        public string Test { get; set; }
+
+        public ExampleUserControl X { get; set; }
     }
 
     public class TestElement
     {
         public string Text { get; set; }
     }
+
+    // The ExampleComponentEditor displays two ExampleComponentEditorPage pages.
+    public class ExampleComponentEditor : System.Windows.Forms.Design.WindowsFormsComponentEditor
+    {
+        // This method override returns an type array containing the type of 
+        // each component editor page to display.
+        protected override Type[] GetComponentEditorPages()
+        {
+            return new Type[]
+            {
+                typeof(ExampleComponentEditorPage),
+                typeof(ExampleComponentEditorPage)
+            };
+        }
+
+        // This method override returns the index of the page to display when the 
+        // component editor is first displayed.
+        protected override int GetInitialComponentEditorPageIndex()
+        {
+            return 1;
+        }
+    }
+
+    // This example component editor page type provides an example 
+    // ComponentEditorPage implementation.
+    internal class ExampleComponentEditorPage : System.Windows.Forms.Design.ComponentEditorPage
+    {
+        private Label l1;
+        private System.Windows.Forms.Button b1;
+        private PropertyGrid pg1;
+
+        // Base64-encoded serialized image data for the required component editor page icon.
+        private string icon =
+            "AAEAAAD/////AQAAAAAAAAAMAgAAAFRTeXN0ZW0uRHJhd2luZywgVmVyc2lvbj0xLjAuNTAwMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWIwM2Y1ZjdmMTFkNTBhM2EFAQAAABNTeXN0ZW0uRHJhd2luZy5JY29uAgAAAAhJY29uRGF0YQhJY29uU2l6ZQcEAhNTeXN0ZW0uRHJhd2luZy5TaXplAgAAAAIAAAAJAwAAAAX8////E1N5c3RlbS5EcmF3aW5nLlNpemUCAAAABXdpZHRoBmhlaWdodAAACAgCAAAAAAAAAAAAAAAPAwAAAD4BAAACAAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAABAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgADExAAAgICAAMDAwAA+iPcAY77gACh9kwD/AAAAndPoADpw6wD///8AAAAAAAAAAAAHd3d3d3d3d8IiIiIiIiLHKIiIiIiIiCco///////4Jyj5mfIvIvgnKPnp////+Cco+en7u7v4Jyj56f////gnKPmZ8i8i+Cco///////4JyiIiIiIiIgnJmZmZmZmZifCIiIiIiIiwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACw==";
+
+        public ExampleComponentEditorPage()
+        {
+            // Initialize the page, which inherits from Panel, and its controls.
+            Size = new System.Drawing.Size(400, 250);
+            Icon = DeserializeIconFromBase64Text(icon);
+            Text = "Example Page";
+
+            b1 = new System.Windows.Forms.Button();
+            b1.Size = new Size(200, 20);
+            b1.Location = new System.Drawing.Point(200, 0);
+            b1.Text = "Set a random background color";
+            b1.Click += new EventHandler(randomBackColor);
+            Controls.Add(b1);
+
+            l1 = new Label();
+            l1.Size = new System.Drawing.Size(190, 20);
+            l1.Location = new System.Drawing.Point(4, 2);
+            l1.Text = "Example Component Editor Page";
+            Controls.Add(l1);
+
+            pg1 = new PropertyGrid();
+            pg1.Size = new System.Drawing.Size(400, 280);
+            pg1.Location = new System.Drawing.Point(0, 30);
+            Controls.Add(pg1);
+        }
+
+        // This method indicates that the Help button should be enabled for this 
+        // component editor page.
+        public override bool SupportsHelp()
+        {
+            return true;
+        }
+
+        // This method is called when the Help button for this component editor page is pressed.
+        // This implementation uses the IHelpService to show the Help topic for a sample keyword.
+        public override void ShowHelp()
+        {
+            // The GetSelectedComponent method of a ComponentEditorPage retrieves the
+            // IComponent associated with the WindowsFormsComponentEditor.
+            var selectedComponent = GetSelectedComponent();
+
+            // Retrieve the Site of the component, and return if null.
+            var componentSite = selectedComponent.Site;
+            if (componentSite == null)
+                return;
+
+            // Acquire the IHelpService to display a help topic using a indexed keyword lookup.
+            var helpService = (IHelpService) componentSite.GetService(typeof(IHelpService));
+            if (helpService != null)
+                helpService.ShowHelpFromKeyword("System.Windows.Forms.ComboBox");
+        }
+
+        // The LoadComponent method is raised when the ComponentEditorPage is displayed.
+        protected override void LoadComponent()
+        {
+            pg1.SelectedObject = Component;
+        }
+
+        // The SaveComponent method is raised when the WindowsFormsComponentEditor is closing 
+        // or the current ComponentEditorPage is closing.
+        protected override void SaveComponent()
+        {
+        }
+
+        // If the associated component is a Control, this method sets the BackColor to a random color.
+        // This method is invoked by the button on this ComponentEditorPage.
+        private void randomBackColor(object sender, EventArgs e)
+        {
+            if (typeof(Control).IsAssignableFrom(Component.GetType()))
+            {
+                // Sets the background color of the Control associated with the
+                // WindowsFormsComponentEditor to a random color.
+                var rnd = new Random();
+                ((Control) Component).BackColor =
+                    System.Drawing.Color.FromArgb(rnd.Next(255), rnd.Next(255), rnd.Next(255));
+                pg1.Refresh();
+            }
+        }
+
+        // This method can be used to retrieve an Icon from a block 
+        // of Base64-encoded text.
+        private System.Drawing.Icon DeserializeIconFromBase64Text(string text)
+        {
+            System.Drawing.Icon img = null;
+            var memBytes = Convert.FromBase64String(text);
+            IFormatter formatter = new BinaryFormatter();
+            var stream = new MemoryStream(memBytes);
+            img = (System.Drawing.Icon) formatter.Deserialize(stream);
+            stream.Close();
+            return img;
+        }
+    }
+
+    // This example control is associated with the ExampleComponentEditor 
+    // through the following EditorAttribute.
+    [EditorAttribute(typeof(ExampleComponentEditor), typeof(ComponentEditor))]
+    public class ExampleUserControl : System.Windows.Forms.UserControl
+    {
+    }
 }
+

@@ -578,7 +578,7 @@ namespace ProjInterface
                     return ;
                 }
 
-                var ctl = _converter.ControlForValue ( args.Content , 0 ) ;
+                var ctl = _converter.GenericInterface.ControlForValue ( args.Content , 0 ) ;
                 FrameDoc1.Content = ctl ;
                 args.Cancel       = true ;
                 // }
