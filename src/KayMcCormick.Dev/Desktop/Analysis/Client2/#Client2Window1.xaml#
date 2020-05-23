@@ -1,4 +1,4 @@
-﻿<RibbonWindow x:Class="Client2.Client2Window1"
+<RibbonWindow x:Class="Client2.Client2Window1"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -90,10 +90,10 @@
 <anal:MyRibbonMenuItem Header="{Binding Name}"></anal:MyRibbonMenuItem>
           </DataTemplate>
           <DataTemplate DataType="{x:Type io:DirectoryInfo}">
-            <anal:MyRibbonMenuItem Header="{Binding Name}"  ItemContainerTemplateSelector="{StaticResource ComboBoxTemplateSelector}"
+            <anal:MyRibbonMenuButton Label="{Binding Name}"  ItemContainerTemplateSelector="{StaticResource ComboBoxTemplateSelector}" 
                                       UsesItemContainerTemplate="True"
                                       ItemsSource="{Binding Converter={StaticResource DirectoryInfoConverter}}">
-            </anal:MyRibbonMenuItem>
+            </anal:MyRibbonMenuButton>
           </DataTemplate>
         </anal:MyRibbon.Resources>
         <anal:MyRibbon.QuickAccessToolBar>

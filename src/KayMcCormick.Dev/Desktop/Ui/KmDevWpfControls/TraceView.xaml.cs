@@ -57,7 +57,13 @@ namespace KmDevWpfControls
 
         private void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            if (e.Parameter == null)
+            var b = e.Parameter == null;
+            RefreshTraceSources(b);
+        }
+
+        public void RefreshTraceSources(bool b)
+        {
+            if (b)
                 PresentationTraceSources.Refresh();
             view.Refresh();
         }
@@ -152,13 +158,22 @@ namespace KmDevWpfControls
 
         // public static IEnumerable TraceOptions { get; set; } = Enum.GetValues(typeof(TraceOptions)).Cast<TraceOptions>().Select(o=>new CheckableModelItem<TraceOptions>(o));
         private void CommandBinding_OnExecuted3(object sender, ExecutedRoutedEventArgs e)
-        {var t=
-            Combo.SelectedItem as Type;
+        {
+            CreateListener();
+        }
+
+        private void CreateListener()
+        {
+            var t =
+                Combo.SelectedItem as Type;
             object x11 = null;
             try
             {
                 x11 = Activator.CreateInstance(t);
-            } catch{}
+            }
+            catch
+            {
+            }
 
             var x = Edit.FindName("FileInputBox");
             var c = VisualTreeHelper.GetChild(Edit, 0);
@@ -193,7 +208,10 @@ namespace KmDevWpfControls
                 if (t == typeof(XmlWriterTraceListener))
                 {
                     Debug.WriteLine(file);
-                    xx = new XmlWriterTraceListener(file);
+
+                    var xmlWriterTraceListener = new XmlWriterTraceListener(file);
+                    Debug.WriteLine(xmlWriterTraceListener.Writer);
+                    xx = xmlWriterTraceListener;
                 }
                 else
                 {
@@ -209,48 +227,21 @@ namespace KmDevWpfControls
             RaiseEvent(ev);
 
             view.SelectedTraceSource?.Listeners.Add(xx);
-          view.Refresh();
-          try
-          {
-              Debug.WriteLine(PresentationTraceSources.RoutedEventSource.Switch.Level);
-              foreach (TraceListener listener in PresentationTraceSources.RoutedEventSource.Listeners)
-              {
-                  Debug.WriteLine(listener.GetType());
+            view.Refresh();
+            try
+            {
+                Debug.WriteLine(PresentationTraceSources.RoutedEventSource.Switch.Level);
+                foreach (TraceListener listener in PresentationTraceSources.RoutedEventSource.Listeners)
+                {
+                    Debug.WriteLine(listener.GetType());
+                }
+            }
+            catch
+            {
+            }
 
-              }
-          }
-          catch
-          {
-
-          }
-
-          //PresentationTraceSources.DataBindingSource.Listeners.Add(xx);
-           Listener = xx;
-        } }
-
-    public class TraceListenerCreatedEventArgs : RoutedEventArgs
-    {
-        public TraceListener Instance { get; }
-
-        /// <inheritdoc />
-        public TraceListenerCreatedEventArgs(RoutedEvent routedEvent, object source, TraceListener instance) : base(routedEvent, source)
-        {
-            this.Instance = instance;
-        }
-    }
-
-    public class TraceLis : TraceListener
-    {
-        /// <inheritdoc />
-        public override void Write(string message)
-        {
-            Debug.Write(message);
-        }
-
-        /// <inheritdoc />
-        public override void WriteLine(string message)
-        {
-            Debug.WriteLine(message);
+            //PresentationTraceSources.DataBindingSource.Listeners.Add(xx);
+            Listener = xx;
         }
     }
 }

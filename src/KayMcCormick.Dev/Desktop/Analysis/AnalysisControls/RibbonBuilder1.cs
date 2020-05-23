@@ -79,13 +79,13 @@ namespace AnalysisControls
                 r.RibbonItems.Add(item);
             }
 
-            var file = @"C:\temp\ribbon.xaml";
-            using (var w = XmlWriter.Create(file, new XmlWriterSettings() {Indent = true}))
-            {
-                ResourceDictionary d = new ResourceDictionary();
-                d["Ribbon0"] = r;
-                XamlWriter.Save(d, w);
-            }
+            // var file = @"C:\temp\ribbon.xaml";
+            // using (var w = XmlWriter.Create(file, new XmlWriterSettings() {Indent = true}))
+            // {
+                // ResourceDictionary d = new ResourceDictionary();
+                // d["Ribbon0"] = r;
+                // XamlWriter.Save(d, w);
+            // }
 
             // var json = JsonSerializer.Serialize(r, opt);
             // File.WriteAllText(@"C:\temp\ribbon.json", json);
@@ -93,4 +93,9 @@ namespace AnalysisControls
             return r;
         }
     }
+
+    // public class DirMenuList : IRibbonMenuButton
+    // {
+
+    // }
 }

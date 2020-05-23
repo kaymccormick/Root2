@@ -11,6 +11,7 @@
   xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
   xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
   xmlns:classic="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
+  xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
   xmlns:primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon"
   xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonModel"
   xmlns:controls="clr-namespace:AnalysisControls.Controls">
@@ -19,7 +20,16 @@
   <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
   <system:Double x:Key="ą">20.0</system:Double>
   <SolidColorBrush x:Key="Ĉ" Color="#90B1BBC6" />
-  
+  <Geometry x:Key="ï">
+    M 0,5.1 L 1.7,5.2 L 3.4,7.1 L 8,0.4 L 9.2,0 L 3.3,10.8 Z
+  </Geometry>
+  <Geometry x:Key="ð">
+    M 0,0 L 4,3.5 L 0,7 Z
+  </Geometry>
+  <Geometry x:Key="ñ">
+    M10,1.2L4.5,7.3 1.5,5 1.5,7.5 4.5,10 4.5,10 10,4Z
+  </Geometry>
+
   <LinearGradientBrush x:Key="Ù" StartPoint="0.5,0.0" EndPoint="0.5,1.0">
     <GradientStop Color="#EEFFFFFF" Offset="0.0" />
     <GradientStop Color="#BBFFFFFF" Offset="0.1" />
@@ -1090,6 +1100,28 @@
     <GradientStop Offset="0.79" Color="#FFF4CE9A" />
     <GradientStop Offset="1" Color="#FFF3E28D" />
   </LinearGradientBrush>
+  <Style x:Key="ó" TargetType="{x:Type Thumb}">
+    <Setter Property="FrameworkElement.Width" Value="11"/>
+    <Setter Property="FrameworkElement.Height" Value="11"/>
+    <Setter Property="FrameworkElement.VerticalAlignment" Value="Bottom"/>
+    <Setter Property="FrameworkElement.HorizontalAlignment" Value="Left"/>
+    <Setter Property="FrameworkElement.Cursor" Value="SizeNESW"/>
+    <Setter Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type Thumb}">
+          <Border Background="Transparent">
+            <Path Margin="2,0,0,2" Data="M 0,0 L 2,0 2,3 5,3 5,6 8,6 8,9 11,9 11,11 0,11 Z"
+                  Fill="{StaticResource Ĩ}"/>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="FrameworkElement.FlowDirection" Value="RightToLeft">
+        <Setter Property="FrameworkElement.Cursor" Value="SizeNWSE"/>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 
   <Style x:Key="Õ" TargetType="{x:Type Thumb}">
     <Setter Property="Width" Value="11" />
@@ -1261,7 +1293,7 @@
             </UIElement.Effect>
             <primitives:RibbonQuickAccessToolBarPanel Name="PART_MainPanel" IsItemsHost="true" Grid.Column="0" />
             <ContentPresenter Name="MainCustomizeMenuHost" Grid.Column="2"
-                              Content="{Binding Path=CustomizeMenuButton, RelativeSource={RelativeSource TemplatedParent}}" />
+                              Content="{Binding Path=CustomizeMenuButton, RelativeSource={RelativeSource TemplatedParent},NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True}" />
             <Grid x:Name="OverflowButtonHost" Column="2" Visibility="Collapsed">
               <RibbonToggleButton x:Name="PART_OverflowButton" Style="{StaticResource {x:Type RibbonToggleButton}}"
                                   Width="12" ClickMode="Press" KeyTip="00"
@@ -1965,7 +1997,7 @@
                           LargeImageSource="{TemplateBinding RibbonGroup.LargeImageSource}"
                           SmallImageSource="{TemplateBinding RibbonGroup.SmallImageSource}"
                           IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
-      <Popup x:Name="PART_Popup" AllowsTransparency="true" Placement="Bottom" Focusable="false"
+      <Popup  x:Name="PART_Popup" AllowsTransparency="true" Placement="Bottom" Focusable="false"
              PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
              PlacementTarget="{Binding ElementName=PART_ToggleButton}"
              IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent},NotifyOnTargetUpdated=True}">
@@ -2198,7 +2230,7 @@
                           HorizontalContentAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
                           Padding="{TemplateBinding Control.Padding}" ClickMode="Press" Style="{x:Null}"
                           FocusVisualStyle="{x:Null}"
-                          IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsDropDownOpen, Mode=TwoWay}">
+                          IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsDropDownOpen, Mode=TwoWay, NotifyOnSourceUpdated=True,NotifyOnTargetUpdated=True}">
         <FrameworkElement.Resources>
           <Thickness Left="1" Top="1" Right="1" Bottom="2"
                      x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:MyRibbon}, ResourceId=LargeImageMargin}" />
@@ -5332,7 +5364,20 @@
             <ResourceDictionary
               Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
 </ResourceDictionary.MergedDictionaries>
-              </ResourceDictionary>
+              
+    <Style TargetType="{x:Type local:WrappedPropertyGrid}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:WrappedPropertyGrid}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
 </ControlTemplate.Resources>
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
@@ -7340,6 +7385,324 @@
     </Setter>
   </Style>
 
+<Style TargetType="{x:Type local:MyRibbonMenuItem}">
+    <Setter Property="Control.HorizontalContentAlignment"
+                    Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+    <Setter Property="Control.VerticalContentAlignment"
+                    Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+    <Setter Property="Control.Background" Value="Transparent"/>
+    <Setter Property="Control.BorderBrush" Value="Transparent"/>
+    <Setter Property="Control.BorderThickness" Value="1"/>
+    <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}"/>
+    <Setter Property="Control.Padding" Value="3,2,3,2"/>
+    <Setter Property="RibbonMenuItem.MouseOverBorderBrush"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.MouseOverBorderBrush}"/>
+    <Setter Property="RibbonMenuItem.MouseOverBackground"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.MouseOverBackground}"/>
+    <Setter Property="RibbonMenuItem.PressedBorderBrush"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.PressedBorderBrush}"/>
+    <Setter Property="RibbonMenuItem.PressedBackground"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.PressedBackground}"/>
+    <Setter Property="RibbonMenuItem.CheckedBorderBrush"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.CheckedBorderBrush}"/>
+    <Setter Property="RibbonMenuItem.CheckedBackground"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.CheckedBackground}"/>
+    <Setter Property="RibbonControlService.FocusedBorderBrush"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.FocusedBorderBrush}"/>
+    <Setter Property="RibbonControlService.FocusedBackground"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.FocusedBackground}"/>
+    <Setter Property="ToolTipService.InitialShowDelay" Value="{StaticResource Í}"/>
+    <Setter Property="ToolTipService.ShowDuration" Value="{StaticResource Î}"/>
+    <Setter Property="ToolTipService.BetweenShowDelay" Value="{StaticResource Ï}"/>
+    <Setter Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:MyRibbonMenuItem}">
+          <Grid x:Name="MainGrid" SnapsToDevicePixels="true">
+            <Border x:Name="Border" Background="{TemplateBinding Control.Background}"
+                    BorderThickness="{TemplateBinding Control.BorderThickness}"
+                    BorderBrush="{TemplateBinding Control.BorderBrush}" CornerRadius="2">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition MinWidth="22" Width="Auto" SharedSizeGroup="MenuItemIconColumnGroup"/>
+                  <ColumnDefinition Width="*"/>
+                  <ColumnDefinition Width="14"/>
+                </Grid.ColumnDefinitions>
+                <Border x:Name="PART_SideBarBorder" Margin="0,-1,0,-1" BorderThickness="0,0,1,0"
+                        Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Ribbon.Background}"
+                        BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Ribbon.BorderBrush}">
+                  <Grid x:Name="SideBarOverlay" Background="{StaticResource ì}">
+                    <Image x:Name="Image" Width="16" Height="16" Margin="4,3,6,1" VerticalAlignment="Center"
+                           HorizontalAlignment="Center" Source="{TemplateBinding RibbonMenuItem.ImageSource}"/>
+                    <Border x:Name="CheckMarkBorder"
+                            Background="{TemplateBinding RibbonMenuItem.CheckedBackground}"
+                            BorderBrush="{TemplateBinding RibbonMenuItem.CheckedBorderBrush}"
+                            BorderThickness="1" Visibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Center"
+                            Margin="1" Width="20" Height="20" CornerRadius="2">
+                      <Path x:Name="CheckMark" Margin="4,0,6,0" Visibility="Hidden" VerticalAlignment="Center"
+                            HorizontalAlignment="Center" Fill="{TemplateBinding Control.Foreground}"
+                            FlowDirection="LeftToRight" Data="{StaticResource ï}"/>
+                    </Border>
+                  </Grid>
+                </Border>
+                <ContentPresenter Grid.Column="1" ContentSource="Header" VerticalAlignment="Center"
+                                  Margin="{TemplateBinding Control.Padding}" RecognizesAccessKey="true"/>
+                <Path x:Name="Arrow" Visibility="Collapsed" Grid.Column="2" VerticalAlignment="Center"
+                      HorizontalAlignment="Center" Fill="{TemplateBinding Control.Foreground}"
+                      Data="{StaticResource ð}"/>
+              </Grid>
+            </Border>
+            <Popup x:Name="PART_Popup" AllowsTransparency="true" VerticalOffset="-1" Placement="Custom"
+                   Focusable="false"
+                   PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
+                   IsOpen="{Binding Path=IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}">
+              <classic:SystemDropShadowChrome x:Name="Shadow" Color="Transparent" KeyTipService.IsKeyTipScope="true"
+                                              RenderOptions.ClearTypeHint="Enabled">
+                <Border Name="MenuBorder" BorderThickness="{TemplateBinding Control.BorderThickness}"
+                        CornerRadius="2"
+                        BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Ribbon.BorderBrush}"
+                        Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Ribbon.Background}">
+                  <Border x:Name="SubMenuInnerBorder" Background="{StaticResource Ñ}" CornerRadius="2">
+                    <Grid>
+                      <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="Auto"/>
+                      </Grid.RowDefinitions>
+                      <ScrollViewer x:Name="PART_SubMenuScrollViewer"
+                                    Style="{DynamicResource {ComponentResourceKey TypeInTargetAssembly={x:Type FrameworkElement}, ResourceId=MenuScrollViewer}}">
+                        <Grid RenderOptions.ClearTypeHint="Enabled">
+                          <Canvas x:Name="BackgroundCanvas" Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <Rectangle x:Name="OpaqueRect" RadiusX="2" RadiusY="2"
+                                       Height="{Binding ElementName=MenuBorder, Path=ActualHeight}"
+                                       Width="{Binding ElementName=MenuBorder, Path=ActualWidth}"
+                                       Fill="{Binding ElementName=MenuBorder, Path=Background}"/>
+                            <Rectangle x:Name="OverlayRect" Fill="{StaticResource Ñ}" RadiusX="2" RadiusY="2"
+                                       Height="{Binding ElementName=MenuBorder, Path=ActualHeight}"
+                                       Width="{Binding ElementName=MenuBorder, Path=ActualWidth}"/>
+                          </Canvas>
+                          <ItemsPresenter x:Name="ItemsPresenter" Margin="2" Grid.IsSharedSizeScope="true"
+                                          KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                        </Grid>
+                      </ScrollViewer>
+                      <Border Name="ResizeControl" Grid.Row="1" Visibility="Collapsed" Background="{StaticResource Ò}"
+                              BorderThickness="0,1,0,0"
+                              BorderBrush="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Ribbon.BorderBrush}">
+                        <Thumb x:Name="PART_ResizeThumb" Style="{StaticResource Ó}"/>
+                      </Border>
+                    </Grid>
+                  </Border>
+                </Border>
+              </classic:SystemDropShadowChrome>
+            </Popup>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger SourceName="PART_SubMenuScrollViewer" Property="ScrollViewer.CanContentScroll" Value="false">
+              <Setter TargetName="OpaqueRect" Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=VerticalOffset}"
+                              Property="Canvas.Top"/>
+              <Setter TargetName="OpaqueRect"
+                              Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=HorizontalOffset}"
+                              Property="Canvas.Left"/>
+              <Setter TargetName="OverlayRect"
+                              Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=VerticalOffset}" Property="Canvas.Top"/>
+              <Setter TargetName="OverlayRect"
+                              Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=HorizontalOffset}"
+                              Property="Canvas.Left"/>
+            </Trigger>
+            <Trigger Property="RibbonMenuItem.HasGallery" Value="true">
+              <Setter TargetName="PART_SubMenuScrollViewer" Property="ScrollViewer.HorizontalScrollBarVisibility"
+                              Value="Disabled"/>
+              <Setter TargetName="PART_SubMenuScrollViewer" Property="ScrollViewer.VerticalScrollBarVisibility"
+                              Value="Disabled"/>
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="ItemsControl.HasItems" Value="true"/>
+                <Condition Property="MenuItem.IsCheckable" Value="false"/>
+              </MultiTrigger.Conditions>
+              <Setter TargetName="Arrow" Property="UIElement.Visibility" Value="Visible"/>
+            </MultiTrigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="RibbonMenuItem.CanUserResizeHorizontally" Value="true"/>
+                <Condition Property="RibbonMenuItem.CanUserResizeVertically" Value="true"/>
+              </MultiTrigger.Conditions>
+              <Setter TargetName="ResizeControl" Property="UIElement.Visibility" Value="Visible"/>
+            </MultiTrigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="RibbonMenuItem.CanUserResizeHorizontally" Value="false"/>
+                <Condition Property="RibbonMenuItem.CanUserResizeVertically" Value="true"/>
+              </MultiTrigger.Conditions>
+              <Setter TargetName="ResizeControl" Property="UIElement.Visibility" Value="Visible"/>
+              <Setter TargetName="PART_ResizeThumb" Value="{StaticResource Ô}"
+                              Property="FrameworkElement.Style"/>
+            </MultiTrigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="RibbonMenuItem.IsDropDownPositionedLeft" Value="true"/>
+                <Condition Property="RibbonMenuItem.CanUserResizeHorizontally" Value="true"/>
+                <Condition Property="RibbonMenuItem.CanUserResizeVertically" Value="true"/>
+              </MultiTrigger.Conditions>
+              <Setter TargetName="PART_ResizeThumb" Value="{StaticResource ó}"
+                              Property="FrameworkElement.Style"/>
+            </MultiTrigger>
+            <Trigger Value="{x:Null}" Property="RibbonMenuItem.ImageSource">
+              <Setter TargetName="Image" Property="UIElement.Visibility" Value="Collapsed"/>
+            </Trigger>
+            <Trigger Property="MenuItem.IsCheckable" Value="true">
+              <Setter TargetName="Arrow" Property="UIElement.Visibility" Value="Hidden"/>
+            </Trigger>
+            <Trigger Property="MenuItem.IsChecked" Value="true">
+              <Setter TargetName="CheckMark" Property="UIElement.Visibility" Value="Visible"/>
+              <Setter TargetName="CheckMarkBorder" Property="UIElement.Visibility" Value="Visible"/>
+              <Setter TargetName="Image" Property="UIElement.Visibility" Value="Hidden"/>
+            </Trigger>
+            <Trigger SourceName="PART_Popup" Property="Popup.HasDropShadow" Value="true">
+              <Setter TargetName="Shadow" Property="FrameworkElement.Margin" Value="0,0,5,5"/>
+              <Setter TargetName="Shadow" Value="{StaticResource Ö}"
+                              Property="classic:SystemDropShadowChrome.Color"/>
+            </Trigger>
+            <Trigger SourceName="PART_Popup" Property="Popup.IsOpen" Value="false">
+              <Setter TargetName="PART_Popup" Property="Popup.PopupAnimation" Value="None"/>
+            </Trigger>
+            <Trigger Property="MenuItem.IsHighlighted" Value="true">
+              <Setter TargetName="Border"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBackground}"
+                              Property="Border.Background"/>
+              <Setter TargetName="Border"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBorderBrush}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="PART_SideBarBorder" Property="Border.BorderBrush" Value="Transparent"/>
+              <Setter TargetName="PART_SideBarBorder" Property="Border.Background" Value="Transparent"/>
+              <Setter TargetName="SideBarOverlay" Property="Panel.Background" Value="Transparent"/>
+            </Trigger>
+            <Trigger Property="MenuItem.IsPressed" Value="true">
+              <Setter TargetName="Border"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=PressedBackground}"
+                              Property="Border.Background"/>
+              <Setter TargetName="Border"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=PressedBorderBrush}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="PART_SideBarBorder" Property="Border.BorderBrush" Value="Transparent"/>
+              <Setter TargetName="PART_SideBarBorder" Property="Border.Background" Value="Transparent"/>
+              <Setter TargetName="SideBarOverlay" Property="Panel.Background" Value="Transparent"/>
+            </Trigger>
+            <Trigger Property="UIElement.IsEnabled" Value="false">
+              <Setter TargetName="Image" Property="UIElement.Opacity" Value="0.5"/>
+              <Setter TargetName="CheckMarkBorder" Property="UIElement.Opacity" Value="0.5"/>
+              <Setter TargetName="Arrow" Property="UIElement.Opacity" Value="0.5"/>
+              <Setter TargetName="MainGrid" Value="{StaticResource Ë}" Property="TextElement.Foreground"/>
+            </Trigger>
+            <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
+              <Setter TargetName="BackgroundCanvas" Property="UIElement.Visibility" Value="Collapsed"/>
+              <Setter TargetName="MainGrid"
+                              Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
+                              Property="TextElement.Foreground"/>
+              <Setter TargetName="Arrow"
+                              Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
+                              Property="Shape.Fill"/>
+              <Setter TargetName="Border" Property="Border.CornerRadius" Value="0"/>
+              <Setter TargetName="Border" Property="Border.Background" Value="Transparent"/>
+              <Setter TargetName="Border" Property="Border.BorderBrush" Value="Transparent"/>
+              <Setter TargetName="CheckMark"
+                              Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
+                              Property="Shape.Fill"/>
+              <Setter TargetName="CheckMark" Value="{StaticResource ñ}" Property="Path.Data"/>
+              <Setter TargetName="CheckMarkBorder" Property="Border.CornerRadius" Value="0"/>
+              <Setter TargetName="CheckMarkBorder"
+                              Value="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
+                              Property="Border.Background"/>
+              <Setter TargetName="CheckMarkBorder"
+                              Value="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="PART_Popup" Property="Popup.PopupAnimation" Value="None"/>
+              <Setter TargetName="Shadow" Property="classic:SystemDropShadowChrome.Color" Value="Transparent"/>
+              <Setter TargetName="SideBarOverlay" Property="Panel.Background" Value="Transparent"/>
+              <Setter TargetName="PART_SideBarBorder" Property="Border.Background" Value="Transparent"/>
+              <Setter TargetName="PART_SideBarBorder"
+                              Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="PART_SubMenuScrollViewer"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                              Property="Control.Foreground"/>
+              <Setter TargetName="SubMenuInnerBorder" Property="Border.Background" Value="Transparent"/>
+              <Setter TargetName="SubMenuInnerBorder" Property="Border.CornerRadius" Value="0"/>
+              <Setter TargetName="MenuBorder"
+                              Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="MenuBorder"
+                              Value="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
+                              Property="Border.Background"/>
+              <Setter TargetName="ResizeControl"
+                              Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="ResizeControl"
+                              Value="{DynamicResource {x:Static SystemColors.MenuBrushKey}}"
+                              Property="Border.Background"/>
+            </DataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsHighlighted}" Value="True"/>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="MainGrid"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                              Property="TextElement.Foreground"/>
+              <Setter TargetName="Arrow"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                              Property="Shape.Fill"/>
+              <Setter TargetName="CheckMark"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                              Property="Shape.Fill"/>
+              <Setter TargetName="Border"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                              Property="Border.Background"/>
+              <Setter TargetName="Border"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="PART_SideBarBorder" Property="Border.BorderBrush" Value="Transparent"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsPressed}" Value="True"/>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="MainGrid"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                              Property="TextElement.Foreground"/>
+              <Setter TargetName="Border"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"
+                              Property="Border.Background"/>
+              <Setter TargetName="Border"
+                              Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="PART_SideBarBorder" Property="Border.BorderBrush" Value="Transparent"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="False"/>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="MainGrid"
+                              Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                              Property="TextElement.Foreground"/>
+              <Setter TargetName="Arrow" Property="UIElement.Opacity" Value="1"/>
+              <Setter TargetName="Arrow"
+                              Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                              Property="Shape.Fill"/>
+              <Setter TargetName="CheckMarkBorder" Property="UIElement.Opacity" Value="1"/>
+              <Setter TargetName="CheckMarkBorder"
+                              Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="CheckMark"
+                              Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                              Property="Shape.Fill"/>
+            </MultiDataTrigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
   <Style TargetType="{x:Type local:RibbonModelView}">
     <Setter Property="Template">
       <Setter.Value>
@@ -7411,7 +7774,8 @@
               </Grid.RowDefinitions>
               <TreeView x:Name="TreeView"
                         ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RootItemsCollection}" />
-              <ContentPresenter Grid.Column="1" Content="{Binding ElementName=TreeView,Path=SelectedItem}">
+              <local:PGrid Grid.Column="1" SelectedObject="{Binding ElementName=TreeView,Path=SelectedItem}"/>
+              <ContentPresenter Grid.Column="1" Content="{Binding ElementName=TreeView,Path=SelectedItem}" Visibility="Collapsed">
                 <ContentPresenter.Resources>
                   <DataTemplate DataType="{x:Type ribbonModel:RibbonModelTab}">
                     <StackPanel>
@@ -7526,4 +7890,18 @@
   </Style>
 
 
+
+    <Style TargetType="{x:Type local:WrappedPropertyGrid}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:WrappedPropertyGrid}">
+                    <Border x:Name="Border" Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                     
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

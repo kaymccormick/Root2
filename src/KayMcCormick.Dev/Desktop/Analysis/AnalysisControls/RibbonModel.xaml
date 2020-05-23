@@ -39,6 +39,8 @@
   </Style>
   <Style TargetType="{x:Type local:MyRibbonGroup}">
     <Setter Property="ItemsSource" Value="{Binding Items,NotifyOnTargetUpdated=True}" />
+    <Setter Property="IsDropDownOpen" Value="{Binding IsDropDownOpen,NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True,Mode=TwoWay}"/>
+    <Setter Property="Background" Value="{Binding Background,Mode=TwoWay,NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True}"/>
   </Style>
   <Style TargetType="{x:Type local:MyRibbonTab}">
     <Setter Property="ContextualTabGroupHeader"
@@ -131,19 +133,17 @@
   <DataTemplate DataType="{x:Type ribbonModel:RibbonModelItemMenuButton}">
     <local:MyRibbonMenuButton ItemContainerTemplateSelector="{StaticResource ComboBoxTemplateSelector}"
                               UsesItemContainerTemplate="True"
-                              Foreground="Crimson" Label="{Binding Label}" ItemsSource="{Binding Items}">
-      <local:MyRibbonMenuButton.ToolTip>
-        <StackPanel>
-          <TextBlock Text="**" />
-          <TextBlock
-            Text="{Binding RelativeSource={RelativeSource TemplatedParent},Converter={StaticResource GuidConverter}}" />
-
-        </StackPanel>
-      </local:MyRibbonMenuButton.ToolTip>
+                              Visibility="{Binding Visibility}"
+                              LargeImageSource="{Binding LargeImageSource}"
+                              SmallImageSource="{Binding SmallImageSource}"
+                              IsDropDownOpen="{Binding IsDropDownOpen,Mode=TwoWay}"
+                              Foreground="{Binding Foreground}" Label="{Binding Label}" 
+                              Background="{Binding Background}"
+                              ItemsSource="{Binding Items}">
     </local:MyRibbonMenuButton>
   </DataTemplate>
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelControlGroup}">
-    <RibbonControlGroup BorderBrush="BlueViolet" Padding="10" Margin="5" BorderThickness="4"
+    <RibbonControlGroup BorderBrush="{Binding BorderBrush}" Padding="10" Margin="5" BorderThickness="4"
                         ItemsSource="{Binding Items}" />
   </HierarchicalDataTemplate>
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelMenuItem}" ItemsSource="{Binding Items}">
@@ -162,7 +162,7 @@
   </HierarchicalDataTemplate>
 
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGalleryItem}">
-    <TextBlock Text="{Binding Content}" />
+    <TextBlock Background="Aqua"  Text="{Binding Content}" />
   </HierarchicalDataTemplate>
 
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGallery}" ItemsSource="{Binding Items}">

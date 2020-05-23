@@ -116,7 +116,7 @@ namespace KmDevWpfControls
                 return;
             var fileName = openFileDialog.FileName;
             _te.Text = fileName;
-
+            Filename = fileName;
             IsFileSelected = true;
             // var fileAttributes = File.GetAttributes(fileName);
             // FileSystemInfo = ((fileAttributes & FileAttributes.Directory) == FileAttributes.Directory) ? (FileSystemInfo) new DirectoryInfo(fileName) : new FileInfo(fileName);

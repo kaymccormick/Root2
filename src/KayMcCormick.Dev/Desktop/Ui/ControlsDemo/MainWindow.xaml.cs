@@ -45,7 +45,7 @@ namespace ControlsDemo
             VisualTreeViewModel.RootVisual = this;
         }
 
-        private static void GrovelTypes()
+        public static void GrovelTypes()
         {
             LoadAssemblies();
 
@@ -62,15 +62,31 @@ namespace ControlsDemo
                     return Enumerable.Empty<Type>();
                 }
             });
+            Dictionary<string, object> enums = new Dictionary<string, object>();
             List<Tuple<string, string>> editors = new List<Tuple<string, string>>();
             foreach (var type in selectMany)
             {
+                if (type.IsEnum)
+                {
+                    enums[type.FullName] = new
+                    {
+                        Flags = type.GetCustomAttributes<FlagsAttribute>().Any(),
+                        Count = Enum.GetValues(type).Length,
+                        D = Enum.GetNames(type).ToDictionary(s => s, s => Enum.Parse(type, s))
+                    };
+                }
+
+            
+
                 var p = TypeDescriptor.GetEditor(type, typeof(UITypeEditor));
                 if (p != null)
                 {
                     editors.Add(Tuple.Create(type.AssemblyQualifiedName, p.GetType().FullName));
                 }
             }
+
+            File.WriteAllText(@"C:\temp\enums.json",
+                JsonSerializer.Serialize(enums, new JsonSerializerOptions() { WriteIndented = true }));
 
             File.WriteAllText(@"C:\temp\editors.json",
                 JsonSerializer.Serialize(editors, new JsonSerializerOptions() {WriteIndented = true}));

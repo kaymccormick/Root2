@@ -139,6 +139,7 @@
     <Compile Include="ConversionUtils1.cs" />
     <Compile Include="ConverterViewer.cs" />
     <Compile Include="CustomToggleButton1.cs" />
+    <Compile Include="DragDropInfo.cs" />
     <Compile Include="FileInputBox.cs" />
     <Compile Include="GetTypeConverter1.cs" />
     <Compile Include="HotedControl.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Subnode1.cs" />
     <Compile Include="TablePanel.cs" />
     <Compile Include="TempLoadData1.cs" />
+    <Compile Include="TraceListenerCreatedEventArgs.cs" />
     <Compile Include="TraceSourcesView.cs" />
     <Compile Include="TraceView.xaml.cs">
       <DependentUpon>TraceView.xaml</DependentUpon>

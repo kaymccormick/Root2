@@ -1470,11 +1470,12 @@
               <ListView SelectedItem="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SelectedTraceSource,Mode=TwoWay}"  x:Name="ListView" ItemsSource="{Binding Source={x:Static local:TraceSourcesView.Sources}}">
                 <ListView.View>
                   <GridView>
-                    <GridViewColumn DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn DisplayMemberBinding="{Binding Listeners.Count}" />
-                    <GridViewColumn DisplayMemberBinding="{Binding Switch.Description}" />
-                    <GridViewColumn DisplayMemberBinding="{Binding Switch.DisplayName}" />
-                    <GridViewColumn >
+                    <GridViewColumn Header="Name"  DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Display Name"  DisplayMemberBinding="{Binding DisplayName}" />
+                    <GridViewColumn Header="Listener Count"  DisplayMemberBinding="{Binding Listeners.Count}" />
+                    <GridViewColumn Header="Switch Description"   DisplayMemberBinding="{Binding Switch.Description}" />
+                    <GridViewColumn Header="Switch Display Name" DisplayMemberBinding="{Binding Switch.DisplayName}" />
+                    <GridViewColumn Header="Level">
                       <GridViewColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type diagnostics:TraceSource}">
                           <local:EnumFlagsSelector EnumValue="{Binding Switch.Level,Mode=TwoWay}"  EditStyle="ComboBox" EnumType="diagnostics:SourceLevels"></local:EnumFlagsSelector>
@@ -1489,9 +1490,9 @@
               <ListView Grid.Row="1" Grid.Column="1" x:Name="istView" ItemsSource="{Binding ElementName=ListView,Path=SelectedItem.Listeners}">
                 <ListView.View>
                   <GridView>
-                    <GridViewColumn Header="1" DisplayMemberBinding="{Binding Name}" />
-                    <GridViewColumn Header="1" DisplayMemberBinding="{Binding Converter={StaticResource GetTypeConverter}}" />
-                    <GridViewColumn Header="1" DisplayMemberBinding="{Binding TraceOutputOptions}" />
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Converter={StaticResource GetTypeConverter}}" />
+                    <GridViewColumn Header="Output Options" DisplayMemberBinding="{Binding TraceOutputOptions}" />
 
 </GridView>
                 </ListView.View>
@@ -1561,5 +1562,32 @@
     </Style.Triggers>
 
   </Style>
+  <Style TargetType="{x:Type local:DropControl}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:DropControl}">
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}" >
+          <Grid>
+            <ListView ItemsSource="{TemplateBinding Data}">
+              <ListView.View>
+                  <GridView>
+                    <GridViewColumn DisplayMemberBinding="{Binding Format}"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Data}"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Type}"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Length}"></GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding Text}"></GridViewColumn>
+                    <GridViewColumn><GridViewColumn.CellTemplate><DataTemplate>
+                          <Image Source="{Binding ImageSource}"></Image></DataTemplate></GridViewColumn.CellTemplate></GridViewColumn>
 
+                  </GridView>
+              </ListView.View>
+            </ListView>
+          </Grid>
+</Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 </ResourceDictionary>

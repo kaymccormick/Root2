@@ -25,7 +25,7 @@ namespace AnalysisControls.RibbonModel.Definition
 
             var mb = group.CreateRibbonMenuButton("Menu XX");
             var gal = PrimaryRibbonModel.CreateModelGallery();
-            mb.Items.Add(gal);
+            mb.ItemsCollection.Add(gal);
             var cat = gal.CreateGalleryCategory("Cat1");
             cat.CreateGalleryItem(new Image {Source = new BitmapImage {UriSource = new Uri(@group.SmallImageSource.ToString())}});
             group.CreateTextBox("Test");

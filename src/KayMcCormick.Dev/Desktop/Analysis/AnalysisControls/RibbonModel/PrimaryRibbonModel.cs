@@ -1,14 +1,21 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Controls.Ribbon;
+using System.Windows.Media;
+using JetBrains.Annotations;
 
 namespace AnalysisControls.RibbonModel
 {
     /// <summary>
     /// 
     /// </summary>
-    public class PrimaryRibbonModel
+    public class PrimaryRibbonModel : INotifyPropertyChanged
     {
+        private Brush _background;
+        private object _selectedItem;
+        private Brush _borderBrush;
+
         /// <summary>
         /// 
         /// </summary>
@@ -19,6 +26,41 @@ namespace AnalysisControls.RibbonModel
         /// </summary>
         public PrimaryRibbonModel()
         {
+        }
+
+
+        public Brush BorderBrush
+        {
+            get { return _borderBrush; }
+            set
+            {
+                if (Equals(value, _borderBrush)) return;
+                _borderBrush = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public object SelectedItem
+        
+        {
+            get { return _selectedItem; }
+            set
+            {
+                if (Equals(value, _selectedItem)) return;
+                _selectedItem = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Brush Background
+        {
+            get { return _background; }
+            set
+            {
+                if (Equals(value, _background)) return;
+                _background = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -115,6 +157,15 @@ namespace AnalysisControls.RibbonModel
         public static RibbonModelGallery CreateModelGallery()
         {
             return new RibbonModelGallery();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            RibbonDebugUtils.OnPropertyChanged(this, propertyName);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

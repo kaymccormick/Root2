@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Subjects;
@@ -230,8 +231,9 @@ namespace AnalysisControls.ViewModel
 
         private void AddInitialDocuments()
         {
-//            AddModelDoc();
+            //            AddModelDoc();
             AddRibbonModelViewDoc();
+            AddRibbonModelViewDoc1();
             //            AddAssembliesDoc();
             //            AddPropertiesGridDoc();
             AddVisualTreeViewDoc();
@@ -265,7 +267,15 @@ namespace AnalysisControls.ViewModel
             doc.Content = c;
             Documents.Add(doc);
         }
-
+        private void AddRibbonModelViewDoc1()
+        {
+            var c = new DropControl();
+            //c.SetBinding(RibbonModelView.RibbonModelProperty, new Binding("ClientViewModel.PrimaryRibbon") { Source = this });
+            var doc = DocModel.CreateInstance();
+            doc.Title = "Ribbon Model View";
+            doc.Content = c;
+            Documents.Add(doc);
+        }
         private void AddControlsDoc()
         {
             var item = DocModel.CreateInstance();
@@ -276,8 +286,9 @@ namespace AnalysisControls.ViewModel
         private void AddControlsDocq()
         {
             var item = DocModel.CreateInstance();
-            item.Title = "Controls";
-            item.Content = new TraceView();
+            item.Title = "Trace Configuration";
+            item.Content = new TraceView { ListenerTypes = new[]{typeof(XmlWriterTraceListener)}};
+            
             Documents.Add(item);
         }
 

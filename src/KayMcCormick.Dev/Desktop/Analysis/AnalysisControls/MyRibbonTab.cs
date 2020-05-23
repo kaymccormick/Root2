@@ -143,7 +143,7 @@ namespace AnalysisControls
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
-            if (!e.Handled)
+            if (!e.Handled && e.Source == this)
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
@@ -157,9 +157,11 @@ namespace AnalysisControls
                     _overlayRect.SetCurrentValue(Shape.StrokeThicknessProperty, 5.0);
                     }
 
-
-                    DragDrop.DoDragDrop(this, ParentItemsControl.ItemContainerGenerator.ItemFromContainer(this),
-                        DragDropEffects.Copy);
+                    try
+                    {
+                        DragDrop.DoDragDrop(this, ParentItemsControl.ItemContainerGenerator.ItemFromContainer(this),
+                            DragDropEffects.Copy);
+                    } catch{}
                 }
             }
         }

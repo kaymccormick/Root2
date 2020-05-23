@@ -45,11 +45,18 @@ namespace AnalysisControls
             var datePicker = new ModelDatePicker(){};
             cg2.Items.Add(datePicker);
 
+            group.Background = Brushes.GreenYellow;
+            
             var m = group.CreateRibbonMenuButton("Menu 1");
-            var gal = PrimaryRibbonModel.CreateGallery();
-            m.Items.Add(gal);
-            var cat0 = PrimaryRibbonModel.CreateGalleryCategory(gal, "Cat0");
-            var item0 = PrimaryRibbonModel.CreateGalleryItem(cat0, new TextBlock() {Text = typeof(Type).FullName});
+            m.IsChecked = true;
+            var item = m.CreateMenuItem("test 1");
+            item.IsVerticallyResizable = true;
+            item.IsHorizontallyResizable = true;
+            item.IsCheckable = true;
+            item.ToolTipDescription= "test";
+            item.ToolTipTitle = "poo";
+            
+            
             var m2 = group.CreateRibbonMenuButton("Menu 2");
             var m3 = m2.CreateMenuItem("label");
             m3.CreateMenuItem("label");

@@ -15,6 +15,8 @@ namespace AnalysisControls
     /// </summary>
     public partial class UserControl1 : UserControl
     {
+
+
         /// <summary>
         /// 
         /// </summary>

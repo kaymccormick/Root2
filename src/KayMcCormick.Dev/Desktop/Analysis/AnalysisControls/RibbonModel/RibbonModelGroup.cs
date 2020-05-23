@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Windows.Markup;
+using System.Windows.Media;
 
 namespace AnalysisControls.RibbonModel
 {
@@ -12,6 +13,8 @@ namespace AnalysisControls.RibbonModel
         /// 
         /// </summary>
         RibbonModelGroupItemCollection Items { get; }
+
+        bool IsDropDownOpen { get; set; }
     }
 
     /// <summary>
@@ -20,17 +23,56 @@ namespace AnalysisControls.RibbonModel
     [ContentProperty("Items")]
     public class RibbonModelGroup : RibbonModelItem, IRibbonModelGroup
     {
+        private bool _isDropDownOpen;
+        private object _header;
+        private Brush _background;
+
         /// <inheritdoc />
         public override string ToString()
         {
             return $"Group[{Header}, Count={Items.Count}]";
         }
 
+        public Brush Background
+        {
+            get { return _background; }
+            set
+            {
+                if (Equals(value, _background)) return;
+                _background = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsDropDownOpen
+        {
+            get { return _isDropDownOpen; }
+            set
+            {
+                if (value == _isDropDownOpen) return;
+                if (value == false)
+                {
+
+                }
+                _isDropDownOpen = value;
+                OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
         [DefaultValue(null)]
-        public object Header { get; set; }
+        public object Header
+        {
+            get { return _header; }
+            set
+            {
+                if (Equals(value, _header)) return;
+                _header = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 

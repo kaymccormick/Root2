@@ -10,6 +10,7 @@ namespace KayMcCormick.Dev
         Misc = 2,
 	TextFormatting = 4,
 
-    DataBinding = 8
+    DataBinding = 8,
+    Ribbon
     }
 }

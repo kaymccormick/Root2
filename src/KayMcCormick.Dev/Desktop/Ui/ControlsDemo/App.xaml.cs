@@ -17,6 +17,7 @@ namespace ControlsDemo
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            ControlsDemo.MainWindow.GrovelTypes();
             PresentationTraceSources.Refresh();
         }
     }

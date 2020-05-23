@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -33,7 +34,7 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
-        IEnumerable<IRibbonModelGroup> Items { get; }
+        IEnumerable Items { get; }
 
         /// <summary>
         /// 
@@ -104,7 +105,7 @@ namespace AnalysisControls.RibbonModel
         /// 
         /// </summary>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-        public IEnumerable<IRibbonModelGroup> Items
+        public IEnumerable Items
         {
             get { return _items; }
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
@@ -17,6 +18,14 @@ namespace AnalysisControls
                 new FrameworkPropertyMetadata(typeof(MyRibbonMenuButton)));
 
         }
+
+        /// <inheritdoc />
+        protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            RibbonDebugUtils.WriteLine($"{this} OnItemsChanged");
+            base.OnItemsChanged(e);
+        }
+
         private object _currentItem;
 
         /// <inheritdoc />
@@ -33,6 +42,7 @@ namespace AnalysisControls
                     switch (obj)
                     {
                         case RibbonMenuItem _:
+                        case RibbonMenuButton _:
                         case RibbonGallery _:
                         case RibbonSeparator _:
                             return obj as DependencyObject;

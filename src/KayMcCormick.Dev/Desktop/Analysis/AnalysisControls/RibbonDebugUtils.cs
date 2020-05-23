@@ -13,6 +13,10 @@ namespace AnalysisControls
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        public static void OnPropertyChanged(object modelItem, string propertyName)
+        {
+            WriteLine($"{modelItem}.{nameof(OnPropertyChanged)}{propertyName}");
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -22,10 +26,11 @@ namespace AnalysisControls
         public static void OnPropertyChanged(string LoggingIdentifier, DependencyObject o,
             DependencyPropertyChangedEventArgs e)
         {
-            new LogBuilder(Logger).LoggerName(LoggingIdentifier + ".OnPropertyChanged." + e.Property.Name)
-                .Level(LogLevel.Info)
-                .Message($"{LoggingIdentifier} {e.Property.Name} OldValue = {e.OldValue}; NewValue = {e.NewValue}")
-                .Write();
+            WriteLine($"{LoggingIdentifier} {e.Property.Name} OldValue = {e.OldValue}; NewValue = {e.NewValue}");
+            // new LogBuilder(Logger).LoggerName(LoggingIdentifier + ".OnPropertyChanged." + e.Property.Name)
+                // .Level(LogLevel.Info)
+                // .Message($"{LoggingIdentifier} {e.Property.Name} OldValue = {e.OldValue}; NewValue = {e.NewValue}")
+                // .Write();
         }
 
         /// <summary>
@@ -83,6 +88,11 @@ namespace AnalysisControls
                 }
                 DebugUtils.WriteLine($"{target} {prop.Name} {propertyInfo.Name} {sb}");
             }
+        }
+
+        public static void WriteLine(string s)
+        {
+            DebugUtils.WriteLine(s, DebugCategory.Ribbon);
         }
     }
 }

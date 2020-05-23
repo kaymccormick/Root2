@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:KmDevWpfControls"
              xmlns:diagnostics="clr-namespace:System.Diagnostics;assembly=System"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System"
-             mc:Ignorable="d"
+             mc:Ignorable="d" x:Name="traceView"
              d:DesignHeight="450" d:DesignWidth="800">
   <UserControl.Resources>
     <local:TypeTemplateSelector x:Key="TypeTemplateSelector" />
@@ -27,8 +27,9 @@
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
     <ToolBarTray>
-      <ToolBar><Button Content="Refresh" Command="Refresh"/>
-        <Button Content="Refresh" Command="Refresh" CommandParameter="1"/>
+      <ToolBar>
+        <Button Content="Refresh" Command="Refresh" CommandTarget="{x:Reference traceView}"/>
+        <Button Content="Refresh" Command="Refresh" CommandParameter="1" CommandTarget="{x:Reference traceView}"/>
         <Button Content="New" Command="New"/>
         <ComboBox Text="Add" x:Name="Combo" ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=UserControl},Path=ListenerTypes}">
         </ComboBox>

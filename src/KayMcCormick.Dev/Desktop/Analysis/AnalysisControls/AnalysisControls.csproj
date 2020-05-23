@@ -96,6 +96,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AllCommands.cs" />
+    <Compile Include="ConvertButton.cs" />
+    <Compile Include="DirectoryInfoConverter.cs" />
     <Compile Include="IPropertiesAdapter.cs" />
     <Compile Include="AnalysisCommands.cs" />
     <Compile Include="AnalysisControlsModule.cs" />
@@ -211,6 +213,7 @@
     <Compile Include="MetaLazyTypeConverter.cs" />
     <Compile Include="MiscCommands.cs" />
     <Compile Include="MyRibbon.cs" />
+    <Compile Include="MyRibbonApplicationMenu.cs" />
     <Compile Include="MyRibbonComboBox.cs" />
     <Compile Include="MyRibbonContextualTabGroup.cs" />
     <Compile Include="MyRibbonContextualTabGroupItemsControl.cs" />
@@ -220,6 +223,8 @@
     <Compile Include="MyRibbonGalleryItem.cs" />
     <Compile Include="MyRibbonGroup.cs" />
     <Compile Include="MyRibbonMenuButton.cs" />
+    <Compile Include="MyRibbonMenuItem.cs" />
+    <Compile Include="MyRibbonQuickAccessToolBar.cs" />
     <Compile Include="MyRibbonTab.cs" />
     <Compile Include="MyRibbonTabHeader.cs" />
     <Compile Include="MyRibbonTabHeaderItemsControl.cs" />
@@ -233,6 +238,9 @@
     </Compile>
     <Compile Include="CodeGenCommand.cs" />
     <Compile Include="PathModel.cs" />
+    <Compile Include="PGrid.xaml.cs">
+      <DependentUpon>PGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProjectAddedEventArgs.cs" />
     <Compile Include="ProjectModel.cs" />
     <Compile Include="Properties\RibbonResources.Designer.cs">
@@ -358,6 +366,7 @@
     <Compile Include="WorkspaceMessage.cs" />
     <Compile Include="WorkspaceMessageSeverity.cs" />
     <Compile Include="WorkspaceView.cs" />
+    <Compile Include="WrappedPropertyGrid.cs" />
     <Compile Include="XamlFuncs.cs" />
     <Compile Include="XmlDocElements.cs" />
     <EmbeddedResource Include="Program-Parse.cs" />
@@ -427,6 +436,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PageFunction1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

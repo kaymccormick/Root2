@@ -38,6 +38,12 @@ namespace AnalysisControls
                         return parentItemsControl.TryFindResource("RibbonKindSeparator") as DataTemplate;
                 }
             }
+
+            if (item != null)
+            {
+                var r = parentItemsControl.TryFindResource(new DataTemplateKey(item.GetType())) as DataTemplate;
+                return r;
+            }
             return base.SelectTemplate(item, parentItemsControl);
         }
     }

@@ -41,7 +41,7 @@ namespace AnalysisControls
             base.OnPropertyChanged(e);
             RibbonDebugUtils.OnPropertyChanged(this.ToString(), this, e);
         }
-
+#if false
         /// <summary>
         /// 
         /// </summary>
@@ -109,8 +109,10 @@ namespace AnalysisControls
                     data.SetData("ModelObject", item);
                         
                     data.SetData(typeof(RibbonGroup), this);
-
-                    DragDrop.DoDragDrop(this, data, DragDropEffects.Move | DragDropEffects.Copy);
+                    try
+                    {
+                        DragDrop.DoDragDrop(this, data, DragDropEffects.Move | DragDropEffects.Copy);
+                    } catch{}
                 }
             }
         }
@@ -127,6 +129,7 @@ namespace AnalysisControls
 
         protected override void OnDragOver(DragEventArgs e)
         {
+            DebugUtils.WriteLine("ondragover");
             if (!e.Handled)
             {
                 e.Effects = DragDropEffects.None;
@@ -142,7 +145,7 @@ namespace AnalysisControls
         {
             
         }
-
+#endif
         protected override DependencyObject GetContainerForItemOverride()
         {
             return new MyRibbonControl();
@@ -150,6 +153,7 @@ namespace AnalysisControls
 
         protected override void OnGiveFeedback(GiveFeedbackEventArgs e)
         {
+            DebugUtils.WriteLine("ongivefeedback");
             if (_dragging && _dragAdorner != null)
             {
                 var cur = InputManager.Current.PrimaryMouseDevice.GetPosition(this);

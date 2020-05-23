@@ -52,7 +52,7 @@ static MyRibbonControl() {
         /// <returns></returns>
         protected override HitTestResult HitTestCore(PointHitTestParameters hitTestParameters)
         {
-            DebugUtils.WriteLine($"{this} {hitTestParameters.HitPoint}");
+            // DebugUtils.WriteLine($"{this} {hitTestParameters.HitPoint}");
 
             return base.HitTestCore(hitTestParameters);
         }
