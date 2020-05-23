@@ -97,7 +97,7 @@ namespace KmDevWpfControls
 
         public Task ExpandAsync()
         {
-            Items = XX(Assembly?.GetExportedTypes().Select(t => new NamespaceType {Type = t, NamespaceParts = t.Namespace}), Depth + 1);
+            Items = XX(Assembly?.GetExportedTypes().Select(t => new NamespaceType {Type = t, NamespaceParts = t.Namespace ?? ""}), Depth + 1);
             IsExpanded = true;
             return Task.CompletedTask;
 

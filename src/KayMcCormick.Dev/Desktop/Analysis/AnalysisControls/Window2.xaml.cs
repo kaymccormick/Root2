@@ -11,26 +11,16 @@ using System.Drawing.Design;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using AvalonDock.Layout;
-using ControlsDemo.Annotations;
-using KmDevWpfControls;
+using JetBrains.Annotations;
 using Control = System.Windows.Forms.Control;
 using Cursor = System.Windows.Input.Cursor;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
-namespace ControlsDemo
+namespace AnalysisControls
 {
     /// <summary>
     /// Interaction logic for Window2.xaml

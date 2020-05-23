@@ -379,7 +379,7 @@ namespace KmDevWpfControls
         }
     }
 
-    class S : System.Windows.Forms.Design.IWindowsFormsEditorService
+    public class S : System.Windows.Forms.Design.IWindowsFormsEditorService
     {
         private readonly WindowsFormsHost _windowsFormsHost;
         private readonly DependencyObject _d;

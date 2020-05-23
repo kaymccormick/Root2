@@ -360,6 +360,9 @@
     <Compile Include="ViewModel\ComponentTypesViewModel.cs" />
     <Compile Include="ViewModel\Main1Model.cs" />
     <Compile Include="VisibileIfNotVisible.cs" />
+    <Compile Include="Window2.xaml.cs">
+      <DependentUpon>Window2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WorkspaceControl.xaml.cs">
       <DependentUpon>WorkspaceControl.xaml</DependentUpon>
     </Compile>
@@ -478,6 +481,10 @@
     <Page Include="TemplateWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Window2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="WorkspaceControl.xaml">
       <SubType>Designer</SubType>

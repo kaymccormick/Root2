@@ -86,7 +86,7 @@ namespace AnalysisControls
                 kayTypes.Add(type);
             }
 
-            kayTypes.Clear();
+            //kayTypes.Clear();
             var xx = new CustomTypes(kayTypes);
             builder.RegisterInstance(xx).OnActivating(args => { args.Instance.ComponentContext = args.Context; });
             builder.RegisterType<UiElementTypeConverter>().SingleInstance().WithCallerMetadata();

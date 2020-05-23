@@ -442,8 +442,12 @@ namespace AnalysisControls.TypeDescriptors
         public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
         {
             DebugUtils.WriteLine(
-                $"{context?.Instance} {context?.PropertyDescriptor?.Name} {context?.Container} {destinationType?.FullName}");
-            if (destinationType == typeof(UIElement)) return true;
+                $"{context} {context?.Instance} {context?.PropertyDescriptor?.Name} {context?.Container} {destinationType?.FullName}");
+            if (context != null)
+            {
+
+            }
+            if (destinationType == typeof(UIElement) || destinationType == typeof(string)) return true;
 
             return base.CanConvertTo(context, destinationType);
         }

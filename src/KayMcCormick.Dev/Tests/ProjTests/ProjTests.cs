@@ -2829,10 +2829,14 @@ namespace ProjTests
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Top
             };
-            
-            //p.Children.Add(_elementTextFormatterControl);
 
+            //p.Children.Add(_elementTextFormatterControl);
             Window w = new Window { Content = tt, FontSize = 20 };
+            w.Loaded += (sender, args) =>
+            {
+                tt.HandleInput("test");
+                tt.HandleInput("hi");
+            };
             w.ShowDialog();
         }
 

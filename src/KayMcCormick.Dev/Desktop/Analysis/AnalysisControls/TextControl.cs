@@ -9,11 +9,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using System.Windows.Shapes;
 using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
+using TextLine = System.Windows.Media.TextFormatting.TextLine;
 
 namespace AnalysisControls
 {
@@ -234,29 +237,7 @@ namespace AnalysisControls
             PixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
         }
 
-        public static readonly DependencyProperty DisplaySymbolProperty = DependencyProperty.Register(
-            "DisplaySymbol", typeof(ISymbol), typeof(TextControl), new PropertyMetadata(default(ISymbol)));
-
-        public static readonly DependencyProperty ElementTypeProperty = DependencyProperty.Register(
-            "ElementType", typeof(Type), typeof(TextControl), new PropertyMetadata(default(Type), OnElementTypeChanged));
-
-        public Type ElementType
-        {
-            get { return (Type) GetValue(ElementTypeProperty); }
-            set { SetValue(ElementTypeProperty, value); }
-        }
-
-        private static void OnElementTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((TextControl) d).OnElementTypeChanged((Type) e.OldValue, (Type) e.NewValue);
-        }
-
-
-
-        protected virtual void OnElementTypeChanged(Type oldValue, Type newValue)
-        {
-        }
-
+       
         /// <summary>
         /// 
         /// </summary>
@@ -328,6 +309,108 @@ namespace AnalysisControls
             UpdateTextSource();
             UpdateFormattedText();
         }
+        protected override void OnPreviewTextInput(TextCompositionEventArgs e)
+        {
+            base.OnPreviewTextInput(e);
+            var eText = e.Text;
+
+            var code = HandleInput(eText);
+
+            DebugUtils.WriteLine("About to update source text", DebugCategory.TextFormatting);
+            Text = code;
+            DebugUtils.WriteLine("Done updating source text", DebugCategory.TextFormatting);
+            ChangingText = false;
+            e.Handled = true;
+        }
+
+        public string HandleInput(string eText)
+        {
+            var prev = Text.Substring(0, InsertionPoint);
+            var next = Text.Substring(InsertionPoint);
+
+            var code = prev + eText + next;
+            if (InsertionLine != null)
+            {
+                var l = InsertionLine.Text.Substring(0, InsertionPoint - InsertionLine.Offset) + eText;
+                var end = InsertionLine.Offset + InsertionLine.Length;
+                if (end - InsertionPoint > 0)
+                {
+                    var start = InsertionPoint - InsertionLine.Offset;
+                    var length = end - InsertionPoint;
+                    if (start + length > InsertionLine.Text.Length)
+                        length = length - (start + length - InsertionLine.Text.Length);
+                    l += InsertionLine.Text.Substring(start, length);
+                }
+            }
+
+            ChangingText = true;
+            Store.TextInput(InsertionPoint, eText);
+            var d = new DrawingGroup();
+
+            var dc = d.Open();
+            var lineNo = InsertionLine?.LineNumber ?? 0;
+            LineContext lineCtx;
+            using (var myTextLine = _textFormatter.FormatLine(
+                (TextSource) Store,
+                InsertionLine?.Offset ?? 0,
+                OutputWidth,
+                new GenericTextParagraphProperties(CurrentRendering, PixelsPerDip), null))
+            {
+                var y = InsertionLine?.Origin.Y ?? 0;
+                var x = InsertionLine?.Origin.X ?? 0;
+
+                lineCtx = new LineContext()
+                {
+                    LineNumber = lineNo,
+                    CurCellRow = lineNo,
+                    LineInfo = InsertionLine,
+                    LineOriginPoint = new Point(x, y),
+                    MyTextLine = myTextLine,
+                    MaxX = MaxX,
+                    MaxY = MaxY,
+                    TextStorePosition = InsertionLine?.Offset ?? 0
+                };
+
+                myTextLine.Draw(dc, lineCtx.LineOriginPoint, InvertAxes.None);
+                var regions = new List<RegionInfo>();
+                FormattingHelper.HandleTextLine(regions, ref lineCtx, out var lineI, this);
+                InsertionLine = lineI;
+            }
+
+            dc.Close();
+            DebugUtils.WriteLine($"{_rect.Width}x{_rect.Height}", DebugCategory.TextFormatting);
+            _textDest.Children.Add(d);
+            // if (_textDest.Children.Count < lineNo + 1)
+            // {
+            // _textDest.Children.Add(d.Children[0]);
+            // }
+            // else
+            // {
+            // _textDest.Children[lineNo] = d.Children[0];
+            // }
+
+            _rectangle.Width = lineCtx.MaxX;
+            _rectangle.Height = lineCtx.MaxY;
+            InvalidateVisual();
+
+            InsertionPoint = InsertionPoint + eText.Length;
+            if (eText.Length == 1)
+            {
+                //_textCaret.SetValue(Canvas.LeftProperty, 0);
+            }
+
+            //AdvanceInsertionPoint(e.Text.Length);
+            return code;
+        }
+
+        public LineInfo InsertionLine { get; set; }
+
+        public bool ChangingText { get; set; }
+
+        public int InsertionPoint { get; set; }
+
+        public string Text { get; set; } = "";
+
 
         public bool SingleLineMode { get; set; } = false;
 
