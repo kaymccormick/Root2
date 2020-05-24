@@ -7941,7 +7941,11 @@
             <DataTemplate x:Key="DefaultValue"  DataType="{x:Type typeDescriptors:InstanceProperty}">
               <ContentPresenter Content="{Binding Value}"/>
             </DataTemplate>
-            <CollectionViewSource x:Key="src" Source="{Binding RelativeSource={RelativeSource TemplatedParent},Path=InstanceProperties}">
+            <DataTemplate x:Key="String"  DataType="{x:Type typeDescriptors:InstanceProperty}">
+              <TextBox Text="{Binding Value,Mode=TwoWay}"/>
+            </DataTemplate>
+
+<CollectionViewSource x:Key="src" Source="{Binding RelativeSource={RelativeSource TemplatedParent},Path=InstanceProperties}">
               
             </CollectionViewSource>
             <local:CTS x:Key="cts"/>

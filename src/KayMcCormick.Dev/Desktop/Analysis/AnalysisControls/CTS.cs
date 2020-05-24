@@ -32,9 +32,13 @@ namespace AnalysisControls
             {
                 return ((FrameworkElement) container).TryFindResource("StandardValues") as DataTemplate;
             }
+            if (p.PropertyDescriptor.Converter.CanConvertFrom(typeof(string))){
+                return ((FrameworkElement)container).TryFindResource("String") as DataTemplate;
+            }
 
 
-            return ((FrameworkElement)container).TryFindResource("DefaultValue") as DataTemplate;
+
+                return ((FrameworkElement)container).TryFindResource("DefaultValue") as DataTemplate;
 
         }
     }
