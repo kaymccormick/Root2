@@ -15,7 +15,8 @@
   xmlns:primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon"
   xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonModel"
   xmlns:controls="clr-namespace:AnalysisControls.Controls"
-  xmlns:typeDescriptors="clr-namespace:AnalysisControls.TypeDescriptors">
+  xmlns:typeDescriptors="clr-namespace:AnalysisControls.TypeDescriptors"
+  xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System">
   <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
   <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
   <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
@@ -7918,4 +7919,26 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <Style TargetType="{x:Type typeDescriptors:GenericInterface2}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type typeDescriptors:GenericInterface2}">
+          <Border x:Name="Border" Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=InstanceProperties}">
+<ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type typeDescriptors:InstanceProperty}">
+                  <WrapPanel><TextBlock Margin="0,0,10,0" Text="{Binding PropertyDescriptor.DisplayName}"/>
+                  <ContentPresenter Content="{Binding Path=Value}"/></WrapPanel>
+                </DataTemplate>
+</ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
 </ResourceDictionary>

@@ -14,10 +14,14 @@
   xmlns:codeAnalysis1="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis.Workspaces"
   xmlns:converters="clr-namespace:AnalysisControls.Converters"
   xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
-  xmlns:operations="clr-namespace:Microsoft.CodeAnalysis.Operations;assembly=Microsoft.CodeAnalysis">
+  xmlns:operations="clr-namespace:Microsoft.CodeAnalysis.Operations;assembly=Microsoft.CodeAnalysis"
+  xmlns:typeDescriptors="clr-namespace:AnalysisControls.TypeDescriptors"
+  xmlns:io="clr-namespace:System.IO;assembly=mscorlib">
   <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter"/>
   <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
- 
+  <DataTemplate DataType="{x:Type io:FileInfo}">
+    <typeDescriptors:GenericInterface Target="{Binding}"/>
+  </DataTemplate>
   <DataTemplate DataType="{x:Type system:DateTime}">
     <TextBlock Text="{Binding}"/>
   </DataTemplate>

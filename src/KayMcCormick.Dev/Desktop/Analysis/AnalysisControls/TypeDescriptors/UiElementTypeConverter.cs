@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,9 +19,175 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
 using KayMcCormick.Lib.Wpf.Properties;
+using KmDevWpfControls;
+using TypeControl = KayMcCormick.Lib.Wpf.TypeControl;
 
 namespace AnalysisControls.TypeDescriptors
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public class GenericInterface2 : Control
+    {
+        public static readonly DependencyProperty TypeDescriptorProperty = DependencyProperty.Register(
+            "TypeDescriptor", typeof(ICustomTypeDescriptor), typeof(GenericInterface2), new PropertyMetadata(default(ICustomTypeDescriptor), OnTypeDescriptorChanged));
+
+        public ICustomTypeDescriptor TypeDescriptorz
+        {
+            get { return (ICustomTypeDescriptor) GetValue(TypeDescriptorProperty); }
+            set { SetValue(TypeDescriptorProperty, value); }
+        }
+
+        private static void OnTypeDescriptorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((GenericInterface2) d).OnTypeDescriptorChanged((ICustomTypeDescriptor) e.OldValue, (ICustomTypeDescriptor) e.NewValue);
+        }
+
+
+
+        protected virtual void OnTypeDescriptorChanged(ICustomTypeDescriptor oldValue, ICustomTypeDescriptor newValue)
+        {
+        }
+
+        public static readonly DependencyProperty PropertiesProperty = DependencyProperty.Register(
+            "Properties", typeof(PropertyDescriptorCollection), typeof(GenericInterface2), new PropertyMetadata(default(PropertyDescriptorCollection), OnPropertiesChanged, CoerceProperties));
+
+        private static object CoerceProperties(DependencyObject d, object basevalue)
+        {
+            return TypeDescriptor.GetProperties(d.GetValue(InstanceProperty));
+        }
+
+        public PropertyDescriptorCollection Properties
+        {
+            get { return (PropertyDescriptorCollection) GetValue(PropertiesProperty); }
+            set { SetValue(PropertiesProperty, value); }
+        }
+
+        private static void OnPropertiesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((GenericInterface2) d).OnPropertiesChanged((PropertyDescriptorCollection) e.OldValue, (PropertyDescriptorCollection) e.NewValue);
+        }
+
+        public static readonly DependencyProperty InstanceProperty = DependencyProperty.Register(
+            "Instance", typeof(object), typeof(GenericInterface2), new FrameworkPropertyMetadata(default(object), FrameworkPropertyMetadataOptions.AffectsRender, OnInstanceChanged));
+
+        private ObservableCollection<object> _instanceProperties= new ObservableCollection<object>();
+
+        public object Instance
+        {
+            get { return (object) GetValue(InstanceProperty); }
+            set { SetValue(InstanceProperty, value); }
+        }
+
+        private static void OnInstanceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((GenericInterface2) d).OnInstanceChanged((object) e.OldValue, (object) e.NewValue);
+        }
+
+
+
+        protected virtual void OnInstanceChanged(object oldValue, object newValue)
+        {
+            CoerceValue(PropertiesProperty);
+            CoerceValue(InstancePropertiesProperty);
+        }
+
+        public static readonly DependencyProperty InstancePropertiesProperty = DependencyProperty.Register(
+            "InstanceProperties", typeof(IEnumerable), typeof(GenericInterface2), new PropertyMetadata(default(IEnumerable), OnInstancePropertiesChanged, CoerceInstanceProperties));
+
+        private static object CoerceInstanceProperties(DependencyObject d, object basevalue)
+        {
+            var instanceProperties = ((GenericInterface2)d)._instanceProperties;
+            instanceProperties.Clear();
+            var o1 = d.GetValue(InstanceProperty);
+            var enumerable = (IEnumerable)d.GetValue(PropertiesProperty);
+            if (enumerable != null)
+                foreach (PropertyDescriptor o in enumerable)
+                {
+                    InstanceProperty p = new InstanceProperty() {Instance = o1, PropertyDescriptor = o};
+                    instanceProperties.Add(p);
+                }
+
+            return instanceProperties;
+        }
+
+
+        public IEnumerable InstanceProperties
+        {
+            get { return (IEnumerable) GetValue(InstancePropertiesProperty); }
+            set { SetValue(InstancePropertiesProperty, value); }
+        }
+
+        private static void OnInstancePropertiesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((GenericInterface2) d).OnInstancePropertiesChanged((IEnumerable) e.OldValue, (IEnumerable) e.NewValue);
+        }
+
+
+        /// <inheritdoc />
+        public GenericInterface2()
+        {
+            InstanceProperties = _instanceProperties;
+        }
+
+        protected virtual void OnInstancePropertiesChanged(IEnumerable oldValue, IEnumerable newValue)
+        {
+        }
+
+
+        protected virtual void OnPropertiesChanged(PropertyDescriptorCollection oldValue, PropertyDescriptorCollection newValue)
+        {
+            CoerceValue(InstancePropertiesProperty);
+        }
+
+
+        static GenericInterface2()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(GenericInterface2),
+                new FrameworkPropertyMetadata(typeof(GenericInterface2)));
+
+        }
+
+    }
+
+    public class InstanceProperty : INotifyPropertyChanged
+    {
+        private PropertyDescriptor _propertyDescriptor;
+        private object _instance;
+
+        public PropertyDescriptor PropertyDescriptor
+        {
+            get { return _propertyDescriptor; }
+            set
+            {
+                if (Equals(value, _propertyDescriptor)) return;
+                _propertyDescriptor = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Value));
+            }
+        }
+
+        public object Instance
+        {
+            get { return _instance; }
+            set
+            {
+                if (Equals(value, _instance)) return;
+                _instance = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Value));
+            }
+        }
+
+        public object Value => PropertyDescriptor.GetValue(Instance);
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
     public class GenericInterface :Control
     {
         private Border _border;
@@ -46,6 +214,54 @@ namespace AnalysisControls.TypeDescriptors
         {
             get { return (object) GetValue(TargetProperty); }
             set { SetValue(TargetProperty, value); }
+        }
+
+        /// <inheritdoc />
+        protected override Size MeasureOverride(Size constraint)
+        {
+            
+            return base.MeasureOverride(constraint);
+        }
+
+        /// <inheritdoc />
+        protected override void OnVisualParentChanged(DependencyObject oldParent)
+        {
+            base.OnVisualParentChanged(oldParent);
+            var v = VisualParent;
+            ItemsControl own = null;
+            while (v != null)
+            {
+                own = ItemsControl.GetItemsOwner(v);
+                if (own != null)
+                {
+                    break;
+                }
+                v = VisualTreeHelper.GetParent(v);
+            }
+
+            if (own != null)
+            {
+                var container = own.ItemContainerGenerator.ContainerFromItem(Target);
+                if (container is MenuItem mm)
+                {
+                    DisplayMode = DisplayMode.Compact;
+                    MaxHeight = 50;
+                }
+                MaxHeight = 50;
+            }
+            if (v is ContentPresenter pp)
+            {
+                v = VisualTreeHelper.GetParent(pp);
+            }
+
+        }
+
+        public DisplayMode DisplayMode { get; set; }
+
+        /// <inheritdoc />
+        protected override Size ArrangeOverride(Size arrangeBounds)
+        {
+            return base.ArrangeOverride(arrangeBounds);
         }
 
         private static void OnTargetChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -449,6 +665,11 @@ namespace AnalysisControls.TypeDescriptors
             grid.SetValue(TextElement.FontSizeProperty, 12.0);
             return grid;
         }
+    }
+
+    public enum DisplayMode
+    {
+        Compact
     }
 
     /// <summary>

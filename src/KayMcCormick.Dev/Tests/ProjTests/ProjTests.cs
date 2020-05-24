@@ -112,6 +112,8 @@ using File = System.IO.File;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Label = System.Windows.Forms.Label;
 using ListBox = System.Windows.Controls.ListBox;
+using Menu = System.Windows.Controls.Menu;
+using MenuItem = System.Windows.Controls.MenuItem;
 using MethodInfo = System.Reflection.MethodInfo;
 using Orientation = System.Windows.Controls.Orientation;
 using Process = System.Diagnostics.Process;
@@ -2824,6 +2826,12 @@ namespace ProjTests
         [WpfFact]
         public void Test1234()
         {
+            Menu menu = new Menu(){};
+            
+            MenuItem a = new MenuItem(){Header = "Day"};
+            menu.Items.Add(a);
+            a.ItemsSource = new DirectoryInfo(@"C:\temp\filesmenu").EnumerateFiles();
+            a.Resources = ProjTestsHelper.ControlsResources("templates.baml");
             var x = new DesignSurface();
             x.BeginLoad(typeof(Form));
             x.Loaded += X_Loaded;
@@ -2848,15 +2856,19 @@ namespace ProjTests
                 var sss =new Grid();
                 sss.ColumnDefinitions.Add(new ColumnDefinition());
                 sss.ColumnDefinitions.Add(new ColumnDefinition());
+                sss.RowDefinitions.Add(new RowDefinition(){Height = GridLength.Auto});
                 sss.RowDefinitions.Add(new RowDefinition());
                 sss.RowDefinitions.Add(new RowDefinition());
+                sss.Children.Add(menu);
                 sss.Children.Add(windowsFormsHost);
+                windowsFormsHost.SetValue(Grid.RowProperty, 1);
                 var windowsFormsHost2 = new WindowsFormsHost { Child = pg };
                 sss.Children.Add(windowsFormsHost2);
                 windowsFormsHost2.SetValue(Grid.ColumnProperty, 1);
-                
+                windowsFormsHost2.SetValue(Grid.RowProperty, 1);
+
                 sss.Children.Add(genericInterface);
-                genericInterface.SetValue(Grid.RowProperty, 1);
+                genericInterface.SetValue(Grid.RowProperty, 2);
 
                 var w = new Window() {Content = sss};
                 w.ShowDialog();
@@ -2883,6 +2895,48 @@ namespace ProjTests
                 tt.HandleInput("test");
                 tt.HandleInput("hi");
             };
+            w.ShowDialog();
+        }
+        [WpfFact]
+        public void T1()
+        {
+            var assemblies = new DirectoryInfo(Environment.CurrentDirectory).EnumerateFileSystemInfos().ToList();
+            var cview = CollectionViewSource.GetDefaultView(assemblies);
+            cview.CurrentChanged += (sender, args) => DebugUtils.WriteLine($"{cview.CurrentItem}");
+            var tt = new GenericInterface2()
+            {
+                Margin=new Thickness(10),
+              
+            };
+            tt.SetBinding(GenericInterface2.InstanceProperty, new Binding("/") {Source = cview});
+            Button b = new Button() { Content = "Prev", Command = NavigationCommands.PreviousPage };
+            Button b2 = new Button() { Content = "Next", Command = NavigationCommands.NextPage };
+            TextBlock t= new TextBlock();
+            t.SetBinding(TextBlock.TextProperty, new Binding("CurrentPosition") {Source = cview});
+            TextBlock t12 = new TextBlock(){Text=" / "};
+
+            TextBlock t2 = new TextBlock();
+            t2.SetBinding(TextBlock.TextProperty, new Binding("SourceCollection.Count") { Source = cview });
+
+
+
+
+            StackPanel s = new StackPanel();
+            var stackPanel = new StackPanel {Orientation = Orientation.Horizontal};
+            stackPanel.Children.Add(b);
+            stackPanel.Children.Add(b2);
+            stackPanel.Children.Add(t);
+            stackPanel.Children.Add(t12);
+            stackPanel.Children.Add(t2);
+
+            s.Children.Add(stackPanel);
+            s.Children.Add(tt);
+            //p.Children.Add(_elementTextFormatterControl);
+            var w = new Window { Content = s, FontSize = 20 };
+            w.CommandBindings.Add(new CommandBinding(NavigationCommands.PreviousPage,
+                (sender, args) => cview.MoveCurrentToPrevious()));
+            w.CommandBindings.Add(new CommandBinding(NavigationCommands.NextPage,
+                (sender, args) => cview.MoveCurrentToNext()));
             w.ShowDialog();
         }
 
