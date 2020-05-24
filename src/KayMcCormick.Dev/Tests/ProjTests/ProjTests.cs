@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Design;
 using System.Globalization;
 using System.IO;
@@ -55,7 +56,6 @@ using System.Windows.Markup.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.TextFormatting;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xaml;
 using System.Xml;
@@ -103,12 +103,15 @@ using Xunit;
 using Xunit.Abstractions;
 using static AnalysisControls.TypeDescriptors.UiElementTypeConverter;
 using Binding = System.Windows.Data.Binding;
+using Brushes = System.Windows.Media.Brushes;
 using Button = System.Windows.Controls.Button;
+using Color = System.Drawing.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using Condition = System.Windows.Automation.Condition;
 using Control = System.Windows.Forms.Control;
 using ConversionUtils = AnalysisControls.ConversionUtils;
 using File = System.IO.File;
+using FontFamily = System.Windows.Media.FontFamily;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using Label = System.Windows.Forms.Label;
 using ListBox = System.Windows.Controls.ListBox;
@@ -116,7 +119,10 @@ using Menu = System.Windows.Controls.Menu;
 using MenuItem = System.Windows.Controls.MenuItem;
 using MethodInfo = System.Reflection.MethodInfo;
 using Orientation = System.Windows.Controls.Orientation;
+using Pen = System.Windows.Media.Pen;
+using Point = System.Windows.Point;
 using Process = System.Diagnostics.Process;
+using Rectangle = System.Windows.Shapes.Rectangle;
 using RegionInfo = AnalysisControls.RegionInfo;
 using Size = System.Drawing.Size;
 using String = System.String;
@@ -2900,7 +2906,8 @@ namespace ProjTests
         [WpfFact]
         public void T1()
         {
-            var assemblies = new DirectoryInfo(Environment.CurrentDirectory).EnumerateFileSystemInfos().ToList();
+
+            var assemblies = new[]{new Form()};//{Color = Color.Aqua}};//new DirectoryInfo(Environment.CurrentDirectory).EnumerateFileSystemInfos().ToList();
             var cview = CollectionViewSource.GetDefaultView(assemblies);
             cview.CurrentChanged += (sender, args) => DebugUtils.WriteLine($"{cview.CurrentItem}");
             var tt = new GenericInterface2()
@@ -2908,6 +2915,7 @@ namespace ProjTests
                 Margin=new Thickness(10),
               
             };
+
             tt.SetBinding(GenericInterface2.InstanceProperty, new Binding("/") {Source = cview});
             Button b = new Button() { Content = "Prev", Command = NavigationCommands.PreviousPage };
             Button b2 = new Button() { Content = "Next", Command = NavigationCommands.NextPage };
@@ -2921,7 +2929,9 @@ namespace ProjTests
 
 
 
-            StackPanel s = new StackPanel();
+            var s = new Grid();
+            s.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            s.RowDefinitions.Add(new RowDefinition());
             var stackPanel = new StackPanel {Orientation = Orientation.Horizontal};
             stackPanel.Children.Add(b);
             stackPanel.Children.Add(b2);
@@ -2930,6 +2940,7 @@ namespace ProjTests
             stackPanel.Children.Add(t2);
 
             s.Children.Add(stackPanel);
+            tt.SetValue(Grid.RowProperty,1);
             s.Children.Add(tt);
             //p.Children.Add(_elementTextFormatterControl);
             var w = new Window { Content = s, FontSize = 20 };
@@ -3093,6 +3104,26 @@ namespace ProjTests
     [EditorAttribute(typeof(ExampleComponentEditor), typeof(ComponentEditor))]
     public class ExampleUserControl : System.Windows.Forms.UserControl
     {
+    }
+
+    public class ExampleDisplayComponent
+    {
+
+        public DateTime When
+        {
+            get;
+            set;
+        }
+public Icon Icon { get; set; }
+
+public string[] S {
+    get;
+    set;
+}
+    public System.Drawing.Color Color { get; set; }
+        public DayOfWeek DayfOfWeek{ get; set; }
+        public FileAttributes FileAttributes { get; set; }
+
     }
 }
 

@@ -8,10 +8,12 @@ using System.ComponentModel.Design.Serialization;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Design;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -76,9 +78,12 @@ namespace ControlsDemo
 
         private void MenuItem_OnClick(object sender, RoutedEventArgs e)
         {
+            Form xxx = new Form();
             HashSet<Type> creatable = new HashSet<Type>();
             HashSet<Type> values = new HashSet<Type>();
             HashSet<Type> editorTypes = new HashSet<Type>();
+            HashSet<PropertyDescriptor> paints = new HashSet<PropertyDescriptor>();
+            List<Tuple<PropertyDescriptor, object>> comp = new List<Tuple<PropertyDescriptor, object>>();
             var a = ViewModel.Assemblies.ToList();
             foreach (var viewModelAssembly in a)
             {
@@ -154,7 +159,25 @@ Debug.WriteLine("!!!!" +property.PropertyType);
                                         var kind = ((UITypeEditor) e3).GetEditStyle();
                                         Debug.WriteLine(
                                             $"{exportedType?.FullName} {paint} {kind} {property.Name} {property.Category} {e3}");
+                                        if (paint)
+                                        {
+                                            paints.Add(property);
+                                        }
                                     }
+                                }
+                                {
+                                    var e3 = property.GetEditor(typeof(ComponentEditor));
+                                    if (e3 != null)
+                                        editorTypes.Add(e3.GetType());
+                                    if (e3 != null && e3.GetType() != typeof(
+                                        CollectionEditor))
+                                    {
+                                        comp.Add(Tuple.Create(property, e3));
+                                        // var paint = ((UITypeEditor)e3).GetPaintValueSupported();
+                                        // var kind = ((UITypeEditor)e3).GetEditStyle();
+                                        Debug.WriteLine($"!!!! {exportedType?.FullName}  {property.Name} {property.Category} {e3}");
+                                    }
+
                                 }
                                 {
                                     var e3 = property.GetEditor(typeof(InstanceCreationEditor));
@@ -188,6 +211,12 @@ Debug.WriteLine("!!!!" +property.PropertyType);
                     }
                 } catch{}
             }
+
+            var ll = paints.GroupBy(descriptor => descriptor.ComponentType.FullName).ToDictionary(
+                grouping => grouping.Key,
+                grouping => grouping.Select(pp => new
+                    {CType = pp.ComponentType.FullName, pp.Name, PType = pp.PropertyType.FullName}));
+            File.WriteAllText(@"c:\temp\paint.json", JsonSerializer.Serialize(ll));
             foreach (var editorType in editorTypes)
             {
                 Debug.WriteLine(editorType);

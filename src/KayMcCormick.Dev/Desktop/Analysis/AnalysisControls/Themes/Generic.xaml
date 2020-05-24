@@ -16,7 +16,8 @@
   xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonModel"
   xmlns:controls="clr-namespace:AnalysisControls.Controls"
   xmlns:typeDescriptors="clr-namespace:AnalysisControls.TypeDescriptors"
-  xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System">
+  xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System"
+  xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControls">
   <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
   <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
   <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
@@ -7923,22 +7924,155 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type typeDescriptors:GenericInterface2}">
+
+          <ControlTemplate.Resources>
+            <kmDevWpfControls:GetTypeConverter1 x:Key="GetTypeConverter"/>
+            <DataTemplate x:Key="{x:Type system:Enum}"  DataType="{x:Type typeDescriptors:InstanceProperty}">
+              <kmDevWpfControls:EnumFlagsSelector EnumValue="{Binding}" EnumType="{Binding Converter={StaticResource GetTypeConverter}}"></kmDevWpfControls:EnumFlagsSelector>
+            </DataTemplate>
+            <DataTemplate x:Key="EnumFlags"  DataType="{x:Type typeDescriptors:InstanceProperty}">
+              <kmDevWpfControls:EnumFlagsSelector EnumValue="{Binding Value,Mode=TwoWay}" EnumType="{Binding Value,Converter={StaticResource GetTypeConverter}}"></kmDevWpfControls:EnumFlagsSelector>
+            </DataTemplate>
+            <DataTemplate x:Key="StandardValues"  DataType="{x:Type typeDescriptors:InstanceProperty}">
+              <ComboBox SelectedItem="{Binding Value}"  ItemsSource="{Binding StandardValues
+                
+                }"/>
+            </DataTemplate>
+            <DataTemplate x:Key="DefaultValue"  DataType="{x:Type typeDescriptors:InstanceProperty}">
+              <ContentPresenter Content="{Binding Value}"/>
+            </DataTemplate>
+            <CollectionViewSource x:Key="src" Source="{Binding RelativeSource={RelativeSource TemplatedParent},Path=InstanceProperties}">
+              
+            </CollectionViewSource>
+            <local:CTS x:Key="cts"/>
+            <local:InstPropValTempSel x:Key="InstPropValTempSel"/>
+          </ControlTemplate.Resources>
           <Border x:Name="Border" Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
-            <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=InstanceProperties}">
-<ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type typeDescriptors:InstanceProperty}">
-                  <WrapPanel><TextBlock Margin="0,0,10,0" Text="{Binding PropertyDescriptor.DisplayName}"/>
-                  <ContentPresenter Content="{Binding Path=Value}"/></WrapPanel>
-                </DataTemplate>
-</ItemsControl.ItemTemplate>
+            <ListView x:Name="ListView" ItemsSource="{Binding Source={StaticResource src}}">
+              <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}"  >
+                  <Setter Property="Template">
+                    <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                      <Border x:Name="Border"
+                              Padding="2"
+                              SnapsToDevicePixels="true"
+                              Background="Transparent">
+                        <VisualStateManager.VisualStateGroups>
+                          <VisualStateGroup x:Name="CommonStates">
+                            <VisualState x:Name="Normal" />
+                            <VisualState x:Name="MouseOver" />
+                            <VisualState x:Name="Disabled" />
+                          </VisualStateGroup>
+                          <VisualStateGroup x:Name="SelectionStates">
+                            <VisualState x:Name="Unselected" />
+                            <VisualState x:Name="Selected">
+                            </VisualState>
+                            <VisualState x:Name="SelectedUnfocused">
+                           </VisualState>
+                          </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                          
+                          <GridViewRowPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}" >
+                            <GridViewRowPresenter.ToolTip>
+                              <TextBlock Text="{Binding PropertyDescriptor.Description}"/>
+                            </GridViewRowPresenter.ToolTip>
+                          </GridViewRowPresenter>
 
-            </ItemsControl>
+                        </Border>
+                    </ControlTemplate>
+                    </Setter.Value>
+                  </Setter>
+
+                </Style>
+              </ListView.ItemContainerStyle>
+
+              <ListView.View>
+                <GridView>
+                  <GridViewColumn DisplayMemberBinding="{Binding PropertyDescriptor.DisplayName}"/>
+                  <GridViewColumn CellTemplateSelector="{StaticResource cts}"/>
+                  <GridViewColumn>
+                    <GridViewColumn.CellTemplate>
+                      <DataTemplate>
+                        <Image Source="{Binding ImageSource}"/>
+                      </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                  </GridViewColumn>
+                  <GridViewColumn>
+                    <GridViewColumn.CellTemplate>
+                      <DataTemplate>
+                        <Button Content="Edit"  Command="Open" CommandParameter="{Binding}" CommandTarget="{Binding RelativeSource={RelativeSource Self}}"/>
+                      </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                  </GridViewColumn>
+
+                </GridView>
+              </ListView.View>
+              <ListView.GroupStyle>
+                <GroupStyle>
+                  <GroupStyle.ContainerStyle>
+                    <Style TargetType="{x:Type GroupItem}">
+                      <Setter Property="Margin" Value="0,0,0,5"/>
+                      <Setter Property="Template">
+                        <Setter.Value>
+                          <ControlTemplate TargetType="{x:Type GroupItem}">
+                            <Expander IsExpanded="True" BorderBrush="#FFA4B97F" 
+                                      BorderThickness="0,0,0,1">
+                              <Expander.Header>
+                                <DockPanel>
+                                  <TextBlock FontWeight="Bold" Text="{Binding Path=Name}" 
+                                             Margin="5,0,0,0" MinWidth="100"/>
+                                  <TextBlock FontWeight="Bold" 
+                                             Text="{Binding Path=ItemCount}"/>
+                                </DockPanel>
+                              </Expander.Header>
+                              <Expander.Content>
+                                <ItemsPresenter />
+                              </Expander.Content>
+                            </Expander>
+                          </ControlTemplate>
+                        </Setter.Value>
+                      </Setter>
+                    </Style>
+                  </GroupStyle.ContainerStyle>
+                </GroupStyle>
+                </ListView.GroupStyle>
+            </ListView>
           </Border>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
   </Style>
-
+  <Style TargetType="{x:Type typeDescriptors:PropItem}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type typeDescriptors:PropItem}" >
+          <Border x:Name="Border" Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+            <WrapPanel>
+            <TextBlock Text="{Binding InstanceProperty.PropertyDescriptor.DisplayName}"/>
+<ContentPresenter Content="{Binding InstanceProperty.Value}"/>
+            </WrapPanel>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style TargetType="{x:Type typeDescriptors:PropItems}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type typeDescriptors:PropItems}">
+          <Border x:Name="Border" Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}">
+            <ItemsPresenter x:Name="ItemsPresenter"/>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 </ResourceDictionary>

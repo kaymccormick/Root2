@@ -97,7 +97,9 @@
   <ItemGroup>
     <Compile Include="AllCommands.cs" />
     <Compile Include="ConvertButton.cs" />
+    <Compile Include="CTS.cs" />
     <Compile Include="DirectoryInfoConverter.cs" />
+    <Compile Include="InstPropValTempSel.cs" />
     <Compile Include="IPropertiesAdapter.cs" />
     <Compile Include="AnalysisCommands.cs" />
     <Compile Include="AnalysisControlsModule.cs" />

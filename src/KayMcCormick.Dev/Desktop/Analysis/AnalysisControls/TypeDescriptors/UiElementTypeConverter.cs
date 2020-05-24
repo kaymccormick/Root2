@@ -2,35 +2,156 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Design;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Security.Permissions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
+using System.Windows.Forms.Design;
+using System.Windows.Forms.Integration;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Autofac;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
 using KayMcCormick.Lib.Wpf.Properties;
 using KmDevWpfControls;
+using Binding = System.Windows.Data.Binding;
+using Brush = System.Windows.Media.Brush;
+using Brushes = System.Windows.Media.Brushes;
+using Color = System.Windows.Media.Color;
+using Control = System.Windows.Controls.Control;
+using IContainer = System.ComponentModel.IContainer;
+using ListBox = System.Windows.Controls.ListBox;
+using ListView = System.Windows.Controls.ListView;
+using MenuItem = System.Windows.Controls.MenuItem;
+using Panel = System.Windows.Controls.Panel;
+using Pen = System.Windows.Media.Pen;
+using Point = System.Windows.Point;
+using Size = System.Windows.Size;
 using TypeControl = KayMcCormick.Lib.Wpf.TypeControl;
 
 namespace AnalysisControls.TypeDescriptors
 {
+    public class PropItems : ItemsControl
+    {
+        /// <inheritdoc />
+        protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+        {
+            base.OnItemsSourceChanged(oldValue, newValue);
+        }
+
+        /// <inheritdoc />
+        protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            base.OnItemsChanged(e);
+        }
+
+        /// <inheritdoc />
+        protected override bool IsItemItsOwnContainerOverride(object item)
+        {
+            if (item is PropItem)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <inheritdoc />
+        protected override DependencyObject GetContainerForItemOverride()
+        {
+            return new PropItem();
+        }
+
+        /// <inheritdoc />
+        protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+        {
+            base.PrepareContainerForItemOverride(element, item);
+        }
+
+        /// <inheritdoc />
+        protected override void ClearContainerForItemOverride(DependencyObject element, object item)
+        {
+            base.ClearContainerForItemOverride(element, item);
+        }
+
+        /// <inheritdoc />
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+        }
+
+        static PropItems()
+        {
+            // FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(DataGridCellsPresenter), (PropertyMetadata)new FrameworkPropertyMetadata((object)typeof(PropItems)));
+            // ItemsControl.ItemsPanelProperty.OverrideMetadata(typeof(DataGridCellsPresenter), (PropertyMetadata)new FrameworkPropertyMetadata((object)new ItemsPanelTemplate(new FrameworkElementFactory(typeof(PropItemsPanel)))));
+            // UIElement.FocusableProperty.OverrideMetadata(typeof(DataGridCellsPresenter), (PropertyMetadata)new FrameworkPropertyMetadata((object)false));
+
+        }
+    }
+
+    public class PropItemsPanel : Panel
+    {
+    }
+
+    public class PropItem : Control
+    {
+        public static readonly DependencyProperty InstancePropertyProperty = DependencyProperty.Register(
+            "InstanceProperty", typeof(InstanceProperty), typeof(PropItem),
+            new PropertyMetadata(default(InstanceProperty), OnInstancePropertyChanged));
+
+        public InstanceProperty InstanceProperty
+        {
+            get { return (InstanceProperty) GetValue(InstancePropertyProperty); }
+            set { SetValue(InstancePropertyProperty, value); }
+        }
+
+        private static void OnInstancePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((PropItem) d).OnInstancePropertyChanged((InstanceProperty) e.OldValue, (InstanceProperty) e.NewValue);
+        }
+
+
+
+        protected virtual void OnInstancePropertyChanged(InstanceProperty oldValue, InstanceProperty newValue)
+        {
+        }
+
+        static PropItem()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(PropItem),
+                new FrameworkPropertyMetadata(typeof(PropItem)));
+
+        }
+    }
+
     /// <summary>
     /// 
     /// </summary>
     public class GenericInterface2 : Control
     {
         public static readonly DependencyProperty TypeDescriptorProperty = DependencyProperty.Register(
-            "TypeDescriptor", typeof(ICustomTypeDescriptor), typeof(GenericInterface2), new PropertyMetadata(default(ICustomTypeDescriptor), OnTypeDescriptorChanged));
+            "TypeDescriptor", typeof(ICustomTypeDescriptor), typeof(GenericInterface2),
+            new PropertyMetadata(default(ICustomTypeDescriptor), OnTypeDescriptorChanged));
 
         public ICustomTypeDescriptor TypeDescriptorz
         {
@@ -40,7 +161,8 @@ namespace AnalysisControls.TypeDescriptors
 
         private static void OnTypeDescriptorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((GenericInterface2) d).OnTypeDescriptorChanged((ICustomTypeDescriptor) e.OldValue, (ICustomTypeDescriptor) e.NewValue);
+            ((GenericInterface2) d).OnTypeDescriptorChanged((ICustomTypeDescriptor) e.OldValue,
+                (ICustomTypeDescriptor) e.NewValue);
         }
 
 
@@ -50,7 +172,8 @@ namespace AnalysisControls.TypeDescriptors
         }
 
         public static readonly DependencyProperty PropertiesProperty = DependencyProperty.Register(
-            "Properties", typeof(PropertyDescriptorCollection), typeof(GenericInterface2), new PropertyMetadata(default(PropertyDescriptorCollection), OnPropertiesChanged, CoerceProperties));
+            "Properties", typeof(PropertyDescriptorCollection), typeof(GenericInterface2),
+            new PropertyMetadata(default(PropertyDescriptorCollection), OnPropertiesChanged, CoerceProperties));
 
         private static object CoerceProperties(DependencyObject d, object basevalue)
         {
@@ -65,13 +188,16 @@ namespace AnalysisControls.TypeDescriptors
 
         private static void OnPropertiesChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((GenericInterface2) d).OnPropertiesChanged((PropertyDescriptorCollection) e.OldValue, (PropertyDescriptorCollection) e.NewValue);
+            ((GenericInterface2) d).OnPropertiesChanged((PropertyDescriptorCollection) e.OldValue,
+                (PropertyDescriptorCollection) e.NewValue);
         }
 
         public static readonly DependencyProperty InstanceProperty = DependencyProperty.Register(
-            "Instance", typeof(object), typeof(GenericInterface2), new FrameworkPropertyMetadata(default(object), FrameworkPropertyMetadataOptions.AffectsRender, OnInstanceChanged));
+            "Instance", typeof(object), typeof(GenericInterface2),
+            new FrameworkPropertyMetadata(default(object), FrameworkPropertyMetadataOptions.AffectsRender,
+                OnInstanceChanged));
 
-        private ObservableCollection<object> _instanceProperties= new ObservableCollection<object>();
+        private ObservableCollection<object> _instanceProperties = new ObservableCollection<object>();
 
         public object Instance
         {
@@ -93,23 +219,66 @@ namespace AnalysisControls.TypeDescriptors
         }
 
         public static readonly DependencyProperty InstancePropertiesProperty = DependencyProperty.Register(
-            "InstanceProperties", typeof(IEnumerable), typeof(GenericInterface2), new PropertyMetadata(default(IEnumerable), OnInstancePropertiesChanged, CoerceInstanceProperties));
+            "InstanceProperties", typeof(IEnumerable), typeof(GenericInterface2),
+            new PropertyMetadata(default(IEnumerable), OnInstancePropertiesChanged, CoerceInstanceProperties));
+
+        private ICollectionView _view;
+        private ListView _listView;
+        private Context1 _serviceProvider;
 
         private static object CoerceInstanceProperties(DependencyObject d, object basevalue)
         {
-            var instanceProperties = ((GenericInterface2)d)._instanceProperties;
+            var instanceProperties = ((GenericInterface2) d)._instanceProperties;
             instanceProperties.Clear();
             var o1 = d.GetValue(InstanceProperty);
-            var enumerable = (IEnumerable)d.GetValue(PropertiesProperty);
+            var enumerable = (IEnumerable) d.GetValue(PropertiesProperty);
             if (enumerable != null)
                 foreach (PropertyDescriptor o in enumerable)
                 {
+                    var editor = o.GetEditor(typeof(UITypeEditor));
+
                     InstanceProperty p = new InstanceProperty() {Instance = o1, PropertyDescriptor = o};
+                    p.UITypeEditor = editor as UITypeEditor;
+                    PaintValue(p);
+
+                    if (p.PropertyDescriptor.Converter.GetStandardValuesSupported())
+                    {
+                        p.StandardValues = p.PropertyDescriptor.Converter.GetStandardValues();
+                    }
                     instanceProperties.Add(p);
                 }
 
             return instanceProperties;
         }
+
+        public static void PaintValue(InstanceProperty p)
+        {
+            if (p.UITypeEditor != null && p.UITypeEditor.GetPaintValueSupported())
+            {
+                p.PaintValueSupported = true;
+                var dim = 40;
+                IntPtr intPtr = IntPtr.Zero;
+                try
+                {
+                    var bitmap = new Bitmap(dim, dim);
+                    var fromImage = Graphics.FromImage(bitmap);
+                    p.UITypeEditor.PaintValue(p.Value, fromImage, new Rectangle(0, 0, dim, dim));
+                    intPtr = bitmap.GetHbitmap();
+                    p.ImageSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                        intPtr,
+                        IntPtr.Zero,
+                        System.Windows.Int32Rect.Empty,
+                        BitmapSizeOptions.FromWidthAndHeight(dim, dim));
+                }
+                finally
+                {
+                    DeleteObject(intPtr);
+                }
+            }
+        }
+
+        [DllImport("gdi32")]
+        static extern int DeleteObject(IntPtr o);
 
 
         public IEnumerable InstanceProperties
@@ -128,14 +297,46 @@ namespace AnalysisControls.TypeDescriptors
         public GenericInterface2()
         {
             InstanceProperties = _instanceProperties;
+            _serviceProvider = new Context1();
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, Open, CanOpen));
         }
+
+        private void CanOpen(object sender, CanExecuteRoutedEventArgs e)
+        {
+            var p = e.Parameter as InstanceProperty;
+            e.CanExecute = p?.UITypeEditor != null && !Editing;
+            e.ContinueRouting = false;
+            e.Handled = true;
+        }
+
+        private void Open(object sender, ExecutedRoutedEventArgs e)
+        {
+            var p = e.Parameter as InstanceProperty;
+            var u = sender as UIElement;
+            var c = _listView.ItemContainerGenerator.ContainerFromItem(p);
+
+            
+            _serviceProvider.Instance = p.Instance;
+                _serviceProvider.PropertyDescriptor = p.PropertyDescriptor;
+                _serviceProvider._uiElement = e.OriginalSource as UIElement;
+                _serviceProvider.AboutToEdit = true;
+                Editing = true;
+            var item = p.UITypeEditor.EditValue((ITypeDescriptorContext) _serviceProvider ,p.Value);
+            p.Value = item;
+            Editing = false;
+             //p.PropertyDescriptor.SetValue(p.Instance, editValue);
+        }
+
+        public bool Editing { get; set; }
+
 
         protected virtual void OnInstancePropertiesChanged(IEnumerable oldValue, IEnumerable newValue)
         {
         }
 
 
-        protected virtual void OnPropertiesChanged(PropertyDescriptorCollection oldValue, PropertyDescriptorCollection newValue)
+        protected virtual void OnPropertiesChanged(PropertyDescriptorCollection oldValue,
+            PropertyDescriptorCollection newValue)
         {
             CoerceValue(InstancePropertiesProperty);
         }
@@ -148,13 +349,181 @@ namespace AnalysisControls.TypeDescriptors
 
         }
 
+        /// <inheritdoc />
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            _listView = (ListView) GetTemplateChild("ListView");
+            _view = CollectionViewSource.GetDefaultView(InstanceProperties);
+            _view.Filter = o => ((InstanceProperty) o).IsBrowsable;
+            _view.GroupDescriptions.Add(new PropertyGroupDescription("Category"));
+            _listView.ItemsSource = _view;
+        }
     }
 
+    internal class Context1 : ITypeDescriptorContext, IWindowsFormsEditorService, IContainer
+    {
+        public UIElement _uiElement;
+        private WindowsFormsHost _host;
+
+        public Context1(object instance, PropertyDescriptor propertyDescriptor, UIElement uiElement)
+        {
+            _host = new WindowsFormsHost();
+
+            Instance = instance;
+            PropertyDescriptor = propertyDescriptor;
+            _uiElement = uiElement;
+        }
+
+        /// <inheritdoc />
+        public object GetService(Type serviceType)
+        {
+            if (serviceType == typeof(IWindowsFormsEditorService))
+            {
+                return this;//new S1(_host, PropertyDescriptor, _uiElement);
+            }
+            Debug.WriteLine(serviceType.FullName);
+            return null;
+        }
+
+        /// <inheritdoc />
+        public bool OnComponentChanging()
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
+        public void OnComponentChanged()
+        {
+        }
+
+        /// <inheritdoc />
+        public IContainer Container => this;
+
+        /// <inheritdoc />
+        public object Instance { get; set; }
+
+        /// <inheritdoc />
+        public PropertyDescriptor PropertyDescriptor { get; set; }
+
+        private Popup _popup;
+        private bool _done;
+        private IContainer _containerImplementation = new Container();
+
+        public Context1()
+        {
+            _host = new WindowsFormsHost();
+        }
+
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        public void DoEvents()
+        {
+            DispatcherFrame frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
+                new DispatcherOperationCallback(ExitFrame), frame);
+            Dispatcher.PushFrame(frame);
+        }
+
+        public object ExitFrame(object f)
+        {
+            ((DispatcherFrame) f).Continue = false;
+
+            return null;
+        }
+
+        /// <inheritdoc />
+        public void CloseDropDown()
+        {
+            _popup.IsOpen = false;
+            _done = true;
+        }
+
+        /// <inheritdoc />
+        public void DropDownControl(System.Windows.Forms.Control control)
+        {
+            Editing = true;
+            _done = false;
+            WindowsFormsHost h=new WindowsFormsHost();
+            h.LostFocus += (sender, args) => CloseDropDown();
+            h.PreviewKeyDown += (sender, args) =>
+            {
+                if (args.Key == Key.Escape)
+                {
+                    CloseDropDown();
+
+                }
+            };
+            
+            _popup = new Popup();
+            _popup.Child = h;
+            h.Child = control;
+            _popup.PlacementTarget = _uiElement;
+            _popup.IsOpen = true;
+            while (!_done)
+            {
+                DoEvents();
+                Thread.Sleep(300);
+                Debug.WriteLine("foo");
+            }
+            Editing = false;
+            //WaitHandle.WaitAll(new[]{_waitHandle});
+            // Form f = new Form();
+            // f.Controls.Add(control);
+            // f.ShowDialog();
+        }
+
+        public bool Editing { get; set; }
+
+
+        /// <inheritdoc />
+        public DialogResult ShowDialog(Form dialog)
+        {
+            return dialog.ShowDialog();
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _containerImplementation.Dispose();
+        }
+
+        /// <inheritdoc />
+        public void Add(IComponent component)
+        {
+            _containerImplementation.Add(component);
+        }
+
+        /// <inheritdoc />
+        public void Add(IComponent component, string name)
+        {
+            _containerImplementation.Add(component, name);
+        }
+
+        /// <inheritdoc />
+        public void Remove(IComponent component)
+        {
+            _containerImplementation.Remove(component);
+        }
+
+        /// <inheritdoc />
+        public ComponentCollection Components
+        {
+            get { return _containerImplementation.Components; }
+        }
+
+        public bool AboutToEdit { get; set; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class InstanceProperty : INotifyPropertyChanged
     {
         private PropertyDescriptor _propertyDescriptor;
         private object _instance;
-
+        private ImageSource _imageSource;
+        public string Category => PropertyDescriptor.Category;
+        public bool IsBrowsable => PropertyDescriptor.IsBrowsable;
         public PropertyDescriptor PropertyDescriptor
         {
             get { return _propertyDescriptor; }
@@ -179,7 +548,33 @@ namespace AnalysisControls.TypeDescriptors
             }
         }
 
-        public object Value => PropertyDescriptor.GetValue(Instance);
+        public object Value
+        {
+            get => PropertyDescriptor.GetValue(Instance);
+            set
+            {
+                PropertyDescriptor.SetValue(Instance, value);
+                GenericInterface2.PaintValue(this);;
+                OnPropertyChanged();
+            }
+        }
+
+        public UITypeEditor UITypeEditor { get; set; }
+        public bool PaintValueSupported { get; set; }
+
+        public ImageSource ImageSource
+        {
+            get { return _imageSource; }
+            set
+            {
+                if (Equals(value, _imageSource)) return;
+                _imageSource = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ICollection StandardValues { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
@@ -188,7 +583,8 @@ namespace AnalysisControls.TypeDescriptors
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-    public class GenericInterface :Control
+
+    public class GenericInterface : Control
     {
         private Border _border;
 
@@ -219,7 +615,7 @@ namespace AnalysisControls.TypeDescriptors
         /// <inheritdoc />
         protected override Size MeasureOverride(Size constraint)
         {
-            
+
             return base.MeasureOverride(constraint);
         }
 
@@ -236,6 +632,7 @@ namespace AnalysisControls.TypeDescriptors
                 {
                     break;
                 }
+
                 v = VisualTreeHelper.GetParent(v);
             }
 
@@ -247,8 +644,10 @@ namespace AnalysisControls.TypeDescriptors
                     DisplayMode = DisplayMode.Compact;
                     MaxHeight = 50;
                 }
+
                 MaxHeight = 50;
             }
+
             if (v is ContentPresenter pp)
             {
                 v = VisualTreeHelper.GetParent(pp);
@@ -494,7 +893,7 @@ namespace AnalysisControls.TypeDescriptors
             var header1 = new TextBlock()
             {
                 Margin = new Thickness(5, 0, 0, 5), Padding = new Thickness(5),
-                Text =  "Property_Name",
+                Text = "Property_Name",
                 TextWrapping = TextWrapping.NoWrap, Background = solidColorBrush
             };
             var header2 = new TextBlock()
@@ -502,9 +901,9 @@ namespace AnalysisControls.TypeDescriptors
                 Text = "Value", TextWrapping = TextWrapping.NoWrap,
                 Padding = new Thickness(5), Background = solidColorBrush
             };
-        var header3 = new TextBlock()
-        {
-            Text = "Property_Type",
+            var header3 = new TextBlock()
+            {
+                Text = "Property_Type",
                 Padding = new Thickness(5), TextWrapping = TextWrapping.NoWrap, Margin = new Thickness(0, 0, 5, 0),
                 Background = solidColorBrush
             };
@@ -712,7 +1111,7 @@ namespace AnalysisControls.TypeDescriptors
                 return ConversionUtils.DoConvertToString(value, sb).ToString();
             }
 
-        //    throw new AppInvalidOperationException();
+            //    throw new AppInvalidOperationException();
             return base.ConvertTo(context, culture, value, destinationType);
         }
 
@@ -737,6 +1136,7 @@ namespace AnalysisControls.TypeDescriptors
             {
 
             }
+
             if (destinationType == typeof(UIElement) || destinationType == typeof(string)) return true;
 
             return base.CanConvertTo(context, destinationType);
