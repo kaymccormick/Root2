@@ -265,7 +265,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public bool EnableProxy { get; set; } = true;
+        public bool EnableProxy { get; set; } = false;
 
         /// <inheritdoc />
         protected override void OnPreviewMouseWheel(MouseWheelEventArgs e)

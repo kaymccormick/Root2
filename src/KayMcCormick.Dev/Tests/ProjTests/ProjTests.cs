@@ -2703,10 +2703,13 @@ namespace ProjTests
             var ctxTabGroup = new RibbonModelContextualTabGroup {Header = "Contextual Tab Group 1"};
             groups.Add(ctxTabGroup);
             var tabs = new List<RibbonModelTab>();
-            var tab1 = new RibbonModelTab() {Header = "tab1"};
+            var tab1 = Factory.CreateInstance(TODO);
+            tab1.Header = "tab1";
             var group1 = new RibbonModelGroup() {Header = "GRoup 1"};
             tab1.ItemsCollection.Add(group1);
-            var tab2 = new RibbonModelTab() {Header = "tab2", ContextualTabGroupHeader = ctxTabGroup.Header};
+            var tab2 = Factory.CreateInstance(TODO);
+            tab2.Header = "tab2";
+            tab2.ContextualTabGroupHeader = ctxTabGroup.Header;
             tabs.Add(tab1);
             tabs.Add(tab2);
             var providers = new List<IRibbonModelProvider<RibbonModelTab>>();

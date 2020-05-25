@@ -264,6 +264,7 @@
     <Compile Include="RibbonModelView.cs" />
     <Compile Include="RibbonModel\AppCommandTypeConverter.cs" />
     <Compile Include="RibbonModel\ControlKind.cs" />
+    <Compile Include="RibbonModel\Factory.cs" />
     <Compile Include="RibbonModel\GroupItemCollectionEditor.cs" />
     <Compile Include="RibbonModel\IRibbonModelGroupItem.cs" />
     <Compile Include="RibbonModel\RibbonModelAppMenuElementCollection.cs" />

@@ -49,6 +49,10 @@ namespace AnalysisControls.RibbonModel
 [ContentProperty("Items")]
     public class RibbonModelTab : INotifyPropertyChanged, ISupportInitialize, IRibbonModelTab
     {
+        public RibbonModelTab()
+        {
+        }
+
         private Visibility _visibility = Visibility.Visible;
         private object _contextualTabGroupHeader;
         private object _header;

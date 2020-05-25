@@ -18,8 +18,16 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public static class RibbonBuilder1
+    public class RibbonBuilder1
     {
+        private readonly RibbonModelApplicationMenu _appMenu;
+        private readonly IEnumerable<RibbonModelContextualTabGroup> _ribbonModelContextualTabGroups;
+        private readonly IEnumerable<RibbonModelTab> _tabs;
+        private readonly IEnumerable<IRibbonModelProvider<RibbonModelTab>> _tabProviders;
+        private readonly IEnumerable<IRibbonModelProvider<RibbonModelContextualTabGroup>> _grpProviders;
+        private Func<RibbonModelTab> RibbonTabFactory;
+        private JsonSerializerOptions _options;
+
         /// <summary>
         /// 
         /// </summary>
@@ -29,13 +37,23 @@ namespace AnalysisControls
         /// <param name="tabProviders"></param>
         /// <param name="_options"></param>
         /// <returns></returns>
-        public static PrimaryRibbonModel RibbonModelBuilder(RibbonModelApplicationMenu appMenu,
+        public RibbonBuilder1(RibbonModelApplicationMenu appMenu,
             IEnumerable<RibbonModelContextualTabGroup> ribbonModelContextualTabGroups, IEnumerable<RibbonModelTab> tabs,
             IEnumerable<IRibbonModelProvider<RibbonModelTab>> tabProviders,
             IEnumerable<IRibbonModelProvider<RibbonModelContextualTabGroup>> grpProviders,
-            JsonSerializerOptions _options)
+            JsonSerializerOptions _options, Func<RibbonModelTab> ribbonTabFactory)
         {
-            JsonSerializerOptions opt= new JsonSerializerOptions();
+            _appMenu = appMenu;
+            _ribbonModelContextualTabGroups = ribbonModelContextualTabGroups;
+            _tabs = tabs;
+            _tabProviders = tabProviders;
+            _grpProviders = grpProviders;
+            this._options = _options;
+            RibbonTabFactory = ribbonTabFactory;
+        }
+
+        public PrimaryRibbonModel BuildRibbon(){
+        JsonSerializerOptions opt= new JsonSerializerOptions();
             foreach (var optionsConverter in _options.Converters)
             {
                 opt.Converters.Add(optionsConverter);
@@ -43,6 +61,7 @@ namespace AnalysisControls
 
             opt.WriteIndented = true;
             opt.IgnoreNullValues = true;
+            RibbonModelApplicationMenu appMenu=_appMenu;
             var r = new PrimaryRibbonModel {AppMenu = appMenu, HelpPaneContent = "help"};
             r.QuickAccessToolBar.CustomizeMenuButton = new RibbonModelItemMenuButton() { Command = WpfAppCommands.CustomizeQAT };
             r.QuickAccessToolBar.Items.Add(new RibbonModelItemButton {Label = "test1",
@@ -51,7 +70,8 @@ namespace AnalysisControls
             var dockPanel = new DockPanel {LastChildFill = false};
           //  dockPanel.Children.Add(new RibbonButton {Label = "Quit"});
             appMenu.FooterPaneContent = dockPanel;
-            foreach (var ribbonModelProvider in grpProviders)
+            var ribbonModelProviders = _grpProviders;
+            foreach (var ribbonModelProvider in ribbonModelProviders)
             {
 	    var t = ribbonModelProvider.ProvideModelItem();
 	    t.RibbonModel = r;
@@ -61,14 +81,15 @@ namespace AnalysisControls
 
             r.AppMenu.Items.Add(new RibbonModelAppMenuItem {Header = "test"});
 
-	    var HomeTab = new RibbonModelTab { Header = "Home" };
-	    var PasteButton = new RibbonModelItemButton { Label = "Paste", Command = ApplicationCommands.Paste };
+            var HomeTab = RibbonTabFactory();
+        HomeTab.Header = "Home";
+        var PasteButton = new RibbonModelItemButton { Label = "Paste", Command = ApplicationCommands.Paste };
 	    var Group1 = new RibbonModelGroup { Header = "Paste" };
 	    Group1.Items.Add(PasteButton);
 	    HomeTab.ItemsCollection.Add(Group1);
 	    r.RibbonItems.Add(HomeTab);
 	    
-            foreach (var ribbonModelProvider in tabProviders)
+            foreach (var ribbonModelProvider in _tabProviders)
             {
                 var item = ribbonModelProvider.ProvideModelItem();
                 item.RibbonModel = r;

@@ -131,13 +131,9 @@ namespace AnalysisControls
             }
 #endif
             builder.RegisterModule<AnalysisAppLibModule>();
-
-      builder.Register((c, o) => RibbonBuilder1.RibbonModelBuilder(c.Resolve<RibbonModelApplicationMenu>(),
-                c.Resolve<IEnumerable<RibbonModelContextualTabGroup>>(), c.Resolve<IEnumerable<RibbonModelTab>>(),
-                c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelTab>>>(),
-                
-                c.Resolve<IEnumerable<IRibbonModelProvider<RibbonModelContextualTabGroup>>>(),
-                c.Resolve<JsonSerializerOptions>()));
+            builder.RegisterType<RibbonModelTab>().AsSelf().AsImplementedInterfaces();
+            builder.RegisterType<RibbonBuilder1>();
+            builder.Register((c, o) => c.Resolve<RibbonBuilder1>().BuildRibbon());
             builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
             builder.RegisterType<ClientModel>().AsSelf().SingleInstance().AsImplementedInterfaces()
                 .WithCallerMetadata();
