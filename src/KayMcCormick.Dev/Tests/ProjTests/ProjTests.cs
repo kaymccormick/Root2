@@ -1885,7 +1885,7 @@ namespace ProjTests
         public void TestSymbolControl()
         {
             Main1Model.SelectVsInstance();
-            var model = new Main1Model();
+            var model = new Main1Mode2();
             model.LoadSolutionAsync(solutionPath).ContinueWith(async task =>
             {
                 var resources = ProjTestsHelper.ControlsResources("templates.baml");
@@ -1934,60 +1934,7 @@ namespace ProjTests
             ProjTestsHelper.TestSyntaxControl(new SemanticControl1());
         }
 
-        [WpfFact]
-        public void TestMain1()
-        {
-            Main1Model.SelectVsInstance();
-            var r = ProjTestsHelper.ControlsResources("templates.baml");
-            var mainw = new Main1();
-            mainw.Resources = r;
-            var w = new Window()
-            {
-                Content = mainw
-            };
-            var t = new TaskCompletionSource<int>();
-
-            var replay = new ReplaySubject<Workspace>();
-            mainw.ViewModel = new Main1Model(replay);
-            mainw.AddHandler(WorkspaceView.SelectedProjectChangedEvent,
-                new RoutedPropertyChangedEventHandler<ProjectModel>(Target), true);
-
-            w.Loaded += async (sender, args) =>
-            {
-                try
-                {
-                    if (mainw.ViewModel.WorkspaceView != null)
-                    {
-                        mainw.ViewModel.WorkspaceView.SelectedDocumentChanged +=
-                            (sender1, args1) => DebugUtils.WriteLine(args1.NewValue.Name);
-                        mainw.ViewModel.WorkspaceView.SelectedProjectChanged +=
-                            (sender2, args2) =>
-                            {
-                                DebugUtils.WriteLine(args2.NewValue.Name + $" {args2.NewValue.Documents.Count}" + " [" +
-                                                     string.Join(", ",
-                                                         args2.NewValue.RootPathInfo.Entries.Values
-                                                             .Select(x => x.Path)) +
-                                                     "]");
-                            };
-                    }
-                    else
-                    {
-                        throw new AppInvalidOperationException();
-                    }
-
-                    await mainw.ViewModel.LoadSolutionAsync(solutionPath);
-                }
-                catch (Exception ex)
-                {
-                    DebugUtils.WriteLine(ex.ToString());
-                }
-            };
-
-            w.Closed += (sender, args) => { t.SetResult(0); };
-            w.ShowDialog();
-            //Task.WaitAll(t.Task);
-        }
-
+      
         private void Target(object sender, RoutedPropertyChangedEventArgs<ProjectModel> e)
         {
         }
@@ -2037,7 +1984,7 @@ namespace ProjTests
         {
             var c = new WorkspaceView();
             var replay = new ReplaySubject<Workspace>();
-            var model = new Main1Model(replay);
+            var model = new Main1Mode2(replay);
             model.CreateWorkspace();
             c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierarchyRoot") {Source = model});
             model.CreateProject();
@@ -2055,7 +2002,7 @@ namespace ProjTests
                 (sender, args) => DebugUtils.WriteLine(args.LoadedAssembly.FullName);
             var c = new WorkspaceView();
             var replay = new ReplaySubject<Workspace>();
-            var model = new Main1Model(replay);
+            var model = new Main1Mode2(replay);
             model.LoadSolutionAsync(
                 solutionPath);
             c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierarchyRoot") {Source = model});
@@ -2067,7 +2014,7 @@ namespace ProjTests
         public void TestWorkspaceModel()
         {
             var replay = new ReplaySubject<Workspace>();
-            var model = new Main1Model(replay);
+            var model = new Main1Mode2(replay);
             model.LoadSolutionAsync(
                 solutionPath).ContinueWith(
                 task =>
@@ -2126,29 +2073,7 @@ namespace ProjTests
             }
         }
 
-        //[WpfFact]
-        public void TestMdodel1()
-        {
-            var model = new Main1Model();
-            model.CreateWorkspace();
-
-            var tcs = new TaskCompletionSource<object>();
-            model.Documents.CollectionChanged += (sender, e) =>
-                {
-                    if (e.Action == NotifyCollectionChangedAction.Add)
-                        foreach (var eNewItem in e.NewItems)
-                            if (eNewItem is DocModel d)
-                                if (d.Content is FormattedTextControl fmt)
-                                    tcs.SetResult(fmt.SyntaxTree);
-                }
-                ;
-            model.ProjectedAddedEvent += (sender, args) => { model.AddDocument(args.Model, @"C:\temp\program.cs"); };
-            model.DocumentAddedEvent += async (sender, args) => { await model.OpenSolutionItem(args.Document); };
-            var p = model.CreateProject();
-            tcs.Task.Wait(5000);
-            if (tcs.Task.Result is SyntaxTree t) DebugUtils.WriteLine(t.Length.ToString());
-        }
-
+     
         [WpfFact]
         public void TestRibbonModel()
         {

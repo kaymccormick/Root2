@@ -104,8 +104,10 @@
           <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" FooterPaneContent="{Binding AppMenu.FooterPaneContent}"/>
         </anal:MyRibbon.ApplicationMenu>
       </anal:MyRibbon>
-    
-    </anal:MyGrid>
+        <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"   ViewModel="{kmWpf:Resolve viewModel:Main1Model}"  ViewModel2="{kmWpf:Resolve viewModel:Main1Mode2}"/>
+        </anal:MyGrid>
+
+
   </Grid>
 
 </RibbonWindow>

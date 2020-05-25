@@ -29,7 +29,7 @@ namespace AnalysisControls
     {
         public Window2()
         {
-            System.Drawing.Bitmap b = new Bitmap(@"C:\temp\example.bmp");
+         //   System.Drawing.Bitmap b = new Bitmap(@"C:\temp\example.bmp");
             InitializeComponent();
             Anchorables.Add("test");
             Debug.WriteLine(DM.LayoutUpdateStrategy?.ToString());

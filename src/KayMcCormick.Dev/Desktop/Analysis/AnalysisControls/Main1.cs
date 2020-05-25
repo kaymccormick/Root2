@@ -20,6 +20,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using AnalysisControls.ViewModel;
+using Autofac;
 using SyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
 namespace AnalysisControls
@@ -94,6 +95,7 @@ namespace AnalysisControls
 
         private Main1Model _viewModel;
         private DockingManager _dockingManager;
+        private Main1Mode2 _viewModel2;
 
         /// <summary>
         /// 
@@ -106,7 +108,22 @@ namespace AnalysisControls
         static Main1()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(Main1), new FrameworkPropertyMetadata(typeof(Main1)));
+            AttachedProperties.LifetimeScopeProperty.OverrideMetadata(typeof(Main1), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits, null, CoerceLifetimeScope));
+
         }
+
+        private static object CoerceLifetimeScope(DependencyObject d, object basevalue)
+        {
+            ILifetimeScope lifetimeScope = (ILifetimeScope)basevalue;
+            var main1 = (Main1) d;
+            return lifetimeScope.BeginLifetimeScope($"Scope for {d}", main1.ConfigAction);
+        }
+
+        private void ConfigAction(ContainerBuilder obj)
+        {
+            obj.RegisterInstance(this).AsSelf();
+        }
+
 
         /// <summary>
         /// 
@@ -125,7 +142,7 @@ namespace AnalysisControls
             CommandBindings.Add(new CommandBinding(WpfAppCommands.OpenSolutionItem, OnSolutionItemExecutedAsync));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.LoadSolution, LoadSolutionExecutedAsync));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.BrowseSymbols, OnBrowseSymbolsExecutedAsync));
-            CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewDetails, OnViewDetailsExecutedAsync));
+            
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewResources, OnViewResourcesExecuted));
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpenExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ConvertToJson, OnConvertToJsonExecuted));
@@ -191,57 +208,7 @@ namespace AnalysisControls
             base.OnPreviewMouseDown(e);
         }
 
-        private async void OnViewDetailsExecutedAsync(object sender, ExecutedRoutedEventArgs e)
-        {
-            var dg = new DataGrid();
-            var desc = e.Parameter?.ToString() ?? "";
-            if (e.Parameter is PathModel pm)
-            {
-                if (pm.Item is DocumentModel dm)
-                    try
-                    {
-                        var root = await dm.Document.GetSyntaxRootAsync();
-                        if (root != null)
-                        {
-                            var c = root.DescendantNodesAndTokensAndSelf().ToList();
-                            dg.ItemsSource = c;
-                        }
-
-                        desc = dm.Document.Name;
-                    }
-                    catch (Exception ex)
-                    {
-                        DebugUtils.WriteLine(ex.ToString());
-                    }
-                else
-                    dg.ItemsSource = pm.Children;
-            }
-            else if (e.Parameter is ProjectModel pm2)
-            {
-                var project = ViewModel.Workspace.CurrentSolution.GetProject(pm2.Id);
-                if (project == null)
-                    return;
-                else
-                    dg.ItemsSource = project.Documents;
-            }
-            else if (e.Parameter is Assembly a)
-            {
-                dg.ItemsSource = a.GetExportedTypes().ToList();
-            }
-
-            else
-            {
-                dg.ItemsSource = new[] {e.Parameter};
-            }
-
-            var detailsTitle = "Details for " + desc;
-            var docModel = DocModel.CreateInstance();
-            docModel.Title = detailsTitle;
-            docModel.Content = dg;
-            ViewModel.Documents.Add(docModel);
-            ViewModel.ActiveContent = docModel;
-        }
-
+   
         /// <summary>
         /// 
         /// </summary>
@@ -270,10 +237,7 @@ namespace AnalysisControls
             }
             else
             {
-                var anchorableModel = DocModel.CreateInstance();
-                anchorableModel.Content = ViewModel?.Messages;
-                anchorableModel.Title = "Messages";
-                ViewModel.Documents.Add(anchorableModel);
+                
             }
         }
 
@@ -312,7 +276,7 @@ namespace AnalysisControls
 
         private async void LoadSolutionExecutedAsync(object sender, ExecutedRoutedEventArgs e)
         {
-            await ViewModel.LoadSolutionAsync((string) e.Parameter);
+            await ViewModel2.LoadSolutionAsync((string) e.Parameter);
         }
 
         private void DockingManagerOnActiveContentChanged(object sender, EventArgs e)
@@ -322,22 +286,32 @@ namespace AnalysisControls
 
         private async void OnSolutionItemExecutedAsync(object sender, ExecutedRoutedEventArgs e)
         {
-            await ViewModel.OpenSolutionItem(e.Parameter);
+            await ViewModel2.OpenSolutionItem(e.Parameter);
         }
 
         private void OnCreateProjectExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            ViewModel.CreateProject();
+            ViewModel2.CreateProject();
+        }
+
+        public Main1Mode2 ViewModel2
+        {
+            get { return _viewModel2; }
+            set
+            {
+                _viewModel2 = value;
+                _viewModel2.Dispatcher = Dispatcher;
+            }
         }
 
         private void OnCreateSolutionExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            ViewModel.CreateSolution();
+            ViewModel2.CreateSolution();
         }
 
         private void CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (ViewModel?.Workspace == null)
+            if (ViewModel2?.Workspace == null)
             {
                 e.CanExecute = true;
                 e.ContinueRouting = false;
@@ -347,7 +321,7 @@ namespace AnalysisControls
         private void OnCreateWorkSpaceExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             DebugUtils.WriteLine(nameof(OnCreateProjectExecuted));
-            ViewModel.CreateWorkspace();
+            ViewModel2.CreateWorkspace();
         }
 
         private void OnDragOver(object sender, DragEventArgs e)
