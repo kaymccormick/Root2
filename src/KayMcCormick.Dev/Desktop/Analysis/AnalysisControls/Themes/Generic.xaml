@@ -5480,7 +5480,7 @@
                   <Style TargetType="ContentPresenter">
                     <Setter Property="Control.BorderBrush" Value="BlueViolet" />
                     <Setter Property="Control.BorderThickness" Value="0" />
-                    <Setter Property="DataContext" Value="{Binding Fields/}" />
+                    <Setter Property="DataContext" Value="{Binding Fields}" />
                     <Style.Triggers>
                       <DataTrigger Binding="{Binding IsCollection}" Value="true">
                         <Setter Property="Control.Background" Value="Gray" />
@@ -7615,8 +7615,8 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-            <Grid>.
-            <local:CustomTreeView ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RootNodes}"/>
+                        <Grid>
+                            <local:CustomTreeView ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RootNodes}"/>
             </Grid>
                     </Border>
                 </ControlTemplate>

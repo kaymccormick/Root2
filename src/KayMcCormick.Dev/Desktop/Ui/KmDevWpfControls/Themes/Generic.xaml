@@ -703,7 +703,8 @@
         <ControlTemplate TargetType="{x:Type local:TypeProviderView}">
           <ControlTemplate.Resources>
 
-            <local:GetTypeConverter1 x:Key="GetTypeConverter" />
+              <local:GetTypeConverter1 x:Key="GetTypeConverter" />
+              <local:TypeConverter2 x:Key="TypeConverter" />
             <local:PropertyDescriptorConverter x:Key="PropertyDescriptorConverter" />
 
           </ControlTemplate.Resources>
@@ -724,6 +725,7 @@
                 <ToolBar Band="1" BandIndex="1">
                   <local:TypeControl Type="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Type}" />
                   <Button Content="Editor" Command="local:TypeProviderView.LaunchEditor" x:Name="Edit" />
+                  <TextBox Text="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Type,Converter={StaticResource TypeConverter}}"/>
                 </ToolBar>
               </ToolBarTray>
               <ListView Grid.Row="1"

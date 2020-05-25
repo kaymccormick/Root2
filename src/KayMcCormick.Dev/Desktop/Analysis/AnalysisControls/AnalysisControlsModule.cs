@@ -207,7 +207,8 @@ namespace AnalysisControls
                 .WithCallerMetadata();
             builder.RegisterType<UiElementTypeConverter>().AsSelf();
 
-            builder.RegisterType<Main1Model>();
+            builder.RegisterType<Main1Model>().AsImplementedInterfaces().AsSelf();
+            builder.RegisterType<Main1Mode2>();
 
             builder.Register(
                     (context, parameters) =>

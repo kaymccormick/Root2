@@ -365,6 +365,7 @@
       <DependentUpon>UserControl1.cs</DependentUpon>
     </Compile>
     <Compile Include="ViewModel\ComponentTypesViewModel.cs" />
+    <Compile Include="ViewModel\Main1Mode2.cs" />
     <Compile Include="ViewModel\Main1Model.cs" />
     <Compile Include="VisibileIfNotVisible.cs" />
     <Compile Include="Window2.xaml.cs">

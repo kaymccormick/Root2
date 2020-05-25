@@ -1,0 +1,24 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AnalysisControls"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="AnalysisControls.UserControl2"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <TabControl>
+            <TabItem Header="1">
+                <local:AssembliesControl HorizontalAlignment="Left" VerticalAlignment="Top"/>
+
+            </TabItem>
+            <TabItem Header="2"/>
+            <TabItem Header="3">
+
+                <xctk:PropertyGrid HorizontalAlignment="Left" VerticalAlignment="Top" Height="204.507" Width="388.596" SelectedObject="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}}"/>
+
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>
