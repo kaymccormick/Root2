@@ -141,7 +141,8 @@ namespace KmDevWpfControls
                             if(format == "DragImageBits")
                             try
                             {
-                                MemoryStream imageStream = ms;
+                   
+             MemoryStream imageStream = ms;
                                 imageStream.Seek(0, SeekOrigin.Begin);
                                 BinaryReader br = new BinaryReader(imageStream);
                                 ShDragImage shDragImage;

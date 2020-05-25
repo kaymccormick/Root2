@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Specialized;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -23,6 +25,18 @@ namespace AnalysisControls
     /// 
     public class MyRibbonTab : RibbonTab , IAppControl
     {
+        /// <inheritdoc />
+        protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
+        {
+            base.OnItemsChanged(e);
+        }
+
+        /// <inheritdoc />
+        protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+        {
+            base.OnItemsSourceChanged(oldValue, newValue);
+        }
+
         protected readonly Logger Logger;
         private Regex _r = new Regex(@"[\. ;'""]");
         private string _loggerName;
@@ -121,7 +135,17 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public MyRibbon MyRibbon => Ribbon as MyRibbon;
+        public MyRibbon MyRibbon
+        {
+            get
+            {
+                if (Ribbon == null)
+                {
+
+                }
+                return Ribbon as MyRibbon;
+            }
+        }
 
         private static void OnVisibilityChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

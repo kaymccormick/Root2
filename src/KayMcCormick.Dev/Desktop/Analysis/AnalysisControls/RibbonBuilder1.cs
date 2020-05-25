@@ -49,7 +49,7 @@ namespace AnalysisControls
             SmallImageSource = "pack://application:,,,/WpfLib;component/Assets/ASPWebSite_16x.png"
             });
             var dockPanel = new DockPanel {LastChildFill = false};
-            dockPanel.Children.Add(new RibbonButton {Label = "Quit"});
+          //  dockPanel.Children.Add(new RibbonButton {Label = "Quit"});
             appMenu.FooterPaneContent = dockPanel;
             foreach (var ribbonModelProvider in grpProviders)
             {

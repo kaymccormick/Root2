@@ -66,17 +66,18 @@
     <Grid.RenderTransform>
       <ScaleTransform ScaleX="2" ScaleY="2" />
     </Grid.RenderTransform>
-    <Grid>
-      <Grid.RowDefinitions>
+    <anal:MyGrid>
+      <anal:MyGrid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
-      </Grid.RowDefinitions>
+      </anal:MyGrid.RowDefinitions>
       <anal:MyRibbon x:Name="myRibbon"
+                     DataContext="{Binding ViewModel.PrimaryRibbon}"
                      Background="{Binding Background}"
                      SelectedItem="{Binding SelectedItem,Mode=TwoWay}"
                      ContextualTabGroupsSource="{Binding ContextualTabGroups}"
                      ItemTemplateSelector="{StaticResource TabItemTemplateSelector}"
-                     DataContext="{Binding ViewModel.PrimaryRibbon}"
+                     
                      ItemsSource="{Binding RibbonItems}"
                      TabHeaderStyle="{StaticResource AppRibbonTabHeaderStyle}"
                      TabHeaderTemplate="{StaticResource AppRibbonModelTabTemplate}"
@@ -97,14 +98,14 @@
           </DataTemplate>
         </anal:MyRibbon.Resources>
         <anal:MyRibbon.QuickAccessToolBar>
-          <anal:MyRibbonQuickAccessToolBar  x:Name="QAT" ItemsSource="{Binding Items}"  DataContext="{Binding Path=QuickAccessToolBar}" CustomizeMenuButton="{Binding CustomizeMenuButton,Converter={StaticResource ConvertButton}}"/>
+          <anal:MyRibbonQuickAccessToolBar  x:Name="QAT"  DataContext="{Binding Path=QuickAccessToolBar}"  ItemsSource="{Binding Items}" CustomizeMenuButton="{Binding CustomizeMenuButton,Converter={StaticResource ConvertButton}}"/>
         </anal:MyRibbon.QuickAccessToolBar>
         <anal:MyRibbon.ApplicationMenu>
           <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" FooterPaneContent="{Binding AppMenu.FooterPaneContent}"/>
         </anal:MyRibbon.ApplicationMenu>
       </anal:MyRibbon>
-      <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"  ViewModel="{kmWpf:Resolve viewModel:Main1Model}"/>
-    </Grid>
+    
+    </anal:MyGrid>
   </Grid>
 
 </RibbonWindow>

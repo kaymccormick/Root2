@@ -185,20 +185,20 @@ namespace KayMcCormick.Lib.Wpf
         /// </summary>
         protected virtual void SetupTracing ( )
         {
-            return;
+            
             bool TraceAll = false;
             bool tracenone = false;
             PresentationTraceSources.Refresh ( ) ;
             
-            foreach (var propertyInfo in typeof(PresentationTraceSources).GetProperties(BindingFlags.Static | BindingFlags.Public))
-            {
-                if (propertyInfo.PropertyType == typeof(TraceSource))
-                {
-                    TraceSource t = (TraceSource) propertyInfo.GetValue(null);
-                    t.Switch.Level = tracenone ? SourceLevels.Off : SourceLevels.All;
-                    t.Listeners.Add(new ConsoleTraceListener());
-                }
-            }
+            // foreach (var propertyInfo in typeof(PresentationTraceSources).GetProperties(BindingFlags.Static | BindingFlags.Public))
+            // {
+                // if (propertyInfo.PropertyType == typeof(TraceSource))
+                // {
+                    // TraceSource t = (TraceSource) propertyInfo.GetValue(null);
+                    // t.Switch.Level = tracenone ? SourceLevels.Off : SourceLevels.All;
+                    // t.Listeners.Add(new ConsoleTraceListener());
+                // }
+            // }
             
             if ( ! DoTracing )
             {
@@ -219,9 +219,11 @@ namespace KayMcCormick.Lib.Wpf
             breakTraceListener.DoBreak = false;
             breakTraceListener.Filter = new BreakFilter();
             db.Listeners.Add(breakTraceListener);
-//             db
-// .Listeners.Add(new XmlWriterTraceListener(@"C:\temp\out.xml"));
-//             db
+            var xmlWriterTraceListener = new XmlWriterTraceListener(@"C:\temp\out2.xml");
+            xmlWriterTraceListener.Filter = new BreakFilter();
+            db
+.Listeners.Add(xmlWriterTraceListener);
+             // db
 // .Listeners.Add(new XX());
             db.Switch.Level = SourceLevels.All;
 
@@ -372,6 +374,9 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
             {
                 DebugUtils.WriteLine("stack frame is " + stackTraceEntry.Frame.Text);
             }
+
+            if (parsed.BindingExpression?.StartsWith("Path=WindowState") ?? false)
+                return false;
             DebugUtils.WriteLine(parsed.ToString());
             return true;
         }
@@ -379,7 +384,7 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
 
     public class AppBindingUtils
     {
-        private StreamWriter utilsLog = new StreamWriter(@"C:\data\logs\utils.txt");
+        private StreamWriter utilsLog ;//= new StreamWriter(@"C:\data\logs\utils2.txt");
         private Regex _rgxp;
 
         public AppBindingUtils()
@@ -395,7 +400,7 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
             var match = _rgxp.Match(formatOrMessage);
             if (!match.Success)
             {
-                utilsLog.WriteLine($"Match failed, regex is {_rgxp.ToString()}");
+                utilsLog?.WriteLine($"Match failed, regex is {_rgxp.ToString()}");
                 if(ThrowOnFail) throw new AppInvalidOperationException(formatOrMessage);
                 return null;
             }

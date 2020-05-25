@@ -246,7 +246,7 @@
                    TargetType="{x:Type local:CustomTreeViewItem}">
               <Setter Property="IsExpanded"
                       Value="{Binding IsExpanded, Mode=OneWay}" />
-              <Setter Property="IsExpanded"
+              <Setter Property="IsSelected"
                       Value="{Binding IsSelected, Mode=TwoWay}" />
               <Setter Property="Background"
                       Value="Transparent" />

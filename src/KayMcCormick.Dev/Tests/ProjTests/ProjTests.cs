@@ -2832,9 +2832,9 @@ namespace ProjTests
         [WpfFact]
         public void Test1234()
         {
-            Menu menu = new Menu(){};
-            
-            MenuItem a = new MenuItem(){Header = "Day"};
+            var menu = new Menu() { };
+
+            var a = new MenuItem() {Header = "Day"};
             menu.Items.Add(a);
             a.ItemsSource = new DirectoryInfo(@"C:\temp\filesmenu").EnumerateFiles();
             a.Resources = ProjTestsHelper.ControlsResources("templates.baml");
@@ -2843,14 +2843,11 @@ namespace ProjTests
             x.Loaded += X_Loaded;
             if (x.View is Control c)
             {
-                PropertyGrid pg =   new PropertyGrid();
+                var pg = new PropertyGrid();
                 var genericInterface = new GenericInterface();
-                pg.SelectedGridItemChanged += (sender, args) =>
-                {
-                    genericInterface.Target = args.NewSelection.Value;
-                };
-                var ss=x.GetService(typeof(ISelectionService)) as ISelectionService;
-                
+                pg.SelectedGridItemChanged += (sender, args) => { genericInterface.Target = args.NewSelection.Value; };
+                var ss = x.GetService(typeof(ISelectionService)) as ISelectionService;
+
                 ss.SelectionChanged += (sender, args) =>
                 {
                     pg.SelectedObject = ss.PrimarySelection;
@@ -2859,16 +2856,16 @@ namespace ProjTests
                 var c1 = new AppComponent();
                 x.ComponentContainer.Add(c1);
                 var windowsFormsHost = new WindowsFormsHost {Child = c};
-                var sss =new Grid();
+                var sss = new Grid();
                 sss.ColumnDefinitions.Add(new ColumnDefinition());
                 sss.ColumnDefinitions.Add(new ColumnDefinition());
-                sss.RowDefinitions.Add(new RowDefinition(){Height = GridLength.Auto});
+                sss.RowDefinitions.Add(new RowDefinition() {Height = GridLength.Auto});
                 sss.RowDefinitions.Add(new RowDefinition());
                 sss.RowDefinitions.Add(new RowDefinition());
                 sss.Children.Add(menu);
                 sss.Children.Add(windowsFormsHost);
                 windowsFormsHost.SetValue(Grid.RowProperty, 1);
-                var windowsFormsHost2 = new WindowsFormsHost { Child = pg };
+                var windowsFormsHost2 = new WindowsFormsHost {Child = pg};
                 sss.Children.Add(windowsFormsHost2);
                 windowsFormsHost2.SetValue(Grid.ColumnProperty, 1);
                 windowsFormsHost2.SetValue(Grid.RowProperty, 1);
@@ -2903,34 +2900,89 @@ namespace ProjTests
             };
             w.ShowDialog();
         }
+
+        [WpfFact]
+        public void T111()
+        {
+            var x = new GenericInterface3();
+            x.Instance = new Form();
+            var w = new Window() {Content = x};
+            w.LayoutUpdated += (sender, args) => { DebugUtils.WriteLine($"{w.ActualWidth}"); };
+            w.Loaded += (sender, args) =>
+            {
+                var g
+                    = x._listView.ItemContainerGenerator;
+                foreach (var item in g.Items)
+                {
+                    var c = g.ContainerFromItem(item);
+                }
+
+                DumpVisualTree(w);
+            };
+            w.ShowDialog();
+        }
+
+        private void DumpVisualTree(DependencyObject dependencyObject)
+        {
+            DebugUtils.WriteLine($"{dependencyObject.GetType().Name}");
+            var _visual = (Visual) dependencyObject;
+            var drawingGroup = VisualTreeHelper.GetDrawing(_visual);
+            var ContentBounds = VisualTreeHelper.GetContentBounds(_visual);
+
+            if (drawingGroup != null) Debug.WriteLine(drawingGroup.Bounds);
+            var n = VisualTreeHelper.GetChildrenCount(dependencyObject);
+            for (var i = 0; i < n; i++) DumpVisualTree(VisualTreeHelper.GetChild(dependencyObject, i));
+        }
+
+        [WpfFact]
+        public void T1z()
+        {
+            using (var instance = new ApplicationInstance(
+                new ApplicationInstance.
+                    ApplicationInstanceConfiguration(
+                        _output
+                            .WriteLine
+                        , ApplicationGuid
+                    )
+            ))
+            {
+                instance.AddModule(new AnalysisControlsModule());
+                instance.AddModule(new AnalysisAppLibModule());
+                instance.Initialize();
+                var lifetimeScope = instance.GetLifetimeScope();
+                Window w = new Window() {Content = new ContainerView()};
+                w.SetValue(AttachedProperties.LifetimeScopeProperty, lifetimeScope);
+                w.ShowDialog();
+            }
+        }
+
         [WpfFact]
         public void T1()
         {
-
-            var assemblies = new[]{new Form()};//{Color = Color.Aqua}};//new DirectoryInfo(Environment.CurrentDirectory).EnumerateFileSystemInfos().ToList();
+            var assemblies = new[]
+            {
+                new Form()
+            }; //{Color = Color.Aqua}};//new DirectoryInfo(Environment.CurrentDirectory).EnumerateFileSystemInfos().ToList();
             var cview = CollectionViewSource.GetDefaultView(assemblies);
             cview.CurrentChanged += (sender, args) => DebugUtils.WriteLine($"{cview.CurrentItem}");
             var tt = new GenericInterface2()
             {
-                Margin=new Thickness(10),
-              
+                Margin = new Thickness(10)
             };
 
             tt.SetBinding(GenericInterface2.InstanceProperty, new Binding("/") {Source = cview});
-            Button b = new Button() { Content = "Prev", Command = NavigationCommands.PreviousPage };
-            Button b2 = new Button() { Content = "Next", Command = NavigationCommands.NextPage };
-            TextBlock t= new TextBlock();
+            var b = new Button() {Content = "Prev", Command = NavigationCommands.PreviousPage};
+            var b2 = new Button() {Content = "Next", Command = NavigationCommands.NextPage};
+            var t = new TextBlock();
             t.SetBinding(TextBlock.TextProperty, new Binding("CurrentPosition") {Source = cview});
-            TextBlock t12 = new TextBlock(){Text=" / "};
+            var t12 = new TextBlock() {Text = " / "};
 
-            TextBlock t2 = new TextBlock();
-            t2.SetBinding(TextBlock.TextProperty, new Binding("SourceCollection.Count") { Source = cview });
-
-
+            var t2 = new TextBlock();
+            t2.SetBinding(TextBlock.TextProperty, new Binding("SourceCollection.Count") {Source = cview});
 
 
             var s = new Grid();
-            s.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            s.RowDefinitions.Add(new RowDefinition() {Height = GridLength.Auto});
             s.RowDefinitions.Add(new RowDefinition());
             var stackPanel = new StackPanel {Orientation = Orientation.Horizontal};
             stackPanel.Children.Add(b);
@@ -2940,10 +2992,10 @@ namespace ProjTests
             stackPanel.Children.Add(t2);
 
             s.Children.Add(stackPanel);
-            tt.SetValue(Grid.RowProperty,1);
+            tt.SetValue(Grid.RowProperty, 1);
             s.Children.Add(tt);
             //p.Children.Add(_elementTextFormatterControl);
-            var w = new Window { Content = s, FontSize = 20 };
+            var w = new Window {Content = s, FontSize = 20};
             w.CommandBindings.Add(new CommandBinding(NavigationCommands.PreviousPage,
                 (sender, args) => cview.MoveCurrentToPrevious()));
             w.CommandBindings.Add(new CommandBinding(NavigationCommands.NextPage,
@@ -3009,7 +3061,7 @@ namespace ProjTests
         public ExampleComponentEditorPage()
         {
             // Initialize the page, which inherits from Panel, and its controls.
-            Size = new System.Drawing.Size(400, 250);
+            Size = new Size(400, 250);
             Icon = DeserializeIconFromBase64Text(icon);
             Text = "Example Page";
 
@@ -3021,13 +3073,13 @@ namespace ProjTests
             Controls.Add(b1);
 
             l1 = new Label();
-            l1.Size = new System.Drawing.Size(190, 20);
+            l1.Size = new Size(190, 20);
             l1.Location = new System.Drawing.Point(4, 2);
             l1.Text = "Example Component Editor Page";
             Controls.Add(l1);
 
             pg1 = new PropertyGrid();
-            pg1.Size = new System.Drawing.Size(400, 280);
+            pg1.Size = new Size(400, 280);
             pg1.Location = new System.Drawing.Point(0, 30);
             Controls.Add(pg1);
         }
@@ -3080,20 +3132,20 @@ namespace ProjTests
                 // WindowsFormsComponentEditor to a random color.
                 var rnd = new Random();
                 ((Control) Component).BackColor =
-                    System.Drawing.Color.FromArgb(rnd.Next(255), rnd.Next(255), rnd.Next(255));
+                    Color.FromArgb(rnd.Next(255), rnd.Next(255), rnd.Next(255));
                 pg1.Refresh();
             }
         }
 
         // This method can be used to retrieve an Icon from a block 
         // of Base64-encoded text.
-        private System.Drawing.Icon DeserializeIconFromBase64Text(string text)
+        private Icon DeserializeIconFromBase64Text(string text)
         {
-            System.Drawing.Icon img = null;
+            Icon img = null;
             var memBytes = Convert.FromBase64String(text);
             IFormatter formatter = new BinaryFormatter();
             var stream = new MemoryStream(memBytes);
-            img = (System.Drawing.Icon) formatter.Deserialize(stream);
+            img = (Icon) formatter.Deserialize(stream);
             stream.Close();
             return img;
         }
@@ -3108,22 +3160,12 @@ namespace ProjTests
 
     public class ExampleDisplayComponent
     {
+        public DateTime When { get; set; }
+        public Icon Icon { get; set; }
 
-        public DateTime When
-        {
-            get;
-            set;
-        }
-public Icon Icon { get; set; }
-
-public string[] S {
-    get;
-    set;
-}
-    public System.Drawing.Color Color { get; set; }
-        public DayOfWeek DayfOfWeek{ get; set; }
+        public string[] S { get; set; }
+        public Color Color { get; set; }
+        public DayOfWeek DayfOfWeek { get; set; }
         public FileAttributes FileAttributes { get; set; }
-
     }
 }
-

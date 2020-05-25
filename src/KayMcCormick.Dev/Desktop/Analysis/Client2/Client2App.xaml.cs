@@ -122,8 +122,8 @@ namespace Client2
                 Current.Shutdown(1);
             }
 
-            var wwww = new Window2();
-            wwww.Show();
+            // var wwww = new Window2();
+            // wwww.Show();
             var win = enumerable.First().Value.Value;
             // var win = new RibbonWin1();
 

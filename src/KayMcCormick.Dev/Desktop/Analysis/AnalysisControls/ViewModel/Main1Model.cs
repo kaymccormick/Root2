@@ -237,6 +237,7 @@ namespace AnalysisControls.ViewModel
             //            AddAssembliesDoc();
             //            AddPropertiesGridDoc();
             AddVisualTreeViewDoc();
+            AddVisualTreeViewDoc1();
             AddTypeProvider();
                         AddControlsDocq();
         }
@@ -244,6 +245,15 @@ namespace AnalysisControls.ViewModel
         private void AddVisualTreeViewDoc()
         {
             var c = new VisualTreeView1();
+            var doc = DocModel.CreateInstance();
+            doc.Title = "Visual Tree View";
+            doc.Content = c;
+            Documents.Add(doc);
+        }
+
+        private void AddVisualTreeViewDoc1()
+        {
+            var c = new ContainerView();
             var doc = DocModel.CreateInstance();
             doc.Title = "Visual Tree View";
             doc.Content = c;

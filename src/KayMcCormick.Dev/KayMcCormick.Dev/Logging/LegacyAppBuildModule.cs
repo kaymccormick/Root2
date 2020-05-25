@@ -424,10 +424,11 @@ namespace KayMcCormick.Dev.Logging
             {
                 Logger.Trace($"Load {nameof(IdGeneratorModule)}");
                 Generator = new ObjectIDGenerator();
-                DefaultObject = new DefaultObjectIdProvider(Generator);
-                builder.RegisterInstance(DefaultObject)
+                builder.RegisterInstance(Generator).AsSelf();
+                //DefaultObject = new DefaultObjectIdProvider(Generator);
+                builder.RegisterType<DefaultObjectIdProvider>()
                     .As<IObjectIdProvider>()
-                    .SingleInstance().WithCallerMetadata();
+                    .InstancePerLifetimeScope().WithCallerMetadata();
             }
 
 
@@ -458,7 +459,10 @@ namespace KayMcCormick.Dev.Logging
             )
             {
                 var inst = e.Instance;
-
+                // if (inst is ObjectIDGenerator)
+                // {
+                    // return;
+                // }
                 Logger.Trace(
                     $"{nameof(RegistrationOnActivating)} {e.Component.DebugFormat()}"
                 );
@@ -472,18 +476,20 @@ namespace KayMcCormick.Dev.Logging
                         var typedServiceServiceType =
                             typedService.ServiceType;
                         return typedServiceServiceType
-                               == typeof(ObjectIDGenerator);
+                               == typeof(ObjectIDGenerator) || typedServiceServiceType
+                               == typeof(IObjectIdProvider);
                     }
                 ))
                 {
                     Logger.Debug($"Departing {nameof(RegistrationOnActivating)} early.");
                     return;
                 }
+                var o = e.Context.Resolve<IObjectIdProvider>();
 
                 try
                 {
                     var provideObjectInstanceIdentifier =
-                        DefaultObject.ProvideObjectInstanceIdentifier(
+                        o.ProvideObjectInstanceIdentifier(
                             inst
                             , e.Component
                             , e.Parameters

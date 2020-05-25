@@ -38,6 +38,21 @@ namespace Client2
         private ClientModel _viewModel;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        static Client2Window1()
+        {
+            Window.WindowStateProperty.OverrideMetadata(typeof(Client2Window1), new FrameworkPropertyMetadata((object) WindowState.Normal, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(_OnWindowStateChanged), new CoerceValueCallback(CoerceWindowState)));
+        }
+
+        private static void _OnWindowStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+        }
+
+        private static object CoerceWindowState(DependencyObject d, object basevalue)
+        {
+            return basevalue;
+        }
+
+        
         public Client2Window1()
         {
             InitializeComponent();
@@ -48,10 +63,10 @@ namespace Client2
         {
             AddHandler(Binding.SourceUpdatedEvent, new EventHandler<DataTransferEventArgs>(OnSourceUpdated));
             AddHandler(Binding.TargetUpdatedEvent, new EventHandler<DataTransferEventArgs>(OnTargetUpdated));
-
+            ViewModel = viewModel;
             SetValue(AttachedProperties.LifetimeScopeProperty, scope);
             InitializeComponent();
-            ViewModel = viewModel;
+         
             viewModel.Ribbon = myRibbon;
 
             myCacheTarget?.Cache.SubscribeOn(Scheduler.Default)
@@ -148,36 +163,33 @@ namespace Client2
 
                 if (_viewModel != null)
                 {
-                    _viewModel.Main1Model = Main1.ViewModel;
-                    Main1.ViewModel.ClientViewModel = _viewModel;
-                    // var jsonOut = JsonSerializer.Serialize(myRibbon);
-                    // DebugUtils.WriteLine(jsonOut);
-                    // DumpRibbon(myRibbon);
-                
+                    // _viewModel.Main1Model = Main1.ViewModel;
+                    // Main1.ViewModel.ClientViewModel = _viewModel;
+                    
 
-                foreach (var o in myRibbon.ItemsSource)
-                    {
-                        Logger.Info($"RibbonItem: {o}");
-                        if (o is RibbonModelTab tab)
-                        {
-                            var i = 0;
-                            foreach (var ribbonModelItem in tab.Items) Logger.Info($"[{i}] {ribbonModelItem}");
-                        }
-                    }
+                // foreach (var o in myRibbon.ItemsSource)
+                    // {
+                        // Logger.Info($"RibbonItem: {o}");
+                        // if (o is RibbonModelTab tab)
+                        // {
+                            // var i = 0;
+                            // foreach (var ribbonModelItem in tab.Items) Logger.Info($"[{i}] {ribbonModelItem}");
+                        // }
+                    // }
 
 
-                    if (_AppMenu.ItemsSource != null)
-                    {
-                        foreach (var appMenuItem in _AppMenu.ItemsSource)
-                            Logger.Info(appMenuItem.ToString());
-                    }
-                    else
-                    {
-                        foreach (var ribbonModelAppMenuElement in _viewModel.PrimaryRibbon.AppMenu.Items)
-                            Logger.Info($"{ribbonModelAppMenuElement}");
+                    // if (_AppMenu.ItemsSource != null)
+                    // {
+                        // foreach (var appMenuItem in _AppMenu.ItemsSource)
+                            // Logger.Info(appMenuItem.ToString());
+                    // }
+                    // else
+                    // {
+                        // foreach (var ribbonModelAppMenuElement in _viewModel.PrimaryRibbon.AppMenu.Items)
+                            // Logger.Info($"{ribbonModelAppMenuElement}");
 
-                        Logger.Info("No app menu Items source");
-                    }
+                        // Logger.Info("No app menu Items source");
+                    // }
 
                     //_viewModel.Documents.Add(new DocModel { Title = "Log", Content = logControl });
                 }
@@ -393,7 +405,7 @@ namespace Client2
 
         private void OnExecutedPaste(object sender, ExecutedRoutedEventArgs e)
         {
-            Main1.ViewModel.OnExecutedPaste(sender, e);
+            // Main1.ViewModel.OnExecutedPaste(sender, e);
         }
 
         private void CustomizeQATExecuted(object sender, ExecutedRoutedEventArgs e)

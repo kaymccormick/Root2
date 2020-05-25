@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +13,26 @@ namespace KmDevWpfControls
     {
         public static readonly DependencyProperty ColumnSpacingProperty = DependencyProperty.Register(
             "ColumnSpacing", typeof(double), typeof(TablePanel), new PropertyMetadata(default(double), OnColumnSpacingUpdated));
+
+        public static readonly DependencyProperty ColumnBasedOnWidthProperty = DependencyProperty.Register(
+            "ColumnBasedOnWidth", typeof(bool), typeof(TablePanel), new FrameworkPropertyMetadata(default(bool), FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsMeasure,OnColumnBasedOnWidthChanged));
+
+        public bool ColumnBasedOnWidth
+        {
+            get { return (bool) GetValue(ColumnBasedOnWidthProperty); }
+            set { SetValue(ColumnBasedOnWidthProperty, value); }
+        }
+
+        private static void OnColumnBasedOnWidthChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((TablePanel) d).OnColumnBasedOnWidthChanged((bool) e.OldValue, (bool) e.NewValue);
+        }
+
+
+
+        protected virtual void OnColumnBasedOnWidthChanged(bool oldValue, bool newValue)
+        {
+        }
 
         private static void OnColumnSpacingUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -77,6 +98,21 @@ namespace KmDevWpfControls
             {
                 _rects.AddRange(Enumerable.Repeat(new Rect(), length - _rects.Count));
             }
+
+            if (ColumnBasedOnWidth)
+            {
+                var ss=CalculateChildrenDesiredSizes();
+                var mw=ss.Average(z => z.Width)*1.5 + ColumnSpacing;
+                Debug.WriteLine($"{availableSize.Width} / {mw} = {availableSize.Width/mw:N2}");
+
+                var t =(int)Math.Floor(availableSize.Width/mw);
+                if (t == 0)
+                {
+                    t = 1;
+                }
+                NumColumns = t;
+            }
+
             var rows = length / NumColumns + (length % NumColumns == 0 ? 0 : 1);
             var rowHeightsCount = rows - rowHeights.Count;
             if (rowHeightsCount > 0)
@@ -128,6 +164,18 @@ namespace KmDevWpfControls
 
             var width = columnWidths.Sum() + NumColumns * ColumnSpacing;
             return new Size(width, Ypos);
+        }
+
+        private List<Size> CalculateChildrenDesiredSizes()
+        {
+            var r = new List<Size>();
+            foreach (UIElement internalChild in InternalChildren)
+            {
+                internalChild.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                r.Add(internalChild.DesiredSize);
+            }
+
+            return r;
         }
 
         protected override Size ArrangeOverride(Size finalSize)

@@ -10,6 +10,7 @@
 // ---
 #endregion
 
+using System;
 using System.Diagnostics;
 
 namespace KayMcCormick.Lib.Wpf
@@ -30,7 +31,7 @@ namespace KayMcCormick.Lib.Wpf
         {
             if ( DoBreak )
             {
-                Debugger.Break ( ) ;
+            //    Debugger.Break ( ) ;
             }
         }
 
@@ -41,7 +42,10 @@ namespace KayMcCormick.Lib.Wpf
         /// <param name="message">A message to write. </param>
         public override void WriteLine ( string message )
         {
-            if ( DoBreak ) { Debugger.Break ( ) ; }
+            if (DoBreak)
+            {
+                throw new InvalidOperationException(message); // invDebugger.Break ( ) ; }
+            }
         }
     }
 }
