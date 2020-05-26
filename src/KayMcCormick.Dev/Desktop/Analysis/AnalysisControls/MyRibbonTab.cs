@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Ribbon;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using AnalysisControls.RibbonModel;
@@ -32,6 +33,28 @@ namespace AnalysisControls
         }
 
         /// <inheritdoc />
+        public override void BeginInit()
+        {
+            base.BeginInit();
+        }
+
+        /// <inheritdoc />
+        public override void EndInit()
+        {
+            SetValue(ItemsSourceProperty, ((IHaveItems) DataContext).Items);
+            base.EndInit();
+        }
+
+        /// <inheritdoc />
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+            SetBinding(ItemsSourceProperty, new Binding("Items") {Source = DataContext});
+            
+
+        }
+
+        /// <inheritdoc />
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
         {
             base.OnItemsSourceChanged(oldValue, newValue);
@@ -53,7 +76,7 @@ namespace AnalysisControls
             
         }
 
-        /// <summary>Identifies the <see cref="P:System.Windows.Controls.Ribbon.RibbonTab.ContextualTabGroup" /> dependency property.</summary>
+        /// <summary>Identifies the <see cref="P:System.Windows.Controls.MyRibbon.RibbonTab.ContextualTabGroup" /> dependency property.</summary>
 
 
         static MyRibbonTab()
@@ -298,5 +321,10 @@ namespace AnalysisControls
             }
         }
 
+    }
+
+    public interface IHaveItems
+    {
+        IEnumerable Items { get; set; }
     }
 }

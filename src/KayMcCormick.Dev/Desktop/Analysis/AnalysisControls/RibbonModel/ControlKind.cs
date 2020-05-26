@@ -54,6 +54,7 @@
         RibbonTwoLine,
         RibbonComboBox,
         DropZone,
-        RibbonSeparator
+        RibbonSeparator,
+        RibbonContentPresenter
     }
 }

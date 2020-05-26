@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestApp"
         mc:Ignorable="d"
-        Title="TestPrimaryRibbon1" Height="450" Width="800">
+        Title="TestPrimaryMyRibbon1" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions><RowDefinition Height="Auto"/>
         <RowDefinition Height="*"></RowDefinition></Grid.RowDefinitions>

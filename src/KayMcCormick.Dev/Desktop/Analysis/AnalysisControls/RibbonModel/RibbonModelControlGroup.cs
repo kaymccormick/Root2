@@ -16,6 +16,11 @@ namespace AnalysisControls.RibbonModel
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public ObservableCollection<object> Items { get; set; } = new ObservableCollection<object>();
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="label"></param>
+        /// <returns></returns>
         public RibbonModelItemMenuButton CreateRibbonMenuButton(string label)
         {
             var r = new RibbonModelItemMenuButton { Label = label };

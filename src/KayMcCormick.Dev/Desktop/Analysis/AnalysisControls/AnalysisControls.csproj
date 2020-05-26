@@ -96,9 +96,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AllCommands.cs" />
+    <Compile Include="CodeContextualTab.cs" />
+    <Compile Include="CodeTab1.cs" />
+    <Compile Include="CompilationGroup.cs" />
     <Compile Include="ContainerView.cs" />
     <Compile Include="ConvertButton.cs" />
     <Compile Include="CTS.cs" />
+    <Compile Include="DiagnosticConverter.cs" />
     <Compile Include="DirectoryInfoConverter.cs" />
     <Compile Include="InstPropValTempSel.cs" />
     <Compile Include="IPropertiesAdapter.cs" />
@@ -261,11 +265,15 @@
     <Compile Include="RibbonBuilder1.cs" />
     <Compile Include="RibbonDebugUtils.cs" />
     <Compile Include="RibbonModelRadioButton.cs" />
+    <Compile Include="RibbonModelTemplateSelector.cs" />
     <Compile Include="RibbonModelView.cs" />
     <Compile Include="RibbonModel\AppCommandTypeConverter.cs" />
+    <Compile Include="RibbonModel\CompilationGroup.cs" />
     <Compile Include="RibbonModel\ControlKind.cs" />
+    <Compile Include="RibbonModel\Factory.cs" />
     <Compile Include="RibbonModel\GroupItemCollectionEditor.cs" />
     <Compile Include="RibbonModel\IRibbonModelGroupItem.cs" />
+    <Compile Include="RibbonModel\IRibbonModelItem.cs" />
     <Compile Include="RibbonModel\RibbonModelAppMenuElementCollection.cs" />
     <Compile Include="RibbonModel\RibbonModelControlGroup.cs" />
     <Compile Include="FunTabProvider.cs" />
@@ -273,6 +281,7 @@
     <Compile Include="RibbonModel\RibbonModelDropZoneImpl.cs" />
     <Compile Include="RibbonModel\RibbonModelGroupItemCollection.cs" />
     <Compile Include="RibbonModel\RibbonModelItemTypeConverter.cs" />
+    <Compile Include="RibbonModel\RibbonModelPresenter.cs" />
     <Compile Include="RibbonModel\RibbonModelQuickAccessToolBar.cs" />
     <Compile Include="RibbonModel\RibbonModelSeparator.cs" />
     <Compile Include="RibbonModel\RibbonModelToggleButton.cs" />
@@ -280,6 +289,7 @@
     <Compile Include="RibbonViewGroupProviderBase.cs" />
     <Compile Include="RibbonViewGroupProviderBaseImpl.cs" />
     <Compile Include="RibbonModel\Definition\SuperGroup.cs" />
+    <Compile Include="Ribbon\IRibbonMenuCollection.cs" />
     <Compile Include="RootNode.cs" />
     <Compile Include="Serialization\JsonSimpleFrameworkElementConverterFactory.cs" />
     <Compile Include="Subnode.cs" />
@@ -301,8 +311,8 @@
     <Compile Include="RibbonModel\DisplayableAppCommandGroup.cs" />
     <Compile Include="RibbonModel\BaseLibCommandGroup.cs" />
     <Compile Include="Ribbon\RibbonModelItemComboBox.cs" />
-    <Compile Include="Ribbon\RibbonModelItemMenuButton.cs" />
-    <Compile Include="Ribbon\RibbonModelItemSplitButton.cs" />
+    <Compile Include="RibbonModel\RibbonModelItemMenuButton.cs" />
+    <Compile Include="RibbonModel\RibbonModelItemSplitButton.cs" />
     <Compile Include="RibbonModel\RibbonModelItemTextBox.cs" />
     <Compile Include="Ribbon\RibbonModelMenuItem.cs" />
     <Compile Include="RibbonModel\RibbonModelTab.cs" />
@@ -477,6 +487,10 @@
     <Page Include="RibbonControlTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="RibbonModel2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="RibbonModel.xaml">
       <SubType>Designer</SubType>
@@ -684,7 +698,6 @@
     <Resource Include="Themes\RecordSetDest_201.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Ribb\Definition\" />
     <Folder Include="VSS\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

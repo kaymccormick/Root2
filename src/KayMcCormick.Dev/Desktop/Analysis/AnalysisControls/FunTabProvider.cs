@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using AnalysisControls.Properties;
 using AnalysisControls.RibbonModel;
 using KayMcCormick.Dev;
 
@@ -44,20 +43,6 @@ namespace AnalysisControls
             else
                 DebugUtils.WriteLine("No providers for tab item groups");
 
-            return tab;
-        }
-    }
-
-    public class CodeTab1 : IRibbonModelProvider<RibbonModelTab>
-    {
-        private IEnumerable<IRibbonModelProvider<RibbonModelGroup>> _provs;
-
-        /// <inheritdoc />
-        public RibbonModelTab ProvideModelItem()
-        {
-            var tab = new RibbonModelTab();
-            tab.Header = "Code";
-            tab.ContextualTabGroupHeader = RibbonResources.ContextualTabGroupHeader_CodeAnalysis;
             return tab;
         }
     }

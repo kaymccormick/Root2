@@ -66,7 +66,8 @@ namespace Client2
             ViewModel = viewModel;
             SetValue(AttachedProperties.LifetimeScopeProperty, scope);
             InitializeComponent();
-         
+            _viewModel.Main1Model = Main1?.ViewModel;
+            if (Main1 != null) Main1.ViewModel.ClientViewModel = _viewModel;
             viewModel.Ribbon = myRibbon;
 
             myCacheTarget?.Cache.SubscribeOn(Scheduler.Default)
@@ -163,11 +164,11 @@ namespace Client2
 
                 if (_viewModel != null)
                 {
-                    // _viewModel.Main1Model = Main1.ViewModel;
-                    // Main1.ViewModel.ClientViewModel = _viewModel;
-                    
+                    _viewModel.Main1Model = Main1?.ViewModel;
+                    if (Main1 != null) Main1.ViewModel.ClientViewModel = _viewModel;
 
-                // foreach (var o in myRibbon.ItemsSource)
+
+                    // foreach (var o in myRibbon.ItemsSource)
                     // {
                         // Logger.Info($"RibbonItem: {o}");
                         // if (o is RibbonModelTab tab)

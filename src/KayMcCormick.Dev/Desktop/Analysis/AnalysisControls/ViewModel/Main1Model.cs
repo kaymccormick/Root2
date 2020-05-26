@@ -18,6 +18,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using AnalysisControls;
+using AnalysisControls.RibbonModel;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
@@ -27,6 +29,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.VisualStudio.Threading;
 using NLog;
+using NPOI.POIFS.Properties;
 using TablePanel = KayMcCormick.Lib.Wpf.TablePanel;
 using TypeControl = KayMcCormick.Lib.Wpf.TypeControl;
 
@@ -50,12 +53,21 @@ namespace AnalysisControls.ViewModel
                 if (Equals(value, _activeContent)) return;
                 var old = _activeContent;
                 _activeContent = value;
+                DebugUtils.WriteLine("new active document is " + _activeContent);
+                OnPropertyChanged(nameof(ActiveContent));
+                if (ClientViewModel != null)
+                {
+                    if (ClientViewModel.PrimaryRibbon != null)
+                        ClientViewModel.PrimaryRibbon.ActiveContent = _activeContent;
+                }
+
                 if (value is DocModel d)
                 {
                     if (old is DocModel dd)
                     {
-                        foreach (var xx in dd.ContextualTabGroupHeaders.Where(x =>
-                            !d.ContextualTabGroupHeaders.Contains(x)))
+                        var ddContextualTabGroupHeaders = dd.ContextualTabGroupHeaders.Cast<object>();
+                        foreach (var xx in ddContextualTabGroupHeaders.Where(x =>
+                            !ddContextualTabGroupHeaders.Contains(x)))
                         {
                             ContextualTabGroups.Remove(xx);
                             if (ClientViewModel?.PrimaryRibbon != null)
@@ -86,6 +98,7 @@ namespace AnalysisControls.ViewModel
                         {
                             continue;
                         }
+
                         DebugUtils.WriteLine("Adding group " + header);
                         ContextualTabGroups.Add(header);
                         if (ClientViewModel?.PrimaryRibbon != null)
@@ -104,13 +117,13 @@ namespace AnalysisControls.ViewModel
                                 if (Object.Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, header))
                                 {
                                     primaryRibbonRibbonItem.Visibility = Visibility.Visible;
+                                    primaryRibbonRibbonItem.OnContextualTabGroupActivated(this,
+                                        new ContextualTabGroupActivatedHandlerArgs(d));
                                 }
                             }
                         }
                     }
                 }
-
-                OnPropertyChanged();
             }
         }
 
@@ -189,7 +202,16 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public ObservableCollection<object> Documents { get; } = new ObservableCollection<object>();
+        public ObservableCollection<object> Documents
+        {
+            get { return _documents; }
+            set
+            {
+                if (Equals(value, _documents)) return;
+                _documents = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 
@@ -218,6 +240,14 @@ namespace AnalysisControls.ViewModel
             AddInitialDocuments();
 
             AddInitialAnchorables();
+            Documents.CollectionChanged += (sender, args) =>
+            {
+                foreach (var argsNewItem in args.NewItems)
+                {
+
+                    Debug.WriteLine(argsNewItem);
+                }
+            };
         }
 
         private void AddInitialDocuments()
@@ -264,7 +294,7 @@ namespace AnalysisControls.ViewModel
             var c = new RibbonModelView();
             c.SetBinding(RibbonModelView.RibbonModelProperty, new Binding("ClientViewModel.PrimaryRibbon") { Source = this });
             var doc = DocModel.CreateInstance();
-            doc.Title = "Ribbon Model View";
+            doc.Title = "MyRibbon Model View";
             doc.Content = c;
             Documents.Add(doc);
         }
@@ -273,7 +303,7 @@ namespace AnalysisControls.ViewModel
             var c = new DropControl();
             //c.SetBinding(RibbonModelView.RibbonModelProperty, new Binding("ClientViewModel.PrimaryRibbon") { Source = this });
             var doc = DocModel.CreateInstance();
-            doc.Title = "Ribbon Model View";
+            doc.Title = "MyRibbon Model View";
             doc.Content = c;
             Documents.Add(doc);
         }
@@ -357,7 +387,6 @@ namespace AnalysisControls.ViewModel
             var assembliesDoc = DocModel.CreateInstance();
             assembliesDoc.Title = "Assemblies";
             assembliesDoc.Content = new AssembliesControl {AssemblySource = AppDomain.CurrentDomain.GetAssemblies()};
-            assembliesDoc.ContextualTabGroupHeaders.Add("Assemblies");
             Documents.Add(assembliesDoc);
         }
 
@@ -417,6 +446,7 @@ namespace AnalysisControls.ViewModel
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private IClientModel _clientViewModel;
         private JoinableTaskFactory _f;
+        private ObservableCollection<object> _documents = new ObservableCollection<object>();
 
         /// <summary>
         /// 
@@ -552,6 +582,12 @@ namespace AnalysisControls.ViewModel
             Documents.Add(doc);
         }
 
+        /// <inheritdoc />
+        public void SetActiveDocument(object doc)
+        {
+            ActiveContent = doc;
+        }
+
         public void AddAnchorable(object anchorable)
         {
             Anchorables.Add(anchorable);
@@ -566,5 +602,6 @@ namespace AnalysisControls.ViewModel
     public interface IDocumentHost
     {
         void AddDocument(object doc);
+        void SetActiveDocument(object doc);
     }
 }

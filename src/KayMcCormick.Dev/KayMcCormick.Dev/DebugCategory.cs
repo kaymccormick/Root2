@@ -2,15 +2,16 @@
 
 namespace KayMcCormick.Dev
 {
-[Flags]
+    [Flags]
     public enum DebugCategory
     {
         None = 0,
         Syntax = 1,
         Misc = 2,
-	TextFormatting = 4,
+        TextFormatting = 4,
 
-    DataBinding = 8,
-    Ribbon
+        DataBinding = 8,
+        Ribbon = 16,
+        Status = 32
     }
 }

@@ -21,6 +21,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using AnalysisControls.ViewModel;
 using Autofac;
+using Microsoft.Win32;
 using SyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
 namespace AnalysisControls
@@ -144,10 +145,18 @@ namespace AnalysisControls
             CommandBindings.Add(new CommandBinding(WpfAppCommands.BrowseSymbols, OnBrowseSymbolsExecutedAsync));
             
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewResources, OnViewResourcesExecuted));
-            CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpenExecuted));
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpenExecuted , OnOpenCanExecute));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ConvertToJson, OnConvertToJsonExecuted));
 
             //Documents.Add(new DocInfo { Description = "test", Content = Properties.Resources.Program_Parse});
+        }
+
+        private void OnOpenCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (e.Parameter == null)
+            {
+                e.CanExecute = true;
+            }
         }
 
         private void OnConvertToJsonExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -178,15 +187,69 @@ namespace AnalysisControls
             }
         }
 
-        private void OnOpenExecuted(object sender, ExecutedRoutedEventArgs e)
+        private  async void OnOpenExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            if (e.Parameter is Meta<Lazy<IAppCustomControl>> controlItem)
+            switch (e.Parameter)
             {
-                var control = controlItem.Value.Value;
-                var doc = DocModel.CreateInstance();
-                doc.Content = control;
-                ViewModel.Documents.Add(doc);
-                ViewModel.ActiveContent = doc;
+                case null:
+                {
+                    var  x = new OpenFileDialog();
+                    if (!x.ShowDialog().GetValueOrDefault()) return;
+                    var file = x.FileName;
+                    if (file.ToLowerInvariant().EndsWith(".cs") || file.EndsWith(".vb"))
+                    {
+                        // if (ViewModel2.SelectedProject != null)
+                        // {
+                        // ViewModel2.AddDocument(ViewModel2.SelectedProject, file);
+                        // return;
+                        // }
+
+                        Compilation compilation = null;
+                        SyntaxTree tree;
+                        if (file.ToLowerInvariant().EndsWith(".vb"))
+                        {
+                            var s = new StreamReader(file);
+                            string code = await s.ReadToEndAsync();
+                            tree = SyntaxFactory.ParseSyntaxTree(code,
+                                new VisualBasicParseOptions(),
+                                file);
+
+                            compilation = VisualBasicCompilation.Create("x", new[] { tree });
+                        }
+                        else
+                        {
+                            var context = await AnalysisService.LoadAsync(file, "x", false).ConfigureAwait(true);
+                            var cSharpCompilation = context.Compilation;
+                            compilation = cSharpCompilation;
+                            DebugUtils.WriteLine(string.Join("\n", cSharpCompilation.GetDiagnostics()));
+
+                            tree = context.SyntaxTree;
+                        }
+
+                        await  ViewModel2.CodeDocAsync(tree, compilation, file);
+                        //ViewModel.Documents.Add(doc);
+                        
+                    }
+                    else if (file.ToLowerInvariant().EndsWith(".sln"))
+                    {
+                        await ViewModel2.LoadSolutionAsync(file);
+                    }
+                    else if (file.ToLowerInvariant().EndsWith(".csproj") || file.EndsWith(".vbproj"))
+                    {
+                        await ViewModel2.LoadProjectAsync(file);
+                    }
+
+                    return;
+                }
+                case Meta<Lazy<IAppCustomControl>> controlItem:
+                {
+                    var control = controlItem.Value.Value;
+                    var doc = DocModel.CreateInstance();
+                    doc.Content = control;
+                    ViewModel.Documents.Add(doc);
+                    ViewModel.ActiveContent = doc;
+                    break;
+                }
             }
         }
 
@@ -196,7 +259,6 @@ namespace AnalysisControls
             var doc = DocModel.CreateInstance();
             doc.Title = "Resources";
             doc.Content = new AssemblyResourceTree() {Assembly = a};
-            doc.ContextualTabGroupHeaders.Add("Resources");
             ViewModel.Documents.Add(doc);
             ViewModel.ActiveContent = doc;
         }

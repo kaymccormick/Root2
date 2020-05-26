@@ -12,6 +12,7 @@
 #endregion
 using System ;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Threading.Tasks;
 using AnalysisAppLib.Properties ;
@@ -67,8 +68,8 @@ namespace AnalysisAppLib
                         .Location
                 ));
             }
-            var compilation = CSharpCompilation.Create ( assemblyName )
-                                               .AddReferences (refs)
+            var compilation = CSharpCompilation.Create ( assemblyName ).WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, true, null,null,null,null,OptimizationLevel.Debug,false,true,null,null,default(ImmutableArray<byte>), null, Platform.AnyCpu, ReportDiagnostic.Default, 4))
+                .AddReferences (refs)
                                                .AddSyntaxTrees ( syntaxTree ) ;
 
             return compilation ;

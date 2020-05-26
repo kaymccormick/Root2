@@ -10,11 +10,25 @@
   <DataTemplate x:Key="AppRibbonModelTabTemplate" DataType="{x:Type ribbon:RibbonModelTab}">
     <WrapPanel>
       <TextBlock Text="{Binding Header,NotifyOnTargetUpdated=True}"/>
+
     </WrapPanel>
   </DataTemplate>
   <DataTemplate x:Key="AppContextualTabGroupHeaderTemplate">
     <TextBlock Foreground="Aquamarine" Text="{Binding Header}"/>
   </DataTemplate>
+  <Style x:Key="AppRibbonItemContainerStyle" TargetType="RibbonTab">
+    <Style.Triggers>
+      <Trigger Property="ContextualTabGroup" Value="{x:Null}">
+        <Setter Property="TextElement.FontFamily" Value="Calibri"/>
+      </Trigger>
+    </Style.Triggers>
+    <Setter Property="kmWpf:AttachedProperties.CustomDescription" Value="MyTibbonTab style in window XAML"/>
+    <Setter Property="Visibility" Value="{Binding Visibility,Mode=TwoWay,NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True}"></Setter>
+    <Setter Property="ContextualTabGroupHeader" Value="{Binding ContextualTabGroupHeader}"></Setter>
+    <Setter Property="ItemsSource" Value="{Binding Items}"/>
+    <Setter Property="IsSelected" Value="{Binding IsSelected,Mode=TwoWay}"/>
+    <Setter Property="kmWpf:AttachedProperties.Model" Value="{Binding}"/>
+  </Style>
   <Style x:Key="AppMyRibbonItemContainerStyle" TargetType="local:MyRibbonTab">
     <Style.Triggers>
       <Trigger Property="ContextualTabGroup" Value="{x:Null}">
@@ -26,7 +40,6 @@
     <Setter Property="ContextualTabGroupHeader" Value="{Binding ContextualTabGroupHeader}"></Setter>
     <Setter Property="TextElement.FontFamily" Value="Showcard Gothic"/>
     <Setter Property="ItemsSource" Value="{Binding Items}"/>
-    <Setter Property="kmWpf:AttachedProperties.Model" Value="{Binding}"/>
   </Style>
   <ItemsPanelTemplate x:Key="AppMyRibbonItemsPanelTemplate">
     <local:MyRibbonTabsPanel Opacity="0.9" />
