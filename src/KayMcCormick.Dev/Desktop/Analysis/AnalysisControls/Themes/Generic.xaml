@@ -17,7 +17,9 @@
   xmlns:controls="clr-namespace:AnalysisControls.Controls"
   xmlns:typeDescriptors="clr-namespace:AnalysisControls.TypeDescriptors"
   xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System"
-  xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControls">
+  xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControls"
+  xmlns:powerShellShared="clr-namespace:PowerShellShared;assembly=PowerShellShared"
+  xmlns:terminal="clr-namespace:Terminal;assembly=Terminal">
   <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
   <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
   <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
@@ -5592,6 +5594,19 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style TargetType="{x:Type local:PowerShellConsole}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:PowerShellConsole}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
 </ControlTemplate.Resources>
           <Border Background="{TemplateBinding Background}"
@@ -7422,16 +7437,17 @@
           </ControlTemplate.Resources>
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}">
-            <Grid>
+                  BorderThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Stretch">
+            <Grid VerticalAlignment="Stretch">
               <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
+                <RowDefinition Height="80" />
                 <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
-              <AdornerDecorator>
+              <AdornerDecorator VerticalAlignment="Stretch">
                 <ContentPresenter x:Name="ContentPresenter"
                                   Content="{Binding Document.Content,RelativeSource={RelativeSource TemplatedParent}}" />
               </AdornerDecorator>
@@ -8435,4 +8451,36 @@
         </Setter>
     </Style>
 
+
+    <Style TargetType="{x:Type local:PowerShellConsole}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:PowerShellConsole}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+			      <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Margin="10" Text="{Binding ElementName=Terminal,Path=NumColumns}"></TextBlock>
+            <TextBlock Margin="10"  Text="{Binding ElementName=Terminal,Path=NumRows}"></TextBlock>
+            <TextBlock Margin="10" Text="{Binding ElementName=Input,Path=NumColumns}"></TextBlock>
+            <TextBlock Margin="10" Text="{Binding ElementName=Input,Path=NumRows}"></TextBlock>
+        </StackPanel>
+        <terminal:CustomControl1 Grid.Row="1" CursorBrush="DarkOrange" x:Name="Terminal" BorderBrush="Green" BorderThickness="1" Focusable="False"/>
+        <powerShellShared:WrappedPowerShell x:Name="Shell" Terminal="{x:Reference Terminal}">
+        </powerShellShared:WrappedPowerShell>
+        <terminal:CustomControl1 LineMode="True"  InputOnly="True"  CursorBrush="Azure" x:Name="Input" BorderBrush="Red" BorderThickness="1"  NumRows="1" Grid.Row="2"  Focusable="True"></terminal:CustomControl1>
+        <StatusBar Grid.Row="3"><TextBlock x:Name="MainStatus" Width="200"/><ProgressBar Width="200" Maximum="100" x:Name="ProgressBar"/>
+        </StatusBar>
+    </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

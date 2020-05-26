@@ -249,6 +249,7 @@
     <Compile Include="PGrid.xaml.cs">
       <DependentUpon>PGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PowerShellConsole.cs" />
     <Compile Include="ProjectAddedEventArgs.cs" />
     <Compile Include="ProjectModel.cs" />
     <Compile Include="Properties\RibbonResources.Designer.cs">
@@ -592,6 +593,14 @@
     <ProjectReference Include="..\..\..\..\..\..\AvalonDock\source\Components\AvalonDock\AvalonDock.csproj">
       <Project>{11221345-bc85-488c-8e5c-395c0f848682}</Project>
       <Name>AvalonDock</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\PsProject\PowerShellShared\PowerShellShared.csproj">
+      <Project>{230e877b-c212-430e-a790-ad8cca4dbc84}</Project>
+      <Name>PowerShellShared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\WpfCustomControlLibrary1\Terminal1\Terminal1.csproj">
+      <Project>{c4442596-81df-48b8-90d5-8accd574ca46}</Project>
+      <Name>Terminal1</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</Project>

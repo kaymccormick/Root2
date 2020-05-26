@@ -56,10 +56,8 @@ namespace AnalysisControls.ViewModel
                 DebugUtils.WriteLine("new active document is " + _activeContent);
                 OnPropertyChanged(nameof(ActiveContent));
                 if (ClientViewModel != null)
-                {
                     if (ClientViewModel.PrimaryRibbon != null)
                         ClientViewModel.PrimaryRibbon.ActiveContent = _activeContent;
-                }
 
                 if (value is DocModel d)
                 {
@@ -74,30 +72,19 @@ namespace AnalysisControls.ViewModel
                             {
                                 foreach (var primaryRibbonContextualTabGroup in ClientViewModel.PrimaryRibbon
                                     .ContextualTabGroups)
-                                {
                                     if (Equals(primaryRibbonContextualTabGroup.Header, xx))
-                                    {
                                         primaryRibbonContextualTabGroup.Visibility = Visibility.Collapsed;
-                                    }
-                                }
 
                                 foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
-                                {
-                                    if (Object.Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, xx))
-                                    {
+                                    if (Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, xx))
                                         primaryRibbonRibbonItem.Visibility = Visibility.Collapsed;
-                                    }
-                                }
                             }
                         }
                     }
 
                     foreach (var header in d.ContextualTabGroupHeaders)
                     {
-                        if (ContextualTabGroups.Contains(header))
-                        {
-                            continue;
-                        }
+                        if (ContextualTabGroups.Contains(header)) continue;
 
                         DebugUtils.WriteLine("Adding group " + header);
                         ContextualTabGroups.Add(header);
@@ -105,22 +92,16 @@ namespace AnalysisControls.ViewModel
                         {
                             foreach (var primaryRibbonContextualTabGroup in ClientViewModel.PrimaryRibbon
                                 .ContextualTabGroups)
-                            {
                                 if (Equals(primaryRibbonContextualTabGroup.Header, header))
-                                {
                                     primaryRibbonContextualTabGroup.Visibility = Visibility.Visible;
-                                }
-                            }
 
                             foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
-                            {
-                                if (Object.Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, header))
+                                if (Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, header))
                                 {
                                     primaryRibbonRibbonItem.Visibility = Visibility.Visible;
                                     primaryRibbonRibbonItem.OnContextualTabGroupActivated(this,
                                         new ContextualTabGroupActivatedHandlerArgs(d));
                                 }
-                            }
                         }
                     }
                 }
@@ -184,7 +165,7 @@ namespace AnalysisControls.ViewModel
 
             var versions = visualStudioInstances.Select(x => x.Version.Major).Distinct().OrderByDescending(i => i)
                 .ToList();
-            DebugUtils.WriteLine(String.Join(", ", versions));
+            DebugUtils.WriteLine(string.Join(", ", versions));
             var inst = versions.FirstOrDefault();
 
 
@@ -225,8 +206,7 @@ namespace AnalysisControls.ViewModel
         /// <param name="replay"></param>
         public Main1Model(ReplaySubject<Workspace> replay, JsonSerializerOptions jsonSerializerOptions = null) : this()
         {
-
-            _f = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current)); 
+            _f = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
             JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
             _replay = replay;
         }
@@ -242,11 +222,7 @@ namespace AnalysisControls.ViewModel
             AddInitialAnchorables();
             Documents.CollectionChanged += (sender, args) =>
             {
-                foreach (var argsNewItem in args.NewItems)
-                {
-
-                    Debug.WriteLine(argsNewItem);
-                }
+                foreach (var argsNewItem in args.NewItems) Debug.WriteLine(argsNewItem);
             };
         }
 
@@ -260,7 +236,8 @@ namespace AnalysisControls.ViewModel
             AddVisualTreeViewDoc();
             AddVisualTreeViewDoc1();
             AddTypeProvider();
-                        AddControlsDocq();
+            AddControlsDocq();
+            AddPowerShell();
         }
 
         private void AddVisualTreeViewDoc()
@@ -289,15 +266,18 @@ namespace AnalysisControls.ViewModel
             doc.Content = c;
             Documents.Add(doc);
         }
+
         private void AddRibbonModelViewDoc()
         {
             var c = new RibbonModelView();
-            c.SetBinding(RibbonModelView.RibbonModelProperty, new Binding("ClientViewModel.PrimaryRibbon") { Source = this });
+            c.SetBinding(RibbonModelView.RibbonModelProperty,
+                new Binding("ClientViewModel.PrimaryRibbon") {Source = this});
             var doc = DocModel.CreateInstance();
             doc.Title = "MyRibbon Model View";
             doc.Content = c;
             Documents.Add(doc);
         }
+
         private void AddRibbonModelViewDoc1()
         {
             var c = new DropControl();
@@ -307,6 +287,7 @@ namespace AnalysisControls.ViewModel
             doc.Content = c;
             Documents.Add(doc);
         }
+
         private void AddControlsDoc()
         {
             var item = DocModel.CreateInstance();
@@ -314,12 +295,13 @@ namespace AnalysisControls.ViewModel
             item.Content = new ControlView();
             Documents.Add(item);
         }
+
         private void AddControlsDocq()
         {
             var item = DocModel.CreateInstance();
             item.Title = "Trace Configuration";
-            item.Content = new TraceView { ListenerTypes = new[]{typeof(XmlWriterTraceListener)}};
-            
+            item.Content = new TraceView {ListenerTypes = new[] {typeof(XmlWriterTraceListener)}};
+
             Documents.Add(item);
         }
 
@@ -348,11 +330,8 @@ namespace AnalysisControls.ViewModel
                 var d = args.Data;
                 object o = null;
                 if (d.GetDataPresent("ModelObject"))
-                {
                     o = d.GetData("ModelObject");
-                }
                 else
-                {
                     foreach (var format in d.GetFormats())
                     {
                         var oo = d.GetData(format);
@@ -365,7 +344,6 @@ namespace AnalysisControls.ViewModel
                             break;
                         }
                     }
-                }
 
                 userControl1.propertyGrid1.SelectedObject = o;
                 args.Effects = DragDropEffects.Copy;
@@ -382,6 +360,14 @@ namespace AnalysisControls.ViewModel
             Documents.Add(item);
         }
 
+        private void AddPowerShell()
+        {
+            var assembliesDoc = DocModel.CreateInstance();
+            assembliesDoc.Title = "PowerShell";
+            assembliesDoc.Content = new Terminal.CustomControl1 { };
+            Documents.Add(assembliesDoc);
+        }
+
         private void AddAssembliesDoc()
         {
             var assembliesDoc = DocModel.CreateInstance();
@@ -392,14 +378,14 @@ namespace AnalysisControls.ViewModel
 
         private void AddModelDoc()
         {
-            TablePanel t1 = new TablePanel();
-            TypeControl dev = new TypeControl();
+            var t1 = new TablePanel();
+            var dev = new TypeControl();
             dev.SetBinding(AttachedProperties.RenderedTypeProperty,
                 new Binding("ActiveContent.Content") {Source = this, Converter = new GetTypeConverter()});
-            TextBlock h1 = new TextBlock {Text = "Active Document"};
+            var h1 = new TextBlock {Text = "Active Document"};
             t1.Children.Add(h1);
             t1.Children.Add(dev);
-            TextBlock h2 = new TextBlock {Text = "Contextual Tab Group Headers"};
+            var h2 = new TextBlock {Text = "Contextual Tab Group Headers"};
             var lv1 = new ListBox();
             lv1.SetBinding(ItemsControl.ItemsSourceProperty, new Binding(nameof(ContextualTabGroups)) {Source = this});
             t1.Children.Add(h2);
@@ -442,7 +428,7 @@ namespace AnalysisControls.ViewModel
             Anchorables.Add(new AnchorableModel() {Title = "Contextual Tab Groups", Content = lv});
         }
 
-        
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private IClientModel _clientViewModel;
         private JoinableTaskFactory _f;
@@ -464,7 +450,6 @@ namespace AnalysisControls.ViewModel
 
         /// <summary>
         /// 
-     
         /// <summary>
         /// 
         /// </summary>
@@ -479,6 +464,7 @@ namespace AnalysisControls.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
         /// </summary>
         public CurrentOperation CurrentOperation
         {
@@ -491,7 +477,7 @@ namespace AnalysisControls.ViewModel
             }
         }
 
-  
+
         /// <summary>
         /// 
         /// </summary>
@@ -508,6 +494,7 @@ namespace AnalysisControls.ViewModel
 
         public JsonSerializerOptions JsonSerializerOptions { get; set; }
         public Dispatcher Dispatcher { get; set; }
+
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
@@ -557,8 +544,8 @@ namespace AnalysisControls.ViewModel
                 Documents.Add(doc);
                 ActiveContent = doc;
             }
+
             // var  d =Clipboard.GetDataObject();
-            
         }
 
         /// <summary>
@@ -573,7 +560,6 @@ namespace AnalysisControls.ViewModel
             if (docPath == null) return;
             foreach (var file in docPath)
             {
-             
             }
         }
 
