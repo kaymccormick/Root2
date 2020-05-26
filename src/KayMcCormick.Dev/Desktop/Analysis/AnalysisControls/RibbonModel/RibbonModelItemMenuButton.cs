@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Windows.Controls;
 
 namespace AnalysisControls.RibbonModel
 {
@@ -10,7 +8,7 @@ namespace AnalysisControls.RibbonModel
     /// 
     /// </summary>
     /// 
-    public class RibbonModelItemMenuButton : RibbonModelItem
+    public sealed class RibbonModelItemMenuButton : RibbonModelItem
     {
         private RibbonModelMenuCollection  _items = new RibbonModelMenuCollection();
         private IEnumerable _items1;
@@ -37,6 +35,9 @@ namespace AnalysisControls.RibbonModel
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsChecked
         {
             get { return _isChecked; }
@@ -61,8 +62,14 @@ namespace AnalysisControls.RibbonModel
         }
 
         public override ControlKind Kind => ControlKind.RibbonMenuButton;
+        /// <summary>
+        /// 
+        /// </summary>
         public ICollection<object> ItemsCollection => _items;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsDropDownOpen
         {
             get { return _isDropDownOpen; }
@@ -74,10 +81,8 @@ namespace AnalysisControls.RibbonModel
                 OnPropertyChanged();
             }
         }
-    }
 
-    public interface IRibbonMenuCollection : IEnumerable<object>, INotifyCollectionChanged
-    {
+        public object ItemContainerTemplateKey { get; set; }
     }
 
     public class RibbonModelMenuCollection : ObservableCollection<object>, IRibbonMenuCollection

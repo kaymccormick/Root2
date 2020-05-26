@@ -28,7 +28,7 @@
           Source="Client2Global.xaml" />
 
         <ResourceDictionary
-          Source="pack://application:,,,/AnalysisControls;component/RibbonModel.xaml" />
+          Source="pack://application:,,,/AnalysisControls;component/RibbonModel2.xaml" />
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/AppRibbonResources.xaml" />
 
@@ -71,7 +71,7 @@
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
       </anal:MyGrid.RowDefinitions>
-      <anal:MyRibbon x:Name="myRibbon"
+      <Ribbon x:Name="myRibbon"
                      DataContext="{Binding ViewModel.PrimaryRibbon}"
                      Background="{Binding Background}"
                      SelectedItem="{Binding SelectedItem,Mode=TwoWay}"
@@ -79,35 +79,37 @@
                      ItemTemplateSelector="{StaticResource TabItemTemplateSelector}"
                      
                      ItemsSource="{Binding RibbonItems}"
-                     TabHeaderStyle="{StaticResource AppRibbonTabHeaderStyle}"
+                     
                      TabHeaderTemplate="{StaticResource AppRibbonModelTabTemplate}"
                      ContextualTabGroupHeaderTemplate="{StaticResource AppContextualTabGroupHeaderTemplate}"
-                     ItemContainerStyle="{StaticResource AppMyRibbonItemContainerStyle}"
+                     ItemContainerStyle="{StaticResource AppRibbonItemContainerStyle}"
                      BorderBrush="{Binding BorderBrush}"
-                     ItemsPanel="{StaticResource AppMyRibbonItemsPanelTemplate}" HelpPaneContent="{Binding HelpPaneContent}">
-        <anal:MyRibbon.Resources>
+                     
+                     HelpPaneContent="{Binding HelpPaneContent}">
+        <!-- ItemsPanel="{StaticResource AppMyRibbonItemsPanelTemplate}" -->
+        <!-- ItemContainerStyle="{StaticResource AppMyRibbonItemContainerStyle}" -->
+        <!-- TabHeaderStyle="{StaticResource AppRibbonTabHeaderStyle}" -->
+<Ribbon.Resources>
           <anal:DirectoryInfoConverter x:Key="DirectoryInfoConverter"/>
           <DataTemplate DataType="{x:Type io:FileInfo}">
-<anal:MyRibbonMenuItem Header="{Binding Name}"></anal:MyRibbonMenuItem>
+<RibbonMenuItem Header="{Binding Name}"></RibbonMenuItem>
           </DataTemplate>
           <DataTemplate DataType="{x:Type io:DirectoryInfo}">
-            <anal:MyRibbonMenuItem Header="{Binding Name}"  ItemContainerTemplateSelector="{StaticResource ComboBoxTemplateSelector}"
+            <RibbonMenuItem Header="{Binding Name}"  ItemContainerTemplateSelector="{StaticResource ComboBoxTemplateSelector}"
                                       UsesItemContainerTemplate="True"
                                       ItemsSource="{Binding Converter={StaticResource DirectoryInfoConverter}}">
-            </anal:MyRibbonMenuItem>
+            </RibbonMenuItem>
           </DataTemplate>
-        </anal:MyRibbon.Resources>
-        <anal:MyRibbon.QuickAccessToolBar>
-          <anal:MyRibbonQuickAccessToolBar  x:Name="QAT"  DataContext="{Binding Path=QuickAccessToolBar}"  ItemsSource="{Binding Items}" CustomizeMenuButton="{Binding CustomizeMenuButton,Converter={StaticResource ConvertButton}}"/>
-        </anal:MyRibbon.QuickAccessToolBar>
-        <anal:MyRibbon.ApplicationMenu>
+        </Ribbon.Resources>
+        <Ribbon.QuickAccessToolBar>
+          <RibbonQuickAccessToolBar  x:Name="QAT"  DataContext="{Binding Path=QuickAccessToolBar}"  ItemsSource="{Binding Items}" CustomizeMenuButton="{Binding CustomizeMenuButton,Converter={StaticResource ConvertButton}}"/>
+        </Ribbon.QuickAccessToolBar>
+        <Ribbon.ApplicationMenu>
           <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" FooterPaneContent="{Binding AppMenu.FooterPaneContent}"/>
-        </anal:MyRibbon.ApplicationMenu>
-      </anal:MyRibbon>
-        <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"   ViewModel="{kmWpf:Resolve viewModel:Main1Model}"  ViewModel2="{kmWpf:Resolve viewModel:Main1Mode2}"/>
-        </anal:MyGrid>
-
-
+        </Ribbon.ApplicationMenu>
+      </Ribbon>
+      <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"   ViewModel="{kmWpf:Resolve viewModel:Main1Model}" ViewModel2="{kmWpf:Resolve viewModel:Main1Mode2}"/>
+    </anal:MyGrid>
   </Grid>
 
 </RibbonWindow>

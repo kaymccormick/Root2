@@ -4,6 +4,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls.Ribbon;
 using System.Windows.Threading;
 using AnalysisControls.RibbonModel;
 using AnalysisControls.ViewModel;
@@ -17,7 +18,7 @@ namespace AnalysisControls
     {
         private PrimaryRibbonModel _primaryRibbon;
         private object _hoverElement;
-        private MyRibbon _ribbon;
+        private MyRibbon _myRibbon;
 
         public ClientModel(PrimaryRibbonModel model, ReplaySubject<IControlView> replay)
         {
@@ -62,11 +63,13 @@ namespace AnalysisControls
             }
         }
 
-        public MyRibbon Ribbon
+        public MyRibbon MyRibbon
         {
-            get { return _ribbon; }
-            set { _ribbon = value; }
+            get { return _myRibbon; }
+            set { _myRibbon = value; }
         }
+
+        public Ribbon Ribbon { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

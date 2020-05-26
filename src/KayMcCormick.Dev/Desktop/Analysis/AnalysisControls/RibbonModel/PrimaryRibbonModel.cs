@@ -15,6 +15,7 @@ namespace AnalysisControls.RibbonModel
         private Brush _background;
         private object _selectedItem;
         private Brush _borderBrush;
+        private object _activeContent;
 
         /// <summary>
         /// 
@@ -40,6 +41,9 @@ namespace AnalysisControls.RibbonModel
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public object SelectedItem
         
         {
@@ -48,6 +52,22 @@ namespace AnalysisControls.RibbonModel
             {
                 if (Equals(value, _selectedItem)) return;
                 _selectedItem = value;
+                if (_selectedItem is RibbonModelTab tab)
+                {
+                    tab.OnActiveContentChanged(this, new ActiveContentChangedEventArgs(ActiveContent));
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        public object ActiveContent
+        {
+            get { return _activeContent; }
+            set
+            {
+                if (Equals(value, _activeContent)) return;
+                _activeContent = value;
+                (SelectedItem as RibbonModelTab)?.OnActiveContentChanged(this, new ActiveContentChangedEventArgs(value));
                 OnPropertyChanged();
             }
         }
@@ -94,6 +114,9 @@ namespace AnalysisControls.RibbonModel
             get;
         } = new ObservableCollection<RibbonModelContextualTabGroup>();
 
+	/// <summary>
+	/// 
+	/// </summary>
 	public object HelpPaneContent { get; set; }
 
         /// <summary>

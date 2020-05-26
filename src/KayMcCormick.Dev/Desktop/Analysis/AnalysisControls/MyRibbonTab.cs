@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Globalization;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -36,6 +33,28 @@ namespace AnalysisControls
         }
 
         /// <inheritdoc />
+        public override void BeginInit()
+        {
+            base.BeginInit();
+        }
+
+        /// <inheritdoc />
+        public override void EndInit()
+        {
+            SetValue(ItemsSourceProperty, ((IHaveItems) DataContext).Items);
+            base.EndInit();
+        }
+
+        /// <inheritdoc />
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+            SetBinding(ItemsSourceProperty, new Binding("Items") {Source = DataContext});
+            
+
+        }
+
+        /// <inheritdoc />
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
         {
             base.OnItemsSourceChanged(oldValue, newValue);
@@ -57,7 +76,7 @@ namespace AnalysisControls
             
         }
 
-        /// <summary>Identifies the <see cref="P:System.Windows.Controls.Ribbon.RibbonTab.ContextualTabGroup" /> dependency property.</summary>
+        /// <summary>Identifies the <see cref="P:System.Windows.Controls.MyRibbon.RibbonTab.ContextualTabGroup" /> dependency property.</summary>
 
 
         static MyRibbonTab()
@@ -303,247 +322,9 @@ namespace AnalysisControls
         }
 
     }
-    public class MyCollectionView : ListCollectionView
+
+    public interface IHaveItems
     {
-        /// <inheritdoc />
-        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            base.OnPropertyChanged(e);
-        }
-
-        /// <inheritdoc />
-        protected override void RefreshOverride()
-        {
-            base.RefreshOverride();
-        }
-
-        /// <inheritdoc />
-        protected override IEnumerator GetEnumerator()
-        {
-            return base.GetEnumerator();
-        }
-
-        /// <inheritdoc />
-        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs args)
-        {
-            base.OnCollectionChanged(args);
-        }
-
-        /// <inheritdoc />
-        protected override void OnAllowsCrossThreadChangesChanged()
-        {
-            base.OnAllowsCrossThreadChangesChanged();
-        }
-
-        /// <inheritdoc />
-        protected override void OnBeginChangeLogging(NotifyCollectionChangedEventArgs args)
-        {
-            base.OnBeginChangeLogging(args);
-        }
-
-        /// <inheritdoc />
-        protected override void OnCurrentChanging(CurrentChangingEventArgs args)
-        {
-            base.OnCurrentChanging(args);
-        }
-
-        /// <inheritdoc />
-        protected override void OnCurrentChanged()
-        {
-            base.OnCurrentChanged();
-        }
-
-        /// <inheritdoc />
-        protected override void ProcessCollectionChanged(NotifyCollectionChangedEventArgs args)
-        {
-            base.ProcessCollectionChanged(args);
-        }
-
-        /// <inheritdoc />
-        public override bool CanSort { get; }
-
-        /// <inheritdoc />
-        public override bool CanFilter { get; }
-
-        /// <inheritdoc />
-        public override IEnumerable SourceCollection { get; }
-
-        /// <inheritdoc />
-        public override Predicate<object> Filter { get; set; }
-
-        /// <inheritdoc />
-        public override GroupDescriptionSelectorCallback GroupBySelector { get; set; }
-
-        /// <inheritdoc />
-        public override bool IsCurrentBeforeFirst { get; }
-
-        /// <inheritdoc />
-        public override event CurrentChangingEventHandler CurrentChanging
-        {
-            add { base.CurrentChanging += value; }
-            remove { base.CurrentChanging -= value; }
-        }
-
-        /// <inheritdoc />
-        public override event EventHandler CurrentChanged
-        {
-            add { base.CurrentChanged += value; }
-            remove { base.CurrentChanged -= value; }
-        }
-
-        /// <inheritdoc />
-        protected override event NotifyCollectionChangedEventHandler CollectionChanged
-        {
-            add { base.CollectionChanged += value; }
-            remove { base.CollectionChanged -= value; }
-        }
-
-        /// <inheritdoc />
-        protected override event PropertyChangedEventHandler PropertyChanged
-        {
-            add { base.PropertyChanged += value; }
-            remove { base.PropertyChanged -= value; }
-        }
-
-        /// <inheritdoc />
-        public override int Count { get; }
-
-        /// <inheritdoc />
-        public override bool IsEmpty { get; }
-
-        /// <inheritdoc />
-        public override IComparer Comparer { get; }
-
-        /// <inheritdoc />
-        public override bool NeedsRefresh { get; }
-
-        /// <inheritdoc />
-        public override bool IsInUse { get; }
-
-        /// <inheritdoc />
-        public override object CurrentItem { get; }
-
-        /// <inheritdoc />
-        public override int CurrentPosition { get; }
-
-        /// <inheritdoc />
-        public override bool IsCurrentAfterLast { get; }
-
-        /// <inheritdoc />
-        public override bool CanGroup { get; }
-
-        /// <inheritdoc />
-        public override ObservableCollection<GroupDescription> GroupDescriptions { get; }
-
-        /// <inheritdoc />
-        public override ReadOnlyObservableCollection<object> Groups { get; }
-
-        /// <inheritdoc />
-        public override SortDescriptionCollection SortDescriptions { get; }
-
-        /// <inheritdoc />
-        public override bool Contains(object item)
-        {
-            return base.Contains(item);
-        }
-
-        /// <inheritdoc />
-        public override void Refresh()
-        {
-            base.Refresh();
-        }
-
-        /// <inheritdoc />
-        public override IDisposable DeferRefresh()
-        {
-            return base.DeferRefresh();
-        }
-
-        /// <inheritdoc />
-        public override bool MoveCurrentToFirst()
-        {
-            return base.MoveCurrentToFirst();
-        }
-
-        /// <inheritdoc />
-        public override bool MoveCurrentToLast()
-        {
-            return base.MoveCurrentToLast();
-        }
-
-        /// <inheritdoc />
-        public override bool MoveCurrentToNext()
-        {
-            return base.MoveCurrentToNext();
-        }
-
-        /// <inheritdoc />
-        public override bool MoveCurrentToPrevious()
-        {
-            return base.MoveCurrentToPrevious();
-        }
-
-        /// <inheritdoc />
-        public override bool MoveCurrentTo(object item)
-        {
-            return base.MoveCurrentTo(item);
-        }
-
-        /// <inheritdoc />
-        public override bool MoveCurrentToPosition(int position)
-        {
-            return base.MoveCurrentToPosition(position);
-        }
-
-        /// <inheritdoc />
-        public override CultureInfo Culture { get; set; }
-
-        /// <inheritdoc />
-        public override bool PassesFilter(object item)
-        {
-            return base.PassesFilter(item);
-        }
-
-        /// <inheritdoc />
-        public override int IndexOf(object item)
-        {
-            return base.IndexOf(item);
-        }
-
-        /// <inheritdoc />
-        public override object GetItemAt(int index)
-        {
-            return base.GetItemAt(index);
-        }
-
-        /// <inheritdoc />
-        public override void DetachFromSourceCollection()
-        {
-            base.DetachFromSourceCollection();
-        }
-
-        /// <inheritdoc />
-        protected override int Compare(object o1, object o2)
-        {
-            return base.Compare(o1, o2);
-        }
-
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return base.ToString();
-        }
-
-        /// <inheritdoc />
-        public override bool Equals(object obj)
-        {
-            return base.Equals(obj);
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        IEnumerable Items { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -206,7 +207,12 @@ namespace AnalysisControls
         /// </summary>
         public static readonly DependencyProperty HoverSyntaxNodeProperty = DependencyProperty.Register(
             "HoverSyntaxNode", typeof(SyntaxNode), typeof(FormattedTextControl),
-            new PropertyMetadata(default(SyntaxNode)));
+            new PropertyMetadata(default(SyntaxNode), new PropertyChangedCallback(OnHoverSyntaxNodeUpdated) ));
+
+        private static void OnHoverSyntaxNodeUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            Debug.WriteLine(e.NewValue?.ToString());
+        }
 
         /// <summary>
         /// 
@@ -730,6 +736,7 @@ namespace AnalysisControls
             var line = 0;
             while (textStorePosition < TextSource.Length)
             {
+
                 using (var myTextLine = Formatter.FormatLine(
                     TextSource,
                     textStorePosition,

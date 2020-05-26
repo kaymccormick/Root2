@@ -8,14 +8,25 @@ namespace AnalysisControls.RibbonModel
     /// </summary>
     public class RibbonModelTwoLineText : RibbonModelItem
     {
+        private Geometry _pathData;
+        private Brush _pathFill;
+        private Brush _pathStroke = Brushes.Black;
+        private string _text;
+        private bool _hasTwoLines;
+
         /// <summary>
         /// 
         /// </summary>
         [DefaultValue(null)]
         public Geometry PathData
         {
-            get;
-            set;
+            get { return _pathData; }
+            set
+            {
+                if (Equals(value, _pathData)) return;
+                _pathData = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -24,15 +35,29 @@ namespace AnalysisControls.RibbonModel
         [DefaultValue(null)]
         public Brush PathFill
         {
-            get;
-            set;
+            get { return _pathFill; }
+            set
+            {
+                if (Equals(value, _pathFill)) return;
+                _pathFill = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
         /// 
         /// </summary>
         [DefaultValue(null)]
-        public Brush PathStroke { get; set; } = Brushes.Black;
+        public Brush PathStroke
+        {
+            get { return _pathStroke; }
+            set
+            {
+                if (Equals(value, _pathStroke)) return;
+                _pathStroke = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 
@@ -40,8 +65,13 @@ namespace AnalysisControls.RibbonModel
         [DefaultValue(null)]
         public string Text
         {
-            get;
-            set;
+            get { return _text; }
+            set
+            {
+                if (value == _text) return;
+                _text = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -50,8 +80,13 @@ namespace AnalysisControls.RibbonModel
         [DefaultValue(false)]
         public bool HasTwoLines
         {
-            get;
-            set;
+            get { return _hasTwoLines; }
+            set
+            {
+                if (value == _hasTwoLines) return;
+                _hasTwoLines = value;
+                OnPropertyChanged();
+            }
         }
 
         public override ControlKind Kind => ControlKind.RibbonTwoLine;

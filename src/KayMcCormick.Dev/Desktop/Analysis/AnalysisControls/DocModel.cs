@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.ObjectModel;
+using System.Windows.Markup;
 
 namespace AnalysisControls
 {
     /// <summary>
     /// 
     /// </summary>
+    [ContentProperty("Content")]
     public class DocModel
     {
+        public override string ToString() => Title;
         /// <summary>
         /// 
         /// </summary>
@@ -20,7 +24,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        private DocModel()
+        protected DocModel()
         {
         }
 
@@ -47,11 +51,11 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public object Content { get; set; }
+        public virtual object Content { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public ObservableCollection<object> ContextualTabGroupHeaders { get; set; } = new ObservableCollection<object>();
+        public virtual IEnumerable ContextualTabGroupHeaders { get; set; } = new ObservableCollection<object>();
     }
 }

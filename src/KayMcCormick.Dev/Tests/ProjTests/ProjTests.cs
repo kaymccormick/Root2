@@ -23,7 +23,6 @@ using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.Drawing.Design;
 using System.Globalization;
 using System.IO;
@@ -34,7 +33,6 @@ using System.Reactive.Subjects;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.ExceptionServices;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
 using System.Text;
@@ -105,7 +103,6 @@ using static AnalysisControls.TypeDescriptors.UiElementTypeConverter;
 using Binding = System.Windows.Data.Binding;
 using Brushes = System.Windows.Media.Brushes;
 using Button = System.Windows.Controls.Button;
-using Color = System.Drawing.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using Condition = System.Windows.Automation.Condition;
 using Control = System.Windows.Forms.Control;
@@ -113,7 +110,6 @@ using ConversionUtils = AnalysisControls.ConversionUtils;
 using File = System.IO.File;
 using FontFamily = System.Windows.Media.FontFamily;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using Label = System.Windows.Forms.Label;
 using ListBox = System.Windows.Controls.ListBox;
 using Menu = System.Windows.Controls.Menu;
 using MenuItem = System.Windows.Controls.MenuItem;
@@ -124,7 +120,6 @@ using Point = System.Windows.Point;
 using Process = System.Diagnostics.Process;
 using Rectangle = System.Windows.Shapes.Rectangle;
 using RegionInfo = AnalysisControls.RegionInfo;
-using Size = System.Drawing.Size;
 using String = System.String;
 using TablePanel = KayMcCormick.Lib.Wpf.TablePanel;
 using TextBlock = System.Windows.Controls.TextBlock;
@@ -2628,11 +2623,11 @@ namespace ProjTests
             var ctxTabGroup = new RibbonModelContextualTabGroup {Header = "Contextual Tab Group 1"};
             groups.Add(ctxTabGroup);
             var tabs = new List<RibbonModelTab>();
-            var tab1 = Factory.CreateInstance(TODO);
+            var tab1 = Factory.CreateInstance(null);
             tab1.Header = "tab1";
             var group1 = new RibbonModelGroup() {Header = "GRoup 1"};
             tab1.ItemsCollection.Add(group1);
-            var tab2 = Factory.CreateInstance(TODO);
+            var tab2 = Factory.CreateInstance(null);
             tab2.Header = "tab2";
             tab2.ContextualTabGroupHeader = ctxTabGroup.Header;
             tabs.Add(tab1);
@@ -2862,6 +2857,33 @@ namespace ProjTests
             for (var i = 0; i < n; i++) DumpVisualTree(VisualTreeHelper.GetChild(dependencyObject, i));
         }
 
+
+        [WpfFact]
+        public void TestCodeParsing()
+        {
+            DebugUtils.DisplayCatgories = DebugCategory.Status;
+            var file =
+                @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\AvalonDock\source\Components\AvalonDock\DockingManager.cs";
+            NewMethod(file);
+            return;
+            foreach (var enumerateFile in Directory.EnumerateFiles(@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos", "*.cs",
+
+                SearchOption.AllDirectories))
+            {
+                NewMethod(enumerateFile);
+            }
+        }
+
+        private static void NewMethod(string enumerateFile)
+        {
+            DebugUtils.WriteLine(enumerateFile);
+            var code = File.ReadAllText(enumerateFile);
+            var t = ProjTestsHelper.SetupSyntaxParams(out var x, code);
+            FormattedTextControl z = new FormattedTextControl() {Compilation = x, SyntaxTree = t};
+            Window w = new Window {Content = z};
+            w.ShowDialog();
+        }
+
         [WpfFact]
         public void T1z()
         {
@@ -2976,124 +2998,7 @@ namespace ProjTests
 
     // This example component editor page type provides an example 
     // ComponentEditorPage implementation.
-    internal class ExampleComponentEditorPage : System.Windows.Forms.Design.ComponentEditorPage
-    {
-        private Label l1;
-        private System.Windows.Forms.Button b1;
-        private PropertyGrid pg1;
-
-        // Base64-encoded serialized image data for the required component editor page icon.
-        private string icon =
-            "AAEAAAD/////AQAAAAAAAAAMAgAAAFRTeXN0ZW0uRHJhd2luZywgVmVyc2lvbj0xLjAuNTAwMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWIwM2Y1ZjdmMTFkNTBhM2EFAQAAABNTeXN0ZW0uRHJhd2luZy5JY29uAgAAAAhJY29uRGF0YQhJY29uU2l6ZQcEAhNTeXN0ZW0uRHJhd2luZy5TaXplAgAAAAIAAAAJAwAAAAX8////E1N5c3RlbS5EcmF3aW5nLlNpemUCAAAABXdpZHRoBmhlaWdodAAACAgCAAAAAAAAAAAAAAAPAwAAAD4BAAACAAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAABAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgADExAAAgICAAMDAwAA+iPcAY77gACh9kwD/AAAAndPoADpw6wD///8AAAAAAAAAAAAHd3d3d3d3d8IiIiIiIiLHKIiIiIiIiCco///////4Jyj5mfIvIvgnKPnp////+Cco+en7u7v4Jyj56f////gnKPmZ8i8i+Cco///////4JyiIiIiIiIgnJmZmZmZmZifCIiIiIiIiwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACw==";
-
-        public ExampleComponentEditorPage()
-        {
-            // Initialize the page, which inherits from Panel, and its controls.
-            Size = new Size(400, 250);
-            Icon = DeserializeIconFromBase64Text(icon);
-            Text = "Example Page";
-
-            b1 = new System.Windows.Forms.Button();
-            b1.Size = new Size(200, 20);
-            b1.Location = new System.Drawing.Point(200, 0);
-            b1.Text = "Set a random background color";
-            b1.Click += new EventHandler(randomBackColor);
-            Controls.Add(b1);
-
-            l1 = new Label();
-            l1.Size = new Size(190, 20);
-            l1.Location = new System.Drawing.Point(4, 2);
-            l1.Text = "Example Component Editor Page";
-            Controls.Add(l1);
-
-            pg1 = new PropertyGrid();
-            pg1.Size = new Size(400, 280);
-            pg1.Location = new System.Drawing.Point(0, 30);
-            Controls.Add(pg1);
-        }
-
-        // This method indicates that the Help button should be enabled for this 
-        // component editor page.
-        public override bool SupportsHelp()
-        {
-            return true;
-        }
-
-        // This method is called when the Help button for this component editor page is pressed.
-        // This implementation uses the IHelpService to show the Help topic for a sample keyword.
-        public override void ShowHelp()
-        {
-            // The GetSelectedComponent method of a ComponentEditorPage retrieves the
-            // IComponent associated with the WindowsFormsComponentEditor.
-            var selectedComponent = GetSelectedComponent();
-
-            // Retrieve the Site of the component, and return if null.
-            var componentSite = selectedComponent.Site;
-            if (componentSite == null)
-                return;
-
-            // Acquire the IHelpService to display a help topic using a indexed keyword lookup.
-            var helpService = (IHelpService) componentSite.GetService(typeof(IHelpService));
-            if (helpService != null)
-                helpService.ShowHelpFromKeyword("System.Windows.Forms.ComboBox");
-        }
-
-        // The LoadComponent method is raised when the ComponentEditorPage is displayed.
-        protected override void LoadComponent()
-        {
-            pg1.SelectedObject = Component;
-        }
-
-        // The SaveComponent method is raised when the WindowsFormsComponentEditor is closing 
-        // or the current ComponentEditorPage is closing.
-        protected override void SaveComponent()
-        {
-        }
-
-        // If the associated component is a Control, this method sets the BackColor to a random color.
-        // This method is invoked by the button on this ComponentEditorPage.
-        private void randomBackColor(object sender, EventArgs e)
-        {
-            if (typeof(Control).IsAssignableFrom(Component.GetType()))
-            {
-                // Sets the background color of the Control associated with the
-                // WindowsFormsComponentEditor to a random color.
-                var rnd = new Random();
-                ((Control) Component).BackColor =
-                    Color.FromArgb(rnd.Next(255), rnd.Next(255), rnd.Next(255));
-                pg1.Refresh();
-            }
-        }
-
-        // This method can be used to retrieve an Icon from a block 
-        // of Base64-encoded text.
-        private Icon DeserializeIconFromBase64Text(string text)
-        {
-            Icon img = null;
-            var memBytes = Convert.FromBase64String(text);
-            IFormatter formatter = new BinaryFormatter();
-            var stream = new MemoryStream(memBytes);
-            img = (Icon) formatter.Deserialize(stream);
-            stream.Close();
-            return img;
-        }
-    }
 
     // This example control is associated with the ExampleComponentEditor 
     // through the following EditorAttribute.
-    [EditorAttribute(typeof(ExampleComponentEditor), typeof(ComponentEditor))]
-    public class ExampleUserControl : System.Windows.Forms.UserControl
-    {
-    }
-
-    public class ExampleDisplayComponent
-    {
-        public DateTime When { get; set; }
-        public Icon Icon { get; set; }
-
-        public string[] S { get; set; }
-        public Color Color { get; set; }
-        public DayOfWeek DayfOfWeek { get; set; }
-        public FileAttributes FileAttributes { get; set; }
-    }
 }

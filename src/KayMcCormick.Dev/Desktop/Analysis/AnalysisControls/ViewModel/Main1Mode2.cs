@@ -632,16 +632,7 @@ namespace AnalysisControls.ViewModel
                 }
 
                 var tree = await doc.Document.GetSyntaxTreeAsync();
-                var c = new FormattedTextControl()
-                {
-                    SyntaxTree = tree,
-                    Compilation = (CSharpCompilation) compilation,
-                    Model = model
-                };
-                var doc2 = DocModel.CreateInstance();
-                doc2.Title = doc.Name;
-                doc2.Content = c;
-                doc2.ContextualTabGroupHeaders.Add(RibbonResources.ContextualTabGroupHeader_CodeAnalysis);
+                var doc2 = new CodeDocument(tree, compilation) {Title = doc.Name,Model=model};
                 _docHost.AddDocument(doc2);
                 CurrentOperation = null;
             }
@@ -679,26 +670,51 @@ namespace AnalysisControls.ViewModel
         ///
         public delegate DocModel Del1(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file);
 
-        public async Task<DocModel> CodeDoc(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)
-        {
+        public async Task CodeDocAsync(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)
+        { 
             await Dispatcher.BeginInvoke(new Del1(Method1), contextSyntaxTree, cSharpCompilation, file);
-            return null;
         }
 
         private DocModel Method1(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)
         {
-            var doc = DocModel.CreateInstance();
-            doc.Content = new FormattedTextControl()
+            var doc = new CodeDocument(contextSyntaxTree, cSharpCompilation)
             {
-                SyntaxTree = contextSyntaxTree,
-                Compilation = cSharpCompilation
+                Title = Path.GetFileNameWithoutExtension(file)
             };
-            doc.Title = Path.GetFileNameWithoutExtension(file);
-            doc.ContextualTabGroupHeaders.Add(RibbonResources.ContextualTabGroupHeader_CodeAnalysis);
-            this.Documents.Add(doc);
+            _docHost.AddDocument(doc);
+            _docHost.SetActiveDocument(doc);
 
             return doc;
         }
 
+    }
+
+    internal class CodeDocument : DocModel
+    {
+        /// <inheritdoc />
+        public CodeDocument(SyntaxTree syntaxTree, Compilation compilation)
+        {
+            SyntaxTree = syntaxTree;
+            Compilation = compilation;
+            CodeControl  = new FormattedTextControl()
+            {
+                SyntaxTree = syntaxTree,
+                Compilation = compilation
+            };
+            
+        }
+
+        /// <inheritdoc />
+        public override IEnumerable ContextualTabGroupHeaders =>
+            new[] {RibbonResources.ContextualTabGroupHeader_CodeAnalysis};
+
+        /// <inheritdoc />
+        public override object Content => CodeControl;
+
+        public FormattedTextControl CodeControl { get; set; }
+
+        public SyntaxTree SyntaxTree { get; set; }
+        public Compilation Compilation { get; set; }
+        public SemanticModel Model { get; set; }
     }
 }

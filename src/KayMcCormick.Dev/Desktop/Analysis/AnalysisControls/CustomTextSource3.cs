@@ -61,7 +61,7 @@ namespace AnalysisControls
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public override TextRun GetTextRun(int textSourceCharacterIndex)
         {
-            DebugUtils.WriteLine($"{nameof(GetTextRun)}: {textSourceCharacterIndex}", DebugCategory.TextFormatting);
+            DebugUtils.WriteLine($"{nameof(GetTextRun)}: {textSourceCharacterIndex}", DebugCategory.Status);
             // Make sure text source index is in bounds.
             if (textSourceCharacterIndex < 0)
             {
@@ -94,6 +94,8 @@ namespace AnalysisControls
                     return tc;
                 }
 
+                DebugUtils.WriteLine($"returning {col[xx]}");
+            
                 return col[xx];
             }
 

@@ -13,6 +13,7 @@ namespace AnalysisControls.RibbonModel
     public class RibbonModelContextualTabGroup : INotifyPropertyChanged
     {
         private Visibility _visibility = Visibility.Collapsed;
+        private string _header;
 
         /// <summary>
         /// 
@@ -34,7 +35,16 @@ namespace AnalysisControls.RibbonModel
         /// 
         /// </summary>
         [DefaultValue(null)]
-        public string Header { get; set; }
+        public string Header
+        {
+            get { return _header; }
+            set
+            {
+                if (value == _header) return;
+                _header = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 

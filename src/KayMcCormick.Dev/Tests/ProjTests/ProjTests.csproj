@@ -78,6 +78,13 @@
     <Compile Include="AssemblyResourceModel.cs" />
     <Compile Include="CharRow.cs" />
     <Compile Include="ContainerTests.cs" />
+    <Compile Include="ExampleComponentEditorPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ExampleDisplayComponent.cs" />
+    <Compile Include="ExampleUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Generic1.cs" />
     <Compile Include="Generic2.cs" />
     <Compile Include="MyConverter1.cs" />

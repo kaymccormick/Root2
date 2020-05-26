@@ -1,4 +1,5 @@
-﻿using AnalysisControls.RibbonModel;
+﻿using System.Windows.Controls.Ribbon;
+using AnalysisControls.RibbonModel;
 using KayMcCormick.Dev.Logging;
 
 namespace AnalysisControls
@@ -14,6 +15,7 @@ namespace AnalysisControls
         PrimaryRibbonModel PrimaryRibbon { get; set; }
 
         LogEventInstanceObservableCollection LogEntries { get; set; }
-        MyRibbon Ribbon { get; set; }
+        MyRibbon MyRibbon { get; set; }
+        Ribbon Ribbon { get; set; }
     }
 }

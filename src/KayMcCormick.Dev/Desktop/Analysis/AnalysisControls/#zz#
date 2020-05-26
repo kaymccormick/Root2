@@ -11,7 +11,7 @@
   <windows:Style TargetType="{x:Type ribbon:RibbonControl}">
     <windows:Style.Triggers>
       <windows:DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.MinWidth.RibbonControlLengthUnitType}"
-                           Value="Pixel">
+ĥValue="Pixel">
         <windows:Setter Property="windows:FrameworkElement.MinWidth"
                         Value="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.MinWidth.Value}"/>
       </windows:DataTrigger>
@@ -4641,7 +4641,7 @@
           <windows:Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
         </windows:MultiDataTrigger.Conditions>
         <windows:Setter TargetName="MainGrid"
-                        Value="{windows:DynamicResource {x:Static windows:SystemColors.GrayTextBrushKey}}"
+z                        Value="{windows:DynamicResource {x:Static windows:SystemColors.GrayTextBrushKey}}"
                         Property="TextElement.Foreground"/>
       </windows:MultiDataTrigger>
     </ControlTemplate.Triggers>

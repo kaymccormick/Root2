@@ -79,12 +79,15 @@ namespace AnalysisControls
 		
             }
 
-            r.AppMenu.Items.Add(new RibbonModelAppMenuItem {Header = "test"});
+            r.AppMenu.Items.Add(new RibbonModelAppMenuItem {Header = "Open", Command = ApplicationCommands.Open});
 
             var HomeTab = RibbonTabFactory();
         HomeTab.Header = "Home";
         var PasteButton = new RibbonModelItemButton { Label = "Paste", Command = ApplicationCommands.Paste };
 	    var Group1 = new RibbonModelGroup { Header = "Paste" };
+        Group1.Items.Add(new RibbonModelItemButton() {Label = "Open", Command = ApplicationCommands.Open});
+
+        
 	    Group1.Items.Add(PasteButton);
 	    HomeTab.ItemsCollection.Add(Group1);
 	    r.RibbonItems.Add(HomeTab);

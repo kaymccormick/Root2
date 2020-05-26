@@ -125,6 +125,15 @@ namespace AnalysisControls.Converters
           , CultureInfo culture
         )
         {
+            if (value != null)
+            {
+                var convertBack = Convert(value, targetType, parameter, culture);
+                if (targetType == typeof(string))
+                {
+                    return convertBack?.ToString() ?? "";
+                }
+                return convertBack;
+            }
             return null ;
         }
         #endregion

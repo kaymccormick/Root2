@@ -29,6 +29,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <param name="message">A message to write. </param>
         public override void Write ( string message )
         {
+            Debug.Write(message);
             if ( DoBreak )
             {
             //    Debugger.Break ( ) ;
@@ -42,6 +43,7 @@ namespace KayMcCormick.Lib.Wpf
         /// <param name="message">A message to write. </param>
         public override void WriteLine ( string message )
         {
+            Debug.WriteLine(message);
             if (DoBreak)
             {
                 throw new InvalidOperationException(message); // invDebugger.Break ( ) ; }
