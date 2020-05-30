@@ -1,5 +1,4 @@
 ﻿using AnalysisControls.Properties;
-using AnalysisControls.RibbonModel;
 using Autofac;
 
 namespace AnalysisControls

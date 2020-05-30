@@ -1,5 +1,4 @@
 ﻿using System.Windows.Controls.Ribbon;
-using AnalysisControls.RibbonModel;
 using KayMcCormick.Dev.Logging;
 
 namespace AnalysisControls

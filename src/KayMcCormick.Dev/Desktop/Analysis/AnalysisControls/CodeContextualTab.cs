@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using AnalysisControls.Converters;
-using AnalysisControls.RibbonModel;
 using AnalysisControls.ViewModel;
 using Microsoft.CodeAnalysis;
 

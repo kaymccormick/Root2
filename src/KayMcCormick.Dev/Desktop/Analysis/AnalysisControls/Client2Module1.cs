@@ -8,9 +8,6 @@ using System.Windows;
 using AnalysisAppLib;
 using AnalysisControls.Commands;
 using AnalysisControls.Converters;
-
-using AnalysisControls.RibbonModel;
-using AnalysisControls.RibbonModel.Definition;
 using AnalysisControls.ViewModel;
 using Autofac;
 using Autofac.Core;

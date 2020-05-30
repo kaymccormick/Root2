@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:AnalysisControls"
-                    xmlns:ribbon="clr-namespace:AnalysisControls.RibbonModel"
                     xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf">
   <Style x:Key="AppRibbonTabHeaderStyle" TargetType="local:MyRibbonTabHeader">
     <Setter Property="Content" Value="xx,NotifyOnTargetUpdated=True"/>

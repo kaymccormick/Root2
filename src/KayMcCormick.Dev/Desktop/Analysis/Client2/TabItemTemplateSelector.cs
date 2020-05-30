@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using AnalysisControls.RibbonModel;
 using KayMcCormick.Dev;
 
 namespace Client2

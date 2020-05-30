@@ -13,7 +13,6 @@
   xmlns:classic="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
   xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
   xmlns:primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon"
-  xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonModel"
   xmlns:controls="clr-namespace:AnalysisControls.Controls"
   xmlns:typeDescriptors="clr-namespace:AnalysisControls.TypeDescriptors"
   xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System"
@@ -7904,7 +7903,7 @@
           <ControlTemplate.Resources>
             <local:QATItemTemplateSelector x:Key="QATItemTemplateSelector" />
             <local:VisibileIfNotVisible x:Key="VisibleIfNotVisible" />
-            <DataTemplate DataType="{x:Type ribbonModel:RibbonModelItemButton}">
+            <DataTemplate DataType="{x:Type ribbonModel:RibbonModelButton}">
               <TextBlock Text="{Binding Label}" />
             </DataTemplate>
             <DataTemplate DataType="{x:Type RibbonButton}">

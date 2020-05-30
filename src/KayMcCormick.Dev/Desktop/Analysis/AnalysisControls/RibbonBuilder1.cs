@@ -1,16 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Ribbon;
 using System.Windows.Input;
-using System.Windows.Markup;
-using System.Xml;
-using AnalysisControls.RibbonModel;
-using Autofac.Features.Metadata;
-using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
 
 namespace AnalysisControls
@@ -21,37 +14,36 @@ namespace AnalysisControls
     public class RibbonBuilder1
     {
         private readonly RibbonModelApplicationMenu _appMenu;
-        private readonly IEnumerable<RibbonModelContextualTabGroup> _ribbonModelContextualTabGroups;
-        private readonly IEnumerable<RibbonModelTab> _tabs;
         private readonly IEnumerable<IRibbonModelProvider<RibbonModelTab>> _tabProviders;
         private readonly IEnumerable<IRibbonModelProvider<RibbonModelContextualTabGroup>> _grpProviders;
-        private Func<RibbonModelTab> RibbonTabFactory;
-        private JsonSerializerOptions _options;
+        private readonly Func<RibbonModelTab> RibbonTabFactory;
+        private readonly JsonSerializerOptions _options;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="appMenu"></param>
-        /// <param name="ribbonModelContextualTabGroups"></param>
-        /// <param name="tabs"></param>
         /// <param name="tabProviders"></param>
+        /// <param name="grpProviders"></param>
         /// <param name="_options"></param>
+        /// <param name="ribbonTabFactory"></param>
         /// <returns></returns>
         public RibbonBuilder1(RibbonModelApplicationMenu appMenu,
-            IEnumerable<RibbonModelContextualTabGroup> ribbonModelContextualTabGroups, IEnumerable<RibbonModelTab> tabs,
             IEnumerable<IRibbonModelProvider<RibbonModelTab>> tabProviders,
             IEnumerable<IRibbonModelProvider<RibbonModelContextualTabGroup>> grpProviders,
             JsonSerializerOptions _options, Func<RibbonModelTab> ribbonTabFactory)
         {
             _appMenu = appMenu;
-            _ribbonModelContextualTabGroups = ribbonModelContextualTabGroups;
-            _tabs = tabs;
             _tabProviders = tabProviders;
             _grpProviders = grpProviders;
             this._options = _options;
             RibbonTabFactory = ribbonTabFactory;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public PrimaryRibbonModel BuildRibbon(){
         JsonSerializerOptions opt= new JsonSerializerOptions();
             foreach (var optionsConverter in _options.Converters)
@@ -62,9 +54,17 @@ namespace AnalysisControls
             opt.WriteIndented = true;
             opt.IgnoreNullValues = true;
             RibbonModelApplicationMenu appMenu=_appMenu;
-            var r = new PrimaryRibbonModel {AppMenu = appMenu, HelpPaneContent = "help"};
-            r.QuickAccessToolBar.CustomizeMenuButton = new RibbonModelItemMenuButton() { Command = WpfAppCommands.CustomizeQAT };
-            r.QuickAccessToolBar.Items.Add(new RibbonModelItemButton {Label = "test1",
+            var r = new PrimaryRibbonModel
+            {
+                AppMenu = appMenu,
+                HelpPaneContent = "help",
+                QuickAccessToolBar =
+                {
+                    CustomizeMenuButton =
+                        new RibbonModelItemMenuButton() {Command = WpfAppCommands.CustomizeQAT}
+                }
+            };
+            r.QuickAccessToolBar.Items.Add(new RibbonModelButton {Label = "test1",
             SmallImageSource = "pack://application:,,,/WpfLib;component/Assets/ASPWebSite_16x.png"
             });
             var dockPanel = new DockPanel {LastChildFill = false};
@@ -73,8 +73,8 @@ namespace AnalysisControls
             var ribbonModelProviders = _grpProviders;
             foreach (var ribbonModelProvider in ribbonModelProviders)
             {
-	    var t = ribbonModelProvider.ProvideModelItem();
-	    t.RibbonModel = r;
+                var t = ribbonModelProvider.ProvideModelItem();
+                t.RibbonModel = r;
                 r.ContextualTabGroups.Add(t);
 		
             }
@@ -83,9 +83,9 @@ namespace AnalysisControls
 
             var HomeTab = RibbonTabFactory();
         HomeTab.Header = "Home";
-        var PasteButton = new RibbonModelItemButton { Label = "Paste", Command = ApplicationCommands.Paste };
+        var PasteButton = new RibbonModelButton { Label = "Paste", Command = ApplicationCommands.Paste };
 	    var Group1 = new RibbonModelGroup { Header = "Paste" };
-        Group1.Items.Add(new RibbonModelItemButton() {Label = "Open", Command = ApplicationCommands.Open});
+        Group1.Items.Add(new RibbonModelButton {Label = "Open", Command = ApplicationCommands.Open});
 
         
 	    Group1.Items.Add(PasteButton);

@@ -24,7 +24,9 @@
           Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
-        <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:acrm="clr-namespace:AnalysisControls.RibbonModel;assembly=AnalysisControls" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:acrmd="clr-namespace:AnalysisControls.RibbonModel.Definition;assembly=AnalysisControls" xmlns:aal="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib" xmlns:anal="http://kaymccormick.com/xaml/analysis" xmlns:acrmctg="clr-namespace:AnalysisControls.RibbonModel.ContextualTabGroups;assembly=AnalysisControls">
+        <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:aal="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib" xmlns:anal="http://kaymccormick.com/xaml/analysis">
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>

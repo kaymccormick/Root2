@@ -9,7 +9,6 @@ using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Shapes;
-using AnalysisControls.RibbonModel;
 using Autofac;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;

@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using AnalysisControls.RibbonModel;
 using Autofac;
 using KayMcCormick.Dev;
 using NLog;

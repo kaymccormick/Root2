@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using AnalysisControls.Properties;
-using AnalysisControls.RibbonModel;
 using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.CodeAnalysis.CSharp;
 

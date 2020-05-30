@@ -1,9 +1,10 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:AnalysisControls"
-                    xmlns:ribbonModel="clr-namespace:AnalysisControls.RibbonModel"
                     xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-                    xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis">
+                    xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
+                    xmlns:ribbonModel="clr-namespace:RibbonLib.Model;assembly=RibbonLib"
+                    xmlns:model="clr-namespace:RibbonLib.Model;assembly=RibbonLib">
   <local:RibbonModelTemplateSelector x:Key="RibbonModelTemplateSelector" />
   <local:TestConverter2 x:Key="TestConverter2" />
   <kmWpf:GetTypeConverter x:Key="GetTypeConverter" />
@@ -119,7 +120,7 @@
       </RibbonMenuItem>
         </DataTemplate>
 
-  <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelItemButton}">
+  <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelButton}">
     <RibbonButton Label="{Binding Label}" SmallImageSource="{Binding SmallImageSource}" Command="{Binding Command}" CommandParameter="{Binding CommandParameter}"
                   CommandTarget="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=Window},Path=ViewModel.View}"/>
   </HierarchicalDataTemplate>
@@ -178,7 +179,7 @@
     <RibbonControlGroup Padding="10" Margin="5" BorderThickness="4"
                         ItemsSource="{Binding Items}" />
   </HierarchicalDataTemplate>
-  <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelMenuItem}" ItemsSource="{Binding Items}">
+  <HierarchicalDataTemplate DataType="{x:Type model:RibbonModelMenuItem}" ItemsSource="{Binding Items}">
     <ContentControl Content="{Binding Header}" />
   </HierarchicalDataTemplate>
   <DataTemplate DataType="{x:Type local:RibbonModelRadioButton}">
