@@ -36,11 +36,11 @@ WPFPage::WPFPage(int allottedWidth, int allotedHeight)
   KayMcCormick::Dev::Logging::AppLoggingConfigHelper::EnsureLoggingConfigured(gcnew KayMcCormick::Dev::Logging::LogDelegates::LogMethod(logM), con, "");
   auto app = gcnew AnalysisControls::ControlsAppInstance(gcnew KayMcCormick::Dev::Application::ApplicationInstance::ApplicationInstanceConfiguration(gcnew KayMcCormick::Dev::Application::ApplicationInstance::LogMethodDelegate(logM), Guid::NewGuid(), nullptr, false, true, true));
   app->Initialize();
-  //auto scope = app->ComponentContext;
   // AnalysisControls::Main1Model^ model = scope->Resolve(AnalysisControls::Main1Model::typeid);
   app->Startup();
   auto element = gcnew AnalysisControls::Main1();
   element->ViewModel = app->Main1Model;
+  element->ViewModel2 = static_cast<AnalysisControls::ViewModel::Main1Mode2^>(app->Resolve  (AnalysisControls::ViewModel::Main1Mode2::typeid));
   
   this->Children->Add(element);
   // this->Children->Add(element);

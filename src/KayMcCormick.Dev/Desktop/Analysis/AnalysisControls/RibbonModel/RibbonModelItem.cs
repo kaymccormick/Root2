@@ -102,7 +102,7 @@ namespace AnalysisControls.RibbonModel
         /// <summary>
         /// 
         /// </summary>
-        [TypeConverter(typeof(AppCommandTypeConverter))]
+        //[TypeConverter(typeof(AppCommandTypeConverter))]
         // ReSharper disable once UnusedMember.Global
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IAppCommand AppCommand

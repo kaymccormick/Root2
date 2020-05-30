@@ -113,6 +113,10 @@ namespace KayMcCormick.Dev.Application
                                                         ) ;
         }
 
+        public object Resolve(Type type)
+        {
+            return LifetimeScope.Resolve(type);
+        }
         /// <summary>
         /// 
         /// </summary>

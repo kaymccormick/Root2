@@ -217,9 +217,6 @@ namespace AnalysisControls.ViewModel
         public Main1Model()
         {
             _f = _f ?? new JoinableTaskFactory(new JoinableTaskContext());
-            AddInitialDocuments();
-
-            AddInitialAnchorables();
             Documents.CollectionChanged += (sender, args) =>
             {
                 foreach (var argsNewItem in args.NewItems) Debug.WriteLine(argsNewItem);
@@ -364,7 +361,13 @@ namespace AnalysisControls.ViewModel
         {
             var assembliesDoc = DocModel.CreateInstance();
             assembliesDoc.Title = "PowerShell";
-            assembliesDoc.Content = new Terminal.CustomControl1 { };
+            var powershell = new PowerShellConsole() { };
+            var tryFindResource = (ControlTemplate) View.TryFindResource("PowerShellTemplate");
+            if (tryFindResource != null) powershell.Template = tryFindResource;
+            powershell.ApplyTemplate();
+            
+            assembliesDoc.Content = powershell;
+
             Documents.Add(assembliesDoc);
         }
 
@@ -444,6 +447,10 @@ namespace AnalysisControls.ViewModel
             {
                 if (Equals(value, _view)) return;
                 _view = value;
+                AddInitialDocuments();
+
+                AddInitialAnchorables();
+
                 OnPropertyChanged();
             }
         }

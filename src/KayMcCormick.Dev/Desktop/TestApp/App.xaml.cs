@@ -55,8 +55,8 @@ namespace TestApp
             return oo;
         }
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
+        protected  void OnStartupz(StartupEventArgs e)
+        { 
             ObservableCollection<Type> listenerTypes = new ObservableCollection<Type>();
             listenerTypes.Add(typeof(ConsoleTraceListener));
             listenerTypes.Add(typeof(TestListener));
@@ -139,9 +139,10 @@ namespace TestApp
                     c = c.BaseType;
                 }
             }
+
             
             base.OnStartup(e);
-
+            return;
             {
                 var c = new StackPanel() { Orientation = Orientation.Horizontal };
                 foreach (var name in Assembly.GetExecutingAssembly().GetReferencedAssemblies())
@@ -154,14 +155,12 @@ namespace TestApp
                 panel.SetBinding(AssemblyResourceTree.AssemblyProperty, new Binding("SelectedAssembly") { Source = left });
                 c.Children.Add(left);
                 c.Children.Add(panel);
-                using (var hexa = new WpfHexaEditor.HexEditor())
-
-                {
-                    c.Children.Add(hexa);
+               
+                
                     //panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
                     Window www = new Window { Content = c };
                     www.ShowDialog();
-                }
+                
             }
 
             var cTempProgramCs = e.Args.FirstOrDefault();

@@ -2861,9 +2861,9 @@ namespace ProjTests
         [WpfFact]
         public void TestCodeParsing()
         {
-            DebugUtils.DisplayCatgories = DebugCategory.Status;
+            DebugUtils.DisplayCatgories = (DebugCategory) (-1);
             var file =
-                @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\AvalonDock\source\Components\AvalonDock\DockingManager.cs";
+                @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\AvalonDock\source\Components\AvalonDock\DocumentClosedEventArgs.cs";
             NewMethod(file);
             return;
             foreach (var enumerateFile in Directory.EnumerateFiles(@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos", "*.cs",
@@ -2959,42 +2959,7 @@ namespace ProjTests
         }
     }
 
-    [EditorAttribute(typeof(ExampleComponentEditor), typeof(ComponentEditor))]
-    public class AppComponent : Component
-    {
-        [Description("Fun times")]
-        [DisplayName("Test")]
-        public string Test { get; set; }
-
-        public ExampleUserControl X { get; set; }
-    }
-
-    public class TestElement
-    {
-        public string Text { get; set; }
-    }
-
     // The ExampleComponentEditor displays two ExampleComponentEditorPage pages.
-    public class ExampleComponentEditor : System.Windows.Forms.Design.WindowsFormsComponentEditor
-    {
-        // This method override returns an type array containing the type of 
-        // each component editor page to display.
-        protected override Type[] GetComponentEditorPages()
-        {
-            return new Type[]
-            {
-                typeof(ExampleComponentEditorPage),
-                typeof(ExampleComponentEditorPage)
-            };
-        }
-
-        // This method override returns the index of the page to display when the 
-        // component editor is first displayed.
-        protected override int GetInitialComponentEditorPageIndex()
-        {
-            return 1;
-        }
-    }
 
     // This example component editor page type provides an example 
     // ComponentEditorPage implementation.

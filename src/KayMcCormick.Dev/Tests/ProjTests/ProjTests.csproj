@@ -73,11 +73,15 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppComponent.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="AppContainerFixture.cs" />
     <Compile Include="AppProjTests.cs" />
     <Compile Include="AssemblyResourceModel.cs" />
     <Compile Include="CharRow.cs" />
     <Compile Include="ContainerTests.cs" />
+    <Compile Include="ExampleComponentEditor.cs" />
     <Compile Include="ExampleComponentEditorPage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -96,6 +100,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestApp1.cs" />
     <Compile Include="TestApplication.cs" />
+    <Compile Include="TestElement.cs" />
     <Compile Include="TestTypesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

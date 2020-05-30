@@ -56,9 +56,16 @@ namespace AnalysisControls
 
         public override void OnApplyTemplate()
         {
-            var contentPresenter = (Visual) GetTemplateChild("ContentPresenter");
+            var contentPresenter = (ContentPresenter) GetTemplateChild("ContentPresenter");
             var myAdornerLayer = AdornerLayer.GetAdornerLayer(contentPresenter);
-            if (myAdornerLayer != null) myAdornerLayer.Add(new DragItemAdorner((UIElement) contentPresenter, Document));
+            if (myAdornerLayer != null) myAdornerLayer.Add(new DragItemAdorner((UIElement)contentPresenter, Document));
+            contentPresenter.Loaded += (sender, args) =>
+            {
+                if(VisualTreeHelper.GetChildrenCount(contentPresenter) >= 1)
+                VisualTreeHelper.GetChild(contentPresenter, 0);
+
+            };
+
         }
 
         /// <summary>
