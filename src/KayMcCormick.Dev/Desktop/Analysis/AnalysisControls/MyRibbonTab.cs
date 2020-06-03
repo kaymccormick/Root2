@@ -14,6 +14,7 @@ using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
 using NLog;
 using NLog.Fluent;
+using RibbonLib.Model;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
 

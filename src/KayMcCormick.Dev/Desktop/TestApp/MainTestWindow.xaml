@@ -19,7 +19,6 @@
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
         <ResourceDictionary>
-          <anal:DisplayModeConverter x:Key="DisplayModeConverter"/>
           <CollectionViewSource Source="{Binding AppTypeInfos}" x:Key="AppTypeInfoSource" />
           <!--Control colors.-->
           <Color x:Key="WindowColor">#FFE8EDF9</Color>

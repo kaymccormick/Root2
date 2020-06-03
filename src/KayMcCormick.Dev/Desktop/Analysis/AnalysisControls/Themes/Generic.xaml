@@ -4,6 +4,7 @@
   xmlns:local="clr-namespace:AnalysisControls"
   xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
   xmlns:system="clr-namespace:System;assembly=mscorlib"
+  xmlns:terminal="clr-namespace:Terminal1;assembly=WpfCustomControlLibrary1"
   xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
   xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
   xmlns:converters="clr-namespace:AnalysisControls.Converters"
@@ -17,8 +18,9 @@
   xmlns:typeDescriptors="clr-namespace:AnalysisControls.TypeDescriptors"
   xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System"
   xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControls"
-  xmlns:powerShellShared="clr-namespace:PowerShellShared;assembly=PowerShellShared"
-  xmlns:terminal="clr-namespace:Terminal;assembly=Terminal">
+  xmlns:powerShellShared="clr-namespace:PowerShellShared;assembly=WpfCustomControlLibrary1"
+  xmlns:analysisControls2="clr-namespace:AnalysisControls2;assembly=AnalysisControls2"
+  xmlns:local1="clr-namespace:AnalysisControls2;assembly=AnalysisControls2">
   <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
   <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
   <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
@@ -5548,86 +5550,7 @@
   </Style>
 
 
-  <Style TargetType="{x:Type local:Main1}">
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type local:Main1}">
-          <ControlTemplate.Resources>
-            <ResourceDictionary>
-              <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary
-
-                  Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
-                <ResourceDictionary
-                  Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
-                <ResourceDictionary
-                  Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
-              </ResourceDictionary.MergedDictionaries>
-
-            </ResourceDictionary>
-          </ControlTemplate.Resources>
-          <Border Background="{TemplateBinding Background}"
-                  BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Stretch">
-            <Grid AllowDrop="True" x:Name="Grid" VerticalAlignment="Stretch">
-              <Grid.Resources>
-                <local:TestConverter2 x:Key="TestConverter" />
-              </Grid.Resources>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-              </Grid.RowDefinitions>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-              </Grid.ColumnDefinitions>
-              <ToolBarTray Grid.Row="0" Grid.Column="0">
-                <ToolBar Band="1" BandIndex="1">
-                  <TextBlock Text="{Binding CurrentOperation.Desc}" />
-                  <Button Content="Create workspace" Command="kmWpf:WpfAppCommands.CreateWorkspace" />
-                  <Button Content="Create solution" Command="kmWpf:WpfAppCommands.CreateSolution" />
-                  <Button Content="Create project" Command="kmWpf:WpfAppCommands.CreateProject" />
-                </ToolBar>
-              </ToolBarTray>
-              <Border Grid.Row="1" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">
-                <avalondock:DockingManager
-                  DocumentsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.Documents,Mode=TwoWay}"
-                  x:Name="DockingManager" AnchorablesSource="{Binding Anchorables}"
-                  VerticalAlignment="Stretch"
-                  ActiveContent="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.ActiveContent,Mode=TwoWay}">
-                  <avalondock:DockingManager.DocumentHeaderTemplate>
-                    <DataTemplate
-                      DataType="{x:Type avalondock:LayoutDocument}">
-                      <StackPanel Opacity="1.0"
-                                  Orientation="Horizontal">
-                        <Image Source="{Binding IconSource}"
-                               Margin="6,4,4,0" />
-                        <TextBlock Text="{Binding Content.Title,Converter={StaticResource TestConverter}}"
-                                   VerticalAlignment="Center" />
-                      </StackPanel>
-                    </DataTemplate>
-                  </avalondock:DockingManager.DocumentHeaderTemplate>
-                  <avalondock:DockingManager.AnchorableHeaderTemplate>
-                    <DataTemplate
-                      DataType="{x:Type avalondock:LayoutAnchorable}">
-                      <StackPanel Opacity="1.0"
-                                  Orientation="Horizontal">
-                        <Image Source="{Binding IconSource}"
-                               Margin="6,4,4,0" />
-                        <TextBlock Text="{Binding Content.Title}"
-                                   VerticalAlignment="Center" />
-                      </StackPanel>
-                    </DataTemplate>
-                  </avalondock:DockingManager.AnchorableHeaderTemplate>
-                </avalondock:DockingManager>
-              </Border>
-            </Grid>
-          </Border>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
-
+ 
 
   <Style TargetType="{x:Type local:WorkspaceView}">
     <Setter Property="Template">
@@ -7896,117 +7819,6 @@
     </Setter>
   </Style>
 
-  <Style TargetType="{x:Type local:RibbonModelView}">
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type local:RibbonModelView}">
-          <ControlTemplate.Resources>
-            <local:QATItemTemplateSelector x:Key="QATItemTemplateSelector" />
-            <local:VisibileIfNotVisible x:Key="VisibleIfNotVisible" />
-            <DataTemplate DataType="{x:Type ribbonModel:RibbonModelButton}">
-              <TextBlock Text="{Binding Label}" />
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type RibbonButton}">
-              <TextBlock Text="{Binding (RibbonControlService.Label)}" />
-            </DataTemplate>
-            <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelTab}" ItemsSource="{Binding Items}">
-              <WrapPanel>
-                <TextBlock Text="{Binding Header}" />
-                <WrapPanel Visibility="{Binding Visibility,Converter={StaticResource VisibleIfNotVisible}}">
-                  <TextBlock Text=" ( " />
-                  <TextBlock Text="{Binding Visibility}" />
-                  <TextBlock Text=" )" />
-                </WrapPanel>
-              </WrapPanel>
-            </HierarchicalDataTemplate>
-            <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGroup}" ItemsSource="{Binding Items}">
-              <HierarchicalDataTemplate.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelItem}" ItemsSource="{Binding Items}">
-                  <WrapPanel>
-                    <TextBlock Text="{Binding Label}" />
-                    <TextBlock Text=" ( " />
-                    <TextBlock Text="{Binding Kind}" />
-                    <TextBlock Text=" )" />
-                  </WrapPanel>
-                </HierarchicalDataTemplate>
-              </HierarchicalDataTemplate.ItemTemplate>
-              <WrapPanel>
-                <TextBlock Text="{Binding Header}" />
-              </WrapPanel>
-            </HierarchicalDataTemplate>
-            <HierarchicalDataTemplate DataType="{x:Type local:RibbonTabsNode}"
-                                      ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type local:RibbonModelView}},Path=RibbonModel.RibbonItems}">
-              <TextBlock Text="MyRibbon Tabs" />
-            </HierarchicalDataTemplate>
-            <HierarchicalDataTemplate DataType="{x:Type local:RibbonQATNode}"
-                                      ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type local:RibbonModelView}},Path=RibbonModel.QuickAccessToolBar.Items}"
-                                      ItemTemplateSelector="{StaticResource QATItemTemplateSelector}">
-              <HierarchicalDataTemplate.Resources>
-              </HierarchicalDataTemplate.Resources>
-              <TextBlock Text="Quick Access Toolbar" />
-            </HierarchicalDataTemplate>
-            <HierarchicalDataTemplate DataType="{x:Type local:RibbonContextualTabGroupsNode}"
-                                      ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type local:RibbonModelView}},Path=RibbonModel.ContextualTabGroups}">
-              <TextBlock Text="Contextual Tab Groups" />
-            </HierarchicalDataTemplate>
-
-            <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelItem}">
-              <TextBlock Text="{Binding Label}" />
-            </HierarchicalDataTemplate>
-          </ControlTemplate.Resources>
-          <Border Background="{TemplateBinding Background}"
-                  BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}">
-            <Grid>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-              </Grid.ColumnDefinitions>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-              </Grid.RowDefinitions>
-              <TreeView x:Name="TreeView"
-                        ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RootItemsCollection}" />
-              <local:PGrid Grid.Column="1" SelectedObject="{Binding ElementName=TreeView,Path=SelectedItem}" />
-              <ContentPresenter Grid.Column="1" Content="{Binding ElementName=TreeView,Path=SelectedItem}"
-                                Visibility="Collapsed">
-                <ContentPresenter.Resources>
-                  <DataTemplate DataType="{x:Type ribbonModel:RibbonModelTab}">
-                    <StackPanel>
-                      <TextBlock Text="MyRibbon Tab" HorizontalAlignment="Center" FontSize="16" />
-                      <kmWpf:TablePanel Margin="10">
-                        <TextBlock Text="Tab Header" />
-                        <TextBlock Text="{Binding Header}" />
-                        <TextBlock Text="Contextual Tab Group Header" />
-                        <TextBlock Text="{Binding ContextualTabGroupHeader}" />
-                        <TextBlock Text="Visibility" />
-                        <TextBlock Text="{Binding Visibility}" />
-                      </kmWpf:TablePanel>
-                    </StackPanel>
-                  </DataTemplate>
-                </ContentPresenter.Resources>
-              </ContentPresenter>
-              <Grid Grid.Column="1" Visibility="Collapsed">
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*" />
-                  <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                  <RowDefinition />
-                  <RowDefinition />
-                  <RowDefinition />
-                  <RowDefinition />
-                  <RowDefinition />
-                  <RowDefinition />
-                  <RowDefinition />
-                </Grid.RowDefinitions>
-              </Grid>
-            </Grid>
-          </Border>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
 
   <Style TargetType="{x:Type controls:TraceSourcesView}">
     <Setter Property="Template">
@@ -8428,17 +8240,12 @@
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
-      <StackPanel Orientation="Horizontal">
-        <TextBlock Margin="10" Text="{Binding ElementName=Terminal,Path=NumColumns}" />
-        <TextBlock Margin="10" Text="{Binding ElementName=Terminal,Path=NumRows}" />
-        <TextBlock Margin="10" Text="{Binding ElementName=Input,Path=NumColumns}" />
-        <TextBlock Margin="10" Text="{Binding ElementName=Input,Path=NumRows}" />
-      </StackPanel>
-      <terminal:CustomControl1 Grid.Row="1" CursorBrush="DarkOrange" x:Name="Terminal" BorderBrush="Green"
-                               BorderThickness="1" Focusable="False" />
+      <terminal:WpfTerminalControl  DiagnosticsEnabled="True" ForegroundColor="Black" BackgroundColor="White"  AutoResize="True" Grid.Row="1" CursorBrush="DarkOrange" x:Name="Terminal"
+                                     BorderBrush="Green" BorderThickness="1" Focusable="False" />
       <powerShellShared:WrappedPowerShell x:Name="Shell" Terminal="{x:Reference Terminal}" />
-      <terminal:CustomControl1 LineMode="True" InputOnly="True" CursorBrush="Azure" x:Name="Input" BorderBrush="Red"
-                               BorderThickness="1" NumRows="1" Grid.Row="2" Focusable="True" />
+      <terminal:WpfInputLine LineMode="True" InputOnly="True" CursorBrush="Azure" x:Name="Input" BorderBrush="Red"
+                              BorderThickness="1" AutoResize="True" Grid.Row="2" Focusable="True" >
+      </terminal:WpfInputLine>
       <StatusBar Grid.Row="3">
         <TextBlock x:Name="MainStatus" Width="200" />
         <ProgressBar Width="200" Maximum="100" x:Name="ProgressBar" />
@@ -8449,4 +8256,85 @@
   <Style TargetType="{x:Type local:PowerShellConsole}">
     <Setter Property="Template" Value="{StaticResource PowerShellTemplate}" />
   </Style>
+  <Style TargetType="{x:Type local:Main1}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local:Main1}">
+          <ControlTemplate.Resources>
+            <ResourceDictionary>
+              <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+
+                  Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
+                <ResourceDictionary
+                  Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
+                <ResourceDictionary
+                  Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
+              </ResourceDictionary.MergedDictionaries>
+
+            </ResourceDictionary>
+          </ControlTemplate.Resources>
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Stretch">
+            <Grid AllowDrop="True" x:Name="Grid" VerticalAlignment="Stretch">
+              <Grid.Resources>
+                <local:TestConverter2 x:Key="TestConverter" />
+              </Grid.Resources>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <ToolBarTray Grid.Row="0" Grid.Column="0">
+                <ToolBar Band="1" BandIndex="1">
+                  <TextBlock Text="{Binding CurrentOperation.Desc}" />
+                  <Button Content="Create workspace" Command="kmWpf:WpfAppCommands.CreateWorkspace" />
+                  <Button Content="Create solution" Command="kmWpf:WpfAppCommands.CreateSolution" />
+                  <Button Content="Create project" Command="kmWpf:WpfAppCommands.CreateProject" />
+                </ToolBar>
+              </ToolBarTray>
+              <Border Grid.Row="1" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">
+                <avalondock:DockingManager
+                  DocumentsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.Documents,Mode=TwoWay}"
+                  x:Name="DockingManager" AnchorablesSource="{Binding Anchorables}"
+                  VerticalAlignment="Stretch"
+                  ActiveContent="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.ActiveContent,Mode=TwoWay}">
+                  <avalondock:DockingManager.DocumentHeaderTemplate>
+                    <DataTemplate
+                      DataType="{x:Type avalondock:LayoutDocument}">
+                      <StackPanel Opacity="1.0"
+                                  Orientation="Horizontal">
+                        <Image Source="{Binding IconSource}"
+                               Margin="6,4,4,0" />
+                        <TextBlock Text="{Binding Content.Title,Converter={StaticResource TestConverter}}"
+                                   VerticalAlignment="Center" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </avalondock:DockingManager.DocumentHeaderTemplate>
+                  <avalondock:DockingManager.AnchorableHeaderTemplate>
+                    <DataTemplate
+                      DataType="{x:Type avalondock:LayoutAnchorable}">
+                      <StackPanel Opacity="1.0"
+                                  Orientation="Horizontal">
+                        <Image Source="{Binding IconSource}"
+                               Margin="6,4,4,0" />
+                        <TextBlock Text="{Binding Content.Title}"
+                                   VerticalAlignment="Center" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </avalondock:DockingManager.AnchorableHeaderTemplate>
+                </avalondock:DockingManager>
+              </Border>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+
 </ResourceDictionary>

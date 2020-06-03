@@ -2,6 +2,7 @@
 using AnalysisControls.Properties;
 using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.CodeAnalysis.CSharp;
+using RibbonLib.Model;
 
 namespace AnalysisControls
 {

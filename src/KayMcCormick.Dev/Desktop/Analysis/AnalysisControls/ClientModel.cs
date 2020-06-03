@@ -10,6 +10,7 @@ using AnalysisControls.ViewModel;
 using JetBrains.Annotations;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
+using RibbonLib.Model;
 
 namespace AnalysisControls
 {

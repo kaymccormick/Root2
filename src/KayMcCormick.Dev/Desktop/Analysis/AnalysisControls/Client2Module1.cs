@@ -8,6 +8,7 @@ using System.Windows;
 using AnalysisAppLib;
 using AnalysisControls.Commands;
 using AnalysisControls.Converters;
+using AnalysisControls.Ribbon2;
 using AnalysisControls.ViewModel;
 using Autofac;
 using Autofac.Core;
@@ -21,6 +22,7 @@ using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
 using KayMcCormick.Lib.Wpf.Command;
 using NLog;
+using RibbonLib.Model;
 
 namespace AnalysisControls
 {
@@ -142,14 +144,8 @@ namespace AnalysisControls
 
             builder.RegisterType<RibbonViewGroupProviderBaseImpl>().AsImplementedInterfaces().WithCallerMetadata()
                 .SingleInstance().WithAttributeFiltering();
-            builder.RegisterType<SuperGroup>().AsImplementedInterfaces().WithCallerMetadata().SingleInstance()
-                .WithAttributeFiltering();
          builder.RegisterType<CodeAnalysisContextualTabGroupProvider>().AsImplementedInterfaces()
                 .WithCallerMetadata(); builder.RegisterType<AssembliesTypesGroup>().As<RibbonModelGroup>().SingleInstance()
-                .WithAttributeFiltering();
-            builder.RegisterType<DisplayableAppCommandGroup>().As<RibbonModelGroup>().SingleInstance()
-                .WithAttributeFiltering();
-            builder.RegisterType<BaseLibCommandGroup>().As<RibbonModelGroup>().SingleInstance()
                 .WithAttributeFiltering();
             builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering();
             builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering();

@@ -15,7 +15,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PowerShellShared;
-using Terminal;
+using Terminal1;
+using TextEntryCompleteArgs = Terminal.TextEntryCompleteArgs;
 
 namespace AnalysisControls
 {
@@ -50,8 +51,8 @@ namespace AnalysisControls
     /// </summary>
     public class PowerShellConsole : Control
     {
-        private Terminal.CustomControl1 _terminal;
-        private Terminal.CustomControl1 _input;
+        private WpfTerminalControl _terminal;
+        private WpfInputLine _input;
         private TextBlock _mainstatus;
         private WrappedPowerShell _shell;
         private ProgressBar _progressBar
@@ -68,21 +69,26 @@ namespace AnalysisControls
             
         }
 
+        public WrappedPowerShell Shell
+        {
+            get { return _shell; }
+            set { _shell = value; }
+        }
+
         /// <inheritdoc />
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            _terminal = (Terminal.CustomControl1)GetTemplateChild("Terminal");
-            _shell = (WrappedPowerShell) GetTemplateChild("Shell");
-            _input = (Terminal.CustomControl1)GetTemplateChild("Input");
+            _terminal = (WpfTerminalControl)GetTemplateChild("Terminal");
+            Shell = (WrappedPowerShell) GetTemplateChild("Shell");
+            _input = (WpfInputLine)GetTemplateChild("Input");
             _mainstatus = (TextBlock) GetTemplateChild("MainStatus");
             _progressBar = (ProgressBar) GetTemplateChild("ProgressBar");
 
             if (_input != null)
             {
 
-_shell.Terminal = _terminal;
-                _shell.Startup();
+                Shell.Terminal = _terminal;
                 _input.Focus();
                 _terminal.ProgressEvent += (sender, args) =>
                 {
@@ -105,10 +111,10 @@ _shell.Terminal = _terminal;
             }
         }
 
-        private async void OnInput_OnTextEntryComplete(object sender, TextEntryCompleteArgs args)
+        private async void OnInput_OnTextEntryComplete(object sender, Terminal1.TextEntryCompleteArgs args)
         {
             Debug.WriteLine(args.Text);
-            await _shell.Execute(args.Text);
+            await Shell.Execute(args.Text);
             Debug.WriteLine("Back from execute");
         }
     }

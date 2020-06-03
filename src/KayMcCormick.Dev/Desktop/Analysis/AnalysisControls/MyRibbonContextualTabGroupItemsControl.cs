@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls.Ribbon;
 using KayMcCormick.Dev;
 using NLog;
+using RibbonLib;
 
 namespace AnalysisControls
 {

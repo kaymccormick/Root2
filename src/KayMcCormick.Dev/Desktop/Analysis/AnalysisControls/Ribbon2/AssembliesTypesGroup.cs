@@ -1,4 +1,12 @@
-﻿namespace AnalysisControls.Ribbon2
+﻿using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Controls.Ribbon;
+using AnalysisAppLib;
+using AnalysisAppLib.Syntax;
+using Microsoft.CodeAnalysis.CSharp;
+using RibbonLib.Model;
+
+namespace AnalysisControls.Ribbon2
 {
     /// <summary>
     /// 

@@ -150,7 +150,7 @@
   <HierarchicalDataTemplate DataType="{x:Type model:RibbonModelMenuItem}" ItemsSource="{Binding Items}">
     <ContentControl Content="{Binding Header}" />
   </HierarchicalDataTemplate>
-  <DataTemplate DataType="{x:Type local:RibbonModelRadioButton}">
+  <DataTemplate DataType="{x:Type ribbonModel:RibbonModelRadioButton}">
     <RibbonRadioButton Label="{Binding Label}" IsChecked="{Binding IsChecked}" />
   </DataTemplate>
   <DataTemplate DataType="{x:Type ribbonModel:RibbonModelDropZone}">

@@ -8,10 +8,6 @@
         /// <summary>
         /// 
         /// </summary>
-        ButtonControl,
-        /// <summary>
-        /// 
-        /// </summary>
         RadioButton,
         /// <summary>
         /// 

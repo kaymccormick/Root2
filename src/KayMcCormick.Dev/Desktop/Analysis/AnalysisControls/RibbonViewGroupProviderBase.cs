@@ -1,5 +1,6 @@
 ﻿using AnalysisControls.Properties;
 using Autofac;
+using RibbonLib.Model;
 
 namespace AnalysisControls
 {

@@ -24,6 +24,7 @@ using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
 using NLog;
 using NLog.Fluent;
+using RibbonLib.Model;
 
 namespace Client2
 {
@@ -66,7 +67,7 @@ namespace Client2
             InitializeComponent();
             _viewModel.Main1Model = Main1?.ViewModel;
             if (Main1 != null) Main1.ViewModel.ClientViewModel = _viewModel;
-            viewModel.Ribbon = myRibbon;
+            // viewModel.Ribbon = myRibbon;
 
             myCacheTarget?.Cache.SubscribeOn(Scheduler.Default)
                 .Buffer(TimeSpan.FromMilliseconds(100))

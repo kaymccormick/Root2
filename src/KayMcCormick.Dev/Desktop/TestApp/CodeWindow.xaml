@@ -8,16 +8,4 @@
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="CodeWindow" Height="450" Width="800" anal:CodeProps.SourceText="{anal:SourceText FileSource=\\temp\\Program.cs}">
-  <Window.Resources>
-    <anal:SyntaxTreeCollection x:Key="trees">
-      <anal:SyntaxTree></anal:SyntaxTree>
-    </anal:SyntaxTreeCollection>
-    
-  </Window.Resources>
-  <Grid>
-    <anal:EnhancedCodeControl  
-      SyntaxTree="{anal:SyntaxTree SyntaxTrees={StaticResource trees},Index=0}" 
-      Compilation="{anal:Compilation OutputKind=DynamicallyLinkedLibrary,SyntaxTrees={StaticResource trees}}">
-</anal:EnhancedCodeControl>
-  </Grid>
 </Window>

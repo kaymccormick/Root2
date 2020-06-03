@@ -10,6 +10,7 @@ using System.Windows.Shapes;
 using CsvHelper.Configuration;
 using KayMcCormick.Dev;
 using NLog;
+using RibbonLib;
 
 namespace AnalysisControls
 {

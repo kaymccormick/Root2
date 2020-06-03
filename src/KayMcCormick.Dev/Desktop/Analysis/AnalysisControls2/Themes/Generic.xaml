@@ -1,0 +1,98 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:AnalysisControls2">
+    <Style TargetType="{x:Type local:CustomControl1}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:CustomControl1}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+  <Style TargetType="{x:Type analysisControls2:Main1}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type local1:Main1}">
+          <ControlTemplate.Resources>
+            <ResourceDictionary>
+              <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+
+                  Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
+                <ResourceDictionary
+                  Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
+                <ResourceDictionary
+                  Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
+              </ResourceDictionary.MergedDictionaries>
+
+            </ResourceDictionary>
+          </ControlTemplate.Resources>
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Stretch">
+            <Grid AllowDrop="True" x:Name="Grid" VerticalAlignment="Stretch">
+              <Grid.Resources>
+                <local:TestConverter2 x:Key="TestConverter" />
+              </Grid.Resources>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <ToolBarTray Grid.Row="0" Grid.Column="0">
+                <ToolBar Band="1" BandIndex="1">
+                  <TextBlock Text="{Binding CurrentOperation.Desc}" />
+                  <Button Content="Create workspace" Command="kmWpf:WpfAppCommands.CreateWorkspace" />
+                  <Button Content="Create solution" Command="kmWpf:WpfAppCommands.CreateSolution" />
+                  <Button Content="Create project" Command="kmWpf:WpfAppCommands.CreateProject" />
+                </ToolBar>
+              </ToolBarTray>
+              <Border Grid.Row="1" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">
+                <avalondock:DockingManager
+                  DocumentsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.Documents,Mode=TwoWay}"
+                  x:Name="DockingManager" AnchorablesSource="{Binding Anchorables}"
+                  VerticalAlignment="Stretch"
+                  ActiveContent="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.ActiveContent,Mode=TwoWay}">
+                  <avalondock:DockingManager.DocumentHeaderTemplate>
+                    <DataTemplate
+                      DataType="{x:Type avalondock:LayoutDocument}">
+                      <StackPanel Opacity="1.0"
+                                  Orientation="Horizontal">
+                        <Image Source="{Binding IconSource}"
+                               Margin="6,4,4,0" />
+                        <TextBlock Text="{Binding Content.Title,Converter={StaticResource TestConverter}}"
+                                   VerticalAlignment="Center" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </avalondock:DockingManager.DocumentHeaderTemplate>
+                  <avalondock:DockingManager.AnchorableHeaderTemplate>
+                    <DataTemplate
+                      DataType="{x:Type avalondock:LayoutAnchorable}">
+                      <StackPanel Opacity="1.0"
+                                  Orientation="Horizontal">
+                        <Image Source="{Binding IconSource}"
+                               Margin="6,4,4,0" />
+                        <TextBlock Text="{Binding Content.Title}"
+                                   VerticalAlignment="Center" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </avalondock:DockingManager.AnchorableHeaderTemplate>
+                </avalondock:DockingManager>
+              </Border>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

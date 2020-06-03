@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using KayMcCormick.Dev;
+using RibbonLib.Model;
 
 namespace AnalysisControls
 {

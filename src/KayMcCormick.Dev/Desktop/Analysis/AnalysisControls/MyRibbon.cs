@@ -17,6 +17,8 @@ using System.Windows.Controls.Ribbon.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using RibbonLib;
+using RibbonLib.Model;
 
 namespace AnalysisControls
 {

@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using KayMcCormick.Lib.Wpf;
+using RibbonLib.Model;
 
 namespace AnalysisControls
 {

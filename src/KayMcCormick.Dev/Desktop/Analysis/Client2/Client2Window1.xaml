@@ -37,7 +37,7 @@
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
         <ResourceDictionary>
-         <anal:ConvertButton x:Key="ConvertButton"/>
+         
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
       <local:TabItemTemplateSelector x:Key="TabItemTemplateSelector" />
@@ -63,50 +63,14 @@
     <Grid.RenderTransform>
       <ScaleTransform ScaleX="2" ScaleY="2" />
     </Grid.RenderTransform>
-    <anal:MyGrid>
-      <anal:MyGrid.RowDefinitions>
+    <Grid>
+      <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
-      </anal:MyGrid.RowDefinitions>
-      <Ribbon x:Name="myRibbon"
-                     DataContext="{Binding ViewModel.PrimaryRibbon}"
-                     Background="{Binding Background}"
-                     SelectedItem="{Binding SelectedItem,Mode=TwoWay}"
-                     ContextualTabGroupsSource="{Binding ContextualTabGroups}"
-                     ItemTemplateSelector="{StaticResource TabItemTemplateSelector}"
-                     
-                     ItemsSource="{Binding RibbonItems}"
-                     
-                     TabHeaderTemplate="{StaticResource AppRibbonModelTabTemplate}"
-                     ContextualTabGroupHeaderTemplate="{StaticResource AppContextualTabGroupHeaderTemplate}"
-                     ItemContainerStyle="{StaticResource AppRibbonItemContainerStyle}"
-                     BorderBrush="{Binding BorderBrush}"
-                     
-                     HelpPaneContent="{Binding HelpPaneContent}">
-        <!-- ItemsPanel="{StaticResource AppMyRibbonItemsPanelTemplate}" -->
-        <!-- ItemContainerStyle="{StaticResource AppMyRibbonItemContainerStyle}" -->
-        <!-- TabHeaderStyle="{StaticResource AppRibbonTabHeaderStyle}" -->
-<Ribbon.Resources>
-          <anal:DirectoryInfoConverter x:Key="DirectoryInfoConverter"/>
-          <DataTemplate DataType="{x:Type io:FileInfo}">
-<RibbonMenuItem Header="{Binding Name}"></RibbonMenuItem>
-          </DataTemplate>
-          <DataTemplate DataType="{x:Type io:DirectoryInfo}">
-            <RibbonMenuItem Header="{Binding Name}"  ItemContainerTemplateSelector="{StaticResource ComboBoxTemplateSelector}"
-                                      UsesItemContainerTemplate="True"
-                                      ItemsSource="{Binding Converter={StaticResource DirectoryInfoConverter}}">
-            </RibbonMenuItem>
-          </DataTemplate>
-        </Ribbon.Resources>
-        <Ribbon.QuickAccessToolBar>
-          <RibbonQuickAccessToolBar  x:Name="QAT"  DataContext="{Binding Path=QuickAccessToolBar}"  ItemsSource="{Binding Items}" CustomizeMenuButton="{Binding CustomizeMenuButton,Converter={StaticResource ConvertButton}}"/>
-        </Ribbon.QuickAccessToolBar>
-        <Ribbon.ApplicationMenu>
-          <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" FooterPaneContent="{Binding AppMenu.FooterPaneContent}"/>
-        </Ribbon.ApplicationMenu>
-      </Ribbon>
+      </Grid.RowDefinitions>
+      
       <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"   ViewModel="{kmWpf:Resolve viewModel:Main1Model}" ViewModel2="{kmWpf:Resolve viewModel:Main1Mode2}"/>
-    </anal:MyGrid>
+    </Grid>
   </Grid>
 
 </RibbonWindow>

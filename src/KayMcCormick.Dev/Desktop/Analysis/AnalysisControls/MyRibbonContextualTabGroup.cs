@@ -8,6 +8,7 @@ using System.Windows.Controls.Ribbon;
 using System.Windows.Data;
 using KayMcCormick.Dev;
 using NLog;
+using RibbonLib;
 
 namespace AnalysisControls
 {

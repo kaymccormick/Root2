@@ -1,4 +1,7 @@
-﻿namespace AnalysisControls.Ribbon2
+﻿using AnalysisControls.Properties;
+using RibbonLib.Model;
+
+namespace AnalysisControls.Ribbon2
 {
     /// <summary>
     /// 

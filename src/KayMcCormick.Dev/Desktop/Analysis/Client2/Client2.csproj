@@ -250,7 +250,7 @@
       <Version>4.5.4</Version>
     </PackageReference>
     <PackageReference Include="XamlFlair.WPF">
-      <Version>1.1.4</Version>
+      <Version>1.1.5</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -265,6 +265,10 @@
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KayMcCormick.Dev.csproj">
       <Project>{6FCD1EF9-8936-4C8B-9F36-255CCE291CA9}</Project>
       <Name>KayMcCormick.Dev</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\UI\RibbonLib\RibbonLib.csproj">
+      <Project>{42CC9D74-3C3E-43FF-9900-B28A6D133156}</Project>
+      <Name>RibbonLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\WpfLib\WpfLib.csproj">
       <Project>{2012CAA5-09C0-4E58-81B4-5007C9D31DB9}</Project>

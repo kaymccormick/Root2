@@ -8,6 +8,7 @@ using Autofac;
 using KayMcCormick.Dev;
 using NLog;
 using NLog.Fluent;
+using RibbonLib.Model;
 
 namespace AnalysisControls.TypeDescriptors
 {
@@ -50,7 +51,7 @@ namespace AnalysisControls.TypeDescriptors
             if (Type == typeof(RibbonModelGroupItemCollection))
             {
                 DebugUtils.WriteLine(editorBaseType.ToString());
-                return new GroupItemCollectionEditor();
+                //return new GroupItemCollectionEditor();
             }
             return null;
         }

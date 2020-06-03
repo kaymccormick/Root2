@@ -1,6 +1,10 @@
 ﻿using Autofac.Features.Metadata;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using KayMcCormick.Dev;
+using KayMcCormick.Lib.Wpf.Command;
 
 namespace RibbonLib.Model
 {

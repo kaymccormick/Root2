@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:AnalysisControls"
                     xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
@@ -40,7 +40,7 @@
     <Setter Property="ContentPresenter.Content" Value="{Binding Header,NotifyOnTargetUpdated=True}" />
     <Setter Property="Visibility" Value="{Binding Visibility,Mode=TwoWay,NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True}" />
   </Style>
-  <Style TargetType="{x:Type RibbonGroup}">
+x  <Style TargetType="{x:Type RibbonGroup}">
     <Setter Property="ItemsSource" Value="{Binding Items,NotifyOnTargetUpdated=True}" />
     <Setter Property="IsDropDownOpen" Value="{Binding IsDropDownOpen,NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True,Mode=TwoWay}"/>
     <Setter Property="Background" Value="{Binding Background,Mode=TwoWay,NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True}"/>
@@ -182,7 +182,7 @@
   <HierarchicalDataTemplate DataType="{x:Type model:RibbonModelMenuItem}" ItemsSource="{Binding Items}">
     <ContentControl Content="{Binding Header}" />
   </HierarchicalDataTemplate>
-  <DataTemplate DataType="{x:Type ribbonModel:RibbonModelRadioButton}">
+  <DataTemplate DataType="{x:Type local:RibbonModelRadioButton}">
     <RibbonRadioButton Label="{Binding Label}" IsChecked="{Binding IsChecked}" />
   </DataTemplate>
   <DataTemplate DataType="{x:Type ribbonModel:RibbonModelDropZone}">

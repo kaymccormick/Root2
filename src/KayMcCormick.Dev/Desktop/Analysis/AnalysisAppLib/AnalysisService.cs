@@ -68,7 +68,7 @@ namespace AnalysisAppLib
                         .Location
                 ));
             }
-            var compilation = CSharpCompilation.Create ( assemblyName ).WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, true, null,null,null,null,OptimizationLevel.Debug,false,true,null,null,default(ImmutableArray<byte>), null, Platform.AnyCpu, ReportDiagnostic.Default, 4))
+            var compilation = CSharpCompilation.Create ( assemblyName ).WithOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, true, null,null,null,null,OptimizationLevel.Debug,false,true,null,null,default(ImmutableArray<byte>), null))
                 .AddReferences (refs)
                                                .AddSyntaxTrees ( syntaxTree ) ;
 

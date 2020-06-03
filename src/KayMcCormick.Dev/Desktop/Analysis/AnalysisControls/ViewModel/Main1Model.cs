@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Management.Automation;
 using System.Reactive.Subjects;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -29,6 +30,7 @@ using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.VisualStudio.Threading;
 using NLog;
 using NPOI.POIFS.Properties;
+using RibbonLib.Model;
 using TablePanel = KayMcCormick.Lib.Wpf.TablePanel;
 using TypeControl = KayMcCormick.Lib.Wpf.TypeControl;
 
@@ -361,6 +363,7 @@ namespace AnalysisControls.ViewModel
             var assembliesDoc = DocModel.CreateInstance();
             assembliesDoc.Title = "PowerShell";
             var powershell = new PowerShellConsole() { };
+            powershell.Loaded += (sender, args) => powershell.Shell?.Host?.SetPrivateData(new PSObject(this));
             var tryFindResource = (ControlTemplate) View.TryFindResource("PowerShellTemplate");
             if (tryFindResource != null) powershell.Template = tryFindResource;
             powershell.ApplyTemplate();
