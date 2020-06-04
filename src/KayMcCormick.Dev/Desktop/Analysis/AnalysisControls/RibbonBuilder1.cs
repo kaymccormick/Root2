@@ -45,16 +45,14 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <returns></returns>
-        public PrimaryRibbonModel BuildRibbon(){
-        JsonSerializerOptions opt= new JsonSerializerOptions();
-            foreach (var optionsConverter in _options.Converters)
-            {
-                opt.Converters.Add(optionsConverter);
-            }
+        public PrimaryRibbonModel BuildRibbon()
+        {
+            var opt = new JsonSerializerOptions();
+            foreach (var optionsConverter in _options.Converters) opt.Converters.Add(optionsConverter);
 
             opt.WriteIndented = true;
             opt.IgnoreNullValues = true;
-            RibbonModelApplicationMenu appMenu=_appMenu;
+            var appMenu = _appMenu;
             var r = new PrimaryRibbonModel
             {
                 AppMenu = appMenu,
@@ -65,11 +63,13 @@ namespace AnalysisControls
                         new RibbonModelItemMenuButton() {Command = WpfAppCommands.CustomizeQAT}
                 }
             };
-            r.QuickAccessToolBar.Items.Add(new RibbonModelButton {Label = "test1",
-            SmallImageSource = "pack://application:,,,/WpfLib;component/Assets/ASPWebSite_16x.png"
+            r.QuickAccessToolBar.Items.Add(new RibbonModelButton
+            {
+                Label = "test1",
+                SmallImageSource = "pack://application:,,,/WpfLib;component/Assets/ASPWebSite_16x.png"
             });
             var dockPanel = new DockPanel {LastChildFill = false};
-          //  dockPanel.Children.Add(new RibbonButton {Label = "Quit"});
+            //  dockPanel.Children.Add(new RibbonButton {Label = "Quit"});
             appMenu.FooterPaneContent = dockPanel;
             var ribbonModelProviders = _grpProviders;
             foreach (var ribbonModelProvider in ribbonModelProviders)
@@ -77,39 +77,35 @@ namespace AnalysisControls
                 var t = ribbonModelProvider.ProvideModelItem();
                 t.RibbonModel = r;
                 r.ContextualTabGroups.Add(t);
-		
             }
 
             r.AppMenu.Items.Add(new RibbonModelAppMenuItem {Header = "Open", Command = ApplicationCommands.Open});
 
             var HomeTab = RibbonTabFactory();
-        HomeTab.Header = "Home";
-        var PasteButton = new RibbonModelButton { Label = "Paste", Command = ApplicationCommands.Paste };
-	    var Group1 = new RibbonModelGroup { Header = "Paste" };
-        Group1.Items.Add(new RibbonModelButton {Label = "Open", Command = ApplicationCommands.Open});
+            HomeTab.Header = "Home";
+            var PasteButton = new RibbonModelButton {Label = "Paste", Command = ApplicationCommands.Paste};
+            var Group1 = new RibbonModelGroup {Header = "Paste"};
+            Group1.Items.Add(new RibbonModelButton {Label = "Open", Command = ApplicationCommands.Open});
 
-        
-	    Group1.Items.Add(PasteButton);
-	    HomeTab.ItemsCollection.Add(Group1);
-	    r.RibbonItems.Add(HomeTab);
-	    
+
+            Group1.Items.Add(PasteButton);
+            HomeTab.ItemsCollection.Add(Group1);
+            r.RibbonItems.Add(HomeTab);
+
             foreach (var ribbonModelProvider in _tabProviders)
             {
                 var item = ribbonModelProvider.ProvideModelItem();
                 item.RibbonModel = r;
-                if (item.ContextualTabGroupHeader != null)
-                {
-                    item.Visibility = Visibility.Collapsed;
-                }
+                if (item.ContextualTabGroupHeader != null) item.Visibility = Visibility.Collapsed;
                 r.RibbonItems.Add(item);
             }
 
             // var file = @"C:\temp\ribbon.xaml";
             // using (var w = XmlWriter.Create(file, new XmlWriterSettings() {Indent = true}))
             // {
-                // ResourceDictionary d = new ResourceDictionary();
-                // d["Ribbon0"] = r;
-                // XamlWriter.Save(d, w);
+            // ResourceDictionary d = new ResourceDictionary();
+            // d["Ribbon0"] = r;
+            // XamlWriter.Save(d, w);
             // }
 
             // var json = JsonSerializer.Serialize(r, opt);

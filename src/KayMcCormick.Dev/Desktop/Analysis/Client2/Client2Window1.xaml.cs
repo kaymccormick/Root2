@@ -63,6 +63,7 @@ namespace Client2
             AddHandler(Binding.SourceUpdatedEvent, new EventHandler<DataTransferEventArgs>(OnSourceUpdated));
             AddHandler(Binding.TargetUpdatedEvent, new EventHandler<DataTransferEventArgs>(OnTargetUpdated));
             ViewModel = viewModel;
+            DataContext = ViewModel.PrimaryRibbon;
             SetValue(AttachedProperties.LifetimeScopeProperty, scope);
             InitializeComponent();
             _viewModel.Main1Model = Main1?.ViewModel;

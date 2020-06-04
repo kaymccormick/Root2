@@ -552,6 +552,10 @@
       <Project>{11221345-bc85-488c-8e5c-395c0f848682}</Project>
       <Name>AvalonDock</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\..\RibbonLib\src\RibbonLibCore\RibbonLibCore.csproj">
+      <Project>{7ADB90F2-ED4D-4639-8940-E6F5F528A04A}</Project>
+      <Name>RibbonLibCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\WpfCustomControlLibrary1\Terminal1\Terminal1.csproj">
       <Project>{c4442596-81df-48b8-90d5-8accd574ca46}</Project>
       <Name>Terminal1</Name>
@@ -567,10 +571,6 @@
     <ProjectReference Include="..\..\Ui\KmDevWpfControls\KmDevWpfControls.csproj">
       <Project>{62D5B790-0E4F-4552-88A1-5390DB6F31F2}</Project>
       <Name>KmDevWpfControls</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\UI\RibbonLib\RibbonLib.csproj">
-      <Project>{42cc9d74-3c3e-43ff-9900-b28a6d133156}</Project>
-      <Name>RibbonLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\WpfLib\WpfLib.csproj">
       <Project>{2012CAA5-09C0-4E58-81B4-5007C9D31DB9}</Project>

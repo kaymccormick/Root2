@@ -380,8 +380,7 @@
       </Menu>
     <Button Grid.Column="0"  FontSize="32" Content="&lt;" Command="MoveUp" Grid.Row="1" />
     <Border Grid.Row="1" BorderBrush="Aqua" BorderThickness="3" Grid.Column="1">
-      <anal:SyntaxTypeComboBox x:Name="Selector"  ItemsSource="{Binding SyntaxTypesModel.SyntaxTypeInfos}"  DisplayMode="Nested" SyntaxTypesModel="{Binding SyntaxTypesModel}" DisplayMemberPath="{Binding Title}"/>
-
+      
     </Border>
     <Button FontSize="32" Grid.Row="1" Grid.Column="2" Content="&gt;" Command="MoveDown" />
     <TabPanel Grid.Column="0"  Grid.Row="2" Grid.ColumnSpan="3">

@@ -8,6 +8,7 @@ using RibbonLib.Model;
 
 namespace AnalysisControls.Ribbon2
 {
+#if false
     /// <summary>
     /// 
     /// </summary>
@@ -157,4 +158,5 @@ namespace AnalysisControls.Ribbon2
             }
         }
     }
+#endif
 }

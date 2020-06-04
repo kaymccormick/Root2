@@ -15,10 +15,10 @@
             </Setter.Value>
         </Setter>
     </Style>
-  <Style TargetType="{x:Type analysisControls2:Main1}">
+  <Style TargetType="{x:Type local:Main1}">
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="{x:Type local1:Main1}">
+        <ControlTemplate TargetType="{x:Type local:Main1}">
           <ControlTemplate.Resources>
             <ResourceDictionary>
               <ResourceDictionary.MergedDictionaries>

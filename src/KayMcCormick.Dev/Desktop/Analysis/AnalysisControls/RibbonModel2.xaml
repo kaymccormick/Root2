@@ -3,8 +3,7 @@
                     xmlns:local="clr-namespace:AnalysisControls"
                     xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
                     xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
-                    xmlns:ribbonModel="clr-namespace:RibbonLib.Model;assembly=RibbonLib"
-                    xmlns:model="clr-namespace:RibbonLib.Model;assembly=RibbonLib">
+                    xmlns:ribbonModel="clr-namespace:RibbonLib.Model;assembly=RibbonLibCore">
   <local:RibbonModelTemplateSelector x:Key="RibbonModelTemplateSelector" />
   <local:TestConverter2 x:Key="TestConverter2" />
   <kmWpf:GetTypeConverter x:Key="GetTypeConverter" />
@@ -179,7 +178,7 @@
     <RibbonControlGroup Padding="10" Margin="5" BorderThickness="4"
                         ItemsSource="{Binding Items}" />
   </HierarchicalDataTemplate>
-  <HierarchicalDataTemplate DataType="{x:Type model:RibbonModelMenuItem}" ItemsSource="{Binding Items}">
+  <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelMenuItem}" ItemsSource="{Binding Items}">
     <ContentControl Content="{Binding Header}" />
   </HierarchicalDataTemplate>
   <DataTemplate DataType="{x:Type ribbonModel:RibbonModelRadioButton}">
@@ -206,7 +205,7 @@
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelGroup}" ItemsSource="{Binding Items}" ItemTemplateSelector="{StaticResource RibbonModelTemplateSelector}">
     <TextBlock Foreground="White" Background="BlueViolet" Text="{Binding Header,NotifyOnTargetUpdated=True}" />
   </HierarchicalDataTemplate>
-  <HierarchicalDataTemplate DataType="{x:Type ribbonModel:CompilationGroup}" ItemsSource="{Binding Items}">
+  <HierarchicalDataTemplate DataType="{x:Type local:CompilationGroup}" ItemsSource="{Binding Items}">
     <TextBlock Foreground="White" Background="Brown" Text="{Binding Header,NotifyOnTargetUpdated=True}" />
   </HierarchicalDataTemplate>
   <HierarchicalDataTemplate DataType="{x:Type ribbonModel:RibbonModelAppMenuItem}" ItemsSource="{Binding Items}"

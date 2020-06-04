@@ -195,6 +195,10 @@
       <Project>{11221345-bc85-488c-8e5c-395c0f848682}</Project>
       <Name>AvalonDock</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\RibbonLib\src\RibbonLibCore\RibbonLibCore.csproj">
+      <Project>{7ADB90F2-ED4D-4639-8940-E6F5F528A04A}</Project>
+      <Name>RibbonLibCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Desktop\Analysis\AnalysisAppLib\AnalysisAppLib.csproj">
       <Project>{0381D4D0-945E-4340-B974-9D07B2830D4F}</Project>
       <Name>AnalysisAppLib</Name>

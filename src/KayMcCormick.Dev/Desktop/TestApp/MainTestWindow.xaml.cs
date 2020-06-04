@@ -149,7 +149,7 @@ namespace TestApp
 
         private void CommandBinding_OnExecuted3(object sender, ExecutedRoutedEventArgs e)
         {
-            Selector.DisplayMode = SyntaxTypeDisplayMode.Flat;
+            // Selector.DisplayMode = SyntaxTypeDisplayMode.Flat;
         }
 
         public static readonly DependencyProperty SyntaxTypesModelProperty = DependencyProperty.Register(
@@ -163,7 +163,7 @@ namespace TestApp
         
         private void CommandBinding_OnExecuted4(object sender, ExecutedRoutedEventArgs e)
         {
-            Selector.DisplayMode = SyntaxTypeDisplayMode.Nested;
+            // Selector.DisplayMode = SyntaxTypeDisplayMode.Nested;
         }
 
     }

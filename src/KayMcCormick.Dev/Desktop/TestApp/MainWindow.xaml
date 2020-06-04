@@ -157,7 +157,7 @@
           </ComboBox.ItemTemplate>
         </ComboBox>
 
-        <anal:CustomControl2 x:Name="CustomControl2" Grid.ColumnSpan="3" Grid.Row="2" Grid.Column="0" Type="{Binding Type}" HorizontalAlignment="Left" Margin="0"/>
+        <!-- <anal:CustomControl2 x:Name="CustomControl2" Grid.ColumnSpan="3" Grid.Row="2" Grid.Column="0" Type="{Binding Type}" HorizontalAlignment="Left" Margin="0"/> -->
 
       </Grid>
     </TabItem>

@@ -23,9 +23,8 @@
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
           Source="Client2Global.xaml" />
-
         <ResourceDictionary
-          Source="pack://application:,,,/AnalysisControls;component/RibbonModel2.xaml" />
+          Source="pack://application:,,,/RibbonLibCore;component/RibbonStyles.xaml" />
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/AppRibbonResources.xaml" />
 
@@ -68,7 +67,7 @@
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
-      
+      <Ribbon DataContext="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=RibbonWindow,AncestorLevel=1},Path=ViewModel.PrimaryRibbon}"/>
       <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"   ViewModel="{kmWpf:Resolve viewModel:Main1Model}" ViewModel2="{kmWpf:Resolve viewModel:Main1Mode2}"/>
     </Grid>
   </Grid>
