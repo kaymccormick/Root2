@@ -1820,7 +1820,8 @@ namespace ProjTests
                 {
                     var infos = new List<RegionInfo>();
                     context.MyTextLine = myTextLine;
-                    FormattingHelper.HandleTextLine(infos, ref context, out var lineInfo, null);
+                    ILineDrawer nulldrawer = new NullDrawer();
+                    FormattingHelper.HandleTextLine(infos, ref context, out var lineInfo, nulldrawer);
 
                     allLineInfos.Add(lineInfo);
                 }
@@ -3024,6 +3025,29 @@ namespace ProjTests
         private void TdOnTraceListenerCreated(object sender, TraceListenerCreatedEventArgs e)
         {
             if (e.Instance is TestListener t) _elementTextFormatterControl.Source = t.Elements;
+        }
+    }
+
+    public class NullDrawer : ILineDrawer
+    {
+        /// <inheritdoc />
+        public void PrepareDrawLines(LineContext lineContext, bool clear)
+        {
+        }
+
+        /// <inheritdoc />
+        public void PrepareDrawLine(LineContext lineContext)
+        {
+        }
+
+        /// <inheritdoc />
+        public void DrawLine(LineContext lineContext)
+        {
+        }
+
+        /// <inheritdoc />
+        public void EndDrawLines(LineContext lineContext)
+        {
         }
     }
 

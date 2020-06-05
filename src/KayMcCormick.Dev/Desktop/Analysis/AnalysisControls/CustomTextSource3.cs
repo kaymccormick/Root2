@@ -86,6 +86,10 @@ namespace AnalysisControls
                 if (col[xx] is CustomTextCharacters tc)
                 {
                     var z = textSourceCharacterIndex - tc.Index;
+                    if (z > 0)
+                    {
+
+                    }
                     var zz = tc.Length - z;
 
                     var tf = tc.Properties?.Typeface;

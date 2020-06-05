@@ -690,7 +690,7 @@ namespace AnalysisControls.ViewModel
             {
                 Title = Path.GetFileNameWithoutExtension(file)
             };
-            _docHost.AddDocument(doc);
+                _docHost.AddDocument(doc);
             _docHost.SetActiveDocument(doc);
 
             return doc;

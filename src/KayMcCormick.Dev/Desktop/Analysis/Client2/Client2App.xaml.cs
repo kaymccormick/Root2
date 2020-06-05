@@ -84,7 +84,7 @@ namespace Client2
         {
             base.OnStartup(e);
 
-            DebugUtils.DisplayCatgories = (DebugCategory) (-1);
+            DebugUtils.DisplayCatgories = (DebugCategory) (0);
             // Client2Window1 w = new Client2Window1(null, new ClientModel(), null);
             // w.Show();
             // return;

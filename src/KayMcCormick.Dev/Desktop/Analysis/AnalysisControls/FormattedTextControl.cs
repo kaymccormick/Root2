@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using System.Windows.Shapes;
 using AnalysisAppLib;
+using AvalonDock.Controls;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Attributes;
 using KayMcCormick.Lib.Wpf;
@@ -209,7 +210,7 @@ namespace AnalysisControls
         /// </summary>
         public static readonly DependencyProperty HoverSyntaxNodeProperty = DependencyProperty.Register(
             "HoverSyntaxNode", typeof(SyntaxNode), typeof(FormattedTextControl),
-            new PropertyMetadata(default(SyntaxNode), new PropertyChangedCallback(OnHoverSyntaxNodeUpdated) ));
+            new PropertyMetadata(default(SyntaxNode), new PropertyChangedCallback(OnHoverSyntaxNodeUpdated)));
 
         private static void OnHoverSyntaxNodeUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -387,7 +388,6 @@ namespace AnalysisControls
         public FormattedTextControl()
 
         {
-            
             PixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
             CommandBindings.Add(new CommandBinding(WpfAppCommands.SerializeContents, Executed));
             TypefaceManager = new DefaultTypefaceManager();
@@ -423,7 +423,7 @@ namespace AnalysisControls
                 throw new AppInvalidOperationException("Node is not within syntax tree");
             DebugUtils.WriteLine("Creating new " + nameof(SyntaxNodeCustomTextSource), DebugCategory.TextFormatting);
             TextSource = CreateAndInitTextSource(PixelsPerDip, TypefaceManager);
-            _errorTextSource = Errors.Any() ? new ErrorsTextSource(PixelsPerDip, Errors,TypefaceManager) : null;
+            _errorTextSource = Errors.Any() ? new ErrorsTextSource(PixelsPerDip, Errors, TypefaceManager) : null;
             _baseProps = TextSource.BaseProps;
             UpdateFormattedText();
         }
@@ -550,7 +550,7 @@ namespace AnalysisControls
                     _textCaret.SetValue(Canvas.TopProperty, top);
                     _textCaret.SetValue(Canvas.LeftProperty, InsertionCharacter.Bounds.Left);
 
-                    
+
                     break;
                 }
             }
@@ -685,8 +685,10 @@ namespace AnalysisControls
             if (e.Property.Name == "DesignerView1")
             {
                 DebugUtils.WriteLine($"{e.Property.Name} {e.OldValue} = {e.NewValue}", DebugCategory.TextFormatting);
-                foreach (var m in e.NewValue.GetType().GetMethods()) DebugUtils.WriteLine(m.ToString(), DebugCategory.TextFormatting);
-                foreach (var ii in e.NewValue.GetType().GetInterfaces()) DebugUtils.WriteLine(ii.ToString(), DebugCategory.TextFormatting);
+                foreach (var m in e.NewValue.GetType().GetMethods())
+                    DebugUtils.WriteLine(m.ToString(), DebugCategory.TextFormatting);
+                foreach (var ii in e.NewValue.GetType().GetInterfaces())
+                    DebugUtils.WriteLine(ii.ToString(), DebugCategory.TextFormatting);
             }
             else if (e.Property.Name == "InstanceBuilderContext")
             {
@@ -714,6 +716,9 @@ namespace AnalysisControls
         {
             try
             {
+                Geometries.Clear();
+                GeoTuples.Clear();
+
                 // Make sure all UI is loaded
                 if (!UiLoaded)
                     return;
@@ -743,7 +748,6 @@ namespace AnalysisControls
                 var line = 0;
                 while (textStorePosition < TextSource.Length)
                 {
-
                     using (var myTextLine = Formatter.FormatLine(
                         TextSource,
                         textStorePosition,
@@ -765,7 +769,7 @@ namespace AnalysisControls
                         LineInfos.Add(lineInfo);
                         var dd = new DrawingGroup();
                         var dc1 = dd.Open();
-                        myTextLine.Draw(dc1, new Point(0, 0), InvertAxes.None);
+                        myTextLine.Draw(dc1, new Point(0, 0), InvertAxes.Vertical);
                         dc1.Close();
                         lineInfo.Size = new Size(myTextLine.WidthIncludingTrailingWhitespace, myTextLine.Height);
                         lineInfo.Origin = new Point(linePosition.X, linePosition.Y);
@@ -796,6 +800,10 @@ namespace AnalysisControls
                         var lineRegions = new List<RegionInfo>();
 
                         var lineString = "";
+                        var xoffset = lineInfo.Origin.X;
+                        var xoffsets = new List<double>();
+
+                        var curOffset = linePosition;
                         foreach (var rect in myTextLine.GetIndexedGlyphRuns())
                         {
                             var rectGlyphRun = rect.GlyphRun;
@@ -807,14 +815,22 @@ namespace AnalysisControls
                                     new List<CharacterCell>();
                                 var emSize = rectGlyphRun.FontRenderingEmSize;
 
+
                                 if (rectGlyphRun.Characters.Count > rectGlyphRun.GlyphIndices.Count)
-                                {
                                     DebugUtils.WriteLine($"Character mismatch");
-                                }
+
+                                var xx = new RectangleGeometry(new Rect(curOffset,
+                                    new Size(rectGlyphRun.AdvanceWidths.Sum(),
+                                        rectGlyphRun.GlyphTypeface.Height * rectGlyphRun.FontRenderingEmSize)));
+                                curOffset.Y += myTextLine.Height;
+                                var x = new CombinedGeometry();
 
                                 for (var i = 0; i < rectGlyphRun.GlyphIndices.Count; i++)
                                 {
                                     var advanceWidth = rectGlyphRun.AdvanceWidths[i];
+
+                                    xoffsets.Add(xoffset);
+                                    xoffset += advanceWidth;
                                     size.Width += advanceWidth;
                                     var gi = rectGlyphRun.GlyphIndices[i];
                                     var c = rectGlyphRun.Characters[i];
@@ -896,6 +912,9 @@ namespace AnalysisControls
                                     };
                                     foreach (var ch in tuple.Characters) ch.Region = tuple;
                                     lineRegions.Add(tuple);
+
+                                    GeoTuples.Add(Tuple.Create(xx, tuple));
+
                                     if (prevRegion != null) prevRegion.NextRegion = tuple;
                                     prevRegion = tuple;
                                     Infos.Add(tuple);
@@ -955,6 +974,8 @@ namespace AnalysisControls
                 throw;
             }
         }
+
+        public GeometryCollection Geometries { get; set; } = new GeometryCollection(200);
 
         private void UpdateCaretPosition()
         {
@@ -1055,229 +1076,286 @@ namespace AnalysisControls
         private int _selectionEnd;
         private SyntaxNode _startNode;
         private SyntaxNode _endNode;
+        private Rectangle geometryRectangle = new Rectangle();
 
         /// <inheritdoc />
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            if (SelectionEnabled && e.LeftButton == MouseButtonState.Pressed)
-            {
+            // if (SelectionEnabled && e.LeftButton == MouseButtonState.Pressed)
+            // {
             var point = e.GetPosition(_rectangle);
             var zz = Infos.Where(x => x.BoundingRect.Contains(point)).ToList();
             if (zz.Count > 1)
                 DebugUtils.WriteLine("Multiple regions matched", DebugCategory.TextFormatting);
             //    throw new AppInvalidOperationException();
 
-            if (!zz.Any())
+            // Retrieve the coordinate of the mouse position.
+
+
+            // Perform the hit test against a given portion of the visual object tree.
+            var drawingVisual = new DrawingVisual();
+            var drawingVisualDrawing = new DrawingGroup();
+            var dc = drawingVisual.RenderOpen();
+
+            // foreach (var g in GeoTuples)
+            // {
+            // dc.DrawGeometry(Brushes.Black, null, g);
+            // }
+
+            foreach (var g in GeoTuples)
             {
-                HoverColumn = 0;
-                HoverSyntaxNode = null;
-                HoverOffset = 0;
-                HoverRegionInfo = null;
-                HoverRow = 0;
-                HoverSymbol = null;
-                HoverToken = null;
+                if (g.Item1.Rect.Contains(point))
+                {
+                    Debug.WriteLine(g.Item2.SyntaxNode?.Kind().ToString() ?? "");
+                }
+                // Debug.WriteLine(((RectangleGeometry)g).Rect);
+
+                //
             }
 
-            foreach (var tuple in zz)
-            {
-                HoverRegionInfo = tuple;
-                if (tuple.Trivia.HasValue) DebugUtils.WriteLine(tuple.ToString(), DebugCategory.TextFormatting);
+            dc.Close();
 
-                if (tuple.SyntaxNode != HoverSyntaxNode)
+
+                var result = VisualTreeHelper.HitTest(drawingVisual, point);
+
+                if (result != null)
                 {
-                    if (ToolTip is ToolTip tt) tt.IsOpen = false;
-                    HoverSyntaxNode = tuple.SyntaxNode;
+                    // Perform action on hit visual object.
+                }
+
+                if (!zz.Any())
+                {
+                    HoverColumn = 0;
+                    HoverSyntaxNode = null;
+                    HoverOffset = 0;
+                    HoverRegionInfo = null;
+                    HoverRow = 0;
+                    HoverSymbol = null;
+                    HoverToken = null;
+                }
+
+                foreach (var tuple in zz)
+                {
+                    HoverRegionInfo = tuple;
+                    if (tuple.Trivia.HasValue) DebugUtils.WriteLine(tuple.ToString(), DebugCategory.TextFormatting);
+
+                    if (tuple.SyntaxNode != HoverSyntaxNode)
+                    {
+                        if (ToolTip is ToolTip tt) tt.IsOpen = false;
+                        HoverSyntaxNode = tuple.SyntaxNode;
+                        if (tuple.SyntaxNode != null)
+                        {
+                            ISymbol sym = null;
+                            IOperation operation = null;
+                            if (Model != null)
+                                try
+                                {
+                                    sym = Model?.GetDeclaredSymbol(tuple.SyntaxNode);
+                                    operation = Model.GetOperation(tuple.SyntaxNode);
+                                    switch ((CSharpSyntaxNode)tuple.SyntaxNode)
+                                    {
+                                        case AssignmentExpressionSyntax assignmentExpressionSyntax:
+                                            break;
+                                        case ForEachStatementSyntax forEachStatementSyntax:
+                                            var info = Model.GetForEachStatementInfo(forEachStatementSyntax);
+                                            Debug.WriteLine(info.ElementType.ToDisplayString());
+                                            break;
+                                        case ForEachVariableStatementSyntax forEachVariableStatementSyntax:
+                                            break;
+                                        case MethodDeclarationSyntax methodDeclarationSyntax:
+                                            
+                                            break;
+                                        case TryStatementSyntax tryStatementSyntax:
+                                            break;
+                                        case StatementSyntax statementSyntax:
+                                            break;
+                                        default:
+                                            throw new ArgumentOutOfRangeException();
+                                    }
+                                }
+                                catch
+                                {
+                                    // ignored
+                                }
+
+                            if (sym != null)
+                            {
+                                HoverSymbol = sym;
+                                DebugUtils.WriteLine(sym.Kind.ToString(), DebugCategory.TextFormatting);
+                            }
+
+                            var node = tuple.SyntaxNode;
+                            var nodes = new Stack<SyntaxNodeDepth>();
+                            var depth = 0;
+                            while (node != null)
+                            {
+                                node = node.Parent;
+                                depth++;
+                            }
+
+                            depth--;
+                            node = tuple.SyntaxNode;
+                            while (node != null)
+                            {
+                                nodes.Push(new SyntaxNodeDepth {SyntaxNode = node, Depth = depth});
+                                node = node.Parent;
+                                depth--;
+                            }
+
+
+                            var content = new CodeToolTipContent()
+                                {Symbol = sym, SyntaxNode = tuple.SyntaxNode, Nodes = nodes, Operation = operation};
+                            var template =
+                                TryFindResource(new DataTemplateKey(typeof(CodeToolTipContent))) as DataTemplate;
+                            var toolTip = new ToolTip {Content = content, ContentTemplate = template};
+                            ToolTip = toolTip;
+                            toolTip.IsOpen = true;
+                        }
+                    }
+
                     if (tuple.SyntaxNode != null)
                     {
-                        ISymbol sym = null;
-                        IOperation operation = null;
-                        if (Model != null)
-                            try
-                            {
-                                sym = Model?.GetDeclaredSymbol(tuple.SyntaxNode);
-                                operation = Model.GetOperation(tuple.SyntaxNode);
-                                
-                            }
-                            catch
-                            {
-                                // ignored
-                            }
-
-                        if (sym != null)
-                        {
-                            HoverSymbol = sym;
-                            DebugUtils.WriteLine(sym.Kind.ToString(), DebugCategory.TextFormatting);
-                        }
-
-                        var node = tuple.SyntaxNode;
-                        var nodes = new Stack<SyntaxNodeDepth>();
-                        var depth = 0;
-                        while (node != null)
-                        {
-                            node = node.Parent;
-                            depth++;
-                        }
-
-                        depth--;
-                        node = tuple.SyntaxNode;
-                        while (node != null)
-                        {
-                            nodes.Push(new SyntaxNodeDepth {SyntaxNode = node, Depth = depth});
-                            node = node.Parent;
-                            depth--;
-                        }
-
-
-                        var content = new CodeToolTipContent()
-                            {Symbol = sym, SyntaxNode = tuple.SyntaxNode, Nodes = nodes, Operation = operation};
-                        var template = TryFindResource(new DataTemplateKey(typeof(CodeToolTipContent))) as DataTemplate;
-                        var toolTip = new ToolTip {Content = content, ContentTemplate = template};
-                        ToolTip = toolTip;
-                        toolTip.IsOpen = true;
                     }
-                }
 
-                if (tuple.SyntaxNode != null)
-                {
-                }
+                    HoverToken = tuple.SyntaxToken;
 
-                HoverToken = tuple.SyntaxToken;
-
-                var cellIndex = tuple.Characters.FindIndex(zx => zx.Bounds.Contains(point));
-                if (cellIndex != -1)
-                {
-                    var cell = tuple.Characters[cellIndex];
-
-                    var first = cell;
-                    var item2 = first.Point;
-
-                    var item2Y = (int) item2.Y;
-                    if (item2Y >= _chars.Count)
+                    var cellIndex = tuple.Characters.FindIndex(zx => zx.Bounds.Contains(point));
+                    if (cellIndex != -1)
                     {
-                        DebugUtils.WriteLine("out of bounds", DebugCategory.TextFormatting);
-                    }
-                    else
-                    {
-                        var chars = _chars[item2Y];
-                        DebugUtils.WriteLine("y is " + item2Y, DebugCategory.MouseEvents);
-                        var item2X = (int) item2.X;
-                        if (item2X >= chars.Count)
+                        var cell = tuple.Characters[cellIndex];
+
+                        var first = cell;
+                        var item2 = first.Point;
+
+                        var item2Y = (int) item2.Y;
+                        if (item2Y >= _chars.Count)
                         {
-                            //DebugUtils.WriteLine("out of bounds", DebugCategory.TextFormatting);
+                            DebugUtils.WriteLine("out of bounds", DebugCategory.TextFormatting);
                         }
                         else
                         {
-                            var ch = chars[item2X];
-                            DebugUtils.WriteLine("Cell is " + item2 + " " + ch, DebugCategory.MouseEvents);
-                            var newOffset = tuple.Offset + cellIndex;
-                            HoverOffset = newOffset;
-                            HoverColumn = (int) item2.X;
-                            HoverRow = (int) item2.Y;
-                            if (SelectionEnabled && IsSelecting)
+                            var chars = _chars[item2Y];
+                            DebugUtils.WriteLine("y is " + item2Y, DebugCategory.MouseEvents);
+                            var item2X = (int) item2.X;
+                            if (item2X >= chars.Count)
                             {
-                                if (_selectionGeometry != null) _textDest.Children.Remove(_selectionGeometry);
-                                DebugUtils.WriteLine("Calculating selection", DebugCategory.TextFormatting);
-
-                                var group = new DrawingGroup();
-
-                                int begin;
-                                int end;
-                                if (_startOffset < newOffset)
+                                //DebugUtils.WriteLine("out of bounds", DebugCategory.TextFormatting);
+                            }
+                            else
+                            {
+                                var ch = chars[item2X];
+                                DebugUtils.WriteLine("Cell is " + item2 + " " + ch, DebugCategory.MouseEvents);
+                                var newOffset = tuple.Offset + cellIndex;
+                                HoverOffset = newOffset;
+                                HoverColumn = (int) item2.X;
+                                HoverRow = (int) item2.Y;
+                                if (SelectionEnabled && IsSelecting)
                                 {
-                                    begin = _startOffset;
-                                    end = newOffset;
-                                }
-                                else
-                                {
-                                    begin = newOffset;
-                                    end = _startOffset;
-                                }
+                                    if (_selectionGeometry != null) _textDest.Children.Remove(_selectionGeometry);
+                                    DebugUtils.WriteLine("Calculating selection", DebugCategory.TextFormatting);
 
-                                var green = new SolidColorBrush(Colors.Green) {Opacity = .2};
-                                var blue = new SolidColorBrush(Colors.Blue) {Opacity = .2};
-                                var red = new SolidColorBrush(Colors.Red) {Opacity = .2};
-                                foreach (var regionInfo in Infos.Where(info =>
-                                    info.Offset <= begin && info.Offset + info.Length > begin ||
-                                    info.Offset >= begin && info.Offset + info.Length <= end))
-                                {
-                                    DebugUtils.WriteLine(
-                                        $"Region offset {regionInfo.Offset} : Length {regionInfo.Length}", DebugCategory.TextFormatting);
-                                    if (regionInfo.Offset <= begin)
+                                    var group = new DrawingGroup();
+
+                                    int begin;
+                                    int end;
+                                    if (_startOffset < newOffset)
                                     {
-                                        var takeNum = begin - regionInfo.Offset;
-                                        DebugUtils.WriteLine("Taking " + takeNum, DebugCategory.TextFormatting);
-                                        foreach (var tuple1 in regionInfo.Characters.Take(takeNum))
+                                        begin = _startOffset;
+                                        end = newOffset;
+                                    }
+                                    else
+                                    {
+                                        begin = newOffset;
+                                        end = _startOffset;
+                                    }
+
+                                    var green = new SolidColorBrush(Colors.Green) {Opacity = .2};
+                                    var blue = new SolidColorBrush(Colors.Blue) {Opacity = .2};
+                                    var red = new SolidColorBrush(Colors.Red) {Opacity = .2};
+                                    foreach (var regionInfo in Infos.Where(info =>
+                                        info.Offset <= begin && info.Offset + info.Length > begin ||
+                                        info.Offset >= begin && info.Offset + info.Length <= end))
+                                    {
+                                        DebugUtils.WriteLine(
+                                            $"Region offset {regionInfo.Offset} : Length {regionInfo.Length}",
+                                            DebugCategory.TextFormatting);
+                                        if (regionInfo.Offset <= begin)
                                         {
-                                            DebugUtils.WriteLine("Adding " + tuple1, DebugCategory.TextFormatting);
-                                            group.Children.Add(new GeometryDrawing(red, null,
-                                                new RectangleGeometry(tuple1.Bounds)));
+                                            var takeNum = begin - regionInfo.Offset;
+                                            DebugUtils.WriteLine("Taking " + takeNum, DebugCategory.TextFormatting);
+                                            foreach (var tuple1 in regionInfo.Characters.Take(takeNum))
+                                            {
+                                                DebugUtils.WriteLine("Adding " + tuple1, DebugCategory.TextFormatting);
+                                                group.Children.Add(new GeometryDrawing(red, null,
+                                                    new RectangleGeometry(tuple1.Bounds)));
+                                            }
+
+                                            continue;
                                         }
 
-                                        continue;
+                                        if (regionInfo.Offset + regionInfo.Length > end)
+                                        {
+                                            foreach (var tuple1 in regionInfo.Characters.Take(end - regionInfo.Offset))
+                                                group.Children.Add(new GeometryDrawing(blue, null,
+                                                    new RectangleGeometry(tuple1.Bounds)));
+
+                                            continue;
+                                        }
+
+                                        var geo = new RectangleGeometry(regionInfo.BoundingRect);
+                                        group.Children.Add(new GeometryDrawing(green, null, geo));
                                     }
 
-                                    if (regionInfo.Offset + regionInfo.Length > end)
-                                    {
-                                        foreach (var tuple1 in regionInfo.Characters.Take(end - regionInfo.Offset))
-                                            group.Children.Add(new GeometryDrawing(blue, null,
-                                                new RectangleGeometry(tuple1.Bounds)));
 
-                                        continue;
-                                    }
-
-                                    var geo = new RectangleGeometry(regionInfo.BoundingRect);
-                                    group.Children.Add(new GeometryDrawing(green, null, geo));
+                                    _selectionGeometry = group;
+                                    _textDest.Children.Add(_selectionGeometry);
+                                    _myDrawingBrush.Drawing = _textDest;
+                                    _selectionEnd = newOffset;
+                                    InvalidateVisual();
                                 }
-
-
-                                _selectionGeometry = group;
-                                _textDest.Children.Add(_selectionGeometry);
-                                _myDrawingBrush.Drawing = _textDest;
-                                _selectionEnd = newOffset;
-                                InvalidateVisual();
                             }
                         }
                     }
+
+                    var textRunProperties = tuple.TextRun.Properties;
+                    if (!(textRunProperties is GenericTextRunProperties)) continue;
+                    if (_rect != tuple.BoundingRect)
+                    {
+                        _rect = tuple.BoundingRect;
+                        if (_geometryDrawing != null) _textDest.Children.Remove(_geometryDrawing);
+
+                        var solidColorBrush = new SolidColorBrush(Colors.CadetBlue) {Opacity = .6};
+
+
+                        _geometryDrawing =
+                            new GeometryDrawing(solidColorBrush, null, new RectangleGeometry(tuple.BoundingRect));
+
+                        _textDest.Children.Add(_geometryDrawing);
+                        InvalidateVisual();
+                    }
+
+                    //DebugUtils.WriteLine(pp.Text);
                 }
 
-                var textRunProperties = tuple.TextRun.Properties;
-                if (!(textRunProperties is GenericTextRunProperties)) continue;
-                if (_rect != tuple.BoundingRect)
-                {
-                    _rect = tuple.BoundingRect;
-                    if (_geometryDrawing != null) _textDest.Children.Remove(_geometryDrawing);
+                if (SelectionEnabled && e.LeftButton == MouseButtonState.Pressed)
+                    if (!IsSelecting)
+                    {
+                        var xy = e.GetPosition(_scrollViewer);
+                        if (xy.X < _scrollViewer.ViewportWidth && xy.X >= 0 && xy.Y >= 0 &&
+                            xy.Y <= _scrollViewer.ViewportHeight)
+                        {
+                            _startOffset = HoverOffset;
+                            _startRow = HoverRow;
+                            _startColumn = HoverColumn;
+                            _startNode = HoverSyntaxNode;
 
-                    var solidColorBrush = new SolidColorBrush(Colors.CadetBlue) {Opacity = .6};
 
-
-                    _geometryDrawing =
-                        new GeometryDrawing(solidColorBrush, null, new RectangleGeometry(tuple.BoundingRect));
-
-                    _textDest.Children.Add(_geometryDrawing);
-                    InvalidateVisual();
-                }
-
-                //DebugUtils.WriteLine(pp.Text);
+                            IsSelecting = true;
+                            e.Handled = true;
+                            _rectangle.CaptureMouse();
+                        }
+                    }
             }
-            if (!IsSelecting)
-            {
-                var xy = e.GetPosition(_scrollViewer);
-                if (xy.X < _scrollViewer.ViewportWidth && xy.X >= 0 && xy.Y >= 0 && xy.Y <= _scrollViewer.ViewportHeight)
-                {
-                    _startOffset = HoverOffset;
-                    _startRow = HoverRow;
-                    _startColumn = HoverColumn;
-                    _startNode = HoverSyntaxNode;
-
-
-                    IsSelecting = true;
-                    e.Handled = true;
-                    _rectangle.CaptureMouse();
-                }
-            }
-            }
-
-        }
 
         /// <inheritdoc />
         protected override void OnMouseUp(MouseButtonEventArgs e)
@@ -1288,15 +1366,12 @@ namespace AnalysisControls
                 _endNode = HoverSyntaxNode;
                 DebugUtils.WriteLine($"{_startOffset} {_selectionEnd}");
                 if (_startNode != null)
-                {
                     if (_endNode != null)
                     {
                         var st1 = _startNode.AncestorsAndSelf().OfType<StatementSyntax>().FirstOrDefault();
                         var st2 = _endNode.AncestorsAndSelf().OfType<StatementSyntax>().FirstOrDefault();
                         if (st1 != null)
-                        {
                             if (st2 != null)
-                            {
                                 if (Model != null)
                                 {
                                     var r = Model.AnalyzeDataFlow(st1, st2);
@@ -1304,10 +1379,7 @@ namespace AnalysisControls
                                         return;
                                     DebugUtils.WriteLine(r != null && r.Succeeded);
                                 }
-                            }
-                        }
                     }
-                }
 
                 _rectangle.ReleaseMouseCapture();
             }
@@ -1321,7 +1393,6 @@ namespace AnalysisControls
         /// <inheritdoc />
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
-            
         }
 
         /// <summary>
@@ -1338,9 +1409,12 @@ namespace AnalysisControls
             }
         }
 
-       
+
+        public List<Tuple<RectangleGeometry, RegionInfo>> GeoTuples { get; set; } =
+            new List<Tuple<RectangleGeometry, RegionInfo>>();
     }
-    #if false
+
+#if false
     /// <summary>
     /// 
     /// </summary>

@@ -115,21 +115,28 @@ namespace AnalysisControls
 
             var i = 0;
             var start = 0;
-            while (i != --1 && start < text.Length)
+            while (i != -1 && start < text.Length)
             {
-                
-                while (start == i)
+                i = text.IndexOf("\r\n", start);
+                if (i != -1)
                 {
+                    var len = i - start;
+                    var line = text.Substring(start, len);
+                    if (len != 0)
+                    {
+                        Insert(syntaxTrivia, line, start);
+                    }
+
                     start = i + 2;
-                    i = text.IndexOf("\r\n", start);
-                    
+                    Take(new CustomTextEndOfLine(2));
                 }
-                var line = i == -1 ? text.Substring(start) : text.Substring(start, i - start);
-                Insert(syntaxTrivia, line, start);
-                
-            
-        }
-            
+                else
+                {
+                    Insert(syntaxTrivia, text.Substring(start), start);
+
+                }
+            }
+
             
             //Insert(syntaxTrivia, text);
 

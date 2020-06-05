@@ -128,6 +128,7 @@ namespace AnalysisControls
                 {
                     combobox.Items.Add(new RibbonModelMenuItem(){Header=value});
                 }
+                
             
     
                 combobox.SelectionBoxItem = model.Compilation.Options.OutputKind;
