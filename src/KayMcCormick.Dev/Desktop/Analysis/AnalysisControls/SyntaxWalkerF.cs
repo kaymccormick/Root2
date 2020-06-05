@@ -112,11 +112,26 @@ namespace AnalysisControls
                 // }
             }
 
-            while (text.EndsWith("\r\n"))
+
+            var i = 0;
+            var start = 0;
+            while (i != --1 && start < text.Length)
             {
-                text = text.Substring(0, text.Length - 2);
-            }
-            Insert(syntaxTrivia, text);
+                
+                while (start == i)
+                {
+                    start = i + 2;
+                    i = text.IndexOf("\r\n", start);
+                    
+                }
+                var line = i == -1 ? text.Substring(start) : text.Substring(start, i - start);
+                Insert(syntaxTrivia, line, start);
+                
+            
+        }
+            
+            
+            //Insert(syntaxTrivia, text);
 
         }
 
@@ -138,13 +153,13 @@ namespace AnalysisControls
             _prevTextRun = run;
         }
 
-        private void Insert(SyntaxTrivia syntaxTrivia, string text)
+        private void Insert(SyntaxTrivia syntaxTrivia, string text, int offset=0)
         {
             var textRunProperties = _propertiesFunc(syntaxTrivia, text);
-            var syn = new SyntaxTriviaTextCharacters(text, 0, syntaxTrivia.Span.Length,
+            var syn = new SyntaxTriviaTextCharacters(text, 0, text.Length,
                 textRunProperties, syntaxTrivia.FullSpan, syntaxTrivia)
             {
-                Index = syntaxTrivia.SpanStart
+                Index = syntaxTrivia.SpanStart+offset
             };
             Take(syn);
         }

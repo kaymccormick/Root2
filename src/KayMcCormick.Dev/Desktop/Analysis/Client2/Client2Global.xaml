@@ -1,8 +1,40 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:Client2">
+                    xmlns:local="clr-namespace:Client2"
+                    xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
+                    xmlns:anal="http://kaymccormick.com/xaml/analysis">
 
-  <Style TargetType="RibbonWindow">
-    <Setter Property="Foreground" Value="DeepSkyBlue"/>
-  </Style>
+  <DataTemplate x:Key="Diagnostic" DataType="{x:Type codeAnalysis:Diagnostic}">
+    <DataTemplate.Resources>
+      <anal:DiagnosticConverter x:Key="DiagnosticConverter"/>
+    </DataTemplate.Resources>
+    <RibbonMenuItem>
+      <RibbonMenuItem.Header>
+        <StackPanel Orientation="Horizontal">
+          <StackPanel.ToolTip>
+            <TextBlock Text="{Binding Location}"/>
+          </StackPanel.ToolTip>
+          <TextBlock Text="{Binding Severity}" Margin="0,0,10,0">
+            <TextBlock.Style>
+              <Style TargetType="TextBlock">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Severity}" Value="Error">
+                    <Setter Property="Foreground" Value="Red"></Setter>
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding Severity}" Value="Hidden">
+                    <Setter Property="Foreground" Value="Gainsboro"></Setter>
+                  </DataTrigger>
+
+                  <DataTrigger Binding="{Binding Severity}" Value="Warning">
+                    <Setter Property="Foreground" Value="Yellow"></Setter>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style></TextBlock>
+          <TextBlock TextWrapping="Wrap" MaxWidth="600"  Text="{Binding Converter={StaticResource DiagnosticConverter}}"/>
+        </StackPanel>
+      </RibbonMenuItem.Header>
+    </RibbonMenuItem>
+  </DataTemplate>
+
 </ResourceDictionary>

@@ -24,8 +24,6 @@
         <ResourceDictionary
           Source="Client2Global.xaml" />
         <ResourceDictionary
-          Source="pack://application:,,,/RibbonLibCore;component/RibbonStyles.xaml" />
-        <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/AppRibbonResources.xaml" />
 
         <ResourceDictionary
@@ -35,6 +33,9 @@
           Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
         <ResourceDictionary
           Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
+        <ResourceDictionary
+          Source="pack://application:,,,/RibbonLibCore;component/RibbonStyles.xaml" />
+
         <ResourceDictionary>
          
         </ResourceDictionary>
@@ -53,15 +54,10 @@
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="*" />
-      <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-    <Grid.RenderTransform>
-      <ScaleTransform ScaleX="2" ScaleY="2" />
-    </Grid.RenderTransform>
     <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />

@@ -7152,6 +7152,7 @@
   </Style>
 
   <Style TargetType="{x:Type local:DocumentView}">
+    <Setter Property="TextElement.FontSize" Value="24.0"/>
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type local:DocumentView}">
@@ -8295,6 +8296,9 @@
                   <Button Content="Create workspace" Command="kmWpf:WpfAppCommands.CreateWorkspace" />
                   <Button Content="Create solution" Command="kmWpf:WpfAppCommands.CreateSolution" />
                   <Button Content="Create project" Command="kmWpf:WpfAppCommands.CreateProject" />
+                  <Button Content="Create document" Command="kmWpf:WpfAppCommands.CreateDocument"/>
+                  <Button Content="Create Class" Command="kmWpf:WpfAppCommands.CreateClass"/>
+
                 </ToolBar>
               </ToolBarTray>
               <Border Grid.Row="1" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">

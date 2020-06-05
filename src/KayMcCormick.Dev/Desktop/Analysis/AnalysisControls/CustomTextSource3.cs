@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
+using AnalysisAppLib.Properties;
 using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -65,14 +66,14 @@ namespace AnalysisControls
             // Make sure text source index is in bounds.
             if (textSourceCharacterIndex < 0)
             {
-                DebugUtils.WriteLine($"out of bounds", DebugCategory.TextFormatting);
+                DebugUtils.WriteLine("out of bounds", DebugCategory.TextFormatting);
                 throw new ArgumentOutOfRangeException(nameof(textSourceCharacterIndex),
-                    "Value must be greater than 0.");
+                    Resources.CustomTextSource3_GetTextRun_Value_must_be_greater_than_0_);
             }
 
             if (textSourceCharacterIndex >= Length)
             {
-                DebugUtils.WriteLine($"past text source length", DebugCategory.TextFormatting);
+                DebugUtils.WriteLine(Resources.CustomTextSource3_GetTextRun_past_text_source_length, DebugCategory.TextFormatting);
                 return new TextEndOfParagraph(2);
             }
 
@@ -87,10 +88,10 @@ namespace AnalysisControls
                     var z = textSourceCharacterIndex - tc.Index;
                     var zz = tc.Length - z;
 
-                    var tf = tc.Properties.Typeface;
-                    var name = tf.FaceNames[XmlLanguage.GetLanguage("en-US")];
-                    DebugUtils.WriteLine($"Typeface: {name}", DebugCategory.TextFormatting);
-                    DebugUtils.WriteLine("Typeface FontFamily: " + tf.FontFamily.ToString(), DebugCategory.TextFormatting);
+                    var tf = tc.Properties?.Typeface;
+                    var name = tf?.FaceNames[XmlLanguage.GetLanguage("en-US")];
+//                    DebugUtils.WriteLine($"Typeface: {name}", DebugCategory.TextFormatting);
+//                    DebugUtils.WriteLine("Typeface FontFamily: " + tf?.FontFamily, DebugCategory.TextFormatting);
                     return tc;
                 }
 
@@ -131,11 +132,6 @@ namespace AnalysisControls
             throw new Exception("The method or operation is not implemented.");
         }
 
-        private static string FullyQualifiedMetadataName(Type myType)
-        {
-            return (myType.Namespace != null ? myType.Namespace + "." : "") + myType.Name;
-        }
-
 
         /// <summary>
         /// 
@@ -145,11 +141,6 @@ namespace AnalysisControls
         {
             var xx = new BasicTextRunProperties(BaseProps);
             return xx;
-        }
-
-        public TextRunProperties PropsFor(SymbolDisplayPart symbolDisplayPart, ISymbol symbol)
-        {
-            throw new NotImplementedException();
         }
 
         private static TypeSyntax M(Type arg)
@@ -169,7 +160,8 @@ namespace AnalysisControls
         /// <param name="trivia"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        public TextRunProperties PropsFor(in SyntaxTrivia trivia, string text)
+        // ReSharper disable once UnusedParameter.Local
+        private TextRunProperties PropsFor(in SyntaxTrivia trivia, string text)
         {
             var r = BasicProps();
             DebugUtils.WriteLine($"{CSharpExtensions.Kind(trivia)}", DebugCategory.TextFormatting);
@@ -196,9 +188,12 @@ namespace AnalysisControls
             set { _node = value; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void GenerateText()
         {
-            if (Tree is VisualBasicSyntaxTree tree1)
+            if (Tree is VisualBasicSyntaxTree)
             {
                 var f1 = new SyntaxTalkVb(col, this, TakeTextRun, MakeProperties);
                 if (Node != null) f1.DefaultVisit(Node);
@@ -206,10 +201,7 @@ namespace AnalysisControls
             else
             {
                 var f = new SyntaxWalkerF(col, this, TakeTextRun, MakeProperties);
-                if (Node != null)
-                    f.DefaultVisit(Node);
-                else
-                    f.DefaultVisit(Tree.GetRoot());
+                f.DefaultVisit(Node ?? Tree.GetRoot());
             }
 
             var i = 0;
@@ -221,13 +213,19 @@ namespace AnalysisControls
                 chars.AddRange(Enumerable.Repeat(i, textRun.Length));
                 i++;
 
-                if (textRun.Properties is GenericTextRunProperties gp)
+                if (textRun.Properties is GenericTextRunProperties)
                 {
                     //DebugUtils.WriteLine(gp.SyntaxToken.ToString(), DebugCategory.TextFormatting);
                 }
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public TextRunProperties MakeProperties(object arg, string text)
         {
             if (arg is SyntaxTrivia st)
@@ -237,6 +235,11 @@ namespace AnalysisControls
             return null;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <exception cref="AppInvalidOperationException"></exception>
         public void TakeTextRun(TextRun obj)
         {
             if (obj is CustomTextCharacters c)
@@ -250,7 +253,7 @@ namespace AnalysisControls
                     _lineBuilder.Append(new string(' ', x));
                 }
             }
-            else if (obj is TextEndOfLine eol)
+            else if (obj is TextEndOfLine)
             {
                 _lines.Add(_lineBuilder.ToString());
             }
@@ -270,7 +273,8 @@ namespace AnalysisControls
         /// <param name="text"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public TextRunProperties PropsFor(SyntaxToken token, string text)
+        // ReSharper disable once UnusedParameter.Local
+        private TextRunProperties PropsFor(SyntaxToken token, string text)
         {
             var pp = BasicProps();
             var kind = CSharpExtensions.Kind(token);
@@ -338,10 +342,13 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public FontRendering Rendering { get; set; }
+        private FontRendering Rendering { get; }
 
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Init()
         {
             GenerateText();
@@ -388,6 +395,9 @@ namespace AnalysisControls
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void UpdateCharMap()
         {
             var i = 0;
@@ -404,11 +414,6 @@ namespace AnalysisControls
                     //DebugUtils.WriteLine(gp.SyntaxToken.ToString(), DebugCategory.TextFormatting);
                 }
             }
-        }
-
-        /// <inheritdoc />
-        public void SetSource(IEnumerable source)
-        {
         }
     }
 }

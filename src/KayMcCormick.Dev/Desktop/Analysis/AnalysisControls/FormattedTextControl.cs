@@ -19,6 +19,8 @@ using KayMcCormick.Dev;
 using KayMcCormick.Dev.Attributes;
 using KayMcCormick.Lib.Wpf;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Border = System.Windows.Controls.Border;
 using FontFamily = System.Windows.Media.FontFamily;
 using TextAlignment = System.Windows.TextAlignment;
@@ -527,6 +529,9 @@ namespace AnalysisControls
                 case Key.Right:
                 {
                     DebugUtils.WriteLine("incrementing insertion point", DebugCategory.TextFormatting);
+                    e.Handled = true;
+                    if (InsertionCharacter.NextCell == null)
+                        break;
                     var ip = ++InsertionPoint;
                     DebugUtils.WriteLine($"{ip}", DebugCategory.TextFormatting);
 
@@ -545,7 +550,7 @@ namespace AnalysisControls
                     _textCaret.SetValue(Canvas.TopProperty, top);
                     _textCaret.SetValue(Canvas.LeftProperty, InsertionCharacter.Bounds.Left);
 
-                    e.Handled = true;
+                    
                     break;
                 }
             }
@@ -707,238 +712,248 @@ namespace AnalysisControls
         /// </summary>
         protected virtual void UpdateFormattedText()
         {
-            // Make sure all UI is loaded
-            if (!UiLoaded)
-                return;
-
-            if (CurrentRendering == null)
+            try
             {
-                EmSize = (double) _rectangle.GetValue(TextElement.FontSizeProperty);
-                CurrentRendering = FontRendering.CreateInstance(EmSize,
-                    TextAlignment.Left,
-                    null,
-                    Brushes.Black,
-                    Typeface);
-            }
+                // Make sure all UI is loaded
+                if (!UiLoaded)
+                    return;
 
-            var textStorePosition = 0;
-            var linePosition = new Point(0, 0);
-
-            // Create a DrawingGroup object for storing formatted text.
-
-            var dc = _textDest.Open();
-
-            // Format each line of text from the text store and draw it.
-            TextLineBreak prev = null;
-            LineInfo prevLine = null;
-            CharacterCell prevCell = null;
-            RegionInfo prevRegion = null;
-            var line = 0;
-            while (textStorePosition < TextSource.Length)
-            {
-
-                using (var myTextLine = Formatter.FormatLine(
-                    TextSource,
-                    textStorePosition,
-                    OutputWidth,
-                    new GenericTextParagraphProperties(CurrentRendering, PixelsPerDip),
-                    prev))
+                if (CurrentRendering == null)
                 {
-                    var lineChars = new List<char>();
-
-                    _chars.Add(lineChars);
-
-                    var lineInfo = new LineInfo {Offset = textStorePosition, Length = myTextLine.Length};
-                    lineInfo.PrevLine = prevLine;
-                    lineInfo.LineNumber = line;
-
-                    if (prevLine != null) prevLine.NextLine = lineInfo;
-
-                    prevLine = lineInfo;
-                    LineInfos.Add(lineInfo);
-                    var dd = new DrawingGroup();
-                    var dc1 = dd.Open();
-                    myTextLine.Draw(dc1, new Point(0, 0), InvertAxes.None);
-                    dc1.Close();
-                    lineInfo.Size = new Size(myTextLine.WidthIncludingTrailingWhitespace, myTextLine.Height);
-                    lineInfo.Origin = new Point(linePosition.X, linePosition.Y);
-
-                    var location = linePosition;
-                    var group = 0;
-
-                    var textRunSpans = myTextLine.GetTextRunSpans();
-                    var spans = textRunSpans;
-                    var cell = linePosition;
-                    var cellColumn = 0;
-                    var characterOffset = textStorePosition;
-                    var regionOffset = textStorePosition;
-                    var eol = myTextLine.GetTextRunSpans().Select(xx => xx.Value).OfType<TextEndOfLine>();
-                    if (eol.Any())
-                    {
-                        // dc.DrawRectangle(Brushes.Aqua, null,
-                        // new Rect(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace + 2,
-                        // linePosition.Y + 2, 10, 10));
-                    }
-                    else
-                    {
-                        DebugUtils.WriteLine("no end of line", DebugCategory.TextFormatting);
-                        foreach (var textRunSpan in myTextLine.GetTextRunSpans())
-                            DebugUtils.WriteLine(textRunSpan.Value.ToString(), DebugCategory.TextFormatting);
-                    }
-
-                    var lineRegions = new List<RegionInfo>();
-
-                    var lineString = "";
-                    foreach (var rect in myTextLine.GetIndexedGlyphRuns())
-                    {
-                        var rectGlyphRun = rect.GlyphRun;
-
-                        if (rectGlyphRun != null)
-                        {
-                            var size = new Size(0, 0);
-                            var cellBounds =
-                                new List<CharacterCell>();
-                            var emSize = rectGlyphRun.FontRenderingEmSize;
-
-                            if (rectGlyphRun.Characters.Count > rectGlyphRun.GlyphIndices.Count)
-                            {
-                                DebugUtils.WriteLine($"Character mismatch");
-                            }
-                            for (var i = 0; i < rectGlyphRun.GlyphIndices.Count; i++)
-                            {
-                                size.Width += rectGlyphRun.AdvanceWidths[i];
-                                var gi = rectGlyphRun.GlyphIndices[i];
-                                var c = rectGlyphRun.Characters[i];
-                                lineChars.Add(c);
-                                lineString += c;
-                                var advWidth = rectGlyphRun.GlyphTypeface.AdvanceWidths[gi];
-                                var advHeight = rectGlyphRun.GlyphTypeface.AdvanceHeights[gi];
-
-                                var s = new Size(advWidth * emSize,
-                                    (advHeight
-                                     + rectGlyphRun.GlyphTypeface.BottomSideBearings[gi])
-                                    * emSize);
-
-                                var topSide = rectGlyphRun.GlyphTypeface.TopSideBearings[gi];
-                                var bounds = new Rect(new Point(cell.X, cell.Y + topSide), s);
-                                if (!bounds.IsEmpty)
-                                {
-                                    // ReSharper disable once UnusedVariable
-                                    var glyphTypefaceBaseline = rectGlyphRun.GlyphTypeface.Baseline;
-                                    //DebugUtils.WriteLine(glyphTypefaceBaseline.ToString(), DebugCategory.TextFormatting);
-                                    //bounds.Offset(cell.X, cell.Y + glyphTypefaceBaseline);
-                                    // dc.DrawRectangle(Brushes.White, null,  bounds);
-                                    // dc.DrawText(
-                                    // new FormattedText(cellColumn.ToString(), CultureInfo.CurrentCulture,
-                                    // FlowDirection.LeftToRight, new Typeface("Arial"), _emSize * .66, Brushes.Aqua,
-                                    // new NumberSubstitution(), _pixelsPerDip), new Point(bounds.Left, bounds.Top));
-                                }
-
-                                var char0 = new CharacterCell(bounds, new Point(cellColumn, _chars.Count - 1), c)
-                                {
-                                    PreviousCell = prevCell
-                                };
-
-                                if (prevCell != null)
-                                    prevCell.NextCell = char0;
-                                prevCell = char0;
-
-                                cellBounds.Add(char0);
-                                cell.Offset(rectGlyphRun.AdvanceWidths[i], 0);
-
-                                cellColumn++;
-                                characterOffset++;
-                                //                                _textDest.Children.Add(new GeometryDrawing(null, new Pen(Brushes.DarkOrange, 2), new RectangleGeometry(bounds)));
-                            }
-
-                            //var bb = rect.GlyphRun.BuildGeometry().Bounds;
-
-                            size.Height += myTextLine.Height;
-                            var r = new Rect(location, size);
-                            location.Offset(size.Width, 0);
-//                            dc.DrawRectangle(null, new Pen(Brushes.Green, 1), r);
-                            //rects.Add(r);
-                            if (group < spans.Count)
-                            {
-                                var textSpan = spans[group];
-                                var textSpanValue = textSpan.Value;
-                                SyntaxNode node = null;
-                                SyntaxToken? token = null;
-                                SyntaxTrivia? trivia = null;
-                                if (textSpanValue is SyntaxTokenTextCharacters stc)
-                                {
-                                    node = stc.Node;
-                                    token = stc.Token;
-                                }
-                                else if (textSpanValue is SyntaxTriviaTextCharacters stc2)
-                                {
-                                    trivia = stc2.Trivia;
-                                }
-
-                                var tuple = new RegionInfo(textSpanValue, r, cellBounds)
-                                {
-                                    Line = lineInfo,
-                                    Offset = regionOffset,
-                                    Length = textSpan.Length,
-                                    SyntaxNode = node,
-                                    SyntaxToken = token,
-                                    Trivia = trivia,
-                                    PrevRegion = prevRegion
-                                };
-                                foreach (var ch in tuple.Characters) ch.Region = tuple;
-                                lineRegions.Add(tuple);
-                                if (prevRegion != null) prevRegion.NextRegion = tuple;
-                                prevRegion = tuple;
-                                Infos.Add(tuple);
-                            }
-
-                            group++;
-                            regionOffset = characterOffset;
-                        }
-
-                        lineInfo.Text = lineString;
-                        lineInfo.Regions = lineRegions;
-                        //                        DebugUtils.WriteLine(rect.ToString(), DebugCategory.TextFormatting);
-                        //dc.DrawRectangle(null, new Pen(Brushes.Green, 1), r1);
-                    }
-
-
-                    var ddBounds = dd.Bounds;
-                    if (!ddBounds.IsEmpty)
-                        ddBounds.Offset(0, linePosition.Y);
-                    //DebugUtils.WriteLine(line.ToString() + ddBounds.ToString(), DebugCategory.TextFormatting);
-                    //dc.DrawRectangle(null, new Pen(Brushes.Red, 1), ddBounds);
-
-                    // Draw the formatted text into the drawing context.
-                    myTextLine.Draw(dc, linePosition, InvertAxes.None);
-                    // ReSharper disable once UnusedVariable
-                    var p = new Point(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace, linePosition.Y);
-                    var textLineBreak = myTextLine.GetTextLineBreak();
-                    if (textLineBreak != null) DebugUtils.WriteLine(textLineBreak.ToString(), DebugCategory.TextFormatting);
-                    line++;
-
-                    prev = textLineBreak;
-                    if (prev != null) DebugUtils.WriteLine("Line break!", DebugCategory.TextFormatting);
-
-                    // Update the index position in the text store.
-                    textStorePosition += myTextLine.Length;
-                    // Update the line position coordinate for the displayed line.
-                    linePosition.Y += myTextLine.Height;
-                    if (myTextLine.Width >= MaxX) MaxX = myTextLine.Width;
+                    EmSize = (double) _rectangle.GetValue(TextElement.FontSizeProperty);
+                    CurrentRendering = FontRendering.CreateInstance(EmSize,
+                        TextAlignment.Left,
+                        null,
+                        Brushes.Black,
+                        Typeface);
                 }
 
-                _pos = linePosition;
+                var textStorePosition = 0;
+                var linePosition = new Point(0, 0);
+
+                // Create a DrawingGroup object for storing formatted text.
+
+                var dc = _textDest.Open();
+
+                // Format each line of text from the text store and draw it.
+                TextLineBreak prev = null;
+                LineInfo prevLine = null;
+                CharacterCell prevCell = null;
+                RegionInfo prevRegion = null;
+                var line = 0;
+                while (textStorePosition < TextSource.Length)
+                {
+
+                    using (var myTextLine = Formatter.FormatLine(
+                        TextSource,
+                        textStorePosition,
+                        OutputWidth,
+                        new GenericTextParagraphProperties(CurrentRendering, PixelsPerDip),
+                        prev))
+                    {
+                        var lineChars = new List<char>();
+
+                        _chars.Add(lineChars);
+
+                        var lineInfo = new LineInfo {Offset = textStorePosition, Length = myTextLine.Length};
+                        lineInfo.PrevLine = prevLine;
+                        lineInfo.LineNumber = line;
+
+                        if (prevLine != null) prevLine.NextLine = lineInfo;
+
+                        prevLine = lineInfo;
+                        LineInfos.Add(lineInfo);
+                        var dd = new DrawingGroup();
+                        var dc1 = dd.Open();
+                        myTextLine.Draw(dc1, new Point(0, 0), InvertAxes.None);
+                        dc1.Close();
+                        lineInfo.Size = new Size(myTextLine.WidthIncludingTrailingWhitespace, myTextLine.Height);
+                        lineInfo.Origin = new Point(linePosition.X, linePosition.Y);
+
+                        var location = linePosition;
+                        var group = 0;
+
+                        var textRunSpans = myTextLine.GetTextRunSpans();
+                        var spans = textRunSpans;
+                        var cell = linePosition;
+                        var cellColumn = 0;
+                        var characterOffset = textStorePosition;
+                        var regionOffset = textStorePosition;
+                        var eol = myTextLine.GetTextRunSpans().Select(xx => xx.Value).OfType<TextEndOfLine>();
+                        if (eol.Any())
+                        {
+                            // dc.DrawRectangle(Brushes.Aqua, null,
+                            // new Rect(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace + 2,
+                            // linePosition.Y + 2, 10, 10));
+                        }
+                        else
+                        {
+                            DebugUtils.WriteLine("no end of line", DebugCategory.TextFormatting);
+                            foreach (var textRunSpan in myTextLine.GetTextRunSpans())
+                                DebugUtils.WriteLine(textRunSpan.Value.ToString(), DebugCategory.TextFormatting);
+                        }
+
+                        var lineRegions = new List<RegionInfo>();
+
+                        var lineString = "";
+                        foreach (var rect in myTextLine.GetIndexedGlyphRuns())
+                        {
+                            var rectGlyphRun = rect.GlyphRun;
+
+                            if (rectGlyphRun != null)
+                            {
+                                var size = new Size(0, 0);
+                                var cellBounds =
+                                    new List<CharacterCell>();
+                                var emSize = rectGlyphRun.FontRenderingEmSize;
+
+                                if (rectGlyphRun.Characters.Count > rectGlyphRun.GlyphIndices.Count)
+                                {
+                                    DebugUtils.WriteLine($"Character mismatch");
+                                }
+
+                                for (var i = 0; i < rectGlyphRun.GlyphIndices.Count; i++)
+                                {
+                                    var advanceWidth = rectGlyphRun.AdvanceWidths[i];
+                                    size.Width += advanceWidth;
+                                    var gi = rectGlyphRun.GlyphIndices[i];
+                                    var c = rectGlyphRun.Characters[i];
+                                    lineChars.Add(c);
+                                    lineString += c;
+                                    var advWidth = rectGlyphRun.GlyphTypeface.AdvanceWidths[gi];
+                                    var advHeight = rectGlyphRun.GlyphTypeface.AdvanceHeights[gi];
+
+                                    var s = new Size(advWidth * emSize,
+                                        (advHeight
+                                         + rectGlyphRun.GlyphTypeface.BottomSideBearings[gi])
+                                        * emSize);
+
+                                    var topSide = rectGlyphRun.GlyphTypeface.TopSideBearings[gi];
+                                    var bounds = new Rect(new Point(cell.X, cell.Y + topSide), s);
+                                    if (!bounds.IsEmpty)
+                                    {
+                                        // ReSharper disable once UnusedVariable
+                                        var glyphTypefaceBaseline = rectGlyphRun.GlyphTypeface.Baseline;
+                                        //DebugUtils.WriteLine(glyphTypefaceBaseline.ToString(), DebugCategory.TextFormatting);
+                                        //bounds.Offset(cell.X, cell.Y + glyphTypefaceBaseline);
+                                        // dc.DrawRectangle(Brushes.White, null,  bounds);
+                                        // dc.DrawText(
+                                        // new FormattedText(cellColumn.ToString(), CultureInfo.CurrentCulture,
+                                        // FlowDirection.LeftToRight, new Typeface("Arial"), _emSize * .66, Brushes.Aqua,
+                                        // new NumberSubstitution(), _pixelsPerDip), new Point(bounds.Left, bounds.Top));
+                                    }
+
+                                    var char0 = new CharacterCell(bounds, new Point(cellColumn, _chars.Count - 1), c)
+                                    {
+                                        PreviousCell = prevCell
+                                    };
+
+                                    if (prevCell != null)
+                                        prevCell.NextCell = char0;
+                                    prevCell = char0;
+
+                                    cellBounds.Add(char0);
+                                    cell.Offset(rectGlyphRun.AdvanceWidths[i], 0);
+
+                                    cellColumn++;
+                                    characterOffset++;
+                                    //                                _textDest.Children.Add(new GeometryDrawing(null, new Pen(Brushes.DarkOrange, 2), new RectangleGeometry(bounds)));
+                                }
+
+                                //var bb = rect.GlyphRun.BuildGeometry().Bounds;
+
+                                size.Height += myTextLine.Height;
+                                var r = new Rect(location, size);
+                                location.Offset(size.Width, 0);
+//                            dc.DrawRectangle(null, new Pen(Brushes.Green, 1), r);
+                                //rects.Add(r);
+                                if (group < spans.Count)
+                                {
+                                    var textSpan = spans[group];
+                                    var textSpanValue = textSpan.Value;
+                                    SyntaxNode node = null;
+                                    SyntaxToken? token = null;
+                                    SyntaxTrivia? trivia = null;
+                                    if (textSpanValue is SyntaxTokenTextCharacters stc)
+                                    {
+                                        node = stc.Node;
+                                        token = stc.Token;
+                                    }
+                                    else if (textSpanValue is SyntaxTriviaTextCharacters stc2)
+                                    {
+                                        trivia = stc2.Trivia;
+                                    }
+
+                                    var tuple = new RegionInfo(textSpanValue, r, cellBounds)
+                                    {
+                                        Line = lineInfo,
+                                        Offset = regionOffset,
+                                        Length = textSpan.Length,
+                                        SyntaxNode = node,
+                                        SyntaxToken = token,
+                                        Trivia = trivia,
+                                        PrevRegion = prevRegion
+                                    };
+                                    foreach (var ch in tuple.Characters) ch.Region = tuple;
+                                    lineRegions.Add(tuple);
+                                    if (prevRegion != null) prevRegion.NextRegion = tuple;
+                                    prevRegion = tuple;
+                                    Infos.Add(tuple);
+                                }
+
+                                group++;
+                                regionOffset = characterOffset;
+                            }
+
+                            lineInfo.Text = lineString;
+                            lineInfo.Regions = lineRegions;
+                            //                        DebugUtils.WriteLine(rect.ToString(), DebugCategory.TextFormatting);
+                            //dc.DrawRectangle(null, new Pen(Brushes.Green, 1), r1);
+                        }
+
+
+                        var ddBounds = dd.Bounds;
+                        if (!ddBounds.IsEmpty)
+                            ddBounds.Offset(0, linePosition.Y);
+                        //DebugUtils.WriteLine(line.ToString() + ddBounds.ToString(), DebugCategory.TextFormatting);
+                        //dc.DrawRectangle(null, new Pen(Brushes.Red, 1), ddBounds);
+
+                        // Draw the formatted text into the drawing context.
+                        myTextLine.Draw(dc, linePosition, InvertAxes.None);
+                        // ReSharper disable once UnusedVariable
+                        var p = new Point(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace, linePosition.Y);
+                        var textLineBreak = myTextLine.GetTextLineBreak();
+                        if (textLineBreak != null)
+                            DebugUtils.WriteLine(textLineBreak.ToString(), DebugCategory.TextFormatting);
+                        line++;
+
+                        prev = textLineBreak;
+                        if (prev != null) DebugUtils.WriteLine("Line break!", DebugCategory.TextFormatting);
+
+                        // Update the index position in the text store.
+                        textStorePosition += myTextLine.Length;
+                        // Update the line position coordinate for the displayed line.
+                        linePosition.Y += myTextLine.Height;
+                        if (myTextLine.Width >= MaxX) MaxX = myTextLine.Width;
+                    }
+
+                    _pos = linePosition;
+                }
+
+
+                dc.Close();
+                // Persist the drawn text content.
+
+                _rectangle.Width = MaxX;
+                _rectangle.Height = _pos.Y;
+
+                UpdateCaretPosition();
+                InvalidateVisual();
             }
-
-
-            dc.Close();
-            // Persist the drawn text content.
-
-            _rectangle.Width = MaxX;
-            _rectangle.Height = _pos.Y;
-
-            UpdateCaretPosition();
-            InvalidateVisual();
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         private void UpdateCaretPosition()
@@ -1037,10 +1052,15 @@ namespace AnalysisControls
         private CustomTextSource3 _store;
         private ITypefaceManager _typefaceManager;
         private readonly DocumentPaginator _documentPaginator;
+        private int _selectionEnd;
+        private SyntaxNode _startNode;
+        private SyntaxNode _endNode;
 
         /// <inheritdoc />
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            if (SelectionEnabled && e.LeftButton == MouseButtonState.Pressed)
+            {
             var point = e.GetPosition(_rectangle);
             var zz = Infos.Where(x => x.BoundingRect.Contains(point)).ToList();
             if (zz.Count > 1)
@@ -1076,6 +1096,7 @@ namespace AnalysisControls
                             {
                                 sym = Model?.GetDeclaredSymbol(tuple.SyntaxNode);
                                 operation = Model.GetOperation(tuple.SyntaxNode);
+                                
                             }
                             catch
                             {
@@ -1138,7 +1159,7 @@ namespace AnalysisControls
                     else
                     {
                         var chars = _chars[item2Y];
-                        DebugUtils.WriteLine("y is " + item2Y, DebugCategory.TextFormatting);
+                        DebugUtils.WriteLine("y is " + item2Y, DebugCategory.MouseEvents);
                         var item2X = (int) item2.X;
                         if (item2X >= chars.Count)
                         {
@@ -1147,7 +1168,7 @@ namespace AnalysisControls
                         else
                         {
                             var ch = chars[item2X];
-                            DebugUtils.WriteLine("Cell is " + item2 + " " + ch, DebugCategory.TextFormatting);
+                            DebugUtils.WriteLine("Cell is " + item2 + " " + ch, DebugCategory.MouseEvents);
                             var newOffset = tuple.Offset + cellIndex;
                             HoverOffset = newOffset;
                             HoverColumn = (int) item2.X;
@@ -1212,6 +1233,7 @@ namespace AnalysisControls
                                 _selectionGeometry = group;
                                 _textDest.Children.Add(_selectionGeometry);
                                 _myDrawingBrush.Drawing = _textDest;
+                                _selectionEnd = newOffset;
                                 InvalidateVisual();
                             }
                         }
@@ -1237,33 +1259,69 @@ namespace AnalysisControls
 
                 //DebugUtils.WriteLine(pp.Text);
             }
+            if (!IsSelecting)
+            {
+                var xy = e.GetPosition(_scrollViewer);
+                if (xy.X < _scrollViewer.ViewportWidth && xy.X >= 0 && xy.Y >= 0 && xy.Y <= _scrollViewer.ViewportHeight)
+                {
+                    _startOffset = HoverOffset;
+                    _startRow = HoverRow;
+                    _startColumn = HoverColumn;
+                    _startNode = HoverSyntaxNode;
+
+
+                    IsSelecting = true;
+                    e.Handled = true;
+                    _rectangle.CaptureMouse();
+                }
+            }
+            }
+
         }
 
         /// <inheritdoc />
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
-            IsSelecting = false;
+            if (IsSelecting)
+            {
+                IsSelecting = false;
+                _endNode = HoverSyntaxNode;
+                DebugUtils.WriteLine($"{_startOffset} {_selectionEnd}");
+                if (_startNode != null)
+                {
+                    if (_endNode != null)
+                    {
+                        var st1 = _startNode.AncestorsAndSelf().OfType<StatementSyntax>().FirstOrDefault();
+                        var st2 = _endNode.AncestorsAndSelf().OfType<StatementSyntax>().FirstOrDefault();
+                        if (st1 != null)
+                        {
+                            if (st2 != null)
+                            {
+                                if (Model != null)
+                                {
+                                    var r = Model.AnalyzeDataFlow(st1, st2);
+                                    if (r != null)
+                                        return;
+                                    DebugUtils.WriteLine(r != null && r.Succeeded);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                _rectangle.ReleaseMouseCapture();
+            }
         }
 
         /// <inheritdoc />
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
-            if (SelectionEnabled)
-            {
-                _startOffset = HoverOffset;
-                _startRow = HoverRow;
-                _startColumn = HoverColumn;
-                IsSelecting = true;
-            }
         }
 
         /// <inheritdoc />
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
-            // _startOffset = HoverOffset;
-            // _startRow = HoverRow;
-            // _startColumn = HoverColumn;
-            // _selecting = true;
+            
         }
 
         /// <summary>

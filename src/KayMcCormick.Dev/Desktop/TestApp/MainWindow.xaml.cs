@@ -102,8 +102,8 @@ namespace TestApp
             }
             _testAppApp = new TestAppApp ( config ) ;
             InitializeComponent ( ) ;
-            CustomControl2.TypeInfoProvider =
-                new TypeInfoProvider2((ITypeSymbol) xx.Compilation.GetSymbolsWithName(x => true, SymbolFilter.Type).First());
+            // CustomControl2.TypeInfoProvider =
+                // new TypeInfoProvider2((ITypeSymbol) xx.Compilation.GetSymbolsWithName(x => true, SymbolFilter.Type).First());
             NamespaceNodesRoot = AssemblyInfoConverter.CreateNamespaceNodes(Assembly.GetExecutingAssembly());
         }
 

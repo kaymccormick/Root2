@@ -16,8 +16,11 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.CodeAnalysis.QuickInfo;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Threading;
 using NLog;
@@ -256,6 +259,7 @@ namespace AnalysisControls.ViewModel
                         d.Name = doc.Name;
                         d.FilePath = doc.FilePath;
                         d.Id = doc.Id.Id;
+                        d.DocumentId = doc.Id;
                     }
 
                     Compilation compilation = null;
@@ -610,6 +614,7 @@ namespace AnalysisControls.ViewModel
                 Compilation compilation = null;
                 SemanticModel model = null;
 
+                var docDocument = doc.Document;
                 if (doc.Project.Project.SupportsCompilation)
                 {
                     compilation = await doc.Project.Project.GetCompilationAsync();
@@ -628,12 +633,16 @@ namespace AnalysisControls.ViewModel
                         }
                     }
 
-                    model = await doc.Document.GetSemanticModelAsync();
+                    if (docDocument != null) model = await docDocument.GetSemanticModelAsync();
                 }
 
-                var tree = await doc.Document.GetSyntaxTreeAsync();
-                var doc2 = new CodeDocument(tree, compilation) {Title = doc.Name,Model=model};
-                _docHost.AddDocument(doc2);
+                if (docDocument != null)
+                {
+                    var tree = await docDocument.GetSyntaxTreeAsync();
+                    var doc2 = new CodeDocument(tree, compilation) {Title = doc.Name,Model=model};
+                    _docHost.AddDocument(doc2);
+                }//todo fixme
+
                 CurrentOperation = null;
             }
             else if (SelectedProject != null)
@@ -687,6 +696,23 @@ namespace AnalysisControls.ViewModel
             return doc;
         }
 
+        public void CreateDocument()
+        {
+            //DocumentInfo d = DocumentInfo.Create(DocumentId.CreateNewId(SelectedProject.Id),"test");
+            var m = GetSolution();
+            if (SelectedProject != null)
+            {
+                var n2 = Workspace.CurrentSolution.AddDocument(DocumentId.CreateNewId(SelectedProject.Id), "test", SourceText.From(""));
+                Workspace.TryApplyChanges(n2);
+            }
+        }
+
+        public void CreateClass()
+        {
+            //var q = QuickInfoService.GetService(SelectedProject.Documents.First().Document)
+            //Workspace.Services.GetLanguageServices(LanguageNames.CSharp).GetServ;ice<ILanguageService>()
+            //
+        }
     }
 
     internal class CodeDocument : DocModel

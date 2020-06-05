@@ -115,7 +115,7 @@ namespace AnalysisControls
 
         private static object CoerceLifetimeScope(DependencyObject d, object basevalue)
         {
-            ILifetimeScope lifetimeScope = (ILifetimeScope)basevalue;
+            var lifetimeScope = (ILifetimeScope)basevalue;
             var main1 = (Main1) d;
             return lifetimeScope.BeginLifetimeScope($"Scope for {d}", main1.ConfigAction);
         }
@@ -139,6 +139,9 @@ namespace AnalysisControls
             CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateWorkspace, OnCreateWorkSpaceExecuted,
                 CanExecute));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateSolution, OnCreateSolutionExecuted));
+
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateDocument, OnCreateDocumentExecuted));            CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateDocument, OnCreateDocumentExecuted));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateClass, OnCreateClass));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateProject, OnCreateProjectExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.OpenSolutionItem, OnSolutionItemExecutedAsync));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.LoadSolution, LoadSolutionExecutedAsync));
@@ -149,6 +152,16 @@ namespace AnalysisControls
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ConvertToJson, OnConvertToJsonExecuted));
 
             //Documents.Add(new DocInfo { Description = "test", Content = Properties.Resources.Program_Parse});
+        }
+
+        private void OnCreateClass(object sender, ExecutedRoutedEventArgs e)
+        {
+            ViewModel2.CreateClass();
+        }
+
+        private void OnCreateDocumentExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            ViewModel2.CreateDocument();
         }
 
         private void OnOpenCanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -165,14 +178,15 @@ namespace AnalysisControls
                 return;
             if (e.Parameter is IDataObject o)
             {
-                var t1 = o.GetFormats().Select(f => Tuple.Create(f, (object) o.GetData(f)))
+                var t1 = o
+                    .GetFormats().Select(f => Tuple.Create(f, (object) o.GetData(f)))
                     .FirstOrDefault(t => !(t.Item2 is string));
                 if (t1 != null)
                 {
                     try
                     {
                         var json = JsonSerializer.Serialize(t1.Item2,ViewModel.JsonSerializerOptions);
-                        DocModel d = DocModel.CreateInstance();
+                        var d = DocModel.CreateInstance();
                         d.Title = "json";
                         var dp = new DockPanel();
                         dp.Children.Add(new TextBox {Text = json});
@@ -209,7 +223,7 @@ namespace AnalysisControls
                         if (file.ToLowerInvariant().EndsWith(".vb"))
                         {
                             var s = new StreamReader(file);
-                            string code = await s.ReadToEndAsync();
+                            var code = await s.ReadToEndAsync();
                             tree = SyntaxFactory.ParseSyntaxTree(code,
                                 new VisualBasicParseOptions(),
                                 file);

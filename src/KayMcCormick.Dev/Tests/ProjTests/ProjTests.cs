@@ -35,6 +35,7 @@ using System.Resources;
 using System.Runtime.ExceptionServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
+using System.Security.Permissions;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -76,6 +77,7 @@ using AvalonDock.Themes;
 using Castle.DynamicProxy;
 using CsvHelper;
 using CsvHelper.Excel;
+using DocumentFormat.OpenXml.Office.Word;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Application;
@@ -1667,7 +1669,6 @@ namespace ProjTests
         {
             var x = new CustomTextSource3(100, new DefaultTypefaceManager());
             var comp = AnalysisService.Parse(Resources.Program_Parse, "test", false);
-            x.Compilation = comp.Compilation;
             x.Tree = comp.SyntaxTree;
             x.Node = comp.CompilationUnit;
             foreach (var diagnostic in comp.Compilation.GetDiagnostics())
@@ -2854,32 +2855,101 @@ namespace ProjTests
             var n = VisualTreeHelper.GetChildrenCount(dependencyObject);
             for (var i = 0; i < n; i++) DumpVisualTree(VisualTreeHelper.GetChild(dependencyObject, i));
         }
-
-
         [WpfFact]
-        public void TestCodeParsing()
+        public void TestCodeParsing2()
         {
-            DebugUtils.DisplayCatgories = (DebugCategory) (-1);
+            DebugUtils.DisplayCatgories = (DebugCategory)(0);
             var file =
-                @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\AvalonDock\source\Components\AvalonDock\DocumentClosedEventArgs.cs";
+            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\AvalonDock\source\Components\AvalonDock\Layout\LayoutPanel.cs";
             NewMethod(file);
             return;
+            Dictionary<string, long> files = new Dictionary<string, long>();
             foreach (var enumerateFile in Directory.EnumerateFiles(@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos", "*.cs",
 
                 SearchOption.AllDirectories))
             {
-                NewMethod(enumerateFile);
+                if (!NewMethod(enumerateFile))
+                {
+                    var l = new FileInfo(enumerateFile).Length;
+
+                    files[enumerateFile] = l;
+                    Debug.WriteLine(enumerateFile + " " + l);
+                }
             }
+
+            var k = files.Keys.OrderByDescending(s => files[s]).LastOrDefault();
+            DebugUtils.WriteLine(k);
         }
 
-        private static void NewMethod(string enumerateFile)
+        
+
+        [WpfFact]
+        public void TestCodeParsing()
+        {
+            DebugUtils.DisplayCatgories = (DebugCategory) (0);
+            // var file =
+            // @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\AvalonDock\source\Components\AvalonDock\DockingManager.cs";
+            // NewMethod(file);
+            // return;
+            Dictionary<string, long> files = new Dictionary<string, long>();
+            foreach (var enumerateFile in Directory.EnumerateFiles(@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos", "*.cs",
+
+                SearchOption.AllDirectories))
+            {
+                if (!NewMethod(enumerateFile))
+                {
+                    var l = new FileInfo(enumerateFile).Length;
+                    
+                    files[enumerateFile] = l;
+                    Debug.WriteLine(enumerateFile + " " + l);
+                }
+            }
+
+            var k = files.Keys.OrderByDescending(s => files[s]).LastOrDefault();
+            DebugUtils.WriteLine(k);
+        }
+
+        private bool NewMethod(string enumerateFile)
         {
             DebugUtils.WriteLine(enumerateFile);
             var code = File.ReadAllText(enumerateFile);
             var t = ProjTestsHelper.SetupSyntaxParams(out var x, code);
             FormattedTextControl z = new FormattedTextControl() {Compilation = x, SyntaxTree = t};
             Window w = new Window {Content = z};
-            w.ShowDialog();
+            w.Loaded += (sender, args) => w.Close();
+            try
+            {
+                w.Show();
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+            while(w.IsVisible)
+            {
+                // var p = VisualTreeHelper.GetParent(w);
+
+                Thread.Sleep(50);
+                DoEvents();
+            }
+
+            return true;
+        }
+        [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+        public void DoEvents()
+        {
+            DispatcherFrame frame = new DispatcherFrame();
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
+                new DispatcherOperationCallback(ExitFrame), frame);
+            Dispatcher.PushFrame(frame);
+        }
+
+        public object ExitFrame(object f)
+        {
+            ((DispatcherFrame)f).Continue = false;
+
+            return null;
         }
 
         [WpfFact]

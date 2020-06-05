@@ -46,8 +46,8 @@ namespace Client2
             AppLoggingConfigHelper.EnsureLoggingConfigured(message => DebugUtils.WriteLine(message),
                 loggingConfiguration);
 
-            BindingOperations.CollectionRegistering += BindingOperationsOnCollectionRegistering;
-            BindingOperations.CollectionViewRegistering += BindingOperationsOnCollectionViewRegistering;
+            // BindingOperations.CollectionRegistering += BindingOperationsOnCollectionRegistering;
+            // BindingOperations.CollectionViewRegistering += BindingOperationsOnCollectionViewRegistering;
             AppDomain.CurrentDomain.ProcessExit += ( sender , args )
                 => LogManager.GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
 

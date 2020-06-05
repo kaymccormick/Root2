@@ -16,7 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PowerShellShared;
 using Terminal1;
-using TextEntryCompleteArgs = Terminal.TextEntryCompleteArgs;
+using TextEntryCompleteArgs = Terminal1.TextEntryCompleteArgs;
 
 namespace AnalysisControls
 {

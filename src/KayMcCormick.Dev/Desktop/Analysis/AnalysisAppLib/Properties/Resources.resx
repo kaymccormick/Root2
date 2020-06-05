@@ -145,4 +145,10 @@
   <data name="ContextualTabGroup1_ContextualTabGroup1_Code_Analysis" xml:space="preserve">
     <value>Code Analysis</value>
   </data>
+  <data name="CustomTextSource3_GetTextRun_Value_must_be_greater_than_0_" xml:space="preserve">
+    <value>Value must be greater than 0.</value>
+  </data>
+  <data name="CustomTextSource3_GetTextRun_past_text_source_length" xml:space="preserve">
+    <value>past text source length</value>
+  </data>
 </root>

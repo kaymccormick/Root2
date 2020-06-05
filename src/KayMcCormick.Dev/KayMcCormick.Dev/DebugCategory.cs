@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 
 namespace KayMcCormick.Dev
 {
@@ -12,6 +13,8 @@ namespace KayMcCormick.Dev
 
         DataBinding = 8,
         Ribbon = 16,
-        Status = 32
+        Status = 32,
+        MouseEvents = 64,
+        All = -1
     }
 }

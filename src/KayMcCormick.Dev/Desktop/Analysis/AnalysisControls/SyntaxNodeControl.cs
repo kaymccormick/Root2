@@ -28,7 +28,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public static readonly DependencyProperty SelectionEnabledProperty = DependencyProperty.Register(
-            "SelectionEnabled", typeof(bool), typeof(SyntaxNodeControl), new PropertyMetadata(default(bool)));
+            "SelectionEnabled", typeof(bool), typeof(SyntaxNodeControl), new PropertyMetadata(true));
 
         /// <summary>
         /// 

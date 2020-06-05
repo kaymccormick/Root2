@@ -1,11 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using AnalysisControls.Converters;
 using AnalysisControls.ViewModel;
+using KayMcCormick.Lib.Wpf;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using RibbonLib.Model;
 
 namespace AnalysisControls
@@ -69,49 +72,132 @@ namespace AnalysisControls
             info.ControlGroup = controlGroup;
             ribbonModelGroup.Items.Add(controlGroup);
 
-            var model = d.Compilation.GetSemanticModel(d.SyntaxTree);
-
-            var nodePresenter = new RibbonModelTwoLineText();
-            ribbonModelGroup.Items.Add(nodePresenter);
-
-            var symbolPresenter = new RibbonModelPresenter();
-            d.CodeControl.SetBinding(FormattedTextControl.HoverSymbolProperty,
-                new Binding("Content") {Mode = BindingMode.OneWayToSource, Source = symbolPresenter});
-            controlGroup.Items.Add(symbolPresenter);
-
-            var errorMenu = new RibbonModelItemMenuButton() {Label = "Errors"};
-            errorMenu.ItemContainerTemplateKey = "Diagnostic";
-
-            controlGroup.Items.Add(errorMenu);
-            
-            errorMenu.Items = d.Compilation.GetDiagnostics().ToList();//.Where(d1 => d1.Severity >= DiagnosticSeverity.Error);
-            // foreach (var diagnostic in d.Compilation.GetDiagnostics()
-            // .Where(d1 => d1.Severity >= DiagnosticSeverity.Error))
-            // errorMenu.ItemsCollection.Add(new RibbonModelAppMenuItem() {Header = diagnostic.GetMessage()});
-
-            d.CodeControl.SetBinding(FormattedTextControl.HoverSyntaxNodeProperty,
-                new Binding("Text")
-                {
-                    Mode = BindingMode.OneWayToSource, Source = nodePresenter, ConverterParameter = SyntaxNodeInfo.Kind,
-                    Converter = new SyntaxNodeConverter { }
-                });
-
-            info.Methods = new ObservableCollection<object>();
-            foreach (var methodSymbol in d.Compilation
-                .GetSymbolsWithName(s => true, SymbolFilter.Member)
-                .Where(z => z.Kind == SymbolKind.Method).OfType<IMethodSymbol>())
+            if (d.Compilation != null)
             {
-                var item = new RibbonModelMenuItem() {Header = methodSymbol};
-                info.Methods.Add(item);
+                var model = d.Compilation.GetSemanticModel(d.SyntaxTree);
+                d.CodeControl.Model = model;
+                var nodePresenter = new RibbonModelTwoLineText();
+                ribbonModelGroup.Items.Add(nodePresenter);
+
+                
+                var symbolPresenter = new RibbonModelPresenter();
+                d.CodeControl.SetBinding(FormattedTextControl.HoverSymbolProperty,
+                    new Binding("Content") {Mode = BindingMode.OneWayToSource, Source = symbolPresenter});
+                controlGroup.Items.Add(symbolPresenter);
+
+                var errorMenu = new RibbonModelItemMenuButton {Label = "Errors", ItemContainerTemplateKey = "Diagnostic"};
+
+                controlGroup.Items.Add(errorMenu);
+            
+                errorMenu.Items = d.Compilation.GetDiagnostics().ToList();//.Where(d1 => d1.Severity >= DiagnosticSeverity.Error);
+                // foreach (var diagnostic in d.Compilation.GetDiagnostics()
+                // .Where(d1 => d1.Severity >= DiagnosticSeverity.Error))
+                // errorMenu.ItemsCollection.Add(new RibbonModelAppMenuItem() {Header = diagnostic.GetMessage()});
+
+                d.CodeControl.SetBinding(FormattedTextControl.HoverSyntaxNodeProperty,
+                    new Binding("Text")
+                    {
+                        Mode = BindingMode.OneWayToSource, Source = nodePresenter, ConverterParameter = SyntaxNodeInfo.Kind,
+                        Converter = new SyntaxNodeConverter { }
+                    });
+
+                info.Methods = new ObservableCollection<object>();
+                foreach (var methodSymbol in d.Compilation
+                    .GetSymbolsWithName(s => true, SymbolFilter.Member)
+                    .Where(z => z.Kind == SymbolKind.Method).OfType<IMethodSymbol>())
+                {
+                    var item = new RibbonModelMenuItem() {Header = methodSymbol};
+                    info.Methods.Add(item);
+                }
+
+                var item2  = new RibbonModelItemMenuButton();
+                item2.Label = "root";
+                var xx = new MySymbolVisitor(item2);
+                xx.DefaultVisit(model.Compilation.Assembly);
+                controlGroup.Items.Add(item2);
+                var menuItem = new RibbonModelItemMenuButton() {Label = "Namespace"};
+                menuItem.Label =
+                    model.Compilation.GlobalNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                try
+                {
+                    Add(menuItem, model.Compilation.GlobalNamespace, model.Compilation.Assembly.Identity);
+                } catch{}
+
+                var combobox = new RibbonModelItemComboBox();
+                foreach (var value in Enum.GetValues(typeof(OutputKind)))
+                {
+                    combobox.Items.Add(new RibbonModelMenuItem(){Header=value});
+                }
+            
+    
+                combobox.SelectionBoxItem = model.Compilation.Options.OutputKind;
+                combobox.Label = "Output Kind";
+            
+                controlGroup.Items.Add(combobox);
+                controlGroup.Items.Add(menuItem);
             }
 
-            var methodsMenu = new RibbonModelItemMenuButton() {Label = "Methods"};
-            methodsMenu.Items = info.Methods;
+            //            ((CSharpCompilation)model.Compilation).Options.OutputKind.
+
+var label1 = new RibbonModelTwoLineText();
+d.CodeControl.SetBinding(FormattedTextControl.HoverSymbolProperty,
+    new Binding("Text") {Source = label1, Mode = BindingMode.OneWayToSource});
+
+        controlGroup.Items.Add(label1);
+            var methodsMenu = new RibbonModelItemMenuButton {Label = "Methods", Items = info.Methods};
             info.MethodsMenu = methodsMenu;
             controlGroup.Items.Add(info.MethodsMenu);
             return info;
         }
 
+        private static void Add(IHasMenuItems menuItem, ISymbol symbol, AssemblyIdentity a)
+        {
+            switch (symbol)
+            {
+                case INamespaceOrTypeSymbol t:
+                {
+                    //AssemblyIdentityComparer.
+                    //if (t.ContainingAssembly.Identity.Equals(a))
+                    {
+                        foreach (var member in t.GetMembers())
+                        {
+                            if (!member.CanBeReferencedByName)
+                                return;
+
+                                var item = new RibbonModelMenuItem();
+                            item.Header = member.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
+                            Add(item, member, a);
+                            menuItem.AddItem(item);
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+
         private CodeDocInfo CurrentInfo { get; set; }
+    }
+
+    internal class MySymbolVisitor:SymbolVisitor
+    {
+        private Stack<IHasMenuItems> _items = new Stack<IHasMenuItems>();
+
+        /// <inheritdoc />
+        public MySymbolVisitor(IHasMenuItems root)
+        {
+            _items.Push(root);
+        }
+
+        /// <inheritdoc />
+        public override void DefaultVisit(ISymbol symbol)
+        {
+
+            var ribbonModelAppMenuItem = new RibbonModelMenuItem(){Header=$"{symbol.Kind} - {symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}"};
+            _items.Peek().AddItem(ribbonModelAppMenuItem);
+            _items.Push(ribbonModelAppMenuItem);
+            base.DefaultVisit(symbol);
+            _items.Pop();
+        }
     }
 }

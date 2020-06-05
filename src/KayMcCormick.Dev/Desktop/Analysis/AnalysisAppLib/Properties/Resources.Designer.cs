@@ -79,6 +79,24 @@ namespace AnalysisAppLib.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to past text source length.
+        /// </summary>
+        public static string CustomTextSource3_GetTextRun_past_text_source_length {
+            get {
+                return ResourceManager.GetString("CustomTextSource3_GetTextRun_past_text_source_length", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value must be greater than 0..
+        /// </summary>
+        public static string CustomTextSource3_GetTextRun_Value_must_be_greater_than_0_ {
+            get {
+                return ResourceManager.GetString("CustomTextSource3_GetTextRun_Value_must_be_greater_than_0_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
         ///&lt;doc&gt;
         ///    &lt;assembly&gt;

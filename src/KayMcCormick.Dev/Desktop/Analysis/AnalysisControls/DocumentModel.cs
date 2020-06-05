@@ -34,8 +34,21 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public Document Document =>
-            _workspace.CurrentSolution.GetDocument(DocumentId);
+        public Document Document
+        {
+            get
+            {
+                if (_workspace?.CurrentSolution != null)
+                {
+                    return _workspace.CurrentSolution.GetDocument(DocumentId);
+                } else
+                {
+
+                }
+
+                return null;
+            }
+        }
 
         /// <summary>
         /// 

@@ -13,6 +13,10 @@ namespace AnalysisControls
     {
         private IEnumerable<IRibbonModelProvider<RibbonModelGroup>> _provs;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="provs"></param>
         public CodeTab1(IEnumerable<IRibbonModelProvider<RibbonModelGroup>> provs)
         {
             _provs = provs;
@@ -22,9 +26,10 @@ namespace AnalysisControls
         /// <inheritdoc />
         public RibbonModelTab ProvideModelItem()
         {
-            var tab = new CodeContextualTab();
-            tab.Header = "Code";
-            tab.ContextualTabGroupHeader = RibbonResources.ContextualTabGroupHeader_CodeAnalysis;
+            var tab = new CodeContextualTab
+            {
+                Header = "Code", ContextualTabGroupHeader = RibbonResources.ContextualTabGroupHeader_CodeAnalysis
+            };
 
             return tab;
         }

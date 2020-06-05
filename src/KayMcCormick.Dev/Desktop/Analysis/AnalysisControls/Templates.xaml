@@ -19,6 +19,7 @@
   xmlns:io="clr-namespace:System.IO;assembly=mscorlib">
   <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter"/>
   <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
+
   <DataTemplate DataType="{x:Type io:FileInfo}">
     <typeDescriptors:GenericInterface Target="{Binding}"/>
   </DataTemplate>

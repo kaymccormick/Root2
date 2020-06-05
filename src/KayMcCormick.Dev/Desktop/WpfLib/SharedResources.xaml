@@ -92,10 +92,6 @@
     </LinearGradientBrush.GradientStops>
   </LinearGradientBrush>
   <wpf:GetTypeConverter x:Key="GetTypeConverter" />
-  <Style TargetType="Menu">
-    <Setter Property="FontFamily" Value="Leelawadee" />
-    <Setter Property="FontSize" Value="24.0" />
-  </Style>
   <Style TargetType="StatusBarItem">
     <!-- ReSharper disable once Xaml.StaticResourceNotResolved -->
     <Setter Property="ContentTemplateSelector"
@@ -407,49 +403,5 @@
     UriSource="Assets/Document.ico"
     x:Key="DocumentIcon" />
   <system:Double x:Key="DefaultFontSize">24</system:Double>
-
-
-  <DataTemplate x:Key="treeViewNodeComponentRegistration" DataType="{x:Type registration:ComponentRegistration}">
-    <ContentControl Content="{Binding Activator}"/>
-  </DataTemplate>
-  <DataTemplate x:Key="TreeViewNode">
-    <WrapPanel>
-      <TextBlock Text="{Binding}"/>
-      <TextBlock Text="("/>
-      <TextBlock Foreground="DeepPink"  FontWeight="Bold" Text="{Binding Converter={StaticResource GetTypeConverter}}"/>
-      <TextBlock Text=")"/>
-    </WrapPanel>
-  </DataTemplate>
-  <wpf:HierarchicalTemplateSelector
-    x:Key="HierarchicalTemplateSelector" />
-
-  <HierarchicalDataTemplate
-    DataType="{x:Type classLib:ResourceNodeInfo}"
-    ItemsSource="{Binding Path=Children}">
-    <Border BorderBrush="Green" BorderThickness="1" Padding="1">
-      <ContentControl Focusable="False"
-                      ContentTemplateSelector="{StaticResource HierarchicalTemplateSelector}"
-                      Content="{Binding Key}">
-        <ContentControl.ToolTip>
-          <Binding Path="Key"
-                   Converter="{StaticResource GetTypeConverter}" />
-        </ContentControl.ToolTip>
-      </ContentControl>
-    </Border>
-  </HierarchicalDataTemplate>
-
-  <DataTemplate x:Key="TreeViewNodeComponentInfo" DataType="{x:Type classLib:ComponentInfo}">
-    <WrapPanel>
-      <TextBlock FontStyle="Italic" Text="{Binding Path=Id}"></TextBlock>
-    </WrapPanel>
-  </DataTemplate>
-
-  <DataTemplate x:Key="PreviewDataTable" DataType="{x:Type data:DataTable}">
-    <DataGrid ItemsSource="{Binding}"></DataGrid>
-  </DataTemplate>
-
-  <DataTemplate x:Key="PreviewTask`1" DataType="{x:Type tasks:Task}">
-    <TextBlock Text="{Binding Status}"></TextBlock>
-  </DataTemplate>
 
 </ResourceDictionary>
