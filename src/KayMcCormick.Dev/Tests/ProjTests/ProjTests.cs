@@ -2884,7 +2884,7 @@ namespace ProjTests
 
         
 
-        [WpfFact]
+        //[WpfFact]
         public void TestCodeParsing()
         {
             DebugUtils.DisplayCatgories = (DebugCategory) (0);

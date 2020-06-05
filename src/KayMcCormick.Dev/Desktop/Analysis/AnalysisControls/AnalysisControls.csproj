@@ -98,7 +98,9 @@
     <Compile Include="AllCommands.cs" />
     <Compile Include="AppCommandTypeConverter.cs" />
     <Compile Include="CodeContextualTab.cs" />
+    <Compile Include="CodeContextualTab2.cs" />
     <Compile Include="CodeTab1.cs" />
+    <Compile Include="CodeTab2.cs" />
     <Compile Include="CompilationGroup.cs" />
     <Compile Include="ContainerView.cs" />
     <Compile Include="ConvertButton.cs" />

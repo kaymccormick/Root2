@@ -221,6 +221,9 @@ namespace AnalysisAppLib
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class MyXmlResolver : XmlReferenceResolver
     {
         /// <inheritdoc />

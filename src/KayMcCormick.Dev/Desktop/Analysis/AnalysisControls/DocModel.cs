@@ -57,5 +57,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public virtual IEnumerable ContextualTabGroupHeaders { get; set; } = new ObservableCollection<object>();
+
+        public virtual IEnumerable RibbonItems { get;  } = new ObservableCollection<object>();
     }
 }

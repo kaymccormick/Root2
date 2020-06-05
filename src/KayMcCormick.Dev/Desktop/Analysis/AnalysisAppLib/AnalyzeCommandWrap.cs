@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using AnalysisAppLib.Project;
 using FindLogUsages;
-using KayMcCormick.Dev;
 using KayMcCormick.Dev.Attributes;
 using KayMcCormick.Dev.Command;
 

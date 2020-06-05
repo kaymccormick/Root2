@@ -1152,7 +1152,14 @@ namespace AnalysisControls
                                 {
                                     sym = Model?.GetDeclaredSymbol(tuple.SyntaxNode);
                                     operation = Model.GetOperation(tuple.SyntaxNode);
-                                    switch ((CSharpSyntaxNode)tuple.SyntaxNode)
+                                    var zzz = tuple.SyntaxNode.AncestorsAndSelf().OfType<ForEachStatementSyntax>().FirstOrDefault();
+                                    if (zzz != null)
+                                    {
+                                        var info = Model.GetForEachStatementInfo(zzz);
+                                        Debug.WriteLine(info.ElementType.ToDisplayString());
+
+                                }
+                                switch ((CSharpSyntaxNode)tuple.SyntaxNode)
                                     {
                                         case AssignmentExpressionSyntax assignmentExpressionSyntax:
                                             break;
@@ -1170,7 +1177,7 @@ namespace AnalysisControls
                                         case StatementSyntax statementSyntax:
                                             break;
                                         default:
-                                            throw new ArgumentOutOfRangeException();
+                                        break;
                                     }
                                 }
                                 catch
@@ -1356,6 +1363,11 @@ namespace AnalysisControls
                         }
                     }
             }
+
+        private bool z(SyntaxNode arg)
+        {
+            return arg.Kind() == SyntaxKind.ForEachStatement;
+        }
 
         /// <inheritdoc />
         protected override void OnMouseUp(MouseButtonEventArgs e)

@@ -62,6 +62,22 @@ namespace AnalysisControls.ViewModel
 
                 if (value is DocModel d)
                 {
+                    foreach (var dRibbonItem in d.RibbonItems)
+                    {
+                        foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
+                        {
+                            foreach (var item in primaryRibbonRibbonItem.Items)
+                            {
+                                if (item is RibbonModelGroup g)
+                                {
+                                    if (g.Header != null && g.Header.Equals("Context"))
+                                    {
+                                        g.Items.Add((RibbonModelItem) dRibbonItem);
+                                    }
+                                }
+                            }
+                        }
+                    }
                     if (old is DocModel dd)
                     {
                         var ddContextualTabGroupHeaders = dd.ContextualTabGroupHeaders.Cast<object>();
@@ -229,7 +245,7 @@ namespace AnalysisControls.ViewModel
             //            AddModelDoc();
             AddRibbonModelViewDoc();
             AddRibbonModelViewDoc1();
-            //            AddAssembliesDoc();
+                        AddAssembliesDoc();
             //            AddPropertiesGridDoc();
             AddVisualTreeViewDoc();
             AddVisualTreeViewDoc1();
@@ -376,6 +392,16 @@ namespace AnalysisControls.ViewModel
         private void AddAssembliesDoc()
         {
             var assembliesDoc = DocModel.CreateInstance();
+            var x = (ObservableCollection<object>) assembliesDoc.RibbonItems;
+            var ribbonModelItemMenuButton = new RibbonModelItemMenuButton(){Label="Assemblies"};
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+
+
+                ribbonModelItemMenuButton.ItemsCollection.Add(new RibbonModelMenuItem() {Header = assembly.GetName().Name});
+            }
+
+            x.Add(ribbonModelItemMenuButton);
             assembliesDoc.Title = "Assemblies";
             assembliesDoc.Content = new AssembliesControl {AssemblySource = AppDomain.CurrentDomain.GetAssemblies()};
             Documents.Add(assembliesDoc);

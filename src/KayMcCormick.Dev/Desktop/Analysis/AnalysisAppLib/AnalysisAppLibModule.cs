@@ -300,6 +300,7 @@ namespace AnalysisAppLib
         }
 
         [ NotNull ]
+        // ReSharper disable once UnusedMember.Local
         private static IPublicClientApplication MakePublicClientApplication (
             IComponentContext                     context
           , [ NotNull ] IEnumerable<Parameter> p
@@ -322,6 +323,7 @@ namespace AnalysisAppLib
         }
 
         [ NotNull ]
+        // ReSharper disable once UnusedMember.Local
         private static GraphServiceClient MakeGraphServiceClient ( string bearerToken )
         {
             var parameter = bearerToken ;

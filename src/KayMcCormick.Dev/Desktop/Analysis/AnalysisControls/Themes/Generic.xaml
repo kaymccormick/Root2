@@ -19,7 +19,6 @@
   xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System"
   xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControls"
   xmlns:powerShellShared="clr-namespace:PowerShellShared;assembly=WpfCustomControlLibrary1"
-  xmlns:analysisControls2="clr-namespace:AnalysisControls2;assembly=AnalysisControls2"
   xmlns:local1="clr-namespace:AnalysisControls2;assembly=AnalysisControls2">
   <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
   <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
