@@ -71,5 +71,7 @@ namespace AnalysisControls
         public TextRun NextTextRun { get; set; }
         public TextRun PrevTextRun { get; set; }
         public bool Invalid { get; set; }
+        public bool Partial { get; set; }
+        public bool FinalPartial { get; set; }
     }
 }

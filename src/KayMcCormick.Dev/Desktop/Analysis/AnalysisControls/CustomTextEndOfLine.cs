@@ -18,6 +18,12 @@ namespace AnalysisControls
             set { _span = value; }
         }
 
+        /// <inheritdoc />
+        public bool Partial { get; set; }
+
+        /// <inheritdoc />
+        public bool FinalPartial { get; }
+
         /// <summary>
         /// 
         /// </summary>

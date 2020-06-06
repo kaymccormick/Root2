@@ -41,7 +41,7 @@ namespace AnalysisAppLib
         }
 
         /// <inheritdoc />
-        public Task<IAppCommandResult> ExecuteAsync()
+        public Task<IAppCommandResult> ExecuteAsync(object parameter)
         {
             return _cmd.AnalyzeCommandAsync(_projectNode, _rejectTarget).ContinueWith(task => AppCommandResult.Success);
         }

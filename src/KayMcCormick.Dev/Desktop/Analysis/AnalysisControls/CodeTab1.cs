@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using AnalysisControls.Properties;
-using Castle.Components.DictionaryAdapter.Xml;
-using Microsoft.CodeAnalysis.CSharp;
+﻿using AnalysisControls.Properties;
 using RibbonLib.Model;
+using System.Collections.Generic;
 
 namespace AnalysisControls
 {
@@ -28,7 +26,8 @@ namespace AnalysisControls
         {
             var tab = new CodeContextualTab
             {
-                Header = "Code", ContextualTabGroupHeader = RibbonResources.ContextualTabGroupHeader_CodeAnalysis
+                Header = "Code",
+                ContextualTabGroupHeader = RibbonResources.ContextualTabGroupHeader_CodeAnalysis
             };
 
             return tab;

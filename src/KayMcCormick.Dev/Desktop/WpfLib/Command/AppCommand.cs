@@ -34,10 +34,12 @@ namespace KayMcCormick.Lib.Wpf.Command
         }
 
         #region Implementation of IAppCommand
+
         /// <summary>
         /// </summary>
+        /// <param name="filename"></param>
         /// <returns></returns>
-        public abstract Task < IAppCommandResult > ExecuteAsync ( ) ;
+        public abstract Task<IAppCommandResult> ExecuteAsync(object parameter) ;
 
         /// <summary>
         /// </summary>
@@ -56,7 +58,7 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// <param name="parameter"></param>
         public virtual void Execute ( object parameter )
         {
-            LastTask = ExecuteAsync ( )
+            LastTask = ExecuteAsync (parameter )
                .ContinueWith (
                               ( task , state ) => {
                                   var appCommand = ( AppCommand ) state ;

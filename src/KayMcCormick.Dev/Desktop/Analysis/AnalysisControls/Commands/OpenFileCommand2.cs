@@ -20,17 +20,18 @@ namespace AnalysisControls.Commands
     /// Open file command
     /// </summary>
     [UsedImplicitly]
-    public class OpenFileCommand : AppCommand
+    public class OpenFileCommand2 : AppCommand
     {
-        private readonly IAnalyzeCommand _analyzeCommand;
+        private readonly AppCommand _command;
+
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="analyzeCommand"></param>
-        public OpenFileCommand(IAnalyzeCommand analyzeCommand) : base("Open File")
+        public OpenFileCommand2(AppCommand command) : base("Open File")
         {
-            this._analyzeCommand = analyzeCommand;
+            _command = command;
         }
 
         /// <inheritdoc />
@@ -41,7 +42,7 @@ namespace AnalysisControls.Commands
         /// </summary>
         /// <param name="filename2"></param>
         /// <returns></returns>
-        public override async Task<IAppCommandResult> ExecuteAsync(object parameter)
+        public override async Task<IAppCommandResult> ExecuteAsync(object filename2)
         {
             var filters = new List<Filter>
             {
@@ -80,30 +81,9 @@ namespace AnalysisControls.Commands
 
             // Open document
             var filename = dlg.FileName;
-            if (Path.GetExtension(filename).ToLowerInvariant() == ".sln")
-            {
-                var node = new ProjectBrowserNode
-                {
-                    Name = "Loaded solution",
-                    SolutionPath = filename
-                };
-                DebugUtils.WriteLine("await command");
-                await _analyzeCommand.AnalyzeCommandAsync(
-                        node
-                        , new ActionBlock<RejectedItem>(
-                            x => Debug
-                                .WriteLine(
-                                    x.Statement
-                                        .ToString()
-                                )
-                        )
-                    )
-                    .ConfigureAwait(false);
-                DebugUtils.WriteLine("here command");
-                return AppCommandResult.Success;
-            }
+            var resul2 = await _command.ExecuteAsync(filename);
 
-            return AppCommandResult.Failed;
+            return resul2;
         }
 
         /// <summary>

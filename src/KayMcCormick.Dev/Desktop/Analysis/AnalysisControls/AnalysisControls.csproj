@@ -101,6 +101,7 @@
     <Compile Include="CodeContextualTab2.cs" />
     <Compile Include="CodeTab1.cs" />
     <Compile Include="CodeTab2.cs" />
+    <Compile Include="Commands\OpenFileCommand2.cs" />
     <Compile Include="CompilationGroup.cs" />
     <Compile Include="ContainerView.cs" />
     <Compile Include="ConvertButton.cs" />

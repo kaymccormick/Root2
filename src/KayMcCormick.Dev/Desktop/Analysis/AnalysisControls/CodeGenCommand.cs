@@ -1248,7 +1248,7 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         /// 
         /// </summary>
         /// <returns></returns>
-        public Task<IAppCommandResult> ExecuteAsync()
+        public Task<IAppCommandResult> ExecuteAsync(object parameter)
         {
             return CodeGenAsync(this, Scope);
         }

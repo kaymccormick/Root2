@@ -34,9 +34,9 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// </summary>
         /// <returns></returns>
         [ ItemCanBeNull ]
-        public  Task < IAppCommandResult > ExecuteAsync ( )
+        public  Task < IAppCommandResult > ExecuteAsync (object parameter)
         {
-            return _wrappedCommand.ExecuteAsync ( ) ;
+            return _wrappedCommand.ExecuteAsync (  parameter) ;
 #if false
             DebugUtils.WriteLine ( "Executing command" ) ;
             // IAppCommandResult r = null ;
@@ -88,7 +88,7 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// <summary>
         /// </summary>
         /// <param name="parameter"></param>
-        public void Execute ( object parameter ) { ExecuteAsync ( ).Wait() ; }
+        public void Execute ( object parameter ) { ExecuteAsync ( parameter).Wait() ; }
 
         /// <summary>
         /// </summary>

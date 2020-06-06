@@ -22,6 +22,7 @@ namespace KayMcCormick.Lib.Wpf.Command
     [TypeConverter(typeof(LacConverter))]
     public sealed class LambdaAppCommand : AppCommand
     {
+        private readonly Func<LambdaAppCommand, object, Task<IAppCommandResult>> _commandFuncWithArg;
         private object                                                 _argument ;
         public override string ToString()
         {
@@ -51,6 +52,19 @@ namespace KayMcCormick.Lib.Wpf.Command
             _onFaultDelegate = onFaultDelegate ;
             _canExecuteFunc = canExecuteFunc;
         }
+        public LambdaAppCommand(
+            string displayName
+          , Func<LambdaAppCommand,object, Task<IAppCommandResult>> commandFuncWithArg
+          , object argument
+          , Action<AggregateException> onFaultDelegate = null
+            , Func<LambdaAppCommand, object, bool> canExecuteFunc = null
+        ) : base(displayName)
+        {
+            _commandFuncWithArg = commandFuncWithArg;
+            _argument = argument;
+            _onFaultDelegate = onFaultDelegate;
+            _canExecuteFunc = canExecuteFunc;
+        }
 
         /// <summary>
         /// </summary>
@@ -69,22 +83,33 @@ namespace KayMcCormick.Lib.Wpf.Command
         }
 
         #region Overrides of AppCommand
+
         /// <summary>
         /// </summary>
+        /// <param name="filename"></param>
         /// <returns></returns>
-        public override Task < IAppCommandResult > ExecuteAsync ( )
+        public override Task<IAppCommandResult> ExecuteAsync(object parameter)
         {
             DebugUtils.WriteLine ( nameof(ExecuteAsync)) ;
-            return (CommandFunc ( this )).ContinueWith(
-                                                     task => {
-                                                         if ( task.IsFaulted )
+            Task<IAppCommandResult> task;
+            if (_commandFuncWithArg != null)
+            {
+                task = _commandFuncWithArg(this, parameter);
+            }
+            else
+            {
+                task = (CommandFunc(this));
+            }
+            return  task.ContinueWith(
+                                                     task2 => {
+                                                         if ( task2.IsFaulted )
                                                          {
                                                              DebugUtils.WriteLine (
-                                                                                   task.Exception?.ToString ( )
+                                                                                   task2.Exception?.ToString ( )
                                                                                   ) ;
                                                          }
 
-                                                         return task.Result ;
+                                                         return task2.Result ;
                                                      }) ;
         }
 

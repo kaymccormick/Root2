@@ -2,6 +2,7 @@
 using System.Collections ;
 using System.Collections.Generic ;
 using System.Configuration ;
+using System.Diagnostics;
 using System.Linq ;
 using System.Reactive.Subjects ;
 using System.Reflection ;
@@ -12,6 +13,7 @@ using System.Text.Json.Serialization ;
 using System.Threading ;
 using Autofac ;
 using Autofac.Core ;
+using Autofac.Core.Lifetime;
 using Autofac.Extras.AttributeMetadata ;
 using Autofac.Features.AttributeFilters ;
 using Autofac.Integration.Mef ;
@@ -338,8 +340,25 @@ namespace KayMcCormick.Dev.Application
         {
             base.Initialize ( ) ;
             Container1 = BuildContainer ( ) ;
+            Container1.ChildLifetimeScopeBeginning += LifetimeScopeOnChildLifetimeScopeBeginning;
+            Container1.CurrentScopeEnding += LifetimeScopeOnCurrentScopeEnding;
         }
-#endregion
+
+        private void LifetimeScopeOnChildLifetimeScopeBeginning(object sender, LifetimeScopeBeginningEventArgs e)
+        {
+                Debug.WriteLine(e.LifetimeScope.Tag);
+                e.LifetimeScope.ChildLifetimeScopeBeginning += LifetimeScopeOnChildLifetimeScopeBeginning;
+            
+                e.LifetimeScope.CurrentScopeEnding += LifetimeScopeOnCurrentScopeEnding;
+        }
+
+        private void LifetimeScopeOnCurrentScopeEnding(object sender, LifetimeScopeEndingEventArgs e)
+        {
+            Debug.WriteLine(e.LifetimeScope.Tag);
+
+        }
+
+        #endregion
 
         /// <summary>
         /// </summary>

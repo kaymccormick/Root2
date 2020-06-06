@@ -4,7 +4,9 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Autofac;
 using KayMcCormick.Lib.Wpf;
+using KayMcCormick.Lib.Wpf.Command;
 using RibbonLib.Model;
 
 namespace AnalysisControls
@@ -18,6 +20,7 @@ namespace AnalysisControls
         private readonly IEnumerable<IRibbonModelProvider<RibbonModelTab>> _tabProviders;
         private readonly IEnumerable<IRibbonModelProvider<RibbonModelContextualTabGroup>> _grpProviders;
         private readonly Func<RibbonModelTab> RibbonTabFactory;
+        private readonly ILifetimeScope _scope;
         private readonly JsonSerializerOptions _options;
 
         /// <summary>
@@ -32,13 +35,15 @@ namespace AnalysisControls
         public RibbonBuilder1(RibbonModelApplicationMenu appMenu,
             IEnumerable<IRibbonModelProvider<RibbonModelTab>> tabProviders,
             IEnumerable<IRibbonModelProvider<RibbonModelContextualTabGroup>> grpProviders,
-            JsonSerializerOptions _options, Func<RibbonModelTab> ribbonTabFactory)
+            JsonSerializerOptions _options, Func<RibbonModelTab> ribbonTabFactory, 
+            ILifetimeScope scope)
         {
             _appMenu = appMenu;
             _tabProviders = tabProviders;
             _grpProviders = grpProviders;
             this._options = _options;
             RibbonTabFactory = ribbonTabFactory;
+            _scope = scope;
         }
 
         /// <summary>
@@ -79,12 +84,23 @@ namespace AnalysisControls
                 r.ContextualTabGroups.Add(t);
             }
 
+
             r.AppMenu.Items.Add(new RibbonModelAppMenuItem {Header = "Open", Command = ApplicationCommands.Open});
 
             var HomeTab = RibbonTabFactory();
             HomeTab.Header = "Home";
+            var Group1 = new RibbonModelGroup { Header = "Paste" };
+            foreach (var cmd in _scope.Resolve<IEnumerable<IDisplayableAppCommand>>())
+            {
+                if (cmd is ICommand cmdz)
+                {
+                    var button = new RibbonModelButton() { Label = cmd.DisplayName, Command = cmdz };
+                    Group1.Items.Add(button);
+
+                }
+            }
             var PasteButton = new RibbonModelButton {Label = "Paste", Command = ApplicationCommands.Paste};
-            var Group1 = new RibbonModelGroup {Header = "Paste"};
+            
             Group1.Items.Add(new RibbonModelButton {Label = "Open", Command = ApplicationCommands.Open});
             var Group2 = new RibbonModelGroup { Header = "Context" };
             HomeTab.ItemsCollection.Add(Group2);

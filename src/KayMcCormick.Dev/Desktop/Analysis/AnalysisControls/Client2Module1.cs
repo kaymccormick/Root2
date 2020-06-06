@@ -150,10 +150,11 @@ namespace AnalysisControls
             builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering();
             builder.Register((c) =>
             {
-                return new LambdaAppCommand("Extract docs", l => ExtractDocCommentsCommand.ProcessSolutionAsync(l, ""),
-                    null);
+                return new OpenFileCommand2(new LambdaAppCommand("Extract docs",
+                    (l, arg) => ExtractDocCommentsCommand.ProcessSolutionAsync(l, (string) arg),
+                    null));
 
-            }).AsImplementedInterfaces().WithMetadata("Title", "Extract docs");
+            }).AsSelf().AsImplementedInterfaces().WithMetadata("Title", "Extract docs");
             builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces().WithAttributeFiltering();
             builder.RegisterType<AppCommandTypeConverter>().AsSelf();
             builder.RegisterType<ObjectStringTypeConverter>().AsSelf();

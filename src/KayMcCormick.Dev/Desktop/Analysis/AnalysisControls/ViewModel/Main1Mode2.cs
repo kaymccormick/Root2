@@ -283,7 +283,7 @@ namespace AnalysisControls.ViewModel
                             DebugUtils.WriteLine(String.Join("\n", diagnostics));
                             if (diagnostics.Any())
                             {
-                                compilation = null;
+                                //compilation = null;
                             }
                             else
                             {
@@ -722,10 +722,13 @@ namespace AnalysisControls.ViewModel
         {
             SyntaxTree = syntaxTree;
             Compilation = compilation;
+            var model = Compilation?
+                .GetSemanticModel(SyntaxTree);
             CodeControl  = new FormattedTextControl()
             {
                 SyntaxTree = syntaxTree,
-                Compilation = compilation
+                Compilation = compilation,
+                Model = model
             };
             
         }

@@ -427,8 +427,8 @@ namespace KayMcCormick.Dev.Logging
                 builder.RegisterInstance(Generator).AsSelf();
                 //DefaultObject = new DefaultObjectIdProvider(Generator);
                 builder.RegisterType<DefaultObjectIdProvider>()
-                    .As<IObjectIdProvider>()
-                    .InstancePerLifetimeScope().WithCallerMetadata();
+                    .As<IObjectIdProvider>().SingleInstance();
+                    //.InstancePerLifetimeScope().WithCallerMetadata();
             }
 
 

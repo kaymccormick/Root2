@@ -62,16 +62,18 @@ namespace AnalysisControls.ViewModel
 
                 if (value is DocModel d)
                 {
-                    foreach (var dRibbonItem in d.RibbonItems)
+                    foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
                     {
-                        foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
+                        foreach (var item in primaryRibbonRibbonItem.Items)
                         {
-                            foreach (var item in primaryRibbonRibbonItem.Items)
+                            if (item is RibbonModelGroup g)
                             {
-                                if (item is RibbonModelGroup g)
+                                if (g.Header != null && g.Header.Equals("Context"))
                                 {
-                                    if (g.Header != null && g.Header.Equals("Context"))
-                                    {
+                                    g.Items.Clear();
+
+                                    foreach (var dRibbonItem in d.RibbonItems)
+                    {
                                         g.Items.Add((RibbonModelItem) dRibbonItem);
                                     }
                                 }

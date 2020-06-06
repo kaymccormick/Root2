@@ -18,7 +18,7 @@ namespace KayMcCormick.Dev.Command
         /// An Async method to execute the command.
         /// </summary>
         /// <returns></returns>
-        Task < IAppCommandResult > ExecuteAsync ( ) ;
+        Task < IAppCommandResult > ExecuteAsync (object parameter ) ;
 
         /// <summary>
         /// A method to handle faults.

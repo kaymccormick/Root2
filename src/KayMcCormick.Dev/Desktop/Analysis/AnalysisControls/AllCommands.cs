@@ -125,7 +125,7 @@ namespace AnalysisControls{
                 //var item = (RibbonGalleryItem)ribbonComboBox.SelectionBoxItem;
                 IAppCommand cmd = (IAppCommand) g.Tag;
                 statusContent.Background = Brushes.Green;
-                var result = await cmd.ExecuteAsync();
+                var result = await cmd.ExecuteAsync(null);
                 if (result.IsSuccess)
                     {
                         statusContent.Background = Brushes.Blue;

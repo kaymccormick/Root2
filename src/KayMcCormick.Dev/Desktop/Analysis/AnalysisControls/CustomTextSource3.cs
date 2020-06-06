@@ -88,7 +88,8 @@ namespace AnalysisControls
                     var z = textSourceCharacterIndex - tc.Index;
                     if (z > 0)
                     {
-
+                        throw new InvalidOperationException("request not aligned on text run boundary:" +
+                                                            textSourceCharacterIndex);
                     }
                     var zz = tc.Length - z;
 

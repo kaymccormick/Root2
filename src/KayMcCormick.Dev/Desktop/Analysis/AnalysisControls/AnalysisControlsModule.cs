@@ -186,9 +186,9 @@ namespace AnalysisControls
                         LambdaAppCommand(
                             arg3
                                 .ToString()
-                            , command
+                            , (command, arg4)
                                 => arg3
-                                    .ExecuteAsync()
+                                    .ExecuteAsync(arg4)
                             , arg3
                                 .Argument
                             , arg3

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media.TextFormatting;
@@ -73,8 +74,10 @@ namespace AnalysisControls
             {
                 var w = new TriviaWalker(_lrun, _source3, _takeTextRun, _propertiesFunc,
                     SyntaxWalkerDepth.StructuredTrivia);
+                // Debug.WriteLine($"Curpos is {CurPos}");
                 w.CurPos = CurPos;
                 w.Visit(syntaxTrivia.GetStructure());
+                // Debug.WriteLine($"Curpos is now {w.CurPos}");
                 CurPos = w.CurPos;
                 return;
             }
@@ -124,15 +127,23 @@ namespace AnalysisControls
                     var line = text.Substring(start, len);
                     if (len != 0)
                     {
-                        Insert(syntaxTrivia, line, start);
+                        Insert(syntaxTrivia, line, start, true, false);
                     }
 
                     start = i + 2;
-                    Take(new CustomTextEndOfLine(2));
+                    Take(new CustomTextEndOfLine(2){Partial=true});
                 }
                 else
                 {
-                    Insert(syntaxTrivia, text.Substring(start), start);
+                    if (start == 0)
+                    {
+                        Insert(syntaxTrivia, text);
+                    }
+                    else
+                    {
+                        Insert(syntaxTrivia, text.Substring(start), start, true, true);
+                    }
+                    
 
                 }
             }
@@ -144,9 +155,15 @@ namespace AnalysisControls
 
         private void Take(TextRun run)
         {
+
+            TextSpan? span = null;
+            bool partial = false;
             if (run is CustomTextCharacters cc)
             {
                 cc.PrevTextRun = _prevTextRun;
+                
+                span = cc.Span;
+                partial = cc.Partial;
             }
             if (_prevTextRun is CustomTextCharacters cc1)
             {
@@ -156,17 +173,27 @@ namespace AnalysisControls
             //_nodeStack.Peek().TakeTextRun(run);
             var l = run.Length;
             CurPos += l;
+            // Debug.WriteLine($"{CurPos} {l}");
+            if (span.HasValue && span.Value.End != CurPos)
+            {
+                if (!partial)
+                {
+
+                }
+            }
             _takeTextRun(run);
             _prevTextRun = run;
         }
 
-        private void Insert(SyntaxTrivia syntaxTrivia, string text, int offset=0)
+        private void Insert(SyntaxTrivia syntaxTrivia, string text, int offset = 0, bool partial= false,bool finalPartial = false)
         {
             var textRunProperties = _propertiesFunc(syntaxTrivia, text);
             var syn = new SyntaxTriviaTextCharacters(text, 0, text.Length,
                 textRunProperties, syntaxTrivia.FullSpan, syntaxTrivia)
             {
-                Index = syntaxTrivia.SpanStart+offset
+                Index = syntaxTrivia.SpanStart+offset,
+                Partial = partial,
+                FinalPartial = finalPartial
             };
             Take(syn);
         }
@@ -184,9 +211,15 @@ namespace AnalysisControls
             var l = node.GetLocation();
             var s1 = l.SourceSpan.Start;
             var pos = CurPos;
-
+            TextSpan ss;
+            if (node.HasLeadingTrivia)
+            {
+                ss = node.GetLeadingTrivia().Span;
+            }
             if (s1 < CurPos)
             {
+                
+                
                 DebugUtils.WriteLine($"Skipping {CurPos - s1} characters", DebugCategory.Syntax);
             }
             if (CurPos > s1)
@@ -202,23 +235,25 @@ namespace AnalysisControls
                     if (textRun is ICustomSpan ctc)
                     {
                         span = ctc.Span;
-                        if (end != span.Start)
+                        if (end != span.Start && !(textRun is CustomTextEndOfLine))
                         {
-                            DebugUtils.WriteLine($"{end} !- {span.Start}", DebugCategory.Syntax);
+                            // Debug.WriteLine($"{end} !- {span.Start}", DebugCategory.Syntax);
                             throw new AppInvalidOperationException();
                         }
                         
-                        end = span.End;
+                        
+                        if(!ctc.Partial || ctc.FinalPartial && !(textRun is CustomTextEndOfLine))
+                            end = span.End;
                     }
                     else
                     {
                         throw new AppInvalidOperationException();
                     }
                     
-                    DebugUtils.WriteLine($"{index} [{span}] " + textRun.Length.ToString() + $" {textRun}", DebugCategory.Syntax);
+                    // Debug.WriteLine($"{index} [{span}] " + textRun.Length.ToString() + $" {textRun}", DebugCategory.Syntax);
                 }   
 
-                throw new AppInvalidOperationException($"{CurPos} is not {s1}");
+                //throw new AppInvalidOperationException($"{CurPos} is not {s1}");
             }
             base.DefaultVisit(node);
             var n = nodes.Pop();
@@ -240,7 +275,7 @@ namespace AnalysisControls
             {
                 DoTrivia(syntaxTrivia);
             }
-            base.VisitTrailingTrivia(token);
+            //base.VisitTrailingTrivia(token);
         }
 
         public void DoToken(SyntaxToken token)
@@ -523,7 +558,7 @@ namespace AnalysisControls
             {
                 DoTrivia(syntaxTrivia);
             }
-            base.VisitTrailingTrivia(token);
+            //base.VisitTrailingTrivia(token);
         }
 
         public void DoToken(SyntaxToken token)

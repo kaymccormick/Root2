@@ -47,8 +47,9 @@ namespace AnalysisControls.Commands
         /// <inheritdoc />
         public override object Argument { get; set; }
 
+        /// <param name="filename"></param>
         /// <inheritdoc />
-        public override async Task<IAppCommandResult> ExecuteAsync()
+        public override async Task<IAppCommandResult> ExecuteAsync(object parameter)
         {
             await PopulateDbAsync(this, _dbConLazy.Value);
             return AppCommandResult.Success;

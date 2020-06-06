@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Composition;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -37,6 +38,7 @@ namespace AnalysisControls
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         [ TitleMetadata ( "Process solution" ) ]
+        [RequiredParameterMetadata("Solution file")]
         [ UsedImplicitly ]
         // ReSharper disable once FunctionComplexityOverflow
         public static async Task<IAppCommandResult> ProcessSolutionAsync(IBaseLibCommand command, string SolutionFilePath)
@@ -87,6 +89,7 @@ namespace AnalysisControls
                     DebugUtils.WriteLine ( tn ) ;
                 }
 
+#if false
                 foreach ( var symbol in compilation.GetSymbolsWithName ( s => true ) )
                 {
                     if ( ! symbol.ContainingAssembly.Equals ( compilationAssembly ) )
@@ -172,7 +175,7 @@ namespace AnalysisControls
                         DebugUtils.WriteLine ( "Called symbol " + symbol ) ;
                     }
                 }
-
+#endif
                 // foreach ( var namespaceOrTypeSymbol in compilation
                 // .GetCompilationNamespace (compilationAssembly.ContainingNamespace )
                 // .GetMembers ( ) )
@@ -374,6 +377,18 @@ namespace AnalysisControls
 
                 default: return false;
             }
+        }
+    }
+
+    [MetadataAttribute()]
+    public class RequiredParameterMetadataAttribute : Attribute
+    {
+        public string ParameterName { get; set; }
+
+        /// <inheritdoc />
+        public RequiredParameterMetadataAttribute(string parameterName)
+        {
+            ParameterName = parameterName;
         }
     }
 }

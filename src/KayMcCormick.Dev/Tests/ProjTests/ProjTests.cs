@@ -614,7 +614,7 @@ namespace ProjTests
                         DebugUtils.WriteLine(
                             $"{Thread.CurrentThread.ManagedThreadId} projTests"
                         );
-                        xx.ExecuteAsync()
+                        xx.ExecuteAsync(null)
                             .ContinueWith(
                                 task => DebugUtils.WriteLine(
                                     // ReSharper disable once PossibleNullReferenceException
@@ -1376,7 +1376,7 @@ namespace ProjTests
                 , exception
                     => DebugUtils.WriteLine($"badness: {exception}")
             );
-            c.ExecuteAsync()
+            c.ExecuteAsync(null)
                 .ContinueWith(
                     task =>
                     {
@@ -2860,8 +2860,7 @@ namespace ProjTests
         public void TestCodeParsing2()
         {
             DebugUtils.DisplayCatgories = (DebugCategory)(0);
-            var file =
-            @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\AvalonDock\source\Components\AvalonDock\Layout\LayoutPanel.cs";
+            var file = @"c:\temp\shell.cs";
             NewMethod(file);
             return;
             Dictionary<string, long> files = new Dictionary<string, long>();
@@ -2884,7 +2883,7 @@ namespace ProjTests
 
         
 
-        //[WpfFact]
+        [WpfFact]
         public void TestCodeParsing()
         {
             DebugUtils.DisplayCatgories = (DebugCategory) (0);

@@ -13,5 +13,9 @@ namespace AnalysisControls
         TextSpan Span {
             get;
         }
+
+        bool Partial { get; }
+
+        bool FinalPartial { get; }
     }
 }
