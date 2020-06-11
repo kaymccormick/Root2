@@ -536,7 +536,7 @@ namespace AnalysisControls
                     DebugUtils.WriteLine($"{ip}", DebugCategory.TextFormatting);
 
                     var newc = InsertionCharacter.NextCell;
-                    if (newc.Region != InsertionRegion)
+                    if (newc.Region != null && newc.Region != InsertionRegion)
                     {
                         InsertionRegion = newc.Region;
                         if (newc.Region.Line != InsertionLine) InsertionLine = newc.Region.Line;
@@ -1156,7 +1156,7 @@ namespace AnalysisControls
                                     if (zzz != null)
                                     {
                                         var info = Model.GetForEachStatementInfo(zzz);
-                                        Debug.WriteLine(info.ElementType.ToDisplayString());
+                                        Debug.WriteLine(info.ElementType?.ToDisplayString());
 
                                 }
                                 switch ((CSharpSyntaxNode)tuple.SyntaxNode)

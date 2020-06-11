@@ -41,7 +41,7 @@ namespace ControlsDemo
     {
         public Window2()
         {
-            System.Drawing.Bitmap b = new Bitmap(@"C:\temp\example.bmp");
+            var b = new Bitmap(@"C:\temp\example.bmp");
             InitializeComponent();
             Anchorables.Add("test");
             Debug.WriteLine(DM.LayoutUpdateStrategy?.ToString());
@@ -56,13 +56,12 @@ namespace ControlsDemo
 
         private void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            OpenFileDialog open = new OpenFileDialog();
+            var open = new OpenFileDialog();
             var result = open.ShowDialog();
             if ((bool) result)
             {
                 var ext = System.IO.Path.GetExtension(open.FileName);
                 if (ext == ".dll")
-                {
                     try
                     {
                         var assembly = Assembly.LoadFile(open.FileName);
@@ -71,19 +70,17 @@ namespace ControlsDemo
                     {
                         Debug.Write(ex.ToString());
                     }
-                }
-
             }
         }
 
         private void MenuItem_OnClick(object sender, RoutedEventArgs e)
         {
-            Form xxx = new Form();
-            HashSet<Type> creatable = new HashSet<Type>();
-            HashSet<Type> values = new HashSet<Type>();
-            HashSet<Type> editorTypes = new HashSet<Type>();
-            HashSet<PropertyDescriptor> paints = new HashSet<PropertyDescriptor>();
-            List<Tuple<PropertyDescriptor, object>> comp = new List<Tuple<PropertyDescriptor, object>>();
+            var xxx = new Form();
+            var creatable = new HashSet<Type>();
+            var values = new HashSet<Type>();
+            var editorTypes = new HashSet<Type>();
+            var paints = new HashSet<PropertyDescriptor>();
+            var comp = new List<Tuple<PropertyDescriptor, object>>();
             var a = ViewModel.Assemblies.ToList();
             foreach (var viewModelAssembly in a)
             {
@@ -91,26 +88,19 @@ namespace ControlsDemo
                 try
                 {
                     foreach (var exportedType in viewModelAssembly.ExportedTypes)
-                    {
-//                        Debug.WriteLine(exportedType);
+                        //                        Debug.WriteLine(exportedType);
                         try
                         {
                             foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(exportedType))
                             {
                                 if (property.Converter.CanConvertTo(typeof(InstanceDescriptor)))
-                                {
-Debug.WriteLine("!!!!" +property.PropertyType);
-                                }
+                                    Debug.WriteLine("!!!!" + property.PropertyType);
                                 var ch = property.GetChildProperties();
                                 if (false && ch.Count > 0)
-                                {
                                     foreach (PropertyDescriptor o in ch)
-                                    {
-                                        Debug.WriteLine($"XXX {property.PropertyType} {o.PropertyType} {o.ComponentType}");
-                                    }
-                                }
+                                        Debug.WriteLine(
+                                            $"XXX {property.PropertyType} {o.PropertyType} {o.ComponentType}");
                                 if (property.Converter.GetCreateInstanceSupported(new DD(property)))
-                                {
                                     if (!creatable.Contains(property.PropertyType))
                                     {
                                         creatable.Add(property.PropertyType);
@@ -118,20 +108,20 @@ Debug.WriteLine("!!!!" +property.PropertyType);
                                         var x = new D();
                                         var o = property.Converter.CreateInstance(x);
                                     }
-                                }
 
                                 var t = property.PropertyType;
                                 Type at = null;
                                 if (t.IsGenericType)
                                 {
                                     var d = t.GetGenericTypeDefinition();
-                                    if (d == typeof(Nullable<>))
-                                    {
-                                        at = t.GenericTypeArguments[0];
-                                    }
+                                    if (d == typeof(Nullable<>)) at = t.GenericTypeArguments[0];
                                 }
-                                if (at != typeof(bool) && !(at?.IsEnum ?? false) && property.PropertyType != typeof(bool) && property.PropertyType != typeof(Cursor) && property.PropertyType != typeof(System.Globalization.CultureInfo) && property.PropertyType.IsEnum == false &&  property.Converter.GetStandardValuesSupported())
-                                {
+
+                                if (at != typeof(bool) && !(at?.IsEnum ?? false) &&
+                                    property.PropertyType != typeof(bool) && property.PropertyType != typeof(Cursor) &&
+                                    property.PropertyType != typeof(System.Globalization.CultureInfo) &&
+                                    property.PropertyType.IsEnum == false &&
+                                    property.Converter.GetStandardValuesSupported())
                                     if (!values.Contains(t))
                                     {
                                         var standardValues = property.Converter.GetStandardValues();
@@ -142,27 +132,21 @@ Debug.WriteLine("!!!!" +property.PropertyType);
                                                             property.PropertyType);
                                             values.Add(t);
                                             foreach (var standardValue in standardValues)
-                                            {
                                                 Debug.WriteLine(standardValue);
-                                            }
                                         }
                                     }
-                                }
+
                                 {
                                     var e3 = property.GetEditor(typeof(UITypeEditor));
-                                    if(e3 != null)
-                                    editorTypes.Add(e3.GetType());
+                                    if (e3 != null)
+                                        editorTypes.Add(e3.GetType());
                                     if (e3 != null && e3.GetType() != typeof(CollectionEditor))
                                     {
-                                        
                                         var paint = ((UITypeEditor) e3).GetPaintValueSupported();
                                         var kind = ((UITypeEditor) e3).GetEditStyle();
                                         Debug.WriteLine(
                                             $"{exportedType?.FullName} {paint} {kind} {property.Name} {property.Category} {e3}");
-                                        if (paint)
-                                        {
-                                            paints.Add(property);
-                                        }
+                                        if (paint) paints.Add(property);
                                     }
                                 }
                                 {
@@ -175,41 +159,42 @@ Debug.WriteLine("!!!!" +property.PropertyType);
                                         comp.Add(Tuple.Create(property, e3));
                                         // var paint = ((UITypeEditor)e3).GetPaintValueSupported();
                                         // var kind = ((UITypeEditor)e3).GetEditStyle();
-                                        Debug.WriteLine($"!!!! {exportedType?.FullName}  {property.Name} {property.Category} {e3}");
+                                        Debug.WriteLine(
+                                            $"!!!! {exportedType?.FullName}  {property.Name} {property.Category} {e3}");
                                     }
-
                                 }
                                 {
                                     var e3 = property.GetEditor(typeof(InstanceCreationEditor));
                                     if (e3 != null)
                                         editorTypes.Add(e3.GetType());
                                     if (e3 != null && e3.GetType() != typeof(CollectionEditor))
-                                    {
                                         // var paint = ((UITypeEditor)e3).GetPaintValueSupported();
                                         // var kind = ((UITypeEditor)e3).GetEditStyle();
-                                        Debug.WriteLine($"!!!! {exportedType?.FullName}  {property.Name} {property.Category} {e3}");
-                                    }
-
+                                        Debug.WriteLine(
+                                            $"!!!! {exportedType?.FullName}  {property.Name} {property.Category} {e3}");
                                 }
-
                             }
                             // var e2 = TypeDescriptor.GetEditor(exportedType, typeof(UITypeEditor));
                             // if (e2 != null)
                             // {
-                                // Debug.WriteLine($"{exportedType} {e2}");
+                            // Debug.WriteLine($"{exportedType} {e2}");
                             // }
 
                             var e1 = TypeDescriptor.GetEditor(exportedType, typeof(InstanceCreationEditor));
                             if (e1 != null)
                             {
+                                editorTypes.Add(e1.GetType());
 
-                                    editorTypes.Add(e1.GetType());
-
-                                Debug.WriteLine("!!!" +e1);
+                                Debug.WriteLine("!!!" + e1);
                             }
-                        } catch{}
-                    }
-                } catch{}
+                        }
+                        catch
+                        {
+                        }
+                }
+                catch
+                {
+                }
             }
 
             var ll = paints.GroupBy(descriptor => descriptor.ComponentType.FullName).ToDictionary(
@@ -217,10 +202,7 @@ Debug.WriteLine("!!!!" +property.PropertyType);
                 grouping => grouping.Select(pp => new
                     {CType = pp.ComponentType.FullName, pp.Name, PType = pp.PropertyType.FullName}));
             File.WriteAllText(@"c:\temp\paint.json", JsonSerializer.Serialize(ll));
-            foreach (var editorType in editorTypes)
-            {
-                Debug.WriteLine(editorType);
-            }
+            foreach (var editorType in editorTypes) Debug.WriteLine(editorType);
         }
     }
 
@@ -236,10 +218,7 @@ Debug.WriteLine("!!!!" +property.PropertyType);
         /// <inheritdoc />
         public object GetService(Type serviceType)
         {
-            if (serviceType == typeof(IWindowsFormsEditorService))
-            {
-                return new Sz();
-            }
+            if (serviceType == typeof(IWindowsFormsEditorService)) return new Sz();
             Debug.WriteLine(serviceType.FullName);
 
             req.Add(serviceType);
@@ -288,7 +267,7 @@ Debug.WriteLine("!!!!" +property.PropertyType);
 
     internal class D : IDictionary
     {
-        private IDictionary _dictionaryImplementation= new Hashtable();
+        private IDictionary _dictionaryImplementation = new Hashtable();
 
         /// <inheritdoc />
         public bool Contains(object key)
@@ -386,20 +365,16 @@ Debug.WriteLine("!!!!" +property.PropertyType);
         }
     }
 
-    public class Window2ViewModel :INotifyPropertyChanged
+    public class Window2ViewModel : INotifyPropertyChanged
     {
-
-        public ObservableCollection<Assembly> Assemblies { get; set; }=new ObservableCollection<Assembly>();
+        public ObservableCollection<Assembly> Assemblies { get; set; } = new ObservableCollection<Assembly>();
         private Type _selectedType;
 
         public Window2ViewModel()
         {
             AppDomain.CurrentDomain.AssemblyLoad += CurrentDomainOnAssemblyLoad;
 
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                Assemblies.Add(assembly);
-            }
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies()) Assemblies.Add(assembly);
         }
 
         private void CurrentDomainOnAssemblyLoad(object sender, AssemblyLoadEventArgs args)
@@ -407,6 +382,7 @@ Debug.WriteLine("!!!!" +property.PropertyType);
             Debug.Write("Loaded " + args.LoadedAssembly.FullName);
             Assemblies.Add(args.LoadedAssembly);
         }
+
         public Type SelectedType
         {
             get { return _selectedType; }

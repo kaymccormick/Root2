@@ -1363,6 +1363,10 @@ namespace AnalysisAppLib.Syntax
             StringValue = type.Name;
         }
 
+        public override string ToString()
+        {
+            return $"AppTypeInfoKey{{{StringValue}}}";
+        }
         #region Equality members
 
         /// <summary>

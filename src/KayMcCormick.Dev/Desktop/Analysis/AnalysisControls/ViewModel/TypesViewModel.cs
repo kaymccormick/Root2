@@ -565,7 +565,7 @@ var mapCount = Map.Count ;
             Root = CollectTypeInfos2 ( null , rootR ) ;
         }
 
-        [ NotNull ]
+        [ CanBeNull ]
         private AppTypeInfo CollectTypeInfos2 (
             AppTypeInfo      parentTypeInfo
           , [ NotNull ] Type rootR
@@ -582,13 +582,16 @@ var mapCount = Map.Count ;
             // }
 
 //            CollectDoc(docNode);
-            if ( ! Map.Dict.TryGetValue ( new AppTypeInfoKey ( rootR ) , out var curTypeInfo ) )
-            {
-                throw new AppInvalidOperationException ( ) ;
+var appTypeInfoKey = new AppTypeInfoKey ( rootR );
+if (!Map.Dict.TryGetValue(appTypeInfoKey, out var curTypeInfo))
+{
+
+    return null;
+                throw new AppInvalidOperationException ("Cant find in map" ) ;
             }
 
             // DebugUtils.WriteLine ( $"{curTypeInfo}" ) ;
-            var r = Map.Dict[ new AppTypeInfoKey ( rootR ) ] ;
+            var r = Map.Dict[ appTypeInfoKey ] ;
             r.AllTypes = GetAppTypeInfos();
             r.Model = this;
             r.ParentInfo     = parentTypeInfo ;
@@ -596,7 +599,7 @@ var mapCount = Map.Count ;
             r.ColorValue     = HierarchyColors[ level ] ;
             foreach ( var theTypeInfo in _nodeTypes.Where ( type => type.BaseType == rootR ).Select ( type1 => CollectTypeInfos2 ( r , type1 , level + 1 ) ) )
             {
-                r.SubTypeInfos.Add ( theTypeInfo ) ;
+                if (theTypeInfo != null) r.SubTypeInfos.Add(theTypeInfo);
             }
 
             PopulateFieldTypes ( r ) ;

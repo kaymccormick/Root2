@@ -235,14 +235,20 @@
     <PackageReference Include="MessageTemplates">
       <Version>1.0.0-rc-00275</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis">
+      <Version>3.7.0-1.final</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Common">
-      <Version>3.6.0</Version>
+      <Version>3.7.0-1.final</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-      <Version>3.6.0</Version>
+      <Version>3.7.0-1.final</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.Scripting.Common">
+      <Version>3.7.0-1.final</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
-      <Version>3.6.0</Version>
+      <Version>3.7.0-1.final</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore">
       <Version>3.1.4</Version>
@@ -251,7 +257,7 @@
       <Version>3.1.4</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Graph.Beta">
-      <Version>0.17.0-preview</Version>
+      <Version>0.18.0-preview</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Identity.Client">
       <Version>4.14.0</Version>
@@ -264,6 +270,9 @@
     </PackageReference>
     <PackageReference Include="Moq">
       <Version>4.14.1</Version>
+    </PackageReference>
+    <PackageReference Include="ReactiveUI">
+      <Version>11.4.1</Version>
     </PackageReference>
     <PackageReference Include="ReactiveUI.WPF">
       <Version>11.4.1</Version>
