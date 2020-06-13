@@ -114,14 +114,11 @@
     <Compile Include="ISyntaxTypesService.cs" />
     <None Include="Resources\Program-Parse.cs" />
     <Compile Include="LocationInfo.cs" />
-    <Compile Include="Log1.cs" />
     <Compile Include="LogEventMisc.cs" />
     <Compile Include="LogInvocation2.cs" />
     <Compile Include="MetaHelper.cs" />
-    <Compile Include="MethodDocInfo.cs" />
     <Compile Include="MethodInfo.cs" />
     <Compile Include="MiscLevel.cs" />
-    <Compile Include="MSBuildEventMisc.cs" />
     <Compile Include="ParameterInfo.cs" />
     <Compile Include="Project\ProjectInfo.cs" />
     <Compile Include="Project\ProjectLanguage.cs" />
@@ -149,7 +146,6 @@
     <Compile Include="ICodeRenderer.cs" />
     <Compile Include="ITypesViewModel.cs" />
     <Compile Include="JsonPocoSyntaxConverter.cs" />
-    <Compile Include="JsonPocoSyntaxConverter2.cs" />
     <Compile Include="Project\BrowserNode.cs" />
     <Compile Include="Project\BrowserNodeCollection.cs" />
     <Compile Include="Project\IBrowserNode.cs" />

@@ -113,7 +113,6 @@
     <Compile Include="Attributes\CommandIdMetadataAttribute.cs" />
     <Compile Include="Attributes\TitleMetadataAttribute.cs" />
     <Compile Include="BaseLibTypeConverter.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="Command\IBaseLibCommand.cs" />
     <Compile Include="DebugCategory.cs" />
     <Compile Include="IAddRuntimeResource.cs" />
