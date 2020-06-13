@@ -508,9 +508,9 @@ namespace AnalysisAppLib
                                                                       , typeof ( SyntaxNode )
                                                                       , typeof ( TypeSyntax )
                                                                       , typeof ( object )
-                                                                      , typeof (
-                                                                            DesignerSerializationOptionsAttribute
-                                                                        )
+                                                                      // , typeof (
+                                                                            // DesignerSerializationOptionsAttribute
+                                                                        // )
                                                                     }.Select (
                                                                               t => t
                                                                                   .Assembly

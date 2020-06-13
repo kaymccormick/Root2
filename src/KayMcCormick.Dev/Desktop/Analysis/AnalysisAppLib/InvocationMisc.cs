@@ -1,3 +1,4 @@
+
 #region header
 // Kay McCormick (mccor)
 // 
@@ -9,6 +10,7 @@
 // 
 // ---
 #endregion
+#if FINDLOGUSAGES
 using FindLogUsages ;
 
 namespace AnalysisAppLib
@@ -76,3 +78,4 @@ namespace AnalysisAppLib
         #endregion
     }
 }
+#endif

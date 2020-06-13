@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+#if FINDLOGUSAGES
 using System ;
 using System.Collections.ObjectModel ;
 using FindLogUsages ;
@@ -58,3 +59,4 @@ namespace AnalysisAppLib
         #endregion
     }
 }
+#endif

@@ -593,8 +593,6 @@ namespace AnalysisAppLib.Syntax
     /// <summary>
     /// 
     /// </summary>
-    [ContentProperty("Kinds")]
-    [TypeConverter(typeof(SyntaxFieldInfoTypeConverter))]
     public sealed class SyntaxFieldInfo
     {
         private int _id;
@@ -662,7 +660,6 @@ namespace AnalysisAppLib.Syntax
         /// <summary>
         /// 
         /// </summary>
-        [ValueSerializer(typeof(SyntaxFieldTypeValueSerializer))]
         [TypeConverter(typeof(SyntaxFieldTypeTypeConverter))]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [NotMapped]
@@ -803,35 +800,6 @@ namespace AnalysisAppLib.Syntax
             // ReSharper disable once UnusedVariable
             if (value is Type t) return "boo";
             return base.ConvertTo(context, culture, value, destinationType);
-        }
-
-        #endregion
-    }
-
-    /// <inheritdoc />
-    public sealed class SyntaxFieldTypeValueSerializer : ValueSerializer
-    {
-        #region Overrides of ValueSerializer
-
-        /// <inheritdoc />
-        public override bool CanConvertToString(object value, IValueSerializerContext context)
-        {
-            if (value is Type) return true;
-            return base.CanConvertToString(value, context);
-        }
-
-        /// <inheritdoc />
-        public override string ConvertToString(object value, IValueSerializerContext context)
-        {
-            if (!(value is Type t)) return base.ConvertToString(value, context);
-
-            if (!t.IsGenericType) return t.FullName;
-
-            var t2 = t.GetGenericTypeDefinition();
-            // ReSharper disable once PossibleNullReferenceException
-            var nt = t2.FullName.Replace("`1", "");
-            var x = t.GetGenericArguments()[0].FullName;
-            return $"{nt}<{x}>";
         }
 
         #endregion

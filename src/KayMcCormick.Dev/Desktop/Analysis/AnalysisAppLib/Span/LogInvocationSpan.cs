@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+#if FINDLOGUSAGES
 using System ;
 using System.Linq ;
 using FindLogUsages ;
@@ -60,3 +61,4 @@ namespace AnalysisAppLib.Span
         }
     }
 }
+#endif

@@ -1,3 +1,5 @@
+#if false
+
 using System ;
 using System.Collections.Generic ;
 using System.ComponentModel ;
@@ -380,3 +382,4 @@ namespace AnalysisAppLib
         Compact = 1
     }
 }
+#endif

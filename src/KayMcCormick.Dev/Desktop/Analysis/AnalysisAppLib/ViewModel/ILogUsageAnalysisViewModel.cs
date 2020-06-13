@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel ;
+﻿#if FINDLOGUSAGES
+using System.Collections.ObjectModel ;
 using System.ComponentModel ;
 using System.Threading.Tasks ;
 using KayMcCormick.Dev.Logging ;
@@ -36,3 +37,4 @@ namespace AnalysisAppLib.ViewModel
         Task AnalyzeCommand ( object viewCurrentItem ) ;
     }
 }
+#endif

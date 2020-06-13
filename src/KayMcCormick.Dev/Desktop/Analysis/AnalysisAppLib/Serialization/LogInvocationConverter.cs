@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+#if FINDLOGUSAGES
 using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
@@ -80,3 +81,4 @@ namespace AnalysisAppLib.Serialization
         #endregion
     }
 }
+#endif

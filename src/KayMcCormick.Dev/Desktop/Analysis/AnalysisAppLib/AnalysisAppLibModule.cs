@@ -155,6 +155,7 @@ namespace AnalysisAppLib
                    .WithAttributedMetadata ( )
                    .WithCallerMetadata ( ) ;
 
+#if FINDLOGUSAGES
             builder.RegisterType<AnalyzeCommandWrap>().AsImplementedInterfaces().WithCallerMetadata();
             builder.RegisterType < AnalyzeCommand > ( ).AsSelf()
                    .As < IAnalyzeCommand > ( ).AsImplementedInterfaces()
@@ -180,7 +181,7 @@ namespace AnalysisAppLib
                    .AsSelf ( )
                    .InstancePerLifetimeScope ( )
                    .WithCallerMetadata ( ) ;
-
+#endif
             builder.Register < Action<Document>> (
                                                                              ( c , p ) => doc => {
                                                                                  DebugUtils

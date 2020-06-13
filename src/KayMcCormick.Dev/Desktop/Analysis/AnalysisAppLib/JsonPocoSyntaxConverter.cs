@@ -1,4 +1,5 @@
-﻿using System ;
+﻿#if FINDLOGUSAGES
+using System ;
 using System.Text.Json ;
 using System.Text.Json.Serialization ;
 using JetBrains.Annotations ;
@@ -15,7 +16,7 @@ namespace AnalysisAppLib
 
         /// <inheritdoc />
         public JsonPocoSyntaxConverter ( Type excludeType ) { _excludeType = excludeType ; }
-        #region Overrides of JsonConverter
+#region Overrides of JsonConverter
         /// <summary>
         /// 
         /// </summary>
@@ -27,8 +28,8 @@ namespace AnalysisAppLib
         {
             return typeToConvert != _excludeType && typeof(FindLogUsages.PocoCSharpSyntaxNode).IsAssignableFrom(typeToConvert);
         }
-        #endregion
-        #region Overrides of JsonConverterFactory
+#endregion
+#region Overrides of JsonConverterFactory
         /// <inheritdoc />
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
@@ -41,7 +42,7 @@ namespace AnalysisAppLib
 
         private sealed class SyntaxConverter < T > : JsonConverter<T>
         {
-            #region Overrides of JsonConverter<T>
+#region Overrides of JsonConverter<T>
             public override T Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { throw new AppInvalidOperationException(); }
 
             public override void Write (
@@ -54,8 +55,10 @@ namespace AnalysisAppLib
                 jsonSerializerOptions.Converters.Add (new JsonPocoSyntaxConverter ( value.GetType (  ) )  );
                 JsonSerializer.Serialize(writer, value, value.GetType (  ), jsonSerializerOptions);
             }
-            #endregion
+#endregion
         }
-        #endregion
+#endregion
     }
 }
+
+#endif
