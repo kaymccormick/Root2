@@ -94,7 +94,7 @@ namespace KayMcCormick.Dev
 
         private static void DoDump (
             IndentedTextWriter dumpConfig
-          , [ NotNull ] IDictionary        doDumpConfig
+          , [ JetBrains.Annotations.NotNull ] IDictionary        doDumpConfig
             // ReSharper disable once UnusedParameter.Local
           , int                depth = 0
         )
@@ -136,8 +136,8 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        [ NotNull ]
-        public static IEnumerable < StackTraceEntry > ParseStackTrace ( [ NotNull ] string text )
+        [ JetBrains.Annotations.NotNull ]
+        public static IEnumerable < StackTraceEntry > ParseStackTrace ( [ JetBrains.Annotations.NotNull ] string text )
         {
             return StackTraceParser.Parse (
                                            text
@@ -183,7 +183,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// </summary>
         /// <param name="eException"></param>
-        public static void LogParsedExceptions ( [ NotNull ] Exception eException )
+        public static void LogParsedExceptions ( [ JetBrains.Annotations.NotNull ] Exception eException )
         {
             DebugUtils.WriteLine ( eException.GetType ( ).FullName ) ;
             DebugUtils.WriteLine ( eException.Message ) ;
@@ -244,7 +244,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="eException"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public static ParsedExceptions GenerateParsedException ( Exception eException )
         {
             var parsed = new ParsedExceptions ( ) ;

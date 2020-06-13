@@ -9,7 +9,6 @@ using System.Reactive.Concurrency ;
 using System.Reactive.Linq ;
 using System.Reflection ;
 using System.Runtime.Serialization ;
-using System.Windows.Threading ;
 using Autofac ;
 using Autofac.Core ;
 using Autofac.Core.Lifetime ;
@@ -445,26 +444,7 @@ namespace KayMcCormick.Dev
                     CreateNode ( null , "LifetimeScope" , LifetimeScope , true ) ;
                 if ( ! _regSubscribed )
                 {
-                    if (_regObservable != null)
-                        _regObservable.SubscribeOn(Scheduler.Default)
-                            .ObserveOnDispatcher(DispatcherPriority.Background)
-                            .Subscribe(
-                                registration =>
-                                {
-                                    DebugUtils.WriteLine("Adding registration");
-                                    resourceNodeInfo.Children.Add(
-                                        resourceNodeInfo
-                                            .CreateNodeFunc(
-                                                resourceNodeInfo
-                                                , registration
-                                                , null
-                                                , true
-                                                , false
-                                            )
-                                    );
-                                }
-                            );
-                    _regSubscribed = true ;
+                   
                 }
 
                 PopulateLifetimeScope ( LifetimeScope , resourceNodeInfo ) ;

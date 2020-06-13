@@ -54,7 +54,7 @@ namespace KayMcCormick.Dev.TestLib.Logging
             var logMessage = RenderLogEvent ( Layout , logEvent ) ;
 
 
-            _sink.OnMessage ( new DiagnosticMessage ( logMessage ) ) ;
+            // _sink.OnMessage ( new DiagnosticMessage ( logMessage ) ) ;
         }
     }
 }

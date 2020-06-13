@@ -51,17 +51,17 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
                 return ;
             }
 
-            LogHelper.EnsureLoggingConfigured (
-                                               message => sink.OnMessage (
-                                                                          new DiagnosticMessage (
-                                                                                                 message
-                                                                                                )
-                                                                         )
-                                              ) ;
+            // LogHelper.EnsureLoggingConfigured (
+                                               // message => sink.OnMessage (
+                                                                          // new DiagnosticMessage (
+                                                                                                 // message
+                                                                                                // )
+                                                                         // )
+                                              // ) ;
 
             var l = AppLoggingConfigHelper.SetupJsonLayout ( ) ;
 
-            sink.OnMessage ( new DiagnosticMessage ( "Constructing GlobalLoggingFixture." ) ) ;
+            // sink.OnMessage ( new DiagnosticMessage ( "Constructing GlobalLoggingFixture." ) ) ;
             _xunitSinkTarget = new XunitSinkTarget ( "Xunitsink" , sink ) { Layout = l } ;
             AppLoggingConfigHelper.AddTarget ( _xunitSinkTarget , null ) ;
             Logger.Warn ( $"{nameof ( GlobalLoggingFixture )} logger added." ) ;

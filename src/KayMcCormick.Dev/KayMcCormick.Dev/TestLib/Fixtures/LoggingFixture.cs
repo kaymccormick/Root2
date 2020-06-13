@@ -42,7 +42,7 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
             }
 
             var disabled = _disableLogging ? " Logging disabled." : string.Empty ;
-            sink.OnMessage ( new DiagnosticMessage ( $"Constructing LoggingFixture.{disabled}" ) ) ;
+            // sink.OnMessage ( new DiagnosticMessage ( $"Constructing LoggingFixture.{disabled}" ) ) ;
             if ( ! _disableLogging )
             {
                 FixtureLogger.LogFixtureCreatedLifecycleEvent ( GetType ( ) ) ;

@@ -54,7 +54,7 @@ namespace KayMcCormick.Dev.TestLib.Logging
             var logMessage = RenderLogEvent ( Layout , logEvent ) ;
 
             OutputHelper.WriteLine ( logMessage ) ;
-            PROVIDER_GUID.EventWriteEVENT_TEST_OUTPUT ( logMessage ) ;
+            // PROVIDER_GUID.EventWriteEVENT_TEST_OUTPUT ( logMessage ) ;
         }
     }
 }

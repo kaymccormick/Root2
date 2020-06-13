@@ -13,7 +13,7 @@
 using System ;
 using System.Diagnostics.Eventing ;
 using System.Runtime.InteropServices ;
-
+#if NETFRAMEWORK
 namespace KayMcCormick.Dev.Tracing
 {
     public static class PROVIDER_GUID
@@ -392,3 +392,4 @@ namespace KayMcCormick.Dev.Tracing
         }
     }
 }
+#endif
