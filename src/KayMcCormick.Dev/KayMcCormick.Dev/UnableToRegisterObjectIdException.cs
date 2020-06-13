@@ -76,7 +76,7 @@ namespace KayMcCormick.Dev
         ///     <see cref="System.Exception.HResult" /> is zero (0).
         /// </exception>
         protected UnableToRegisterObjectIdException (
-            [ NotNull ] SerializationInfo info
+            [ JetBrains.Annotations.NotNull ] SerializationInfo info
           , StreamingContext              context
         ) : base ( info , context )
         {

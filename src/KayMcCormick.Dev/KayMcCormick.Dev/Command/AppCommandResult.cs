@@ -52,7 +52,7 @@ namespace KayMcCormick.Dev.Command
         /// </summary>
         /// <param name="taskException"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public static AppCommandResult Faulted ( AggregateException taskException )
         {
             return new AppCommandResult { IsSuccess = false , Exception = taskException } ;

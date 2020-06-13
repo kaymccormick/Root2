@@ -9,7 +9,9 @@
 // 
 // ---
 #endregion
+#if FINDLOGUSAGES   
 using System ;
+
 using System.Linq ;
 using System.Reactive.Concurrency ;
 using System.Reactive.Linq ;
@@ -67,3 +69,4 @@ namespace AnalysisAppLib.ViewModel
         }
     }
 }
+#endif

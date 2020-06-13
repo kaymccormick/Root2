@@ -105,7 +105,7 @@ namespace AnalysisAppLib
             Listen ( ) ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private LogEventInstance HandleJsonMessage ( JsonSerializerOptions options , string s )
         {
             var instance = JsonSerializer.Deserialize < LogEventInstance > ( s , options ) ;
@@ -158,8 +158,8 @@ namespace AnalysisAppLib
             _viewModel.AddEntry ( instance ) ;
         }
 
-        [ NotNull ]
-        private LogEventInstance HandleXml ( [ NotNull ] byte[] resultBuffer )
+        [ JetBrains.Annotations.NotNull ]
+        private LogEventInstance HandleXml ( [ JetBrains.Annotations.NotNull ] byte[] resultBuffer )
         {
             var xmlNameTable = new NameTable ( ) ;
 

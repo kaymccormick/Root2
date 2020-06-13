@@ -43,7 +43,7 @@ namespace AnalysisAppLib
         /// <param name="info"></param>
         /// <param name="context"></param>
         protected UnableToInitializeWorkspace (
-            [ NotNull ] SerializationInfo info
+            [ JetBrains.Annotations.NotNull ] SerializationInfo info
           , StreamingContext              context
         ) : base ( info , context )
         {

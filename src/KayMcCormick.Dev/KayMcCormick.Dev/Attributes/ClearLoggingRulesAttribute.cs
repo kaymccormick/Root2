@@ -27,7 +27,7 @@ namespace KayMcCormick.Dev.Attributes
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override bool Apply ( [ NotNull ] LoggingAttributeContext context )
+        public override bool Apply ( [ JetBrains.Annotations.NotNull ] LoggingAttributeContext context )
         {
             if ( context == null )
             {

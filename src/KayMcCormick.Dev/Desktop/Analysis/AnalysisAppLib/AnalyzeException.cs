@@ -30,7 +30,7 @@ namespace AnalysisAppLib
         }
 
         protected AnalyzeException (
-            [ NotNull ] SerializationInfo info
+            [ JetBrains.Annotations.NotNull ] SerializationInfo info
           , StreamingContext              context
         ) : base ( info , context )
         {

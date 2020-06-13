@@ -62,7 +62,7 @@ namespace AnalysisAppLib.Dataflow
         /// 
         /// </summary>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public Func < TSource , Task < IEnumerable < TDest > > > GetAsyncTransformFunction ( )
         {
             return x => _func ( x ) ;

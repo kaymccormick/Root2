@@ -205,7 +205,7 @@ namespace KayMcCormick.Dev
         /// <param name="node"></param>
         /// <param name="createNode"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public IEnumerable < ResourceNodeInfo > FlatObjectsChildrenFunc (
             ResourceNodeInfo                            node
           , Func < object , object , ResourceNodeInfo > createNode
@@ -256,7 +256,7 @@ namespace KayMcCormick.Dev
                                         ) ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private IEnumerable < ResourceNodeInfo > ObjectsChildrenFunc (
             ResourceNodeInfo                            node
           , Func < object , object , ResourceNodeInfo > createNode
@@ -309,9 +309,9 @@ namespace KayMcCormick.Dev
                                     ) ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private static IEnumerable < ResourceNodeInfo > ComponentChildrenFunc (
-            [ NotNull ] ResourceNodeInfo                arg1
+            [ JetBrains.Annotations.NotNull ] ResourceNodeInfo                arg1
           , Func < object , object , ResourceNodeInfo > arg2
         )
         {
@@ -319,7 +319,7 @@ namespace KayMcCormick.Dev
             return ci.Instances.Select ( x => arg2 ( x , x ) ) ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private ResourceNodeInfo CreateNode (
             string nodeKey
           , Func < ResourceNodeInfo , Func < object , object , ResourceNodeInfo > ,
@@ -340,7 +340,7 @@ namespace KayMcCormick.Dev
         /// <param name="isValueChildren"></param>
         /// <param name="addToChildren"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public ResourceNodeInfo CreateNode (
             [ CanBeNull ] ResourceNodeInfo parent
           , object                         key
@@ -380,7 +380,7 @@ namespace KayMcCormick.Dev
         /// <param name="lifetimeScope"></param>
         /// <param name="node"></param>
         private void PopulateLifetimeScope (
-            [ NotNull ] IComponentContext lifetimeScope
+            [ JetBrains.Annotations.NotNull ] IComponentContext lifetimeScope
           , ResourceNodeInfo              node
         )
         {
@@ -466,7 +466,7 @@ namespace KayMcCormick.Dev
 
         // ReSharper disable once FunctionComplexityOverflow
         private void PopulateAppContext (
-            [ NotNull ] AppDomain currentDomain
+            [ JetBrains.Annotations.NotNull ] AppDomain currentDomain
           , ResourceNodeInfo      createNode
         )
         {

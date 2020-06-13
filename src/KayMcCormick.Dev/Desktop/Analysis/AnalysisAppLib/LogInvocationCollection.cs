@@ -29,7 +29,7 @@ namespace AnalysisAppLib
         /// <param name="item"></param>
         /// <exception cref="ArgumentNullException"></exception>
         // ReSharper disable once AnnotationConflictInHierarchy
-        protected override void InsertItem ( int index , [ NotNull ] ILogInvocation item )
+        protected override void InsertItem ( int index , [ JetBrains.Annotations.NotNull ] ILogInvocation item )
         {
             if ( item == null )
             {
@@ -46,7 +46,7 @@ namespace AnalysisAppLib
         /// <param name="item"></param>
         /// <exception cref="ArgumentNullException"></exception>
         // ReSharper disable once AnnotationConflictInHierarchy
-        protected override void SetItem ( int index , [ NotNull ] ILogInvocation item )
+        protected override void SetItem ( int index , [ JetBrains.Annotations.NotNull ] ILogInvocation item )
         {
             if ( item == null )
             {

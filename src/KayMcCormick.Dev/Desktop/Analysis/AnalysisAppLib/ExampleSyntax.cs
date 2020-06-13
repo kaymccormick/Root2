@@ -20,7 +20,6 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    [ ContentProperty ( "Example" ) ]
     public sealed class ExampleSyntax
     {
         private int    _kind ;
@@ -34,7 +33,7 @@ namespace AnalysisAppLib
             int                         kind
           , string                      example
           , string                      typeName
-          , [ NotNull ] List < SToken > tokens
+          , [ JetBrains.Annotations.NotNull ] List < SToken > tokens
           , int                         id
         )
         {

@@ -64,7 +64,7 @@ namespace AnalysisAppLib.Dataflow
         /// <param name="factory"></param>
         /// <param name="funcProvider"></param>
         private ConcreteAnalysisBlockProvider (
-            [ NotNull ] BlockFactory < TSource , TDest , TBlock >          factory
+            [ JetBrains.Annotations.NotNull ] BlockFactory < TSource , TDest , TBlock >          factory
           , IDataflowTransformFuncProvider < TSource , TDest > funcProvider
         )
         {

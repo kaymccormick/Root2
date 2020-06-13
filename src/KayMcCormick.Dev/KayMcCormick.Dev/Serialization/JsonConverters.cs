@@ -21,7 +21,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="ArgumentNullException"></exception>
         public static void AddJsonConverters (
-            [ NotNull ] JsonSerializerOptions jsonSerializerOptions
+            [ JetBrains.Annotations.NotNull ] JsonSerializerOptions jsonSerializerOptions
         )
         {
             if ( jsonSerializerOptions == null )
@@ -71,7 +71,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
@@ -94,8 +94,8 @@ namespace KayMcCormick.Dev.Serialization
             }
 
             public override void Write (
-                [ NotNull ] Utf8JsonWriter writer
-              , [ NotNull ] IViewModel     value
+                [ JetBrains.Annotations.NotNull ] Utf8JsonWriter writer
+              , [ JetBrains.Annotations.NotNull ] IViewModel     value
               , JsonSerializerOptions      options
             )
             {
@@ -143,7 +143,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
@@ -187,8 +187,8 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            [ NotNull ] Utf8JsonWriter         writer
-          , [ NotNull ] IComponentRegistration value
+            [ JetBrains.Annotations.NotNull ] Utf8JsonWriter         writer
+          , [ JetBrains.Annotations.NotNull ] IComponentRegistration value
           , JsonSerializerOptions              options
         )
         {
@@ -242,8 +242,8 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            [ NotNull ] Utf8JsonWriter writer
-          , [ NotNull ] LifetimeScope  value
+            [ JetBrains.Annotations.NotNull ] Utf8JsonWriter writer
+          , [ JetBrains.Annotations.NotNull ] LifetimeScope  value
           , JsonSerializerOptions      options
         )
         {

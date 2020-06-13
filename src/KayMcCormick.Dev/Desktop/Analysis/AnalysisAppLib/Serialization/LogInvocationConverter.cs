@@ -49,8 +49,8 @@ namespace AnalysisAppLib.Serialization
         /// <param name="options"></param>
         /// <exception cref="ArgumentNullException"></exception>
         public override void Write (
-            [ NotNull ] Utf8JsonWriter             writer
-          , [ NotNull ] ILogInvocation value
+            [ JetBrains.Annotations.NotNull ] Utf8JsonWriter             writer
+          , [ JetBrains.Annotations.NotNull ] ILogInvocation value
           , JsonSerializerOptions      options
         )
         {

@@ -46,7 +46,7 @@ namespace KayMcCormick.Dev.Logging
         ///     been requested to be proxied, and if appropriate - throw an exception to
         ///     notify the caller.
         /// </remarks>
-        public void NonProxyableMemberNotification ( Type type , [ NotNull ] MemberInfo memberInfo )
+        public void NonProxyableMemberNotification ( Type type , [ JetBrains.Annotations.NotNull ] MemberInfo memberInfo )
         {
             _useLogMethod ( $"Unproxyable: {memberInfo.Name}" ) ;
         }
@@ -58,7 +58,7 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="type">The type which declares the given method.</param>
         /// <param name="methodInfo">The method to inspect.</param>
         /// <returns>True if the given method should be proxied; false otherwise.</returns>
-        public bool ShouldInterceptMethod ( Type type , [ NotNull ] MethodInfo methodInfo )
+        public bool ShouldInterceptMethod ( Type type , [ JetBrains.Annotations.NotNull ] MethodInfo methodInfo )
         {
             _useLogMethod ( $"{type}.{methodInfo.Name}" ) ;
             if ( methodInfo.Name == "ToString" )

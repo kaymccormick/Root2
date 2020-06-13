@@ -32,7 +32,7 @@ namespace KayMcCormick.Dev.Logging
 
         public Layout XmlEventLayout { get ; }
 
-        [ NotNull ] public static ProtoLogger Instance
+        [ JetBrains.Annotations.NotNull ] public static ProtoLogger Instance
         {
             get
             {
@@ -61,7 +61,7 @@ namespace KayMcCormick.Dev.Logging
         }
 
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private byte[] DefaultGetBytes ( LogEventInfo arg )
         {
             var encoding = Encoding.UTF8 ;

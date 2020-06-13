@@ -30,7 +30,7 @@ namespace AnalysisAppLib.Span
         /// </summary>
         /// <param name="span"></param>
         /// <param name="instance"></param>
-        public SyntaxNodeSpanObject ( TextSpan span , [ NotNull ] SyntaxNode instance ) : base (
+        public SyntaxNodeSpanObject ( TextSpan span , [ JetBrains.Annotations.NotNull ] SyntaxNode instance ) : base (
                                                                                                 span
                                                                                               , instance
                                                                                                )

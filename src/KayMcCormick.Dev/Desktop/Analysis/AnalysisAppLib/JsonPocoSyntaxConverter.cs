@@ -46,7 +46,7 @@ namespace AnalysisAppLib
 
             public override void Write (
                 Utf8JsonWriter        writer
-              , [ NotNull ] T                     value
+              , [ JetBrains.Annotations.NotNull ] T                     value
               , JsonSerializerOptions options
             )
             {

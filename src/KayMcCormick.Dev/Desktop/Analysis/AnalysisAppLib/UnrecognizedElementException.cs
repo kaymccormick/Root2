@@ -39,7 +39,7 @@ namespace AnalysisAppLib
         /// <param name="context"></param>
         // ReSharper disable once UnusedMember.Local
         private UnrecognizedElementException (
-            [ NotNull ] SerializationInfo info
+            [ JetBrains.Annotations.NotNull ] SerializationInfo info
           , StreamingContext              context
         ) : base ( info , context )
         {

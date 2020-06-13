@@ -35,7 +35,7 @@ namespace AnalysisAppLib
         #endregion
         #region Overrides of TypeConverter
         /// <inheritdoc />
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public override object CreateInstance (
             ITypeDescriptorContext context
           , IDictionary            propertyValues
@@ -66,7 +66,7 @@ namespace AnalysisAppLib
         #endregion
         #region Overrides of TypeConverter
         /// <inheritdoc />
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public override StandardValuesCollection GetStandardValues (
             ITypeDescriptorContext context
         )

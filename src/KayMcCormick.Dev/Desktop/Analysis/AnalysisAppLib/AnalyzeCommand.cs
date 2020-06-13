@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+#if FINDLOGUSAGES
 using System ;
 using System.Linq ;
 using System.Text.Json ;
@@ -159,7 +160,7 @@ namespace AnalysisAppLib
             }
         }
 
-        private void LogInvocationAction ( [ NotNull ] ILogInvocation invocation )
+        private void LogInvocationAction ( [ JetBrains.Annotations.NotNull ] ILogInvocation invocation )
         {
             if ( invocation == null )
             {
@@ -290,3 +291,4 @@ namespace AnalysisAppLib
         #endregion
     }
 }
+#endif

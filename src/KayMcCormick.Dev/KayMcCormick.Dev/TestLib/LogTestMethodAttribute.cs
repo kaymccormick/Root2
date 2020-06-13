@@ -33,7 +33,7 @@ namespace KayMcCormick.Dev.TestLib
         /// </summary>
         /// <param name="methodUnderTest">The method under test</param>
         [ EditorBrowsable ( EditorBrowsableState.Never ) ]
-        public override void After ( [ NotNull ] MethodInfo methodUnderTest )
+        public override void After ( [ JetBrains.Annotations.NotNull ] MethodInfo methodUnderTest )
         {
             new LogBuilder ( Logger ).Level ( LogLevel.Info )
                                      .Message (
@@ -54,7 +54,7 @@ namespace KayMcCormick.Dev.TestLib
         /// </summary>
         /// <param name="methodUnderTest">The method under test</param>
         [ EditorBrowsable ( EditorBrowsableState.Never ) ]
-        public override void Before ( [ NotNull ] MethodInfo methodUnderTest )
+        public override void Before ( [ JetBrains.Annotations.NotNull ] MethodInfo methodUnderTest )
         {
             new LogBuilder ( Logger ).Level ( LogLevel.Info )
                                      .Message (

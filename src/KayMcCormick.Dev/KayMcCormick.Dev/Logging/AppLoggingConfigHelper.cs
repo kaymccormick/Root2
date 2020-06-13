@@ -652,7 +652,7 @@ namespace KayMcCormick.Dev.Logging
         }
 
 #if false
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private static EventLogTarget EventLogTarget ( string eventLogTargetName )
         {
             var x = new EventLogTarget ( eventLogTargetName ) { Source = "Application Error" } ;

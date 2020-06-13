@@ -40,7 +40,7 @@ namespace KayMcCormick.Dev.DataBindingTraceFilter
           , string          source
           , TraceEventType  eventType
           , int             id
-          , [ NotNull ] string          formatOrMessage
+          , [ JetBrains.Annotations.NotNull ] string          formatOrMessage
           , object[]        args
           , object          data1
           , object[]        data

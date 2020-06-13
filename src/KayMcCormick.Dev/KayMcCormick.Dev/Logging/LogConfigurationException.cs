@@ -44,7 +44,7 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="info"></param>
         /// <param name="context"></param>
         protected LogConfigurationException (
-            [ NotNull ] SerializationInfo info
+            [ JetBrains.Annotations.NotNull ] SerializationInfo info
           , StreamingContext              context
         ) : base ( info , context )
         {

@@ -92,7 +92,7 @@ namespace KayMcCormick.Dev.Application
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         protected abstract IEnumerable LoadConfiguration (
-            [ NotNull ] Action < string > logMethod2
+            [ JetBrains.Annotations.NotNull ] Action < string > logMethod2
         ) ;
 
         /// <summary>

@@ -38,8 +38,8 @@ namespace KayMcCormick.Dev
         /// <summary>Debugs the format.</summary>
         /// <param name="reg">The reg.</param>
         /// <returns></returns>
-        [ NotNull ]
-        public static string DebugFormat ( [ NotNull ] this IComponentRegistration reg )
+        [ JetBrains.Annotations.NotNull ]
+        public static string DebugFormat ( [ JetBrains.Annotations.NotNull ] this IComponentRegistration reg )
         {
             if ( reg == null )
             {
@@ -56,8 +56,8 @@ namespace KayMcCormick.Dev
         /// <summary>Debugs the format.</summary>
         /// <param name="service">The service.</param>
         /// <returns></returns>
-        [ NotNull ]
-        public static string DebugFormat ( [ NotNull ] this Autofac.Core.Service service )
+        [ JetBrains.Annotations.NotNull ]
+        public static string DebugFormat ( [ JetBrains.Annotations.NotNull ] this Autofac.Core.Service service )
         {
             if ( service == null )
             {
@@ -72,7 +72,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="obj"></param>
         [Obsolete]
-        public static void WriteLine ( [ NotNull ] object obj )
+        public static void WriteLine ( [ JetBrains.Annotations.NotNull ] object obj )
         {
             WriteLine ( obj?.ToString ( ) ?? "<null>" ) ;
         }

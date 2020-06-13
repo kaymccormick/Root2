@@ -69,7 +69,7 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="identifier"></param>
         /// <returns></returns>
-        public AppTypeInfo GetAppTypeInfo ( [ NotNull ] object identifier )
+        public AppTypeInfo GetAppTypeInfo ( [ JetBrains.Annotations.NotNull ] object identifier )
         {
             AppTypeInfoKey key = null ;
             string unqualifiedTypeName = null ;
@@ -115,10 +115,10 @@ namespace AnalysisAppLib
             CollectTypeInfos2 ( null , _cSharpSyntaxNodeClrType ) ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private AppTypeInfo CollectTypeInfos2 (
             AppTypeInfo      parentTypeInfo
-          , [ NotNull ] Type rootR
+          , [ JetBrains.Annotations.NotNull ] Type rootR
           , int              level = 0
         )
         {
@@ -185,11 +185,11 @@ namespace AnalysisAppLib
         /// <param name="appTypeInfo"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public static TypeSyntax FieldPocoCollectionType (
-            [ NotNull ] TypeSyntax                              typeSyntax
-          , [ NotNull ] IReadOnlyDictionary < string , object > collectionMap
-          , [ NotNull ] AppTypeInfo                             appTypeInfo
+            [ JetBrains.Annotations.NotNull ] TypeSyntax                              typeSyntax
+          , [ JetBrains.Annotations.NotNull ] IReadOnlyDictionary < string , object > collectionMap
+          , [ JetBrains.Annotations.NotNull ] AppTypeInfo                             appTypeInfo
         )
         {
             if ( typeSyntax == null )
@@ -223,7 +223,7 @@ namespace AnalysisAppLib
 
         // ReSharper disable once UnusedMember.Global
 
-        private Type GetTypeInfo ( [ NotNull ] AppTypeInfo pairValue ) { return pairValue.Type ; }
+        private Type GetTypeInfo ( [ JetBrains.Annotations.NotNull ] AppTypeInfo pairValue ) { return pairValue.Type ; }
 
         private readonly Dictionary < Type , AppTypeInfo > _otherTyps =
             new Dictionary < Type , AppTypeInfo > ( ) ;
@@ -232,7 +232,7 @@ namespace AnalysisAppLib
         /// 
         /// </summary>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public IReadOnlyDictionary < string , object > CollectionMap ( )
         {
             DebugUtils.WriteLine ( "Populating collectionMap" ) ;
@@ -255,7 +255,7 @@ namespace AnalysisAppLib
         /// <param name="collectionMap"></param>
         /// <exception cref="InvalidOperationException"></exception>
         public static void LoadSyntax (
-            [ NotNull ] ITypesViewModel             model1
+            [ JetBrains.Annotations.NotNull ] ITypesViewModel             model1
           , IReadOnlyDictionary < string , object > collectionMap
         )
         {
@@ -353,9 +353,9 @@ namespace AnalysisAppLib
         }
 
         private static void ParseNodeBasics (
-            [ NotNull ] ITypesViewModel                         model1
-          , [ NotNull ] XElement                                xElement
-          , [ NotNull ] IReadOnlyDictionary < string , object > collectionMap
+            [ JetBrains.Annotations.NotNull ] ITypesViewModel                         model1
+          , [ JetBrains.Annotations.NotNull ] XElement                                xElement
+          , [ JetBrains.Annotations.NotNull ] IReadOnlyDictionary < string , object > collectionMap
         )
         {
             if ( collectionMap == null )
@@ -425,7 +425,7 @@ namespace AnalysisAppLib
             }
         }
 
-        private static void ParseField ( [ NotNull ] XElement field , [ NotNull ] AppTypeInfo typ2 )
+        private static void ParseField ( [ JetBrains.Annotations.NotNull ] XElement field , [ JetBrains.Annotations.NotNull ] AppTypeInfo typ2 )
         {
             var nameAttributeName = XName.Get ( "Name" ) ;
             var typeAttributeName = XName.Get ( "Type" ) ;
@@ -666,7 +666,7 @@ namespace AnalysisAppLib
         }
 
         private static Type MapTypeNameToSyntaxNode (
-            [ NotNull ] ITypesViewModel model1
+            [ JetBrains.Annotations.NotNull ] ITypesViewModel model1
           , string                      typeName2
         )
         {
@@ -678,9 +678,9 @@ namespace AnalysisAppLib
         /// </summary>
         /// <param name="compilation"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public static CompilationUnitSyntax
-            WithCollectionUsings ( [ NotNull ] CompilationUnitSyntax compilation )
+            WithCollectionUsings ( [ JetBrains.Annotations.NotNull ] CompilationUnitSyntax compilation )
         {
             return compilation.WithUsings (
                                            new SyntaxList < UsingDirectiveSyntax > (

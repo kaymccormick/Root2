@@ -24,7 +24,7 @@ namespace KayMcCormick.Dev.Logging
             SetupXmlEventLayoutRenderer ( this ) ;
         }
 
-        public static void SetupXmlEventLayoutRenderer ( [ NotNull ] Log4JXmlEventLayoutRenderer x )
+        public static void SetupXmlEventLayoutRenderer ( [ JetBrains.Annotations.NotNull ] Log4JXmlEventLayoutRenderer x )
         {
             x.IncludeAllProperties = true ;
             x.IncludeCallSite      = true ;

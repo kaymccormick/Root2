@@ -37,7 +37,7 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
         ///     Initializes a new instance of the <see cref="System.Object" />
         ///     class.
         /// </summary>
-        public GlobalLoggingFixture ( [ NotNull ] IMessageSink sink )
+        public GlobalLoggingFixture ( [ JetBrains.Annotations.NotNull ] IMessageSink sink )
         {
             if ( sink == null )
             {
@@ -71,7 +71,7 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
         /// <summary>
         ///     Called immediately after the class has been created, before it is used.
         /// </summary>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public Task InitializeAsync ( ) { return Task.CompletedTask ; }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace KayMcCormick.Dev.TestLib.Fixtures
         ///     <see cref="System.IDisposable.Dispose" />
         ///     if the class also implements that.
         /// </summary>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public Task DisposeAsync ( )
         {
             if ( ! _disableLogging )

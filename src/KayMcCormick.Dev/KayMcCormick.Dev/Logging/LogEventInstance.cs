@@ -164,7 +164,7 @@ namespace KayMcCormick.Dev.Logging
         /// </summary>
         /// <param name="field"></param>
         /// <param name="elem"></param>
-        public void AddUnknown ( [ NotNull ] string field , JsonElement elem )
+        public void AddUnknown ( [ JetBrains.Annotations.NotNull ] string field , JsonElement elem )
         {
             UnknownFields[ field ] = elem ;
         }

@@ -32,7 +32,7 @@ namespace AnalysisAppLib.Serialization
         #endregion
         #region Overrides of JsonConverterFactory
         /// <inheritdoc />
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
@@ -47,8 +47,8 @@ namespace AnalysisAppLib.Serialization
             [ CanBeNull ] public override ISymbol Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null ; }
 
             public override void Write (
-                [ NotNull ] Utf8JsonWriter        writer
-              , [ NotNull ] ISymbol               value
+                [ JetBrains.Annotations.NotNull ] Utf8JsonWriter        writer
+              , [ JetBrains.Annotations.NotNull ] ISymbol               value
               , JsonSerializerOptions options
             )
             {

@@ -17,9 +17,9 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="value"></param>
         /// <param name="options"></param>
         public static void WritePreamble (
-            [ NotNull ] JsonConverter         converter
-          , [ NotNull ] Utf8JsonWriter        writer
-          , [ NotNull ] object                value
+            [ JetBrains.Annotations.NotNull ] JsonConverter         converter
+          , [ JetBrains.Annotations.NotNull ] Utf8JsonWriter        writer
+          , [ JetBrains.Annotations.NotNull ] object                value
           , JsonSerializerOptions options
         )
         {
@@ -38,7 +38,7 @@ namespace KayMcCormick.Dev.Serialization
         /// 
         /// </summary>
         /// <param name="writer"></param>
-        public static void WriteTerminal ( [ NotNull ] Utf8JsonWriter writer)
+        public static void WriteTerminal ( [ JetBrains.Annotations.NotNull ] Utf8JsonWriter writer)
         {
             writer.WriteEndObject();
         }

@@ -93,7 +93,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="nodeInfo"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public virtual void AddChild ( [ NotNull ] IHierarchicalNode nodeInfo )
+        public virtual void AddChild ( [ JetBrains.Annotations.NotNull ] IHierarchicalNode nodeInfo )
         {
             if ( nodeInfo == null )
             {
@@ -108,7 +108,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// <param name="b"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public string ToString ( bool b )
         {
             var me = $"{{{Id}}}: Key: {Key}; Data: {Data}" ;

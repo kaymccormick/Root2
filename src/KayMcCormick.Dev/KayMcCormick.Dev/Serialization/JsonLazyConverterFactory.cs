@@ -27,7 +27,7 @@ namespace KayMcCormick.Dev.Serialization
         /// </summary>
         /// <param name="typeToConvert"></param>
         /// <returns></returns>
-        public override bool CanConvert ( [ NotNull ] Type typeToConvert )
+        public override bool CanConvert ( [ JetBrains.Annotations.NotNull ] Type typeToConvert )
         {
             if ( typeToConvert.IsGenericType
                  && typeToConvert.GetGenericTypeDefinition ( ) == typeof ( Lazy <> ) )
@@ -46,7 +46,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="options"></param>
         /// <returns></returns>
         public override JsonConverter CreateConverter (
-            [ NotNull ] Type                  typeToConvert
+            [ JetBrains.Annotations.NotNull ] Type                  typeToConvert
           , JsonSerializerOptions options
         )
         {
@@ -61,7 +61,7 @@ namespace KayMcCormick.Dev.Serialization
                 [ CanBeNull ] public override T Read ( ref Utf8JsonReader reader , Type typeToConvert , JsonSerializerOptions options ) { return null; }
 
             public override void Write (
-                [ NotNull ] Utf8JsonWriter        writer
+                [ JetBrains.Annotations.NotNull ] Utf8JsonWriter        writer
               , T                     value
               , JsonSerializerOptions options
             )

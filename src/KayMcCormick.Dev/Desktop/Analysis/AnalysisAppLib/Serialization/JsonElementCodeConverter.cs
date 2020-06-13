@@ -21,7 +21,7 @@ namespace AnalysisAppLib.Serialization
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public static ExpressionSyntax ConvertJsonElementToCode ( JsonElement element )
         {
             ExpressionSyntax elementSyntax ;
@@ -115,7 +115,7 @@ namespace AnalysisAppLib.Serialization
             return elementSyntax ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private static ExpressionSyntax AnonymousObject ( JsonElement element )
         {
             // ReSharper disable once UnusedVariable

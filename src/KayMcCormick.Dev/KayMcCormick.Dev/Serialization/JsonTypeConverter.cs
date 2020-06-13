@@ -43,8 +43,8 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            [ NotNull ] Utf8JsonWriter writer
-          , [ NotNull ] Type           value
+            [ JetBrains.Annotations.NotNull ] Utf8JsonWriter writer
+          , [ JetBrains.Annotations.NotNull ] Type           value
           , JsonSerializerOptions      options
         )
         {

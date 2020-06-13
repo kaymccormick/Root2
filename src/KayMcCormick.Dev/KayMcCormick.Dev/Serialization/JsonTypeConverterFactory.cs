@@ -26,7 +26,7 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options

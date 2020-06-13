@@ -62,7 +62,7 @@ namespace KayMcCormick.Dev.TestLib
         /// </summary>
         /// <param name="methodUnderTest">The method under test</param>
         [ EditorBrowsable ( EditorBrowsableState.Never ) ]
-        public override void Before ( [ NotNull ] MethodInfo methodUnderTest )
+        public override void Before ( [ JetBrains.Annotations.NotNull ] MethodInfo methodUnderTest )
         {
 //            AppLoggingConfigHelper.EnsureLoggingConfigured();
             if ( Environment.GetEnvironmentVariable ( "DISABLE_TEST_LOGGING" ) != null )

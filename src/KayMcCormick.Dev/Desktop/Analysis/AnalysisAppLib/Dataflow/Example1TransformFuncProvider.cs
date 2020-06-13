@@ -9,6 +9,7 @@
 // 
 // ---
 #endregion
+#if FINDLOGUSAGES
 using System ;
 using System.Collections.Generic ;
 using System.Threading.Tasks ;
@@ -47,7 +48,7 @@ namespace AnalysisAppLib.Dataflow
 
         [ ItemNotNull ]
         private async Task< IEnumerable < Example1Out > > Transform (
-            [ NotNull ] Document                     document
+            [ JetBrains.Annotations.NotNull ] Document                     document
             // ReSharper disable once UnusedParameter.Local
           , BufferBlock < RejectedItem > rejectBlock
         )
@@ -121,3 +122,4 @@ namespace AnalysisAppLib.Dataflow
         public ISymbol Symbol { get { return _symbol ; } set { _symbol = value ; } }
     }
 }
+#endif

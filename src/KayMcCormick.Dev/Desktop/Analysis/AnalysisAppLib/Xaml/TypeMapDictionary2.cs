@@ -130,7 +130,7 @@ namespace AnalysisAppLib.Xaml
         /// <param name="typeKey"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public AppTypeInfo GetAppTypeInfoForType ( [ NotNull ] AppTypeInfoKey typeKey )
+        public AppTypeInfo GetAppTypeInfoForType ( [ JetBrains.Annotations.NotNull ] AppTypeInfoKey typeKey )
         {
             if (! Dict.ContainsKey ( typeKey.StringValue ) )
             {

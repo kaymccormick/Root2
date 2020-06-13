@@ -15,7 +15,9 @@ using Autofac.Core ;
 using Autofac.Core.Registration ;
 using Autofac.Extras.AttributeMetadata ;
 using Autofac.Features.AttributeFilters ;
+#if FINDLOGUSAGES
 using FindLogUsages ;
+#endif
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Container ;
@@ -111,7 +113,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// </summary>
         /// <param name="builder"></param>
-        public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
+        public override void DoLoad ( [ JetBrains.Annotations.NotNull ] ContainerBuilder builder )
         {
 
             builder.RegisterType<AppDbContext>().As<IAppDbContext1>().AsSelf().WithCallerMetadata().SingleInstance();
@@ -214,7 +216,7 @@ namespace AnalysisAppLib
                        .WithCallerMetadata ( ) ;
             }
 
-            #region MS LOGIN
+#region MS LOGIN
             // builder.Register ( MakePublicClientApplication )
                    // .As < IPublicClientApplication > ( )
                    // .WithCallerMetadata ( ) ;
@@ -227,7 +229,7 @@ namespace AnalysisAppLib
                              // )
                    // .AsSelf ( )
                    // .WithCallerMetadata ( ) ;
-            #endregion
+#endregion
         }
 
         /// <summary>
@@ -239,7 +241,7 @@ namespace AnalysisAppLib
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
         private bool RegisterModelResources { get; set; }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         // ReSharper disable once UnusedMember.Local
         private static DataTable DataAdapter (
             // ReSharper disable once UnusedParameter.Local
@@ -274,12 +276,12 @@ namespace AnalysisAppLib
             return r ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         // ReSharper disable once UnusedMember.Local
         private Dictionary<string, object> DictAdapter (
             IComponentContext         c
           , IEnumerable<Parameter> p
-          , [ NotNull ] object        o
+          , [ JetBrains.Annotations.NotNull ] object        o
         )
         {
             var r = new Dictionary<string, object>( ) ;
@@ -299,11 +301,11 @@ namespace AnalysisAppLib
             return r ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         // ReSharper disable once UnusedMember.Local
         private static IPublicClientApplication MakePublicClientApplication (
             IComponentContext                     context
-          , [ NotNull ] IEnumerable<Parameter> p
+          , [ JetBrains.Annotations.NotNull ] IEnumerable<Parameter> p
         )
         {
             var typedAs = p.TypedAs < Guid > ( ) ;
@@ -322,7 +324,7 @@ namespace AnalysisAppLib
             return a ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         // ReSharper disable once UnusedMember.Local
         private static GraphServiceClient MakeGraphServiceClient ( string bearerToken )
         {
@@ -335,7 +337,7 @@ namespace AnalysisAppLib
             return new GraphServiceClient ( auth ) ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private static AuthenticateRequestAsyncDelegate AuthenticateRequestAsyncDelegate (
             string parameter
         )

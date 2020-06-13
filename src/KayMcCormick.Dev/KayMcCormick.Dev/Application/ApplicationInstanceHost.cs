@@ -31,7 +31,7 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// </summary>
         /// <param name="container"></param>
-        public ApplicationInstanceHost ( [ NotNull ] IContainer container )
+        public ApplicationInstanceHost ( [ JetBrains.Annotations.NotNull ] IContainer container )
         {
             if ( container == null )
             {

@@ -133,10 +133,10 @@ namespace AnalysisAppLib
         /// <param name="assemblyName"></param>
         /// <param name="opts"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public static ISyntaxTreeContext FromSyntaxTree (
-            [ NotNull ] SyntaxTree               tree
-          , [ NotNull ] string                   assemblyName
+            [ JetBrains.Annotations.NotNull ] SyntaxTree               tree
+          , [ JetBrains.Annotations.NotNull ] string                   assemblyName
           , CSharpCompilationOptions opts = null
         )
         {
@@ -152,10 +152,10 @@ namespace AnalysisAppLib
         /// <param name="assemblyName"></param>
         /// <param name="opts"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public static ISyntaxTreeContext FromSyntaxNode (
-            [ NotNull ] SyntaxNode               node
-          , [ NotNull ] string                   assemblyName
+            [ JetBrains.Annotations.NotNull ] SyntaxNode               node
+          , [ JetBrains.Annotations.NotNull ] string                   assemblyName
           , CSharpCompilationOptions opts = null
         )
         {
@@ -175,7 +175,7 @@ namespace AnalysisAppLib
         /// </summary>
         public CompilationUnitSyntax Lazy { get { return _lazy.Value ; } }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private CompilationUnitSyntax ValueFactory ( )
         {
             return SyntaxTree.GetCompilationUnitRoot ( ) ;

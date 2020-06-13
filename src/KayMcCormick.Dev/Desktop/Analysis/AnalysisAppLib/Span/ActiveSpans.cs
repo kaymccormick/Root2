@@ -34,7 +34,7 @@ namespace AnalysisAppLib.Span
         /// </summary>
         /// <param name="node"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public void RemoveAll ( [ NotNull ] object node )
+        public void RemoveAll ( [ JetBrains.Annotations.NotNull ] object node )
         {
             if ( node == null )
             {
@@ -49,7 +49,7 @@ namespace AnalysisAppLib.Span
         /// <param name="node"></param>
         /// <param name="key"></param>
         /// <param name="spanObject"></param>
-        public void AddSpan ( [ NotNull ] object node , TextSpan key , ISpanViewModel spanObject )
+        public void AddSpan ( [ JetBrains.Annotations.NotNull ] object node , TextSpan key , ISpanViewModel spanObject )
         {
             if ( ! TryGetValue ( node , out var x ) )
             {
@@ -73,7 +73,7 @@ namespace AnalysisAppLib.Span
         /// </summary>
         /// <param name="span"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public IEnumerable < object > OverlapsWith ( TextSpan span )
         {
             return _dict2.Where ( ( pair , i ) => pair.Key.OverlapsWith ( span ) )

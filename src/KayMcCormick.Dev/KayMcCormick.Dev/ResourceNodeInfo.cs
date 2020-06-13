@@ -33,7 +33,7 @@ namespace KayMcCormick.Dev
         /// </summary>
         /// <param name="createNodeFunc"></param>
         /// <returns></returns>
-        [ NotNull ] public static ResourceNodeInfo CreateInstance (
+        [ JetBrains.Annotations.NotNull ] public static ResourceNodeInfo CreateInstance (
             Func < ResourceNodeInfo , object , object , bool ? , bool , ResourceNodeInfo >
                 createNodeFunc = null
         )
@@ -107,7 +107,7 @@ namespace KayMcCormick.Dev
 
         /// <summary>
         /// </summary>
-        [ JsonIgnore ] [ NotNull ] public override List < ResourceNodeInfo > Children
+        [ JsonIgnore ] [ JetBrains.Annotations.NotNull ] public override List < ResourceNodeInfo > Children
         {
             get
             {

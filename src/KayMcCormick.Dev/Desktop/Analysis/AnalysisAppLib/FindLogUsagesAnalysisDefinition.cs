@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if FINDLOGUSAGES
+using System;
 using FindLogUsages;
 using KayMcCormick.Dev.Attributes;
 
@@ -21,3 +22,4 @@ namespace AnalysisAppLib
         }
     }
 }
+#endif

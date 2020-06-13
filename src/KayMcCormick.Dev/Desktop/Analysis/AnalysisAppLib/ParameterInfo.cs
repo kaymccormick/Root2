@@ -43,7 +43,7 @@ namespace AnalysisAppLib
         public ParameterInfo (
             string name
             // ReSharper disable once SuggestBaseTypeForParameter
-            , [ NotNull ] ITypeSymbol            typeSymbol
+            , [ JetBrains.Annotations.NotNull ] ITypeSymbol            typeSymbol
             , IEnumerable < CustomModifierInfo > select
             , string                             typeDisplayString
         )

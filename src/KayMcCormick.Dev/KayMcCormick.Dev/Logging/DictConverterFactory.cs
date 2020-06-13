@@ -43,7 +43,7 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public override JsonConverter CreateConverter (
             Type                  typeToConvert
           , JsonSerializerOptions options
@@ -57,7 +57,7 @@ namespace KayMcCormick.Dev.Logging
         private sealed class Inner : JsonConverter < IDictionary < object , object > >
         {
             #region Overrides of JsonConverter<IDictionary<object,object>>
-            [ NotNull ]
+            [ JetBrains.Annotations.NotNull ]
             public override IDictionary < object , object > Read (
                 ref Utf8JsonReader    reader
               , Type                  typeToConvert
@@ -86,8 +86,8 @@ namespace KayMcCormick.Dev.Logging
             }
 
             public override void Write (
-                [ NotNull ] Utf8JsonWriter                  writer
-              , [ NotNull ] IDictionary < object , object > value
+                [ JetBrains.Annotations.NotNull ] Utf8JsonWriter                  writer
+              , [ JetBrains.Annotations.NotNull ] IDictionary < object , object > value
               , JsonSerializerOptions           options
             )
             {

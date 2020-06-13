@@ -67,9 +67,9 @@ namespace AnalysisAppLib
         /// <returns></returns>
         /// <exception cref="InvalidEnumArgumentException"></exception>
         public static XmlElement MethodXmlElement (
-            [ NotNull ] Func < string , XmlElement >          c
-          , [ NotNull ] Func < string , string , XmlElement > c2
-          , [ NotNull ] System.Reflection.MethodInfo                            m
+            [ JetBrains.Annotations.NotNull ] Func < string , XmlElement >          c
+          , [ JetBrains.Annotations.NotNull ] Func < string , string , XmlElement > c2
+          , [ JetBrains.Annotations.NotNull ] System.Reflection.MethodInfo                            m
           , WriteStyle                                        style
         )
         {
@@ -206,8 +206,8 @@ namespace AnalysisAppLib
         /// <param name="o"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        [ NotNull ]
-        public static string GetXmlId ( [ NotNull ] object o )
+        [ JetBrains.Annotations.NotNull ]
+        public static string GetXmlId ( [ JetBrains.Annotations.NotNull ] object o )
         {
             switch ( o )
             {
@@ -238,8 +238,8 @@ namespace AnalysisAppLib
         /// <param name="t"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        [ NotNull ]
-        public static string SubIdForGenericType ( [ NotNull ] Type t )
+        [ JetBrains.Annotations.NotNull ]
+        public static string SubIdForGenericType ( [ JetBrains.Annotations.NotNull ] Type t )
         {
             if ( ! t.IsGenericType )
             {
@@ -261,7 +261,7 @@ namespace AnalysisAppLib
         }
 
         [ CanBeNull ]
-        private static string SubIdForType ( [ NotNull ] Type arg )
+        private static string SubIdForType ( [ JetBrains.Annotations.NotNull ] Type arg )
         {
             if ( arg.IsGenericType )
             {
@@ -271,9 +271,9 @@ namespace AnalysisAppLib
             return SubIdforNonGeneric ( arg ) ;
         }
 
-        [ CanBeNull ] private static string SubIdforNonGeneric ( [ NotNull ] Type type ) { return type.FullName ; }
+        [ CanBeNull ] private static string SubIdforNonGeneric ( [ JetBrains.Annotations.NotNull ] Type type ) { return type.FullName ; }
 
-        private static void WriteDocument ( [ NotNull ] XmlNode doc , [ NotNull ] string outFile )
+        private static void WriteDocument ( [ JetBrains.Annotations.NotNull ] XmlNode doc , [ JetBrains.Annotations.NotNull ] string outFile )
         {
             var xmlWriterSettings = new XmlWriterSettings { Indent = true } ;
             using ( var xmlWriter = XmlWriter.Create ( outFile , xmlWriterSettings ) )
@@ -301,7 +301,7 @@ namespace AnalysisAppLib
             }
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private static XmlDocument CreateTypesDocument (
             [ CanBeNull ] out NameTable           xmlNameTable
           , [ CanBeNull ] out XmlNamespaceManager nsManager

@@ -39,7 +39,7 @@ namespace KayMcCormick.Dev.Logging
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public JsonSerializerOptions CreateJsonSerializerOptions ( )
         {
             var jsonSerializerOptions = new JsonSerializerOptions ( ) ;

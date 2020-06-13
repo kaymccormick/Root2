@@ -31,7 +31,7 @@ namespace KayMcCormick.Dev
         /// <param name="info"></param>
         /// <param name="context"></param>
         protected UnableToDeserializeLogEventInfo (
-            [ NotNull ] SerializationInfo info
+            [ JetBrains.Annotations.NotNull ] SerializationInfo info
           , StreamingContext              context
         ) : base ( info , context )
         {

@@ -40,7 +40,7 @@ namespace AnalysisAppLib.ViewModel
         /// <param name="graphFunc"></param>
         /// <exception cref="ArgumentNullException"></exception>
         public MicrosoftUserViewModel (
-            [ NotNull ] Func < Guid , IPublicClientApplication > publicClientFunc
+            [ JetBrains.Annotations.NotNull ] Func < Guid , IPublicClientApplication > publicClientFunc
           , Func < string , GraphServiceClient >                 graphFunc
         )
         {

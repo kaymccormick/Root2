@@ -29,7 +29,7 @@ namespace AnalysisAppLib
         private DocumentCollection _documentCollection ;
         #region Implementation of IDocInterface
         /// <inheritdoc />
-        public ICodeElementDocumentation GetTypeDocumentation ( [ NotNull ] Type type )
+        public ICodeElementDocumentation GetTypeDocumentation ( [ JetBrains.Annotations.NotNull ] Type type )
         {
             return _docs[ type ] ;
         }

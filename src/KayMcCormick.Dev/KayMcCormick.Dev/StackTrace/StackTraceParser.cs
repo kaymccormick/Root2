@@ -112,10 +112,10 @@ namespace KayMcCormick.Dev.StackTrace
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public static IEnumerable < T > Parse < T > (
-            [ NotNull ] string text
-          , [ NotNull ] Func < string , string , string , string ,
+            [ JetBrains.Annotations.NotNull ] string text
+          , [ JetBrains.Annotations.NotNull ] Func < string , string , string , string ,
                 IEnumerable < KeyValuePair < string , string > > , string , string , T > selector
         )
         {
@@ -160,18 +160,18 @@ namespace KayMcCormick.Dev.StackTrace
         /// <typeparam name="TFrame"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public static IEnumerable < TFrame >
             Parse < TToken , TMethod , TParameters , TParameter , TSourceLocation , TFrame > (
-                [ NotNull ] string                                text
-              , [ NotNull ] Func < int , int , string , TToken >  tokenSelector
-              , [ NotNull ] Func < TToken , TToken , TMethod >    methodSelector
-              , [ NotNull ] Func < TToken , TToken , TParameter > parameterSelector
-              , [ NotNull ] Func < TToken , IEnumerable < TParameter > , TParameters >
+                [ JetBrains.Annotations.NotNull ] string                                text
+              , [ JetBrains.Annotations.NotNull ] Func < int , int , string , TToken >  tokenSelector
+              , [ JetBrains.Annotations.NotNull ] Func < TToken , TToken , TMethod >    methodSelector
+              , [ JetBrains.Annotations.NotNull ] Func < TToken , TToken , TParameter > parameterSelector
+              , [ JetBrains.Annotations.NotNull ] Func < TToken , IEnumerable < TParameter > , TParameters >
                     parametersSelector
-              , [ NotNull ] Func < TToken , TToken , TSourceLocation >
+              , [ JetBrains.Annotations.NotNull ] Func < TToken , TToken , TSourceLocation >
                     sourceLocationSelector
-              , [ NotNull ] Func < TToken , TMethod , TParameters , TSourceLocation , TFrame > selector
+              , [ JetBrains.Annotations.NotNull ] Func < TToken , TMethod , TParameters , TSourceLocation , TFrame > selector
             )
         {
             if ( tokenSelector == null )
@@ -239,8 +239,8 @@ namespace KayMcCormick.Dev.StackTrace
         }
 
         private static T Token < T > (
-            [ NotNull ] Capture                         capture
-          , [ NotNull ] Func < int , int , string , T > tokenSelector
+            [ JetBrains.Annotations.NotNull ] Capture                         capture
+          , [ JetBrains.Annotations.NotNull ] Func < int , int , string , T > tokenSelector
         )
         {
             return tokenSelector ( capture.Index , capture.Length , capture.Value ) ;

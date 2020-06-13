@@ -26,7 +26,7 @@ namespace AnalysisAppLib
         public int ThreadId => _inst.ManagedThreadId ;
 
         /// <inheritdoc />
-        [ NotNull ] public string PropKeys
+        [ JetBrains.Annotations.NotNull ] public string PropKeys
         {
             get
             {

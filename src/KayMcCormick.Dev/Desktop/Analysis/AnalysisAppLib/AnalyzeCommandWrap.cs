@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if FINDLOGUSAGES
+using System;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using AnalysisAppLib.Project;
@@ -53,3 +54,4 @@ namespace AnalysisAppLib
         }
     }
 }
+#endif

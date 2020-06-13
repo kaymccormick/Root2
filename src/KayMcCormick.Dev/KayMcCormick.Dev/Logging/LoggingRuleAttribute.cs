@@ -30,7 +30,7 @@ namespace KayMcCormick.Dev.Logging
         /// </summary>
         /// <param name="rule"></param>
         /// <returns></returns>
-        public bool RuleMatch ( [ NotNull ] LoggingRule rule )
+        public bool RuleMatch ( [ JetBrains.Annotations.NotNull ] LoggingRule rule )
         {
             if ( rule == null )
             {
@@ -54,8 +54,8 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="logLevel"></param>
         // ReSharper disable once UnusedMember.Global
         public LoggingRuleAttribute (
-            [ NotNull ] Type   classLoggerType
-          , [ NotNull ] string logLevel
+            [ JetBrains.Annotations.NotNull ] Type   classLoggerType
+          , [ JetBrains.Annotations.NotNull ] string logLevel
         )
         {
             if ( logLevel == null )

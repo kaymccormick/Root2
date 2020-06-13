@@ -22,10 +22,10 @@ namespace KayMcCormick.Dev.Container
         /// <typeparam name="TActivatorData"></typeparam>
         /// <typeparam name="TRegistrationStyle"></typeparam>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public static IRegistrationBuilder < TLimit , TActivatorData , TRegistrationStyle >
             WithCallerMetadata < TLimit , TActivatorData , TRegistrationStyle > (
-                [ NotNull ] this   IRegistrationBuilder < TLimit , TActivatorData , TRegistrationStyle > builder
+                [ JetBrains.Annotations.NotNull ] this   IRegistrationBuilder < TLimit , TActivatorData , TRegistrationStyle > builder
               , [CallerFilePath]   string                                                                callerFilePath   = "",
                 [CallerLineNumber] int                                                                   callerLineNumber = 0,
                 [CallerMemberName] string                                                                callerMemberName = ""

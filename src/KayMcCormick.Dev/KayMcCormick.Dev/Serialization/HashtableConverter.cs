@@ -44,8 +44,8 @@ namespace KayMcCormick.Dev.Serialization
         /// <param name="value"></param>
         /// <param name="options"></param>
         public override void Write (
-            [ NotNull ] Utf8JsonWriter        writer
-          , [ NotNull ] Hashtable             value
+            [ JetBrains.Annotations.NotNull ] Utf8JsonWriter        writer
+          , [ JetBrains.Annotations.NotNull ] Hashtable             value
           , JsonSerializerOptions options
         )
         {

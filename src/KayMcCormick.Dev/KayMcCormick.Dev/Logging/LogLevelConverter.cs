@@ -43,8 +43,8 @@ namespace KayMcCormick.Dev.Logging
         /// <param name="options"></param>
         /// <exception cref="ArgumentNullException"></exception>
         public override void Write (
-            [ NotNull ] Utf8JsonWriter writer
-          , [ NotNull ] LogLevel       value
+            [ JetBrains.Annotations.NotNull ] Utf8JsonWriter writer
+          , [ JetBrains.Annotations.NotNull ] LogLevel       value
           , JsonSerializerOptions      options
         )
         {

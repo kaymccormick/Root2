@@ -1,3 +1,4 @@
+#if FINDLOGUSAGES
 using System ;
 using System.Collections.Generic ;
 using System.Linq ;
@@ -22,7 +23,7 @@ namespace AnalysisAppLib.Dataflow
         private          Microsoft.CodeAnalysis.Project                               _teamProject ;
 
         public FindLogInvocations (
-            [ NotNull ] IDataflowTransformFuncProvider < Document , ILogInvocation > provider
+            [ JetBrains.Annotations.NotNull ] IDataflowTransformFuncProvider < Document , ILogInvocation > provider
           , Func < ILogInvocation >                                                  factory
         )
         {
@@ -38,7 +39,7 @@ namespace AnalysisAppLib.Dataflow
         }
         #endregion
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public override TransformManyBlock < Document , ILogInvocation > GetDataflowBlock ( )
         {
             // ReSharper disable once UnusedVariable
@@ -50,9 +51,10 @@ namespace AnalysisAppLib.Dataflow
                                                                         ) ;
         }
 
-        [ NotNull ] public override IDataflowBlock GetDataflowBlockObj ( )
+        [ JetBrains.Annotations.NotNull ] public override IDataflowBlock GetDataflowBlockObj ( )
         {
             return GetDataflowBlock ( ) ;
         }
     }
 }
+#endif

@@ -36,7 +36,7 @@ namespace AnalysisAppLib
             string                                   calledSymbol
             , string                                   callingSymbol
             , bool                                     isDirect
-            , [ NotNull ] IEnumerable < LocationInfo > select
+            , [ JetBrains.Annotations.NotNull ] IEnumerable < LocationInfo > select
         )
         {
             CalledSymbol  = calledSymbol ;

@@ -32,7 +32,7 @@ namespace KayMcCormick.Dev.Service
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public AppInstanceInfoResponse GetAppInstanceInfo ( AppInstanceInfoRequest request )
         {
             var appInstanceInfo = new AppInstanceInfo { StartupTime = _startupTime } ;

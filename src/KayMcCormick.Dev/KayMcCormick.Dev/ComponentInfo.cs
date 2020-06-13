@@ -15,7 +15,7 @@ namespace KayMcCormick.Dev
         /// <summary>
         /// 
         /// </summary>
-        [ NotNull ] public string Key
+        [ JetBrains.Annotations.NotNull ] public string Key
         {
             get { return "Error" ; }
         }

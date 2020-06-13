@@ -212,7 +212,7 @@ namespace AnalysisAppLib
             PipelineInstance = DataflowBlock.Encapsulate ( Head , ResultBufferBlock ) ;
         }
 
-        private async Task Action ( [ NotNull ] Document d )
+        private async Task Action ( [ JetBrains.Annotations.NotNull ] Document d )
         {
             var resourceNodeInfo = ResourceNodeInfo.CreateInstance ( ) ;
             resourceNodeInfo.Key            = d.Name ;
@@ -286,7 +286,7 @@ namespace AnalysisAppLib
             Logger.Info ( "pop {name}" , d.Name ) ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private ResourceNodeInfo CreateNodeFunc (
             [ CanBeNull ] ResourceNodeInfo arg1
           , object                         arg2
@@ -308,9 +308,9 @@ namespace AnalysisAppLib
             return r ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private IEnumerable < ResourceNodeInfo > InstanceGetChildrenFunc (
-            [ NotNull ] ResourceNodeInfo                info
+            [ JetBrains.Annotations.NotNull ] ResourceNodeInfo                info
           , Func < object , object , ResourceNodeInfo > func
         )
         {
@@ -333,10 +333,10 @@ namespace AnalysisAppLib
                                       ) ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private ResourceNodeInfo Func (
-            [ NotNull ] ISymbol                                     cn
-          , [ NotNull ] Func < object , object , ResourceNodeInfo > func1
+            [ JetBrains.Annotations.NotNull ] ISymbol                                     cn
+          , [ JetBrains.Annotations.NotNull ] Func < object , object , ResourceNodeInfo > func1
         )
         {
             var rr = func1 ( cn.Name , cn ) ;
@@ -385,8 +385,8 @@ namespace AnalysisAppLib
             return rr ;
         }
 
-        [ NotNull ]
-        private T Register < T > ( [ NotNull ] T block )
+        [ JetBrains.Annotations.NotNull ]
+        private T Register < T > ( [ JetBrains.Annotations.NotNull ] T block )
             where T : IDataflowBlock
         {
             Blocks.Add ( block ) ;
@@ -394,9 +394,9 @@ namespace AnalysisAppLib
             return block ;
         }
 
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         private static Task Continuation (
-            [ NotNull ] IDataflowBlock block
+            [ JetBrains.Annotations.NotNull ] IDataflowBlock block
           , string                     writeOnceBlockName
         )
         {
@@ -408,7 +408,7 @@ namespace AnalysisAppLib
                                                  ) ;
         }
 
-        private static void ContinuationFunction ( [ NotNull ] Task task , string logName )
+        private static void ContinuationFunction ( [ JetBrains.Annotations.NotNull ] Task task , string logName )
         {
             Logger.Debug ( $"Continuatuin, {task.Status}. Task id {task.Id}, Log Name {logName}" ) ;
             if ( task.IsFaulted )
@@ -433,7 +433,7 @@ namespace AnalysisAppLib
         /// 
         /// </summary>
         /// <returns></returns>
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         protected virtual IPropagatorBlock < AnalysisRequest , AnalysisRequest > ConfigureInput ( )
         {
             Input = new WriteOnceBlock < AnalysisRequest > ( s => s ) ;
@@ -484,7 +484,7 @@ namespace AnalysisAppLib
             private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 
 
-            [ NotNull ]
+            [ JetBrains.Annotations.NotNull ]
             public static TransformBlock < AnalysisRequest , Workspace > InitializeWorkspace2Block (Action < string >                     outAct
               , IEnumerable < Action < IEventMisc > > miscs
             )
@@ -503,7 +503,7 @@ namespace AnalysisAppLib
             [ ItemNotNull ]
             private static async Task < Workspace > MakeWorkspace2Async (
 #pragma warning restore 1998
-                [ NotNull ] AnalysisRequest                         req, [ CanBeNull ] IEnumerable < Action < IEventMisc > > misc
+                [ JetBrains.Annotations.NotNull ] AnalysisRequest                         req, [ CanBeNull ] IEnumerable < Action < IEventMisc > > misc
             )
 
             {
@@ -563,7 +563,7 @@ namespace AnalysisAppLib
             }
 
 
-            [ NotNull ]
+            [ JetBrains.Annotations.NotNull ]
             public static TransformManyBlock < Workspace , Document > SolutionDocumentsBlock (
                 IEnumerable < Action < Document > >                       documentAction
               , IEnumerable < Action < Tuple < Workspace , Document > > > documentAction1
@@ -651,7 +651,7 @@ namespace AnalysisAppLib
 
         internal static class DataflowBlocks
         {
-            [ NotNull ]
+            [ JetBrains.Annotations.NotNull ]
             public static TransformManyBlock < Document , ILogInvocation > FindLogUsages1 (
                 Func < ILogInvocation >                                 invocationFactory
               , BufferBlock < RejectedItem >                            rejectBlock
@@ -748,7 +748,7 @@ namespace AnalysisAppLib
 
         #region Implementation of ILoggerProvider
         /// <inheritdoc />
-        [ NotNull ]
+        [ JetBrains.Annotations.NotNull ]
         public ILogger CreateLogger ( string categoryName ) { return new MyL ( _unknown ) ; }
         #endregion
         #region Implementation of IDisposable
@@ -777,7 +777,7 @@ namespace AnalysisAppLib
           , EventId                                          eventId
           , TState                                           state
           , Exception                                        exception
-          , [ NotNull ] Func < TState , Exception , string > formatter
+          , [ JetBrains.Annotations.NotNull ] Func < TState , Exception , string > formatter
         )
         {
             _unknown ( formatter ( state , exception ) ) ;
