@@ -125,7 +125,7 @@
       <Version>3.7.0-1.final</Version>
     </PackageReference>
     <PackageReference Include="ReactiveUI">
-      <Version>11.4.1</Version>
+      <Version>11.4.17</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json">
       <Version>4.7.2</Version>

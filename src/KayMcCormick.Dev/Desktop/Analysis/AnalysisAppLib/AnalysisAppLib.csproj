@@ -137,14 +137,12 @@
     <Compile Include="X.cs" />
     <Compile Include="Xaml\TypeMapDictionary.cs" />
     <Compile Include="Xaml\TypeMapDictionary2.cs" />
-    <Compile Include="ComponentInfo.cs" />
     <Compile Include="Dataflow\AnalysisBlockProvider.cs" />
     <Compile Include="Dataflow\DataflowTransformFuncProvider.cs" />
     <Compile Include="Dataflow\FindLogInvocations.cs" />
     <Compile Include="Dataflow\FindLogUsagesFuncProvider.cs" />
     <Compile Include="Dataflow\IAnalysisBlockProvider.cs" />
     <Compile Include="Dataflow\IDataflowTransformFuncProvider.cs" />
-    <Compile Include="Gen.cs" />
     <Compile Include="GenericAnalyzeCommand.cs" />
     <Compile Include="IAnalyzeCommand.cs" />
     <Compile Include="IAnalyzeCommand2.cs" />
@@ -188,7 +186,6 @@
     <Compile Include="ISemanticModelContext.cs" />
     <Compile Include="ISyntaxTreeContext.cs" />
     <Compile Include="Syntax\SyntaxItem.cs" />
-    <Compile Include="IAppState.cs" />
     <Compile Include="ViewModel\ILogUsageAnalysisViewModel.cs" />
     <Compile Include="LogInvocationCollection.cs" />
     <Compile Include="LogListener.cs" />
@@ -251,10 +248,10 @@
       <Version>3.7.0-1.final</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore">
-      <Version>3.1.4</Version>
+      <Version>3.1.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer">
-      <Version>3.1.4</Version>
+      <Version>3.1.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Graph.Beta">
       <Version>0.18.0-preview</Version>
@@ -272,10 +269,10 @@
       <Version>4.14.1</Version>
     </PackageReference>
     <PackageReference Include="ReactiveUI">
-      <Version>11.4.1</Version>
+      <Version>11.4.17</Version>
     </PackageReference>
     <PackageReference Include="ReactiveUI.WPF">
-      <Version>11.4.1</Version>
+      <Version>11.4.17</Version>
     </PackageReference>
     <PackageReference Include="System.Collections.Immutable">
       <Version>1.7.1</Version>
@@ -292,9 +289,6 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="doc.xml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

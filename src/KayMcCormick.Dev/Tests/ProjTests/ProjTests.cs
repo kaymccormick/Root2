@@ -121,7 +121,7 @@ using Process = System.Diagnostics.Process;
 using Rectangle = System.Windows.Shapes.Rectangle;
 using RegionInfo = AnalysisControls.RegionInfo;
 using String = System.String;
-using TablePanel = KayMcCormick.Lib.Wpf.TablePanel;
+
 using TextBlock = System.Windows.Controls.TextBlock;
 using Window = System.Windows.Window;
 using XamlReader = System.Windows.Markup.XamlReader;

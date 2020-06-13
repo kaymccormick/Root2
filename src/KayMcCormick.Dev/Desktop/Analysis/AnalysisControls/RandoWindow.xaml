@@ -8,11 +8,12 @@
         xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:analysisControls="clr-namespace:AnalysisControls"
+        xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControls"
         mc:Ignorable="d"
         Title="RandoWindow" Height="450" Width="800">
     <WrapPanel>
-      <kmWpf:TablePanel/>
-    <kmWpf:TablePanel ColumnSpacing="10" Margin="10">
+      <kmDevWpfControls:TablePanel/>
+    <kmDevWpfControls:TablePanel ColumnSpacing="10" Margin="10">
       <TextBlock>Test 123</TextBlock>
       <TextBlock>Test 123</TextBlock>
       <Rectangle Width="50" Height="50"/>
@@ -26,6 +27,6 @@
           </syntax:AppMethodInfo>
         </analysisControls:SyntaxFactoryPanel.AppMethodInfo>
       </analysisControls:SyntaxFactoryPanel>
-    </kmWpf:TablePanel>
+    </kmDevWpfControls:TablePanel>
   </WrapPanel>
 </Window>

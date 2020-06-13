@@ -7127,14 +7127,14 @@
             <HierarchicalDataTemplate DataType="{x:Type local:RootNode}" ItemsSource="{Binding Items}">
               <TextBlock Text="{Binding Name}">
                 <TextBlock.ToolTip>
-                  <kmWpf:TablePanel ColumnSpacing="10" RowSpacing="3">
+                  <kmDevWpfControls:TablePanel ColumnSpacing="10" RowSpacing="3">
                     <TextBlock Text="FileName" />
                     <TextBlock Text="{Binding FileName}" />
                     <TextBlock Text="Resource Location" />
                     <TextBlock Text="{Binding ResourceLocation}" />
                     <TextBlock Text="Referenced Assembly" />
                     <TextBlock Text="{Binding ReferencedAssembly}" TextTrimming="CharacterEllipsis" />
-                  </kmWpf:TablePanel>
+                  </kmDevWpfControls:TablePanel>
                 </TextBlock.ToolTip>
               </TextBlock>
             </HierarchicalDataTemplate>

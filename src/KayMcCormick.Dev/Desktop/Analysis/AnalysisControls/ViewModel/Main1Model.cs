@@ -31,7 +31,7 @@ using Microsoft.VisualStudio.Threading;
 using NLog;
 using NPOI.POIFS.Properties;
 using RibbonLib.Model;
-using TablePanel = KayMcCormick.Lib.Wpf.TablePanel;
+
 using TypeControl = KayMcCormick.Lib.Wpf.TypeControl;
 
 namespace AnalysisControls.ViewModel

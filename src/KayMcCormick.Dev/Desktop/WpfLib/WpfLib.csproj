@@ -171,8 +171,6 @@
     <Compile Include="SystemParametersControl.xaml.cs">
       <DependentUpon>SystemParametersControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TablePanel.cs" />
-    <Compile Include="TableRow.cs" />
     <Compile Include="TemplateSelectorHelper.cs" />
     <Compile Include="TypeControl.xaml.cs">
       <DependentUpon>TypeControl.xaml</DependentUpon>
