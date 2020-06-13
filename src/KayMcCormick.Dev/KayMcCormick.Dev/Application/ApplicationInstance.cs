@@ -1,32 +1,34 @@
-﻿using System ;
-using System.Collections ;
-using System.Collections.Generic ;
-using System.Configuration ;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
-using System.Linq ;
-using System.Reactive.Subjects ;
-using System.Reflection ;
-using System.Runtime.ExceptionServices ;
-using System.Runtime.Serialization ;
-using System.Text.Json ;
-using System.Text.Json.Serialization ;
-using System.Threading ;
-using Autofac ;
-using Autofac.Core ;
+using System.Linq;
+using System.Reactive.Subjects;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
+using System.Runtime.Serialization;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading;
+using Autofac;
+using Autofac.Core;
 using Autofac.Core.Lifetime;
-using Autofac.Extras.AttributeMetadata ;
-using Autofac.Features.AttributeFilters ;
-using Autofac.Integration.Mef ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev.Attributes ;
-using KayMcCormick.Dev.Configuration ;
-using KayMcCormick.Dev.Container ;
-using KayMcCormick.Dev.Logging ;
-using KayMcCormick.Dev.Serialization ;
-using KayMcCormick.Dev.StackTrace ;
-using Microsoft.Extensions.DependencyInjection ;
-using NLog ;
-using IContainer = Autofac.IContainer ;
+using Autofac.Core.Resolving;
+using Autofac.Extras.AttributeMetadata;
+using Autofac.Features.AttributeFilters;
+using Autofac.Integration.Mef;
+using JetBrains.Annotations;
+using KayMcCormick.Dev.Attributes;
+using KayMcCormick.Dev.Configuration;
+using KayMcCormick.Dev.Container;
+using KayMcCormick.Dev.Logging;
+using KayMcCormick.Dev.Serialization;
+using KayMcCormick.Dev.StackTrace;
+using Microsoft.Extensions.DependencyInjection;
+using NLog;
+using IContainer = Autofac.IContainer;
 
 namespace KayMcCormick.Dev.Application
 {
@@ -38,52 +40,52 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// GUID for console analysis application
         /// </summary>
-        public static Guid ConsoleAnalysisProgramGuid { get ; } =
-            new Guid ( "49A60392-BCC5-468B-8F09-76E0C04CD27C" ) ;
+        public static Guid ConsoleAnalysisProgramGuid { get; } =
+            new Guid("49A60392-BCC5-468B-8F09-76E0C04CD27C");
 
         /// <summary>
         /// Application GUID for the Leaf node windows service.
         /// </summary>
-        public static Guid LeafService { get ; } =
-            new Guid ( "{E66F158B-37EB-4FA7-8A2E-2387D5ADF2A7}" ) ;
+        public static Guid LeafService { get; } =
+            new Guid("{E66F158B-37EB-4FA7-8A2E-2387D5ADF2A7}");
 
         /// <summary>
         /// Application GUID for a basic command-line configuration test application.
         /// </summary>
         // ReSharper disable once UnusedMember.Global"
         // ReSharper disable once UnusedMember.Global
-        public static Guid ConfigTest { get ; } =
-            new Guid ( "{28CE37FB-A675-4483-BD6F-79FC9C68D973}" ) ;
+        public static Guid ConfigTest { get; } =
+            new Guid("{28CE37FB-A675-4483-BD6F-79FC9C68D973}");
 
         /// <summary>
         /// 
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        public static Guid ClassLibTests { get ; set ; } =
-            new Guid ( "{177EF37C-8D28-4CBE-A3D7-703E51AEE246}" ) ;
+        public static Guid ClassLibTests { get; set; } =
+            new Guid("{177EF37C-8D28-4CBE-A3D7-703E51AEE246}");
 
         /// <summary>
         /// Basic win forms app
         /// </summary>
-        public static Guid BasicWinForms { get ; } = new Guid("c9c74fca-0769-4990-9967-2ac8c06b4630");
+        public static Guid BasicWinForms { get; } = new Guid("c9c74fca-0769-4990-9967-2ac8c06b4630");
 
         public static Guid ProjTests { get; set; } = new Guid("{EEC2E4DC-A0BE-4472-A936-50CA7419B530}");
     }
 
     /// <summary>
     /// </  summary>
-    public class ApplicationInstance : ApplicationInstanceBase , IDisposable
+    public class ApplicationInstance : ApplicationInstanceBase, IDisposable
     {
 #pragma warning disable 169
-        private readonly bool                            _disableLogging ;
+        private readonly bool _disableLogging;
 #pragma warning restore 169
-        private readonly bool                            _disableServiceHost ;
-        private readonly List < IModule >                _modules = new List < IModule > ( ) ;
-        private          IContainer                      _container ;
-        private          ApplicationInstanceHost         _host ;
+        private readonly bool _disableServiceHost;
+        private readonly List<IModule> _modules = new List<IModule>();
+        private IContainer _container;
+        private ApplicationInstanceHost _host;
         protected ILifetimeScope LifetimeScope { get; private set; }
-        private readonly ReplaySubject < AppLogMessage > _subject ;
-        private          ILogger                         _logger ;
+        private readonly ReplaySubject<AppLogMessage> _subject;
+        private ILogger _logger;
 
         /// <summary>
         /// 
@@ -95,47 +97,48 @@ namespace KayMcCormick.Dev.Application
         /// <param name="disableRuntimeConfiguration"></param>
         /// <param name="disableServiceHost"></param>
         /// <returns></returns>
-        [ NotNull ]
-        public static ApplicationInstanceConfiguration CreateConfiguration (
+        [NotNull]
+        public static ApplicationInstanceConfiguration CreateConfiguration(
             LogMethodDelegate logMethod
-          , Guid              appGuid
-          , IEnumerable       configs                     = null
-          , bool              disableLogging              = false
-          , bool              disableRuntimeConfiguration = false
-          , bool              disableServiceHost          = false
+            , Guid appGuid
+            , IEnumerable configs = null
+            , bool disableLogging = false
+            , bool disableRuntimeConfiguration = false
+            , bool disableServiceHost = false
         )
         {
-            return new ApplicationInstanceConfiguration (
-                                                         logMethod
-                                                       , appGuid
-                                                       , configs
-                                                       , disableLogging
-                                                       , disableRuntimeConfiguration
-                                                       , disableServiceHost
-                                                        ) ;
+            return new ApplicationInstanceConfiguration(
+                logMethod
+                , appGuid
+                , configs
+                , disableLogging
+                , disableRuntimeConfiguration
+                , disableServiceHost
+            );
         }
 
         public object Resolve(Type type)
         {
             return LifetimeScope.Resolve(type);
         }
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="message"></param>
-        public delegate void LogMethodDelegate ( string message ) ;
+        public delegate void LogMethodDelegate(string message);
 
         /// <summary>
         /// 
         /// </summary>
         public sealed class ApplicationInstanceConfiguration
         {
-            private Action < ContainerBuilder > _builderAction ;
+            private Action<ContainerBuilder> _builderAction;
 
             /// <summary>
             /// 
             /// </summary>
-            private readonly LogMethodDelegate _logMethod ;
+            private readonly LogMethodDelegate _logMethod;
 
             /// <summary>
             ///     Initialize a <see cref="ApplicationInstanceConfiguration" /> instance
@@ -156,117 +159,113 @@ namespace KayMcCormick.Dev.Application
             ///     to load runtime configuration using the System.Configuration mechanism.
             /// </param>
             /// <param name="disableServiceHost">Boolean indicating whether or not to run a service host inside the application.</param>
-            public ApplicationInstanceConfiguration (
+            public ApplicationInstanceConfiguration(
                 LogMethodDelegate logMethod
-              , Guid              appGuid
-              , IEnumerable       configs                     = null
-              , bool              disableLogging              = false
-              , bool              disableRuntimeConfiguration = false
-              , bool              disableServiceHost          = false
+                , Guid appGuid
+                , IEnumerable configs = null
+                , bool disableLogging = false
+                , bool disableRuntimeConfiguration = false
+                , bool disableServiceHost = false
             )
             {
-                _logMethod                  = logMethod ;
-                AppGuid                     = appGuid ;
-                Configs                     = configs ;
-                DisableLogging              = disableLogging ;
-                DisableRuntimeConfiguration = disableRuntimeConfiguration ;
-                DisableServiceHost          = disableServiceHost ;
+                _logMethod = logMethod;
+                AppGuid = appGuid;
+                Configs = configs;
+                DisableLogging = disableLogging;
+                DisableRuntimeConfiguration = disableRuntimeConfiguration;
+                DisableServiceHost = disableServiceHost;
             }
 
             /// <summary>
             /// </summary>
-            public LogMethodDelegate LogMethod { get { return _logMethod ; } }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            public Guid AppGuid { get ; }
-
-            /// <summary>
-            /// </summary>
-            public IEnumerable Configs { get ; set ; }
-
-            /// <summary>
-            /// </summary>
-            public bool DisableLogging { get ; }
-
-            /// <summary>
-            /// </summary>
-            public bool DisableRuntimeConfiguration { get ; }
-
-            /// <summary>
-            /// </summary>
-            public bool DisableServiceHost { get ; }
-
-            /// <summary>
-            /// 
-            /// </summary>
-            public Action < ContainerBuilder > BuilderAction
+            public LogMethodDelegate LogMethod
             {
-                get { return _builderAction ; }
-                set { _builderAction = value ; }
+                get { return _logMethod; }
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            public Guid AppGuid { get; }
+
+            /// <summary>
+            /// </summary>
+            public IEnumerable Configs { get; set; }
+
+            /// <summary>
+            /// </summary>
+            public bool DisableLogging { get; }
+
+            /// <summary>
+            /// </summary>
+            public bool DisableRuntimeConfiguration { get; }
+
+            /// <summary>
+            /// </summary>
+            public bool DisableServiceHost { get; }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            public Action<ContainerBuilder> BuilderAction
+            {
+                get { return _builderAction; }
+                set { _builderAction = value; }
             }
         }
 
 
         /// <summary>
         /// </summary>
-        public ApplicationInstance (
-            [ NotNull ] ApplicationInstanceConfiguration applicationInstanceConfiguration
+        public ApplicationInstance(
+            [NotNull] ApplicationInstanceConfiguration applicationInstanceConfiguration
         )
         {
-            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException ;
+            AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
 
-            _subject = new ReplaySubject < AppLogMessage > ( ) ;
-            var msg = new AppLogMessage ( "Hello" ) ;
-            Subject1.OnNext ( msg ) ;
+            _subject = new ReplaySubject<AppLogMessage>();
+            var msg = new AppLogMessage("Hello");
+            Subject1.OnNext(msg);
 
             // ReSharper disable once ConvertToLocalFunction
-            Action < string > log = s => {
-                Subject1.OnNext ( new AppLogMessage ( s ) ) ;
-                applicationInstanceConfiguration.LogMethod ( s ) ;
-            } ;
+            Action<string> log = s =>
+            {
+                Subject1.OnNext(new AppLogMessage(s));
+                applicationInstanceConfiguration.LogMethod(s);
+            };
 
-            _disableServiceHost = applicationInstanceConfiguration.DisableServiceHost ;
+            _disableServiceHost = applicationInstanceConfiguration.DisableServiceHost;
 
-            var serviceCollection = new ServiceCollection ( ) ;
+            var serviceCollection = new ServiceCollection();
 
             // ReSharper disable once UnusedVariable
-            var protoLogger = ProtoLogger.Instance ;
-            if ( ! applicationInstanceConfiguration.DisableRuntimeConfiguration )
+            var protoLogger = ProtoLogger.Instance;
+            if (!applicationInstanceConfiguration.DisableRuntimeConfiguration)
             {
-                var loadedConfigs = LoadConfiguration ( log ) ;
+                var loadedConfigs = LoadConfiguration(log);
                 applicationInstanceConfiguration.Configs =
                     applicationInstanceConfiguration.Configs != null
-                        ? ( ( IEnumerable < object > ) applicationInstanceConfiguration.Configs )
-                       .Append ( loadedConfigs )
-                        : loadedConfigs ;
+                        ? ((IEnumerable<object>) applicationInstanceConfiguration.Configs)
+                        .Append(loadedConfigs)
+                        : loadedConfigs;
             }
 
-            if ( ! applicationInstanceConfiguration.DisableLogging )
+            if (!applicationInstanceConfiguration.DisableLogging)
             {
-                serviceCollection.AddLogging ( ) ;
+                serviceCollection.AddLogging();
                 // ReSharper disable once UnusedVariable
                 var config = applicationInstanceConfiguration.Configs != null
-                                 ? applicationInstanceConfiguration
-                                  .Configs.OfType < ILoggingConfiguration > ( )
-                                  .FirstOrDefault ( )
-                                 : null ;
+                    ? applicationInstanceConfiguration
+                        .Configs.OfType<ILoggingConfiguration>()
+                        .FirstOrDefault()
+                    : null;
                 // LogManager.EnableLogging ( ) ;
-                if ( LogManager.IsLoggingEnabled ( ) )
-                {
-                    DebugUtils.WriteLine ( "logging enableD" ) ;
-                }
+                if (LogManager.IsLoggingEnabled()) DebugUtils.WriteLine("logging enableD");
 
-                if ( LogManager.Configuration == null )
-                {
-                    return ;
-                }
+                if (LogManager.Configuration == null) return;
 
-                foreach ( var configurationAllTarget in LogManager.Configuration.AllTargets )
-                {
-                    DebugUtils.WriteLine ( configurationAllTarget.ToString()) ;
-                }
+                foreach (var configurationAllTarget in LogManager.Configuration.AllTargets)
+                    DebugUtils.WriteLine(configurationAllTarget.ToString());
 
                 // Logger = AppLoggingConfigHelper.EnsureLoggingConfigured (
                 // new LogDelegates.
@@ -289,7 +288,7 @@ namespace KayMcCormick.Dev.Application
             }
             else
             {
-                Logger = LogManager.CreateNullLogger ( ) ;
+                Logger = LogManager.CreateNullLogger();
             }
         }
 
@@ -297,97 +296,105 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         public ILogger Logger
         {
-            get { return _logger ; }
+            get { return _logger; }
             set
             {
-                _logger = value ;
-                Subject1.Subscribe ( message => _logger.Info ( $"XX: {message}" ) ) ;
+                _logger = value;
+                Subject1.Subscribe(message => _logger.Info($"XX: {message}"));
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public IContainer Container1 { get { return _container ; } set { _container = value ; } }
+        public IContainer Container1
+        {
+            get { return _container; }
+            set { _container = value; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
-        public ReplaySubject < AppLogMessage > Subject1 { get { return _subject ; } }
+        public ReplaySubject<AppLogMessage> Subject1
+        {
+            get { return _subject; }
+        }
 
         /// <summary>
         /// </summary>
-        public override void Dispose ( )
+        public override void Dispose()
         {
-            _host?.Dispose ( ) ;
-            LifetimeScope?.Dispose ( ) ;
-            Container1?.Dispose ( ) ;
+            _host?.Dispose();
+            LifetimeScope?.Dispose();
+            Container1?.Dispose();
             _subject?.Dispose();
         }
 
-        private static void CurrentDomain_FirstChanceException (
-            object                                    sender
-          , [ NotNull ] FirstChanceExceptionEventArgs e
+        private static void CurrentDomain_FirstChanceException(
+            object sender
+            , [NotNull] FirstChanceExceptionEventArgs e
         )
         {
             // Utils.LogParsedExceptions ( e.Exception ) ;
         }
 
-#region Overrides of ApplicationInstanceBase
+        #region Overrides of ApplicationInstanceBase
+
         /// <summary>
         /// </summary>
-        public override void Initialize ( )
+        public override void Initialize()
         {
-            base.Initialize ( ) ;
-            Container1 = BuildContainer ( ) ;
-            Container1.ChildLifetimeScopeBeginning += LifetimeScopeOnChildLifetimeScopeBeginning;
-            Container1.CurrentScopeEnding += LifetimeScopeOnCurrentScopeEnding;
+            base.Initialize();
+            Container1 = BuildContainer();
+            // Container1.ChildLifetimeScopeBeginning += OnChildLifetimeScopeBeginning;
+            // Container1.CurrentScopeEnding += OnCurrentScopeEnding;
         }
 
-        private void LifetimeScopeOnChildLifetimeScopeBeginning(object sender, LifetimeScopeBeginningEventArgs e)
+        private void OnChildLifetimeScopeBeginning(object sender, LifetimeScopeBeginningEventArgs e)
         {
-                Debug.WriteLine(e.LifetimeScope.Tag);
-                e.LifetimeScope.ChildLifetimeScopeBeginning += LifetimeScopeOnChildLifetimeScopeBeginning;
-            
-                e.LifetimeScope.CurrentScopeEnding += LifetimeScopeOnCurrentScopeEnding;
+            Debug.WriteLine("Scope beginning " + e.LifetimeScope.Tag);
+            e.LifetimeScope.ChildLifetimeScopeBeginning += OnChildLifetimeScopeBeginning;
+
+            e.LifetimeScope.CurrentScopeEnding += OnCurrentScopeEnding;
         }
 
-        private void LifetimeScopeOnCurrentScopeEnding(object sender, LifetimeScopeEndingEventArgs e)
+        private void OnCurrentScopeEnding(object sender, LifetimeScopeEndingEventArgs e)
         {
-            Debug.WriteLine(e.LifetimeScope.Tag);
-
+            Debug.WriteLine("Scope ending " + e.LifetimeScope.Tag);
         }
 
         #endregion
 
         /// <summary>
         /// </summary>
-        public override event EventHandler < AppStartupEventArgs > AppStartup ;
+        public override event EventHandler<AppStartupEventArgs> AppStartup;
 
         /// <summary>
         /// </summary>
         /// <param name="appModule"></param>
-        public override void AddModule ( IModule appModule ) { _modules.Add ( appModule ) ; }
+        public override void AddModule(IModule appModule)
+        {
+            _modules.Add(appModule);
+        }
 
-        public IComponentContext ComponentContext => GetLifetimeScope();
+        public IComponentContext ComponentContext
+        {
+            get { return GetLifetimeScope(); }
+        }
+
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        [ NotNull ]
-        public override ILifetimeScope GetLifetimeScope ()
+        [NotNull]
+        public override ILifetimeScope GetLifetimeScope()
         {
-            if ( LifetimeScope != null )
-            {
-                return LifetimeScope ;
-            }
+            if (LifetimeScope != null) return LifetimeScope;
 
-            if ( Container1 == null )
-            {
-                Container1 = BuildContainer ( ) ;
-            }
+            if (Container1 == null) Container1 = BuildContainer();
 
-            LifetimeScope = Container1.BeginLifetimeScope ("Primary") ;
-            return LifetimeScope ;
+            LifetimeScope = Container1.BeginLifetimeScope("Primary");
+            return LifetimeScope;
         }
 
         /// <summary>
@@ -396,148 +403,161 @@ namespace KayMcCormick.Dev.Application
         /// <param name="action"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        [ NotNull ]
+        [NotNull]
         public override ILifetimeScope GetLifetimeScope(Action<ContainerBuilder> action)
         {
             if (LifetimeScope != null)
-            {
                 // if (action != null)
                 // {
-                    // throw new AppInvalidOperationException();
+                // throw new AppInvalidOperationException();
                 // }
                 return LifetimeScope;
-            }
 
-            if (Container1 == null)
-            {
-                Container1 = BuildContainer();
-            }
+            if (Container1 == null) Container1 = BuildContainer();
 
-            LifetimeScope = Container1.BeginLifetimeScope("initial scope", action );
+            LifetimeScope = Container1.BeginLifetimeScope("initial scope", action);
             return LifetimeScope;
         }
 
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        [ NotNull ]
-        protected override IContainer BuildContainer ( )
+        [NotNull]
+        protected override IContainer BuildContainer()
         {
-            var builder = new ContainerBuilder ( ) ;
-            builder.RegisterModule < AttributedMetadataModule > ( ) ;
-            builder.RegisterMetadataRegistrationSources ( ) ;
-            builder.RegisterModule < NouveauAppModule > ( ) ;
+            var builder = new ContainerBuilder();
+            builder.RegisterModule<AttributedMetadataModule>();
+            builder.RegisterMetadataRegistrationSources();
+            builder.RegisterModule<NouveauAppModule>();
 
             // foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             // {
-                // DebugUtils.WriteLine(assembly.GetName().ToString());
+            // DebugUtils.WriteLine(assembly.GetName().ToString());
             // }
 
             Assembly loaded = null;
             var entryAssembly = Assembly.GetEntryAssembly();
             if (entryAssembly != null)
                 foreach (var assembly in entryAssembly.GetReferencedAssemblies())
-                {
                     //DebugUtils.WriteLine("ref:" + assembly.Name);
                     if (assembly.Name == "AnalysisAppLib")
-                    {
                         loaded = Assembly.Load(assembly);
+
+            var yy = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(
+                    assembly =>
+                    {
+                        if (assembly.GetName().Name == "WpfLib" || assembly.GetName().Name == "AnalysisAppLib")
+                            return true;
+
+                        return false;
                     }
-                }
+                ).ToArray();
+            builder.RegisterAssemblyTypes(yy)
+                .AssignableTo<JsonConverter>().PublicOnly()
+                .AsImplementedInterfaces()
+                .As<JsonConverter>()
+                .AsSelf().WithCallerMetadata();
 
-            var yy = AppDomain.CurrentDomain.GetAssemblies ( )
-                     .Where (
-                             assembly => {
-                                 if ( assembly.GetName().Name == "WpfLib" || assembly.GetName().Name == "AnalysisAppLib")
-                                 {
-                                     return true ;
-                                 }
-
-                                 return false ;
-                             }
-                            ).ToArray() ;
-            builder.RegisterAssemblyTypes ( yy )
-                   .AssignableTo < JsonConverter > ( ).PublicOnly()
-                   .AsImplementedInterfaces ( )
-                   .As<JsonConverter> (  )
-                   .AsSelf ( ).WithCallerMetadata();
-
-            var jsonSerializerOptions = new JsonSerializerOptions ( ) ;
+            var jsonSerializerOptions = new JsonSerializerOptions();
             JsonConverters.AddJsonConverters(jsonSerializerOptions);
-            foreach ( var jsonConverter in jsonSerializerOptions.Converters )
-            {
-                builder.RegisterInstance ( jsonConverter ).AsSelf ( ).As<JsonConverter>().AsImplementedInterfaces ( ).WithCallerMetadata (  ) ;
-            }
+            foreach (var jsonConverter in jsonSerializerOptions.Converters)
+                builder.RegisterInstance(jsonConverter).AsSelf().As<JsonConverter>().AsImplementedInterfaces()
+                    .WithCallerMetadata();
 
             //builder.RegisterInstance ( jsonSerializerOptions ).As < JsonSerializerOptions > ( ) ;
-            builder.Register (
-                              ( context , parameters ) => {
-                                  var o = new JsonSerializerOptions ( ) ;
-                                  foreach ( var cc in context
-                                     .Resolve < IEnumerable < JsonConverter > > ( ) )
-                                  {
-                                      o.Converters.Add ( cc ) ;
-                                  }
+            builder.Register(
+                    (context, parameters) =>
+                    {
+                        var o = new JsonSerializerOptions();
+                        foreach (var cc in context
+                            .Resolve<IEnumerable<JsonConverter>>())
+                            o.Converters.Add(cc);
 
-                                  return o ;
-                              }
-                             )
-                   .As < JsonSerializerOptions > ( ).WithCallerMetadata() ;
+                        return o;
+                    }
+                )
+                .As<JsonSerializerOptions>().WithCallerMetadata();
 
-            foreach ( var module in _modules )
+            foreach (var module in _modules)
             {
-                LogDebug ( $"Registering module {module}" ) ;
-                builder.RegisterModule ( module ) ;
+                LogDebug($"Registering module {module}");
+                builder.RegisterModule(module);
             }
 
-            builder.RegisterBuildCallback(scope => scope.ChildLifetimeScopeBeginning += (sender, args) =>
+            builder.RegisterBuildCallback(scope =>
             {
-
-                if (args.LifetimeScope.Tag.GetType() == typeof(object))
-                {
-                    throw new AppInvalidOperationException();
-                }
-
+                scope.ChildLifetimeScopeBeginning +=
+                    OnChildLifetimeScopeBeginning;
+                scope.CurrentScopeEnding += OnCurrentScopeEnding;
+scope.ResolveOperationBeginning += OnResolveOperationBeginning;
             });
+
+            // scope => scope.ChildLifetimeScopeBeginning += (sender, args) =>
+            // {
+
+            // if (args.LifetimeScope.Tag.GetType() == typeof(object))
+            // {
+            // throw new AppInvalidOperationException();
+            // }
+
+            // });
 
             try
             {
-                return builder.Build ( ) ;
+                return builder.Build();
             }
-            catch ( ArgumentException argExp )
+            catch (ArgumentException argExp)
             {
-                throw new ContainerBuildException (
-                                                   "Unable to build container: " + argExp.Message
-                                                 , argExp
-                                                  ) ;
+                throw new ContainerBuildException(
+                    "Unable to build container: " + argExp.Message
+                    , argExp
+                );
             }
         }
 
-        private void LogDebug ( string message )
+        private void OnResolveOperationBeginning(object sender, ResolveOperationBeginningEventArgs e)
+        {           
+            e.ResolveOperation.InstanceLookupBeginning += ResolveOperationOnInstanceLookupBeginning;
+        }
+
+        private void ResolveOperationOnInstanceLookupBeginning(object sender, InstanceLookupBeginningEventArgs e)
         {
-            Subject1.OnNext ( new AppLogMessage ( message ) ) ;
+            StringBuilder sb = new StringBuilder();
+            foreach (var keyValuePair in e.InstanceLookup.ComponentRegistration.Metadata)
+            {
+                sb.Append($"{keyValuePair.Key}={keyValuePair.Value}; ");
+            }
+            
+            DebugUtils.WriteLine(sb.ToString());
+            DebugUtils.WriteLine(e.InstanceLookup.ActivationScope.Tag);
+        }
+
+        private void LogDebug(string message)
+        {
+            Subject1.OnNext(new AppLogMessage(message));
         }
 
         /// <summary>
         /// </summary>
-        public override void Startup ( )
+        public override void Startup()
         {
-            if ( ! _disableServiceHost )
+            if (!_disableServiceHost)
             {
-                _host = new ApplicationInstanceHost ( Container1 ) ;
-                _host.HostOpen ( ) ;
+                _host = new ApplicationInstanceHost(Container1);
+                _host.HostOpen();
             }
 
-            base.Startup ( ) ;
+            base.Startup();
         }
 
         /// <summary>
         /// </summary>
-        protected override void Shutdown ( )
+        protected override void Shutdown()
         {
-            base.Shutdown ( ) ;
+            base.Shutdown();
 #if NETSTANDARD || NETFRAMEWORK
-            AppLoggingConfigHelper.ServiceTarget?.Dispose ( ) ;
+            AppLoggingConfigHelper.ServiceTarget?.Dispose();
 #endif
         }
 
@@ -547,94 +567,82 @@ namespace KayMcCormick.Dev.Application
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         // ReSharper disable once FunctionComplexityOverflow
-        protected override IEnumerable LoadConfiguration ( Action < string > logMethod2 )
+        protected override IEnumerable LoadConfiguration(Action<string> logMethod2)
         {
-            if ( logMethod2 == null )
-            {
-                throw new ArgumentNullException ( nameof ( logMethod2 ) ) ;
-            }
+            if (logMethod2 == null) throw new ArgumentNullException(nameof(logMethod2));
 
-            var config = ConfigurationManager.OpenExeConfiguration ( ConfigurationUserLevel.None ) ;
+            var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
-            logMethod2 ( $"Using {config.FilePath} for configuration" ) ;
-            var type1 = typeof ( ContainerHelperSection ) ;
+            logMethod2($"Using {config.FilePath} for configuration");
+            var type1 = typeof(ContainerHelperSection);
 
             try
             {
-                var sections = config.Sections ;
-                foreach ( ConfigurationSection configSection in sections )
-                {
+                var sections = config.Sections;
+                foreach (ConfigurationSection configSection in sections)
                     try
                     {
-                        var type = configSection.SectionInformation.Type ;
-                        var sectionType = Type.GetType ( type ) ;
-                        if ( sectionType             == null
-                             || sectionType.Assembly != type1.Assembly )
-                        {
-                            continue ;
-                        }
+                        var type = configSection.SectionInformation.Type;
+                        var sectionType = Type.GetType(type);
+                        if (sectionType == null
+                            || sectionType.Assembly != type1.Assembly)
+                            continue;
 
-                        logMethod2 ( "Found section " + sectionType.Name ) ;
-                        var at = sectionType.GetCustomAttribute < ConfigTargetAttribute > ( ) ;
-                        var configTarget = Activator.CreateInstance ( at.TargetType ) ;
+                        logMethod2("Found section " + sectionType.Name);
+                        var at = sectionType.GetCustomAttribute<ConfigTargetAttribute>();
+                        var configTarget = Activator.CreateInstance(at.TargetType);
                         var infos = sectionType
-                                   .GetMembers ( )
-                                   .Select (
-                                            info => Tuple.Create (
-                                                                  info
-                                                                , info
-                                                                     .GetCustomAttribute <
-                                                                          ConfigurationPropertyAttribute
-                                                                      > ( )
-                                                                 )
-                                           )
-                                   .Where ( tuple => tuple.Item2 != null )
-                                   .ToArray ( ) ;
-                        foreach ( var (item1 , _) in infos )
+                            .GetMembers()
+                            .Select(
+                                info => Tuple.Create(
+                                    info
+                                    , info
+                                        .GetCustomAttribute<
+                                            ConfigurationPropertyAttribute
+                                        >()
+                                )
+                            )
+                            .Where(tuple => tuple.Item2 != null)
+                            .ToArray();
+                        foreach (var (item1, _) in infos)
                         {
-                            if ( item1.MemberType != MemberTypes.Property )
-                            {
-                                continue ;
-                            }
+                            if (item1.MemberType != MemberTypes.Property) continue;
 
-                            var attr = at.TargetType.GetProperty ( item1.Name ) ;
+                            var attr = at.TargetType.GetProperty(item1.Name);
                             try
                             {
                                 var configVal =
-                                    ( ( PropertyInfo ) item1 ).GetValue ( configSection ) ;
-                                if ( attr != null )
-                                {
-                                    attr.SetValue ( configTarget , configVal ) ;
-                                }
+                                    ((PropertyInfo) item1).GetValue(configSection);
+                                if (attr != null) attr.SetValue(configTarget, configVal);
                             }
-                            catch ( Exception ex )
+                            catch (Exception ex)
                             {
-                                logMethod2 (
-                                            $"Unable to set property {item1.Name}: {ex.Message}"
-                                           ) ;
+                                logMethod2(
+                                    $"Unable to set property {item1.Name}: {ex.Message}"
+                                );
                             }
                         }
 
 
-                        ConfigSettings.Add ( configTarget ) ;
+                        ConfigSettings.Add(configTarget);
                     }
-                    catch ( Exception ex1 )
+                    catch (Exception ex1)
                     {
-                        Logger.Error ( ex1 , ex1.Message ) ;
+                        Logger.Error(ex1, ex1.Message);
                     }
-                }
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
-                logMethod2 ( ex.Message ) ;
+                logMethod2(ex.Message);
             }
 
-            return ConfigSettings ;
+            return ConfigSettings;
         }
 
 
-#region IDisposable
-#endregion
+        #region IDisposable
+
+        #endregion
     }
 
     /// <summary>
@@ -642,59 +650,71 @@ namespace KayMcCormick.Dev.Application
     /// </summary>
     public sealed class AppLogMessage
     {
-        private readonly string _message ;
-        private readonly int _threadId ;
+        private readonly string _message;
+        private readonly int _threadId;
 
         /// <summary>
         /// 
         /// </summary>
-        public string Message { get { return _message ; } }
+        public string Message
+        {
+            get { return _message; }
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="message"></param>
-        public AppLogMessage ( string message )
+        public AppLogMessage(string message)
         {
-            _message = message ;
-            _threadId = Thread.CurrentThread.ManagedThreadId ;
+            _message = message;
+            _threadId = Thread.CurrentThread.ManagedThreadId;
         }
 
-#region Overrides of Object
+        #region Overrides of Object
+
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public override string ToString ( ) { return $"{nameof ( AppLogMessage )}[{_threadId}]: {Message}" ; }
-#endregion
+        public override string ToString()
+        {
+            return $"{nameof(AppLogMessage)}[{_threadId}]: {Message}";
+        }
+
+        #endregion
     }
 
     /// <summary>
     ///     Fatal error building container. Wraps any autofac exceptions.
     /// </summary>
-    [ Serializable ]
+    [Serializable]
     public class ContainerBuildException : Exception
     {
         /// <summary>
         ///     Parameterless constructor.
         /// </summary>
-        public ContainerBuildException ( ) { }
+        public ContainerBuildException()
+        {
+        }
 
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="message"></param>
-        public ContainerBuildException ( string message ) : base ( message ) { }
+        public ContainerBuildException(string message) : base(message)
+        {
+        }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public ContainerBuildException ( string message , Exception innerException ) : base (
-                                                                                             message
-                                                                                           , innerException
-                                                                                            )
+        public ContainerBuildException(string message, Exception innerException) : base(
+            message
+            , innerException
+        )
         {
         }
 
@@ -703,10 +723,10 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected ContainerBuildException (
-            [ NotNull ] SerializationInfo info
-          , StreamingContext              context
-        ) : base ( info , context )
+        protected ContainerBuildException(
+            [NotNull] SerializationInfo info
+            , StreamingContext context
+        ) : base(info, context)
         {
         }
     }
@@ -720,20 +740,18 @@ namespace KayMcCormick.Dev.Application
         ///     Our fun custom load method that is public.
         /// </summary>
         /// <param name="builder"></param>
-        public override void DoLoad ( [ NotNull ] ContainerBuilder builder )
+        public override void DoLoad([NotNull] ContainerBuilder builder)
         {
-            builder.RegisterAssemblyTypes ( Assembly.GetExecutingAssembly ( ) )
-                   .AssignableTo < IViewModel > ( )
-                   .AsSelf ( )
-                   .AsImplementedInterfaces ( )
-                   .WithAttributedMetadata ( )
-                   .WithAttributeFiltering ( ).WithCallerMetadata() ;
-            if ( AppLoggingConfigHelper.CacheTarget2 != null )
-            {
-                builder.RegisterInstance ( AppLoggingConfigHelper.CacheTarget2 )
-                       .WithMetadata ( "Description" , "Cache target" )
-                       .SingleInstance ( ).WithCallerMetadata() ;
-            }
+            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+                .AssignableTo<IViewModel>()
+                .AsSelf()
+                .AsImplementedInterfaces()
+                .WithAttributedMetadata()
+                .WithAttributeFiltering().WithCallerMetadata();
+            if (AppLoggingConfigHelper.CacheTarget2 != null)
+                builder.RegisterInstance(AppLoggingConfigHelper.CacheTarget2)
+                    .WithMetadata("Description", "Cache target")
+                    .SingleInstance().WithCallerMetadata();
         }
     }
 
@@ -741,14 +759,14 @@ namespace KayMcCormick.Dev.Application
     /// </summary>
     public sealed class ParsedExceptions
     {
-        private List < ParsedStackInfo > _parsedList = new List < ParsedStackInfo > ( ) ;
+        private List<ParsedStackInfo> _parsedList = new List<ParsedStackInfo>();
 
         /// <summary>
         /// </summary>
-        public List < ParsedStackInfo > ParsedList
+        public List<ParsedStackInfo> ParsedList
         {
-            get { return _parsedList ; }
-            set { _parsedList = value ; }
+            get { return _parsedList; }
+            set { _parsedList = value; }
         }
     }
 
@@ -757,42 +775,46 @@ namespace KayMcCormick.Dev.Application
     public sealed class ParsedStackInfo
     {
         // ReSharper disable once NotAccessedField.Local
-        private readonly string _exMessage ;
+        private readonly string _exMessage;
 
-        private readonly string                   _typeName ;
-        private          List < StackTraceEntry > _stackTraceEntries ;
+        private readonly string _typeName;
+        private List<StackTraceEntry> _stackTraceEntries;
 
         /// <summary>
         /// </summary>
-        public ParsedStackInfo ( ) { }
+        public ParsedStackInfo()
+        {
+        }
 
         /// <summary>
         /// </summary>
         /// <param name="parsed"></param>
         /// <param name="typeName"></param>
         /// <param name="exMessage"></param>
-        public ParsedStackInfo (
-            [ NotNull ] IEnumerable < StackTraceEntry > parsed
-          , string                                      typeName
-          , string                                      exMessage
+        public ParsedStackInfo(
+            [NotNull] IEnumerable<StackTraceEntry> parsed
+            , string typeName
+            , string exMessage
         )
         {
-            _typeName         = typeName ;
-            _exMessage        = exMessage ;
-            StackTraceEntries = parsed.ToList ( ) ;
+            _typeName = typeName;
+            _exMessage = exMessage;
+            StackTraceEntries = parsed.ToList();
         }
 
         /// <summary>
         /// </summary>
-        public List < StackTraceEntry > StackTraceEntries
+        public List<StackTraceEntry> StackTraceEntries
         {
-            get { return _stackTraceEntries ; }
-            set { _stackTraceEntries = value ; }
+            get { return _stackTraceEntries; }
+            set { _stackTraceEntries = value; }
         }
 
         /// <summary>
         /// </summary>
-        public string TypeName { get { return _typeName ; } }
+        public string TypeName
+        {
+            get { return _typeName; }
+        }
     }
-
 }

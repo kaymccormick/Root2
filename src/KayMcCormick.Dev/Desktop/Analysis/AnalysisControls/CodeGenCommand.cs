@@ -1268,4 +1268,12 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
             throw new NotImplementedException();
         }
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class CommandProgress
+    {
+        public object Content { get; set; }
+    }
 }

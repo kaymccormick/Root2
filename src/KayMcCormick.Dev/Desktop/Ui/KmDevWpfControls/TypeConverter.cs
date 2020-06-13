@@ -27,7 +27,7 @@ namespace KmDevWpfControls
                 var s = value.ToString();
                 var type = Type.GetType(s);
                 var t = type ??
-                        AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetExportedTypes()).FirstOrDefault(tt => tt.FullName == s);
+                        AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).SelectMany(a => a.GetExportedTypes()).FirstOrDefault(tt => tt.FullName == s);
                 return t;
             }
 

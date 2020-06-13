@@ -213,7 +213,7 @@ namespace ProjTests
 #pragma warning restore 162
         }
 
-        [WpfFact]
+        //[WpfFact]
         public void TestRead()
         {
             var fileStream = new FileStream(TYPES_VIEW_MODEL_XAML_PATH, FileMode.Open);
@@ -221,7 +221,7 @@ namespace ProjTests
             var x = XamlReader.Load(fileStream);
         }
 
-        [Fact]
+        //[Fact]
         public void TestSubstituteType()
         {
             using (var instance = new ApplicationInstance(
@@ -277,11 +277,11 @@ namespace ProjTests
 
                 var d = new TypeProviderUserControl();
                 var w = new Window {Content = d};
-                w.ShowDialog();
+                w.Show();
             }
         }
 
-        [WpfFact]
+        //[WpfFact]
         public void TestSubstituteTyp11e()
         {
             using (var instance = new ApplicationInstance(
@@ -380,7 +380,7 @@ namespace ProjTests
 
             // var typesView = new TypesView ( viewModel ) ;
             // var w = new Window { Content = typesView } ;
-            // w.ShowDialog ( ) ;
+            // w.Showf ( ) ;
         }
 
         [Fact]
@@ -532,7 +532,7 @@ namespace ProjTests
             {
                 var fe = p.GetValue(r);
                 var w = new Window {Content = fe};
-                w.ShowDialog();
+                w.Show();
             }
 
             Logger.Info(r.GetType());
@@ -632,7 +632,7 @@ namespace ProjTests
                         DebugUtils.WriteLine(ex.ToString());
                     }
 
-                w.ShowDialog();
+                w.Show();
                 // var source = new TaskCompletionSource < bool > ( ) ;
                 // x.TCS = source ;
                 // x.Run ( w ) ;
@@ -682,7 +682,7 @@ namespace ProjTests
             return count;
         }
 
-        [WpfFact]
+//        [WpfFact]
         public void TestResourcesModel()
         {
             using (var instance =
@@ -809,7 +809,7 @@ namespace ProjTests
             mock.Setup(cb => module.DoLoad(cb));
         }
 
-        [Fact]
+        //[Fact]
         public void DeserializeLog()
         {
             var ctx = (ICompilationUnitRootContext) AnalysisService.Parse(
@@ -1128,7 +1128,7 @@ namespace ProjTests
             };
 
             w.Content = new ExceptionUserControl {DataContext = dd};
-            w.ShowDialog();
+            w.Show();
         }
 
         [WpfFact]
@@ -1161,7 +1161,7 @@ namespace ProjTests
                 // var view = scope.Resolve<EventLogView>();
                 // Assert.NotNull(view.ViewModel);
                 // var w = new Window {Content = view};
-                // w.ShowDialog();
+                // w.Show();
             }
         }
 
@@ -1183,7 +1183,7 @@ namespace ProjTests
             DebugUtils.WriteLine(JsonSerializer.Serialize(b, opt));
         }
 
-        [Fact]
+        //[Fact]
         public void TestApp()
         {
             var info = new ProcessStartInfo(
@@ -1335,11 +1335,11 @@ namespace ProjTests
                 var t = t1.GenericInterface.ControlForValue(typeof(ProjTests), 1);
                 var ff = new ScrollViewer() {Content = t};
                 var w1 = new Window {Content = ff};
-                w1.ShowDialog();
+                w1.Show();
             }
         }
 
-        [WpfFact]
+ //       [WpfFact]
         public void Test111()
         {
             var x = new ResourceManager(
@@ -1435,7 +1435,7 @@ namespace ProjTests
             var oo = ProjTestsHelper.ControlsResources("templates.baml");
 
             var w2 = new RWindow();
-            //w2.ShowDialog();
+            //w2.Show();
             using (var instance = new ApplicationInstance(
                 new ApplicationInstance.
                     ApplicationInstanceConfiguration(
@@ -1535,7 +1535,7 @@ namespace ProjTests
 
                 dp.LastChildFill = true;
                 w.Content = dp;
-                w.ShowDialog();
+                w.Show();
             }
         }
 
@@ -1626,7 +1626,7 @@ namespace ProjTests
             }
         }
 
-        [WpfFact]
+     //   [WpfFact]
         public void TestControl2()
         {
             var type = typeof(Generic2<Type>);
@@ -1638,9 +1638,9 @@ namespace ProjTests
             var w = new Window();
             //w.Padding = new Thickness(10);
             //c.Margin = new Thickness(15);
+            
             w.Content = d;
-            w.Content = d;
-            w.ShowDialog();
+            w.Show();
             return;
 
             // StackPanel p1 = new StackPanel() {Orientation = Orientation.Vertical};
@@ -1661,7 +1661,7 @@ namespace ProjTests
             // p3.Children.Add(c3);
             // p3.Children.Add(c4);
             // w.Content = p1;
-            // w.ShowDialog();
+            // w.Show();
         }
 
         [WpfFact]
@@ -1743,7 +1743,7 @@ namespace ProjTests
             //c.Margin = new Thickness(15);
             w.Content = ss;
             w.ShowActivated = true;
-            w.ShowDialog();
+            w.Show();
             return;
 
             // StackPanel p1 = new StackPanel() {Orientation = Orientation.Vertical};
@@ -1764,16 +1764,16 @@ namespace ProjTests
             // p3.Children.Add(c3);
             // p3.Children.Add(c4);
             // w.Content = p1;
-            // w.ShowDialog();
+            // w.Show();
         }
 
-        [WpfFact]
+  //      [WpfFact]
         public void TestDiag()
         {
             ProjTestsHelper.TestSyntaxControl(new CodeDiagnostics());
         }
 
-        [WpfFact]
+//        [WpfFact]
         public void TestCodeControl2()
         {
             ProjTestsHelper.TestSyntaxControl(new CodeControl2());
@@ -1858,13 +1858,13 @@ namespace ProjTests
             }
         }
 
-        [WpfFact]
+   //     [WpfFact]
         public void TestEnhanced()
         {
             ProjTestsHelper.TestSyntaxControl(new EnhancedCodeControl());
         }
 
-        [WpfFact]
+   //     [WpfFact]
         public void TestFormattedControl()
         {
             ProjTestsHelper.TestSyntaxControl(new FormattedTextControl());
@@ -1876,7 +1876,7 @@ namespace ProjTests
             ProjTestsHelper.TestSyntaxControlVb(new FormattedTextControl());
         }
 
-        [WpfFact]
+        //[WpfFact]
         public void TestSymbolControl()
         {
             Main1Model.SelectVsInstance();
@@ -1904,7 +1904,7 @@ namespace ProjTests
                 var listBox = new ListBox() {ItemsSource = symbols};
 
                 var w = new Window {Content = listBox, ShowActivated = true, Resources = resources};
-                w.ShowDialog();
+                w.Show();
             }).Wait();
         }
 
@@ -1919,14 +1919,14 @@ namespace ProjTests
             var resources = ProjTestsHelper.ControlsResources("templates.baml");
 
             var w = new Window {Content = c, ShowActivated = true, Resources = resources};
-            w.ShowDialog();
+            w.Show();
         }
 
 
         [WpfFact]
         public void TestSemanticControl1()
         {
-            ProjTestsHelper.TestSyntaxControl(new SemanticControl1());
+//            ProjTestsHelper.TestSyntaxControl(new SemanticControl1());
         }
 
       
@@ -1987,7 +1987,7 @@ namespace ProjTests
 
 //            model.Workspace.AddProject("test", LanguageNames.CSharp);
             var w = new Window() {Content = c};
-            w.ShowDialog();
+            w.Show();
         }
 
         [WpfFact]
@@ -2002,7 +2002,7 @@ namespace ProjTests
                 solutionPath);
             c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierarchyRoot") {Source = model});
             var w = new Window() {Content = c};
-            w.ShowDialog();
+            w.Show();
         }
 
         [WpfFact]
@@ -2021,7 +2021,7 @@ namespace ProjTests
                 });
         }
 
-        [WpfFact]
+//        [WpfFact]
         public void TestMain1_()
         {
             Assert.True(MSBuildLocator.CanRegister);
@@ -2064,7 +2064,7 @@ namespace ProjTests
                 DebugUtils.WriteLine(typeof(string).AssemblyQualifiedName);
                 var cc = new CustomControl2() {TypeInfoProvider = prov};
                 var w = new Window {Content = cc};
-                w.ShowDialog();
+                w.Show();
             }
         }
 
@@ -2080,7 +2080,7 @@ namespace ProjTests
             //t.ItemsCollection.Add(x.ProvideModelItem());
             var window = new TemplateWindow();
             window.Content = new Ribbon {ItemsSource = m.RibbonItems};
-            window.ShowDialog();
+            window.Show();
         }
 
 
@@ -2088,7 +2088,7 @@ namespace ProjTests
         {
         }
 
-        [WpfFact]
+      //  [WpfFact]
         public void TestCodeEntry()
         {
             var c = new FormattedTextControl();
@@ -2122,7 +2122,7 @@ namespace ProjTests
 
                 DoTexts(null).ContinueWith(t => w.Close());
             };
-            w.ShowDialog();
+            w.Show();
         }
 
         public TypesViewModel model()
@@ -2153,7 +2153,7 @@ namespace ProjTests
             }
         }
 
-        [WpfFact]
+        //[WpfFact]
         public void TestC1()
         {
             var model = this.model();
@@ -2163,10 +2163,10 @@ namespace ProjTests
             var tt = model.GetAppTypeInfos().Where(t => t.Fields.Count > 0).Skip(r.Next(100)).First();
             var c = new SyntaxPanel() {SyntaxTypeInfo = tt};
             var w = new Window() {Content = c};
-            w.ShowDialog();
+            w.Show();
         }
 
-        [WpfFact]
+//        [WpfFact]
         public void TestGradient()
         {
             var model = this.model();
@@ -2176,7 +2176,7 @@ namespace ProjTests
             var tt = model.GetAppTypeInfos().Where(t => t.Fields.Count > 0).Skip(r.Next(100)).First();
             var c = new GradientEditorControl();
             var w = new Window() {Content = c};
-            w.ShowDialog();
+            w.Show();
         }
 
         [WpfFact]
@@ -2206,7 +2206,7 @@ namespace ProjTests
             }
 
             var w = new Window {Content = c};
-            w.ShowDialog();
+            w.Show();
         }
 
         [WpfFact]
@@ -2223,7 +2223,7 @@ namespace ProjTests
             }
 
             var w = new Window {Content = c};
-            w.ShowDialog();
+            w.Show();
         }
         // [WpfFact]
         // public void TestPanel3()
@@ -2244,7 +2244,7 @@ namespace ProjTests
         // c.Children.Add(panel);
         // Window w = new Window { Content = c };
         // w.Loaded += (sender, args) => DebugUtils.WriteLine(VisualTreeHelper.GetChildrenCount(panel).ToString());
-        // w.ShowDialog();
+        // w.Show();
         // }
 
         [WpfFact]
@@ -2256,10 +2256,10 @@ namespace ProjTests
             c.Children.Add(panel);
 
             var w = new Window {Content = c};
-            w.ShowDialog();
+            w.Show();
         }
 
-        [WpfFact]
+//        [WpfFact]
         public void TestMethod1()
         {
             var c = new WrapPanel();
@@ -2269,7 +2269,7 @@ namespace ProjTests
             c.Children.Add(panel);
 
             var w = new Window {Content = c};
-            w.ShowDialog();
+            w.Show();
         }
 
         [WpfFact]
@@ -2281,7 +2281,7 @@ namespace ProjTests
             c.Children.Add(panel);
 
             var w = new Window {Content = c};
-            w.ShowDialog();
+            w.Show();
         }
 
         [WpfFact]
@@ -2301,7 +2301,7 @@ namespace ProjTests
 
                 panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
                 var w = new Window {Content = c};
-                w.ShowDialog();
+                w.Show();
             }
         }
 
@@ -2318,7 +2318,7 @@ namespace ProjTests
                 {Content = new Page {Content = new TextBlock {Text = "Test", FontSize = 40.0}}};
 
             var w = new Window {Content = c};
-            w.ShowDialog();
+            w.Show();
         }
 
 
@@ -2350,7 +2350,7 @@ namespace ProjTests
 
             var w = new Window {Content = c};
             w.Loaded += (sender, args) => { model.SelectedAssembly = typeof(AnalysisControlsModule).Assembly; };
-            w.ShowDialog();
+            w.Show();
             // }
         }
 
@@ -2390,7 +2390,7 @@ namespace ProjTests
                 windowsFormsHost.Child = propertyGrid;
             };
             var w = new Window {Content = stp};
-            w.ShowDialog();
+            w.Show();
         }
 
         [WpfFact]
@@ -2605,10 +2605,10 @@ namespace ProjTests
         {
             var j = new JsonUserControl();
             var w = new Window {Content = j};
-            w.ShowDialog();
+            w.Show();
         }
 
-        [WpfFact]
+        //[WpfFact]
         public void TestRibbonBuilder1()
         {
             //XamlReader.Load()
@@ -2675,7 +2675,7 @@ namespace ProjTests
             myRibbon.ShowQuickAccessToolBarOnTop = true;
             myRibbon.QuickAccessToolBar = qat;
 
-            w.ShowDialog();
+            w.Show();
         }
 
 
@@ -2700,7 +2700,7 @@ namespace ProjTests
             //v.RenderTransform = new ScaleTransform(2, 2);
             //ScrollViewer s = new ScrollViewer() {Content = v};
             var w = new Window {Content = t, FontSize = 20};
-            w.ShowDialog();
+            w.Show();
         }
 
         [WpfFact]
@@ -2715,7 +2715,7 @@ namespace ProjTests
             table1.Children.Add(new Button {Content = "hello"});
             anchorables.Add(new LayoutAnchorable() {Content = table1});
             dm.AnchorablesSource = anchorables;
-            w.ShowDialog();
+            w.Show();
         }
 
         [WpfFact]
@@ -2749,10 +2749,10 @@ namespace ProjTests
             p.Children.Add(_elementTextFormatterControl);
 
             var w = new Window {Content = p, FontSize = 20};
-            w.ShowDialog();
+            w.Show();
         }
 
-        [WpfFact]
+        //[WpfFact]
         public void Test1234()
         {
             var menu = new Menu() { };
@@ -2797,7 +2797,7 @@ namespace ProjTests
                 genericInterface.SetValue(Grid.RowProperty, 2);
 
                 var w = new Window() {Content = sss};
-                w.ShowDialog();
+                w.Show();
             }
         }
 
@@ -2805,7 +2805,7 @@ namespace ProjTests
         {
         }
 
-        [WpfFact]
+        //[WpfFact]
         public void TestTextControl1()
         {
             var tt = new TextControl()
@@ -2821,10 +2821,10 @@ namespace ProjTests
                 tt.HandleInput("test");
                 tt.HandleInput("hi");
             };
-            w.ShowDialog();
+            w.Show();
         }
 
-        [WpfFact]
+        //[WpfFact]
         public void T111()
         {
             var x = new GenericInterface3();
@@ -2842,7 +2842,7 @@ namespace ProjTests
 
                 DumpVisualTree(w);
             };
-            w.ShowDialog();
+            w.Show();
         }
 
         private void DumpVisualTree(DependencyObject dependencyObject)
@@ -2892,6 +2892,7 @@ namespace ProjTests
             // NewMethod(file);
             // return;
             Dictionary<string, long> files = new Dictionary<string, long>();
+            var i = 0;
             foreach (var enumerateFile in Directory.EnumerateFiles(@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos", "*.cs",
 
                 SearchOption.AllDirectories))
@@ -2903,6 +2904,10 @@ namespace ProjTests
                     files[enumerateFile] = l;
                     Debug.WriteLine(enumerateFile + " " + l);
                 }
+
+                i++;
+                if (i >= 10)
+                    break;
             }
 
             var k = files.Keys.OrderByDescending(s => files[s]).LastOrDefault();
@@ -2970,7 +2975,7 @@ namespace ProjTests
                 var lifetimeScope = instance.GetLifetimeScope();
                 Window w = new Window() {Content = new ContainerView()};
                 w.SetValue(AttachedProperties.LifetimeScopeProperty, lifetimeScope);
-                w.ShowDialog();
+                w.Show();
             }
         }
 
@@ -3018,7 +3023,7 @@ namespace ProjTests
                 (sender, args) => cview.MoveCurrentToPrevious()));
             w.CommandBindings.Add(new CommandBinding(NavigationCommands.NextPage,
                 (sender, args) => cview.MoveCurrentToNext()));
-            w.ShowDialog();
+            w.Show();
         }
 
         private void TdOnTraceListenerCreated(object sender, TraceListenerCreatedEventArgs e)

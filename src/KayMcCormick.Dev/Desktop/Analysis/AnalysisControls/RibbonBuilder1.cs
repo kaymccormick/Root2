@@ -73,6 +73,7 @@ namespace AnalysisControls
                 Label = "test1",
                 SmallImageSource = "pack://application:,,,/WpfLib;component/Assets/ASPWebSite_16x.png"
             });
+            var dp = new ModelDatePicker();
             var dockPanel = new DockPanel {LastChildFill = false};
             //  dockPanel.Children.Add(new RibbonButton {Label = "Quit"});
             appMenu.FooterPaneContent = dockPanel;
@@ -104,7 +105,9 @@ namespace AnalysisControls
             Group1.Items.Add(new RibbonModelButton {Label = "Open", Command = ApplicationCommands.Open});
             var Group2 = new RibbonModelGroup { Header = "Context" };
             HomeTab.ItemsCollection.Add(Group2);
-
+            var Group3 = new RibbonModelGroup() {Header = "Random"};
+            HomeTab.ItemsCollection.Add(Group3);
+            Group3.Items.Add(new RibbonModelControl() {Content = dp});
             Group1.Items.Add(PasteButton);
             HomeTab.ItemsCollection.Add(Group1);
             r.RibbonItems.Add(HomeTab);

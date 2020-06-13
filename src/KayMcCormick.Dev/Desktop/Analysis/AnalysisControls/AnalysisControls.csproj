@@ -110,7 +110,6 @@
     <Compile Include="DirectoryInfoConverter.cs" />
     <Compile Include="InstPropValTempSel.cs" />
     <Compile Include="IPropertiesAdapter.cs" />
-    <Compile Include="AnalysisCommands.cs" />
     <Compile Include="AnalysisControlsModule.cs" />
     <Compile Include="AnchorableModel.cs" />
     <Compile Include="AppControl.cs" />
@@ -133,7 +132,6 @@
     <Compile Include="CodeRenderer.cs" />
     <Compile Include="CodeToolTipContent.cs" />
     <Compile Include="ComboBoxTemplateSelector.cs" />
-    <Compile Include="CommandProgress.cs" />
     <Compile Include="Commands\DatabasePopulateCommand.cs" />
     <Compile Include="Commands\OpenFileCommand.cs" />
     <Compile Include="CompilationControl.cs" />

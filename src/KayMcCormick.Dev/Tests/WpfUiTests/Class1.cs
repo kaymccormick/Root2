@@ -27,7 +27,7 @@ namespace WpfUiTests
             g.RenderTransform = new ScaleTransform(2, 2);
             t1.ItemsSource = items;
             var w = new Window {Content = g};
-            w.ShowDialog();
+            w.Show();
         }
 
 
@@ -39,7 +39,7 @@ namespace WpfUiTests
             g.Children.Add(ac);
             //g.RenderTransform = new ScaleTransform(2, 2);
             var w = new Window {Content = g, FontSize = 20.0};
-            w.ShowDialog();
+            w.Show();
         }
 
         [WpfFact]
@@ -50,7 +50,7 @@ namespace WpfUiTests
             g.Children.Add(ac);
             //g.RenderTransform = new ScaleTransform(2, 2);
             var w = new Window {Content = g, FontSize = 20.0};
-            w.ShowDialog();
+            w.Show();
         }
 
         [WpfFact]
@@ -65,7 +65,7 @@ namespace WpfUiTests
             var m = new VisualTreeViewModel {RootVisual = w};
             ac.SetBinding(VisualTreeView1.RootVisualProperty, new Binding("CurrentVisual") {Source = m});
 
-            w.ShowDialog();
+            w.Show();
         }
 
         [WpfFact]
@@ -73,14 +73,14 @@ namespace WpfUiTests
         {
             var td = new TypeDetailsControl() {Type = typeof(TypeDetailsControl)};
             var w = new Window {Content = td};
-            w.ShowDialog();
+            w.Show();
         }
         [WpfFact]
         public void TestTraceView()
         {
             var td = new TraceView();
             var w = new Window {Content = td};
-            w.ShowDialog();
+            w.Show();
         }
 
         [Fact]

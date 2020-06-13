@@ -138,7 +138,7 @@ namespace ProjTests
             var r = new MyResourceDictionary();
             r.MergedDictionaries.Add(resources);
             var w = new Window { Content = control, ShowActivated = true, Resources = r };
-            w.ShowDialog();
+            w.Show();
         }
 
         public static DockingManager CreateDockingManager(out LayoutDocumentPane pane,
