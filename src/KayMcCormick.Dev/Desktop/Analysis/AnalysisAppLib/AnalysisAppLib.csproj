@@ -296,10 +296,7 @@
   <ItemGroup>
     <None Include="doc.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Auth\" />
-    <Folder Include="Command\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Resources\Syntax.xml">
       <SubType>Designer</SubType>

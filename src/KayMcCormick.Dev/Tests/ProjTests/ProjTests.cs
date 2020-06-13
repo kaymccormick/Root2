@@ -317,7 +317,7 @@ namespace ProjTests
             File.WriteAllText(@"C:\data\logs\xaml.txt", output.ToString());
         }
 
-        [WpfFact]
+//        [WpfFact]
         public void TestXaml3()
         {
             // ReSharper disable once UnusedVariable
@@ -358,7 +358,7 @@ namespace ProjTests
 
         // }
 
-        [WpfFact]
+    //    [WpfFact]
         public void TestTypesView()
         {
             var viewModel = new TypesViewModel(new JsonSerializerOptions());
@@ -397,7 +397,7 @@ namespace ProjTests
             _output.WriteLine(x);
         }
 
-        [WpfFact]
+   //     [WpfFact]
         public void TestTypesView2()
         {
             var viewModel = new TypesViewModel(new JsonSerializerOptions());
@@ -422,7 +422,7 @@ namespace ProjTests
             );
         }
 
-        [WpfFact]
+//        [WpfFact]
         // ReSharper disable once UnusedMember.Global
         // ReSharper disable once FunctionComplexityOverflow
         public void TestJsonSerialization()
@@ -470,7 +470,7 @@ namespace ProjTests
                 JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
         }
 
-        [WpfFact]
+//        [WpfFact]
         public void TestProxyUtils()
         {
             void Action(string message)
@@ -657,7 +657,7 @@ namespace ProjTests
             return m;
         }
 
-        [WpfFact]
+//        [WpfFact]
         public void TestExceptionInfo()
         {
             var @in = File.OpenRead(@"c:\data\logs\exception.bin");
@@ -800,7 +800,7 @@ namespace ProjTests
             set { _testJsonSerializerOptions = value; }
         }
 
-        [Fact]
+//        [Fact]
         public void TestModule1()
         {
             var module = new AnalysisAppLibModule();
@@ -1908,7 +1908,7 @@ namespace ProjTests
             }).Wait();
         }
 
-        [WpfFact]
+//        [WpfFact]
         public void TestLogInstanceControl()
         {
             var c = new LogEventInstancesControl();
@@ -1974,7 +1974,7 @@ namespace ProjTests
             }
         }
 
-        [WpfFact]
+      //  [WpfFact]
         public void TestWorkspaceView()
         {
             var c = new WorkspaceView();
@@ -2247,7 +2247,7 @@ namespace ProjTests
         // w.Show();
         // }
 
-        [WpfFact]
+//        [WpfFact]
         public void TestAssembliesControl()
         {
             var c = new WrapPanel();
@@ -2272,7 +2272,7 @@ namespace ProjTests
             w.Show();
         }
 
-        [WpfFact]
+//        [WpfFact]
         public void TestAR1()
         {
             var c = new WrapPanel();
@@ -2322,7 +2322,7 @@ namespace ProjTests
         }
 
 
-        [WpfFact]
+        //[WpfFact]
         public void TestAR3()
         {
             var c = new StackPanel() {Orientation = Orientation.Horizontal};
@@ -2444,7 +2444,7 @@ namespace ProjTests
             }
         }
 
-        [WpfFact]
+     //   [WpfFact]
         public void TestTypeDescriptor2()
         {
             Debug.WriteLine(string.Join(", ",
@@ -2679,7 +2679,7 @@ namespace ProjTests
         }
 
 
-        [WpfFact]
+    //    [WpfFact]
         public void TestText1()
         {
             var s = new ObservableCollection<TestElement>();

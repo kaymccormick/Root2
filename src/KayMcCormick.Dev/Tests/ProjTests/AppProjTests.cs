@@ -44,7 +44,7 @@ namespace ProjTests
         {
         }
 
-        [Fact]
+        //[Fact]
         public void TestResourceNodeInfo1()
         {
             var subject = _lifetimeScope.Resolve<ReplaySubject<IHierarchicalNode>>();

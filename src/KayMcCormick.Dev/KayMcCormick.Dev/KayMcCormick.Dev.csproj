@@ -109,9 +109,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Desktop\Analysis\ProjInterface\RegSource.cs">
-      <Link>RegSource.cs</Link>
-    </Compile>
     <Compile Include="AppInvalidOperationException.cs" />
     <Compile Include="Attributes\CommandIdMetadataAttribute.cs" />
     <Compile Include="Attributes\TitleMetadataAttribute.cs" />
@@ -120,7 +117,6 @@
     <Compile Include="Command\IBaseLibCommand.cs" />
     <Compile Include="DebugCategory.cs" />
     <Compile Include="IAddRuntimeResource.cs" />
-    <Compile Include="ICommandMetadata.cs" />
     <Compile Include="Command\AppCommandResult.cs" />
     <Compile Include="Command\IAppCommandResult.cs" />
     <Compile Include="Configuration\ConfigurationSource.cs" />
@@ -139,7 +135,6 @@
     <Compile Include="AppBuild\ILoggerTracker.cs" />
     <Compile Include="Application\ApplicationInstance.cs" />
     <Compile Include="Application\ApplicationInstanceBase.cs" />
-    <Compile Include="Application\ApplicationInstanceConfiguration.cs" />
     <Compile Include="Application\ApplicationInstanceHost.cs" />
     <Compile Include="Application\AppStartupEventArgs.cs" />
     <Compile Include="Attributes\ClearLoggingRulesAttribute.cs" />
@@ -190,14 +185,11 @@
     <Compile Include="Logging\AppLoggingConfigHelper.cs" />
     <Compile Include="Logging\AppLoggingConfiguration.cs" />
     <Compile Include="Logging\CodeConfiguration.cs" />
-    <Compile Include="Logging\IConfigSource.cs" />
     <Compile Include="Logging\ILogEntrySpecification.cs" />
     <Compile Include="Logging\ILoggingConfiguration.cs" />
     <Compile Include="Logging\LogConfigurationException.cs" />
     <Compile Include="Logging\LogDelegates.cs" />
-    <Compile Include="Logging\LogEventInfo2.cs" />
     <Compile Include="Logging\JsonConverterLogEventInfo.cs" />
-    <Compile Include="Logging\LogFactoryInterceptor.cs" />
     <Compile Include="Logging\LoggerFactoryHook.cs" />
     <Compile Include="Logging\LoggerInterceptor.cs" />
     <Compile Include="Logging\LoggerProxyHelper.cs" />
@@ -233,7 +225,6 @@
     <Compile Include="TestLib\LogHelper.cs" />
     <Compile Include="TestLib\LogTestMethodAttribute.cs" />
     <Compile Include="TestLib\TestMethodLifecycle.cs" />
-    <Compile Include="Tracing\ExtLib.cs" />
     <Compile Include="Tracing\KayMcCormickDevProvider.cs" />
     <Compile Include="Tracing\NLogTraceTarget.cs" />
     <Compile Include="Metadata\TypeUsageMetadata.cs" />
@@ -306,8 +297,6 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Auth\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
