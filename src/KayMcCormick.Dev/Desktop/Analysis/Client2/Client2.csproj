@@ -107,19 +107,16 @@
     <Compile Include="AppAction.cs" />
     <Compile Include="AppDbContext2.cs" />
     <Compile Include="AppHelpers.cs" />
-    <Compile Include="Client1W.cs" />
     <Compile Include="Client2App2.cs" />
     <Compile Include="Client2Window1.xaml.cs">
       <DependentUpon>Client2Window1.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Client2Module.cs" />
     <Compile Include="CustomAppEntry.cs" />
     <Compile Include="Explorer\Shell.cs" />
     <Compile Include="Explorer\ShellExplorerItem.cs" />
     <Compile Include="Explorer\ShellExplorerItemProvider.cs" />
     <Compile Include="MyInfo.cs" />
     <Compile Include="ProjInterfaceOptions.cs" />
-    <Compile Include="RibbonModelItemSplitButton.cs" />
     <Compile Include="RibbonWin1.xaml.cs">
       <DependentUpon>RibbonWin1.xaml</DependentUpon>
     </Compile>
@@ -305,10 +302,7 @@
       <Name>FindLogUsages</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="JSON\" />
-    <Folder Include="Ribbon\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Page Include="Client2Global.xaml">
       <SubType>Designer</SubType>

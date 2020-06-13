@@ -285,7 +285,7 @@
     <Compile Include="SemanticModel.cs" />
     <Compile Include="SolutionModel.cs" />
     <Compile Include="SourceText.cs" />
-    <Compile Include="StringObservableCollection - Copy.cs" />
+    <Compile Include="StringObservableCollection.cs" />
     <Compile Include="SymbolTextControl.cs" />
     <Compile Include="SymbolTextSource.cs" />
     <Compile Include="SyntaxFactoryPanel.cs" />
@@ -307,7 +307,6 @@
       <DependentUpon>TemplateWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="TempLoadData.cs" />
-    <Compile Include="TempLoadData11.cs" />
     <Compile Include="TestConverter2.cs" />
     <Compile Include="TestListener.cs" />
     <Compile Include="TestProperty1.cs" />
@@ -358,7 +357,6 @@
     <Compile Include="Scripting\IPythonVariable.cs" />
     <Compile Include="Scripting\MyEvtArgs.cs" />
     <Compile Include="ViewModel\PythonViewModel.cs" />
-    <Compile Include="StringObservableCollection.cs" />
     <Compile Include="ViewModel\TypesViewModel.cs" />
     <Compile Include="Views\NodePanel.cs" />
     <Compile Include="FormattedCode2.xaml.cs">
