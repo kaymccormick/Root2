@@ -10,13 +10,13 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
-          Source="pack://application:,,,/AnalysisControls;component/RibbonModel.xaml" />
+          Source="pack://application:,,,/AnalysisControlsCore;component/RibbonModel.xaml" />
         <ResourceDictionary
-          Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
+          Source="pack://application:,,,/WpfLibCore;component/SharedResources.xaml" />
         <ResourceDictionary
-          Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
+          Source="pack://application:,,,/WpfLibCore;component/ResourcesMisc.xaml" />
         <ResourceDictionary
-          Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
+          Source="pack://application:,,,/AnalysisControlsCore;component/Templates.xaml" />
         <ResourceDictionary>
 </ResourceDictionary>
         </ResourceDictionary.MergedDictionaries>

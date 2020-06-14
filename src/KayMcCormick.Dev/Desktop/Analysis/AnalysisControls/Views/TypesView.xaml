@@ -9,6 +9,9 @@
              xmlns:classLib="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
              xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
              xmlns:analysisControls="clr-namespace:AnalysisControls"
+             xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=WpfLibCore"
+             xmlns:syntax1="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLibCore"
+             xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KmDevLib"
              DataContext="{Binding RelativeSource={RelativeSource Self},Path=ViewModel}"
              mc:Ignorable="d" FontSize="20"
           Foreground="CornflowerBlue"
@@ -19,11 +22,11 @@
 
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary
-          Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
+          Source="pack://application:,,,/WpfLibCore;component/SharedResources.xaml" />
         <ResourceDictionary
-          Source="pack://application:,,,/WpfLib;component/Resourcestemplates.xaml" />
+          Source="pack://application:,,,/WpfLibCore;component/Resourcestemplates.xaml" />
         <ResourceDictionary
-          Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
+          Source="pack://application:,,,/WpfLibCore;component/ResourcesMisc.xaml" />
         <ResourceDictionary>
           <!-- ReSharper disable once Xaml.RedundantResource -->
           <Style x:Key="{x:Type TreeView}"
@@ -351,11 +354,11 @@
             </Setter>
           </Style>
 
-          <kmWpf:CustomDataTemplateSelector
+          <wpf:CustomDataTemplateSelector
             x:Key="CustomDataTemplateSelector" />
-          <kmWpf:MethodInfoConverter
+          <wpf:MethodInfoConverter
             x:Key="MethodInfoConverter" />
-          <kmWpf:ColorConverter x:Key="ColorConverter" />
+          <wpf:ColorConverter x:Key="ColorConverter" />
           <Style x:Key="S2" TargetType="WrapPanel">
             <Style.Triggers>
               <DataTrigger Binding="{Binding Path=DocInfo}"
@@ -433,7 +436,7 @@
               </ItemsControl>
             </WrapPanel>
           </DataTemplate>
-          <DataTemplate DataType="{x:Type syntax:SyntaxFieldInfo}">
+          <DataTemplate DataType="{x:Type syntax1:SyntaxFieldInfo}">
             <StackPanel>
             <TextBlock Text="{Binding Name}"/>
             <TextBlock Text="{Binding Kinds}"/>
@@ -466,7 +469,7 @@
             </WrapPanel>
           </DataTemplate>
           <HierarchicalDataTemplate
-            DataType="{x:Type syntax:AppTypeInfo}"
+            DataType="{x:Type syntax1:AppTypeInfo}"
             ItemsSource="{Binding SubTypeInfos}">
             <Grid HorizontalAlignment="Stretch"
                   ShowGridLines="True">
@@ -494,7 +497,7 @@
             </Grid>
           </HierarchicalDataTemplate>
           <DataTemplate
-            DataType="{x:Type syntax:AppMethodInfo}">
+            DataType="{x:Type syntax1:AppMethodInfo}">
             <ContentControl Content="{Binding MethodInfo}">
               <ContentControl.ToolTip>
                 <ContentControl Content="{Binding XmlDoc}" />
@@ -509,12 +512,12 @@
               <WrapPanel Orientation="Horizontal">
                 <Border
                   Style="{StaticResource ConditionalBorderStyle}">
-                  <kmWpf:TypeControl
+                  <wpf:TypeControl
                     VerticalContentAlignment="Center">
-                    <kmWpf:AttachedProperties.RenderedType>
+                    <wpf:AttachedProperties.RenderedType>
                       <Binding Path="ReturnType" />
-                    </kmWpf:AttachedProperties.RenderedType>
-                  </kmWpf:TypeControl>
+                    </wpf:AttachedProperties.RenderedType>
+                  </wpf:TypeControl>
                 </Border>
                 <TextBlock Text=" " />
                 <Border
@@ -545,12 +548,12 @@
                         <WrapPanel Orientation="Horizontal">
                           <Border
                             Style="{StaticResource ConditionalBorderStyle}">
-                            <kmWpf:TypeControl>
-                              <kmWpf:AttachedProperties.RenderedType>
+                            <wpf:TypeControl>
+                              <wpf:AttachedProperties.RenderedType>
                                 <Binding
                                   Path="ParameterType" />
-                              </kmWpf:AttachedProperties.RenderedType>
-                            </kmWpf:TypeControl>
+                              </wpf:AttachedProperties.RenderedType>
+                            </wpf:TypeControl>
                           </Border>
                           <Border
                             Style="{StaticResource ConditionalBorderStyle}">
@@ -573,7 +576,7 @@
           </DataTemplate>
 
           <DataTemplate
-            DataType="{x:Type classLib:ComponentInfo}">
+            DataType="{x:Type dev:ComponentInfo}">
             <TextBlock>
               <TextBlock.ToolTip>
                 <ContentControl Content="{Binding XmlDoc}" />

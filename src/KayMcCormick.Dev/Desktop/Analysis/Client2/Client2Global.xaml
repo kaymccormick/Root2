@@ -2,11 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Client2"
                     xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
-                    xmlns:anal="http://kaymccormick.com/xaml/analysis">
+                    >
 
   <DataTemplate x:Key="Diagnostic" DataType="{x:Type codeAnalysis:Diagnostic}">
     <DataTemplate.Resources>
-      <anal:DiagnosticConverter x:Key="DiagnosticConverter"/>
     </DataTemplate.Resources>
     <RibbonMenuItem>
       <RibbonMenuItem.Header>

@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
-        xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControls"
+        xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControlsCore"
         mc:Ignorable="d"
         x:Name="mainWindow"
         Title="Window2" Height="450" Width="800"

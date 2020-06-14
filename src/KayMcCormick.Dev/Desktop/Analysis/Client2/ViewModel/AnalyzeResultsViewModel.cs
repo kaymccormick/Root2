@@ -10,6 +10,8 @@
 // ---
 #endregion
 
+#if FINDLOGUSAGE
+
 using System.Runtime.Serialization;
 using AnalysisAppLib;
 using KayMcCormick.Dev;
@@ -20,7 +22,7 @@ namespace Client2.ViewModel
 {
     public class AnalyzeResultsViewModel : IViewModel
     {
-        public LogInvocationCollection LogInvocations { get ; } = new LogInvocationCollection ( ) ;
+        public ##if LogInvocationCollection LogInvocations { get ; } = new LogInvocationCollection ( ) ;
 
         public string CurrentProject { get ; }
 
@@ -31,3 +33,4 @@ namespace Client2.ViewModel
         #endregion
     }
 }
+#endif

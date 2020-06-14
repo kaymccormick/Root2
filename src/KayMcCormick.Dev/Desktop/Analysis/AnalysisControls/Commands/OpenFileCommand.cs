@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if FINDLOGUSAGES
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -132,3 +133,4 @@ namespace AnalysisControls.Commands
         }
     }
 }
+#endif

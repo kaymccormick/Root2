@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using PowerShellShared;
 using Terminal1;
+using WpfTerminalControlLib;
 using TextEntryCompleteArgs = Terminal1.TextEntryCompleteArgs;
 
 namespace AnalysisControls
@@ -114,7 +115,7 @@ namespace AnalysisControls
         private async void OnInput_OnTextEntryComplete(object sender, Terminal1.TextEntryCompleteArgs args)
         {
             Debug.WriteLine(args.Text);
-            await Shell.Execute(args.Text);
+            await Shell.ExecuteAsync(args.Text);
             Debug.WriteLine("Back from execute");
         }
     }

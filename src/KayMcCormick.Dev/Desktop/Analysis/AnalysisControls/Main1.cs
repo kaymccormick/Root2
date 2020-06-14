@@ -29,7 +29,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class Main1 : AppControl, IView<Main1Model>
+    public class Main1 : Control, IView<Main1Model>
     {
         /// <summary>
         /// 
@@ -280,7 +280,7 @@ namespace AnalysisControls
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
             var sourceName = (e.Source is IAppControl iap ? iap.ControlId.ToString( ): e.Source.ToString());
-            new LogBuilder(Logger).Message(nameof(OnPreviewMouseDown) + " " + e.ClickCount + sourceName).Write();
+            //new LogBuilder(Logger).Message(nameof(OnPreviewMouseDown) + " " + e.ClickCount + sourceName).Write();
             base.OnPreviewMouseDown(e);
         }
 

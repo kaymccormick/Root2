@@ -16,8 +16,7 @@
             <TabItem Header="2"/>
             <TabItem Header="3">
 
-                <xctk:PropertyGrid HorizontalAlignment="Left" VerticalAlignment="Top" Height="204.507" Width="388.596" SelectedObject="{Binding RelativeSource={RelativeSource AncestorType=UserControl,Mode=FindAncestor}}"/>
-
+               
             </TabItem>
         </TabControl>
     </Grid>

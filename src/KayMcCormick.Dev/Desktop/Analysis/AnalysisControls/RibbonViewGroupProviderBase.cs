@@ -13,6 +13,7 @@ namespace AnalysisControls
         public abstract RibbonModelGroup ProvideModelItem();
 
     }
+
     /// <summary>
     /// 
     /// </summary>
@@ -29,7 +30,10 @@ namespace AnalysisControls
     {
         public override RibbonModelContextualTabGroup ProvideModelItem()
         {
-            return new RibbonModelContextualTabGroup {Header = RibbonResources.ContextualTabGroupHeader_CodeAnalysis};
+            return new RibbonModelContextualTabGroup
+            {
+                Header = "Code Analysis"
+            };
         }
     }
 }

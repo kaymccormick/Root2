@@ -7,6 +7,9 @@
         xmlns:anal="http://kaymccormick.com/xaml/analysis"
         xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
         xmlns:viewModel="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControls"
+        xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=WpfLibCore"
+        xmlns:viewModel1="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControlsCore"
+        xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControlsCore"
         mc:Ignorable="d"
         Title="TestPrimaryMyRibbonWindow" Height="450" Width="800">
     <Grid>
@@ -90,7 +93,7 @@
             </RibbonApplicationMenu>
           </Ribbon.ApplicationMenu>
       </Ribbon>
-      <anal:Main1 Grid.Row="1" Grid.Column="0" x:Name="Main1" ViewModel="{kmWpf:Resolve viewModel:Main1Model,Throw=false}"/>
+      <analysisControls:Main1 Grid.Row="1" Grid.Column="0" x:Name="Main1" ViewModel="{wpf:Resolve viewModel1:Main1Model,Throw=false}"/>
     </Grid>
   </Grid>
 </RibbonWindow>

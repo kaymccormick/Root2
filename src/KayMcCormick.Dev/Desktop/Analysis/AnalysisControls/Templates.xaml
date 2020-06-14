@@ -3,20 +3,17 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
   xmlns:findLogUsages="clr-namespace:FindLogUsages;assembly=FindLogUsages"
-  xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
-  xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
   xmlns:analysisControls="clr-namespace:AnalysisControls"
   xmlns:autofac="clr-namespace:Autofac;assembly=Autofac"
   xmlns:core="clr-namespace:Autofac.Core;assembly=Autofac"
-  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-  xmlns:reflection="clr-namespace:Autofac.Core.Activators.Reflection;assembly=Autofac"
   xmlns:system="clr-namespace:System;assembly=mscorlib"
   xmlns:codeAnalysis1="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis.Workspaces"
   xmlns:converters="clr-namespace:AnalysisControls.Converters"
-  xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
   xmlns:operations="clr-namespace:Microsoft.CodeAnalysis.Operations;assembly=Microsoft.CodeAnalysis"
   xmlns:typeDescriptors="clr-namespace:AnalysisControls.TypeDescriptors"
-  xmlns:io="clr-namespace:System.IO;assembly=mscorlib">
+  xmlns:io="clr-namespace:System.IO;assembly=mscorlib"
+  xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLibCore"
+  xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=WpfLibCore">
   <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter"/>
   <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
 
@@ -40,11 +37,11 @@
     <ContentControl Content="{Binding Metadata,Converter={StaticResource UiConverter}}"/>
   </DataTemplate>
   <DataTemplate x:Key="ActivationInfo.InstanceType" DataType="{x:Type analysisAppLib:ActivationInfo}">
-    <kmWpf:TypeControl>
-      <kmWpf:AttachedProperties.RenderedType>
+    <wpf:TypeControl>
+      <wpf:AttachedProperties.RenderedType>
         <Binding Path="InstanceType"/>
-      </kmWpf:AttachedProperties.RenderedType>
-    </kmWpf:TypeControl>
+      </wpf:AttachedProperties.RenderedType>
+    </wpf:TypeControl>
   </DataTemplate>
 
   <DataTemplate x:Key="ActivationInfo.CreatedDateTime" DataType="{x:Type analysisAppLib:ActivationInfo}">
@@ -59,11 +56,11 @@
       <ItemsControl.Resources>
         <DataTemplate DataType="{x:Type autofac:TypedParameter}">
           <StackPanel Margin="10,0,0,0" Orientation="Horizontal">
-            <kmWpf:TypeControl>
-              <kmWpf:AttachedProperties.RenderedType>
+            <wpf:TypeControl>
+              <wpf:AttachedProperties.RenderedType>
                 <Binding Path="Type"/>
-              </kmWpf:AttachedProperties.RenderedType>
-            </kmWpf:TypeControl>
+              </wpf:AttachedProperties.RenderedType>
+            </wpf:TypeControl>
             <ContentControl Content="{Binding Value}"/>
           </StackPanel>
         </DataTemplate>
@@ -89,21 +86,7 @@
   <DataTemplate x:Key="ActivationInfo.Component" DataType="{x:Type analysisAppLib:ActivationInfo}">
     <ContentControl Content="{Binding Component}"/>
   </DataTemplate>
-  <DataTemplate
-    DataType="{x:Type findLogUsages:ILogInvocation}">
-    <Grid VerticalAlignment="Stretch"
-          HorizontalAlignment="Stretch"
-          Background="AntiqueWhite" ShowGridLines="True">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-      </Grid.ColumnDefinitions>
-      <TextBlock Grid.Row="0" Margin="5" Grid.Column="0"
-                 Text="{Binding Path=MethodDisplayName}" />
-      <TextBlock Margin="5" Grid.Row="0" Grid.Column="1"
-                 Text="{Binding Path=SourceLocation}" />
-    </Grid>
-  </DataTemplate>
+ 
   <DataTemplate DataType="{x:Type codeAnalysis:ISymbol}" x:Key="Symbol1">
     <StackPanel Orientation="Vertical">
       <TextBlock>

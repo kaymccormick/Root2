@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using KayMcCormick.Dev;
-using ReactiveUI;
+
 
 namespace Client2
 {

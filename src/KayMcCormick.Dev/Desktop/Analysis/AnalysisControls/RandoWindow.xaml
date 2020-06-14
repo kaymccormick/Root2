@@ -3,12 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-        xmlns:anal="http://kaymccormick.com/xaml/analysis"
-        xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
         xmlns:analysisControls="clr-namespace:AnalysisControls"
-        xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControls"
+        xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControlsCore"
+        xmlns:syntax1="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLibCore"
         mc:Ignorable="d"
         Title="RandoWindow" Height="450" Width="800">
     <WrapPanel>
@@ -19,12 +17,12 @@
       <Rectangle Width="50" Height="50"/>
       <analysisControls:SyntaxFactoryPanel>
         <analysisControls:SyntaxFactoryPanel.AppMethodInfo>
-          <syntax:AppMethodInfo MethodName="test">
-            <syntax:AppMethodInfo.Parameters>
-              <syntax:AppParameterInfo Name="param1" ParameterType="{x:Type system:String}" Index="0"></syntax:AppParameterInfo>
-              <syntax:AppParameterInfo Name="param2" ParameterType="{x:Type system:String}" Index="1"></syntax:AppParameterInfo>
-            </syntax:AppMethodInfo.Parameters>
-          </syntax:AppMethodInfo>
+          <syntax1:AppMethodInfo MethodName="test">
+            <syntax1:AppMethodInfo.Parameters>
+              <syntax1:AppParameterInfo Name="param1" ParameterType="{x:Type system:String}" Index="0"></syntax1:AppParameterInfo>
+              <syntax1:AppParameterInfo Name="param2" ParameterType="{x:Type system:String}" Index="1"></syntax1:AppParameterInfo>
+            </syntax1:AppMethodInfo.Parameters>
+          </syntax1:AppMethodInfo>
         </analysisControls:SyntaxFactoryPanel.AppMethodInfo>
       </analysisControls:SyntaxFactoryPanel>
     </kmDevWpfControls:TablePanel>

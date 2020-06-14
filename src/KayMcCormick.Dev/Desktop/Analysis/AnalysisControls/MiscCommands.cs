@@ -22,7 +22,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.VisualStudio.Threading;
 
 namespace AnalysisControls
 {

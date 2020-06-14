@@ -138,11 +138,6 @@ namespace AnalysisControls
             return base.InitializeLifetimeService();
         }
 
-        /// <inheritdoc />
-        public override ObjRef CreateObjRef(Type requestedType)
-        {
-            return base.CreateObjRef(requestedType);
-        }
 
         /// <inheritdoc />
         public override void WriteLine(string message)

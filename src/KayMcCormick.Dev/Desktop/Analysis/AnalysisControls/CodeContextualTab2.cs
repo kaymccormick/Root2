@@ -7,6 +7,7 @@ using System.Windows.Data;
 using AnalysisControls.Converters;
 using AnalysisControls.ViewModel;
 using Microsoft.CodeAnalysis;
+using RibbonLib;
 using RibbonLib.Model;
 
 namespace AnalysisControls

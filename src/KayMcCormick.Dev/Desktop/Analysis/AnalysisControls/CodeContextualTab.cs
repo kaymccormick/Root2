@@ -9,6 +9,7 @@ using AnalysisControls.ViewModel;
 using KayMcCormick.Lib.Wpf;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using RibbonLib;
 using RibbonLib.Model;
 
 namespace AnalysisControls

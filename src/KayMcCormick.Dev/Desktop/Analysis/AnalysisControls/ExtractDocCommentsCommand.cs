@@ -5,7 +5,6 @@ using System.Composition;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Markup;
 using System.Xml;
@@ -15,13 +14,11 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Attributes;
 using KayMcCormick.Dev.Command;
-using KayMcCormick.Lib.Wpf.Command;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.VisualStudio.Threading;
+
 
 namespace AnalysisControls
 {
@@ -51,8 +48,8 @@ namespace AnalysisControls
                 throw new AppInvalidOperationException ( "No solution file" ) ;
             }
 
-            var solution = await workspace.OpenSolutionAsync(optionsSolutionFile,
-                new ProgressWithCompletion<ProjectLoadProgress>(progress => { }), CancellationToken.None);
+            var solution = await workspace.OpenSolutionAsync(optionsSolutionFile);
+                // new ProgressWithCompletion<ProjectLoadProgress>(progress => { }), CancellationToken.None);
             var documentsOut = new List < CodeElementDocumentation > ( ) ;
             var solutionProjects = solution.Projects ;
 
@@ -227,7 +224,7 @@ namespace AnalysisControls
                         }
 
                         var xml1 = declared.GetDocumentationCommentXml ( ) ;
-                        if ( declared.DeclaredAccessibility != Accessibility.Public
+                        if ( declared.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Public
                              || !SupportsDocumentationComments ( node ) )
                         {
                             DebugUtils.WriteLine (

@@ -135,6 +135,14 @@ namespace AnalysisControls
         }
     }
 
+    public class RibbonModelControl : RibbonModelItem
+    {
+        /// <inheritdoc />
+        public override ControlKind Kind { get; }=ControlKind.RibbonContentPresenter;
+
+        public object Content { get; set; }
+    }
+
     // public class DirMenuList : IRibbonMenuButton
     // {
 

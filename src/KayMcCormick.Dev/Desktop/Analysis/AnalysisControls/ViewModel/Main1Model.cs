@@ -27,9 +27,9 @@ using KmDevWpfControls;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.VisualStudio.Threading;
+
 using NLog;
-using NPOI.POIFS.Properties;
+
 using RibbonLib.Model;
 
 using TypeControl = KayMcCormick.Lib.Wpf.TypeControl;
@@ -188,12 +188,20 @@ namespace AnalysisControls.ViewModel
             var inst = versions.FirstOrDefault();
 
 
-            var visualStudioInstance = visualStudioInstances.Where(instance => instance.Version.Major == inst)
-                .OrderByDescending(instance => instance.Version).FirstOrDefault();
-            DebugUtils.WriteLine($"Registering {visualStudioInstance}");
-            MSBuildLocator.RegisterInstance(visualStudioInstance);
-            VisualStudioInstance = visualStudioInstance;
-            return true;
+            var visualStudioInstance1 = visualStudioInstances.Where(instance => instance.Version.Major == inst)
+                .OrderByDescending(instance => instance.Version);
+            if (visualStudioInstance1.Any())
+            {
+                var visualStudioInstance = visualStudioInstance1.First();
+                DebugUtils.WriteLine($"Registering {visualStudioInstance}");
+                MSBuildLocator.RegisterInstance(visualStudioInstance);
+                VisualStudioInstance = visualStudioInstance;
+
+
+                return true;
+            }
+
+            return false;
         }
 
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
@@ -225,7 +233,7 @@ namespace AnalysisControls.ViewModel
         /// <param name="replay"></param>
         public Main1Model(ReplaySubject<Workspace> replay, JsonSerializerOptions jsonSerializerOptions = null) : this()
         {
-            _f = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current));
+           
             JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
             _replay = replay;
         }
@@ -235,7 +243,7 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         public Main1Model()
         {
-            _f = _f ?? new JoinableTaskFactory(new JoinableTaskContext());
+           
             Documents.CollectionChanged += (sender, args) =>
             {
                 foreach (var argsNewItem in args.NewItems) Debug.WriteLine(argsNewItem);
@@ -464,7 +472,7 @@ namespace AnalysisControls.ViewModel
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private IClientModel _clientViewModel;
-        private JoinableTaskFactory _f;
+        
         private ObservableCollection<object> _documents = new ObservableCollection<object>();
 
         /// <summary>

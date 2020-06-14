@@ -26,7 +26,7 @@ namespace AnalysisControls
         {
             var tab = new CodeContextualTab
             {
-                Header = "Code2", ContextualTabGroupHeader = RibbonResources.ContextualTabGroupHeader_CodeAnalysis
+                Header = "Code2", ContextualTabGroupHeader ="Code Analysis"
             };
 
             return tab;

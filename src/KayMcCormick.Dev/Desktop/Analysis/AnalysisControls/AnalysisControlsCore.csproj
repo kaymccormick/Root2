@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+    <Compile Remove="PythonControl.xaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="PythonControl.xaml" />
+    <Page Remove="RibbonModel.xaml" />
+    <Page Remove="RibbonModel2.xaml" />
+    <Page Remove="Types.xaml" />
+    <Page Remove="TypesViewModel.xaml" />
+    <Page Remove="TypesViewModel_new.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="TypesViewModel.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="5.2.0" />
+    <PackageReference Include="Microsoft.Build.Locator" Version="1.2.6" />
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="3.7.0-1.final" />
+    <PackageReference Include="Autofac.Extras.AttributeMetadata" Version="5.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.7.0-1.final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.7.0-1.final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.7.0-1.final" />
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="16.6.13" />
+    <PackageReference Include="RibbonControlsLibrary" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\WpfPowershellHost\src\WpfTerminalControlLib\WpfTerminalControlLib.csproj" />
+    <ProjectReference Include="..\..\..\..\AvalonDock\source\Components\AvalonDock\AvalonDock.csproj" />
+    <ProjectReference Include="..\..\..\..\KmDevWpfControls\KmDevWpfControls\KmDevWpfControlsCore.csproj" />
+    <ProjectReference Include="..\..\..\..\RibbonLib\src\RibbonLib\RibbonLib.csproj" />
+    <ProjectReference Include="..\..\..\KayMcCormick.Dev\KmDevLib.csproj" />
+    <ProjectReference Include="..\..\WpfLib\WpfLibCore.csproj" />
+    <ProjectReference Include="..\AnalysisAppLib\AnalysisAppLibCore.csproj" />
+  </ItemGroup>
+
+</Project>

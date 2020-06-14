@@ -10,5 +10,5 @@
   <converters:TokenConverter x:Key="TokenConverter" />
   <converters:LocationConverter x:Key="LocationConverter" />
   <converters:TransformConverter x:Key="TransformConverter" />
-  <kmWpf:JsonConverter1  x:Key="JsonConverterZ" />
+  
 </ResourceDictionary>

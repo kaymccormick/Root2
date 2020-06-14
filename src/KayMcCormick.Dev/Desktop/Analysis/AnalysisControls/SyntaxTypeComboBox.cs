@@ -15,7 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AnalysisAppLib.Syntax;
 using KayMcCormick.Dev;
-using MessageTemplates.Core;
+
 
 namespace AnalysisControls
 {

@@ -47,8 +47,8 @@ namespace AnalysisControls
             KayMcCormick.Dev.Serialization.JsonConverters.AddJsonConverters (
                                                                              jsonSerializerOptions
                                                                             ) ;
-            jsonSerializerOptions.Converters.Add ( new JsonPocoSyntaxConverter ( ) ) ;
-            jsonSerializerOptions.Converters.Add ( new JsonSyntaxNodeConverter ( ) ) ;
+            // jsonSerializerOptions.Converters.Add ( new JsonPocoSyntaxConverter ( ) ) ;
+            // jsonSerializerOptions.Converters.Add ( new JsonSyntaxNodeConverter ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonImageConverterFactory ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new JsonConverterResourceDictionary ( ) ) ;
             jsonSerializerOptions.Converters.Add ( new HashtableConverter ( ) ) ;

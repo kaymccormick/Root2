@@ -4,15 +4,10 @@
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
               xmlns:local="clr-namespace:Client2"
-              xmlns:anal="http://kaymccormick.com/xaml/analysis"
               xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-              xmlns:primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon"
-              xmlns:ribbon1="clr-namespace:System.Windows.Controls.Ribbon;assembly=System.Windows.Controls.Ribbon"
-              xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
-              xmlns:aal="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLib"
-              xmlns:system="clr-namespace:System;assembly=mscorlib"
-              xmlns:viewModel="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControls"
-              xmlns:io="clr-namespace:System.IO;assembly=mscorlib"
+              xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=WpfLibCore"
+              xmlns:viewModel1="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControlsCore"
+              xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControlsCore"
               mc:Ignorable="d"
               Background="Blue"
               Loaded="Client2Window1_OnLoaded"
@@ -24,15 +19,15 @@
         <ResourceDictionary
           Source="Client2Global.xaml" />
         <ResourceDictionary
-          Source="pack://application:,,,/AnalysisControls;component/AppRibbonResources.xaml" />
+          Source="pack://application:,,,/AnalysisControlsCore;component/AppRibbonResources.xaml" />
 
         <ResourceDictionary
 
-          Source="pack://application:,,,/WpfLib;component/SharedResources.xaml" />
+          Source="pack://application:,,,/WpfLibCore;component/SharedResources.xaml" />
         <ResourceDictionary
-          Source="pack://application:,,,/WpfLib;component/ResourcesMisc.xaml" />
+          Source="pack://application:,,,/WpfLibCore;component/ResourcesMisc.xaml" />
         <ResourceDictionary
-          Source="pack://application:,,,/AnalysisControls;component/Templates.xaml" />
+          Source="pack://application:,,,/AnalysisControlsCore;component/Templates.xaml" />
         <ResourceDictionary
           Source="pack://application:,,,/RibbonLibCore;component/RibbonStyles.xaml" />
 
@@ -64,7 +59,7 @@
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
       <Ribbon DataContext="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=RibbonWindow,AncestorLevel=1},Path=ViewModel.PrimaryRibbon}"/>
-      <anal:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"   ViewModel="{kmWpf:Resolve viewModel:Main1Model}" ViewModel2="{kmWpf:Resolve viewModel:Main1Mode2}"/>
+      <analysisControls:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"   ViewModel="{wpf:Resolve viewModel1:Main1Model}" ViewModel2="{wpf:Resolve viewModel1:Main1Mode2}"/>
     </Grid>
   </Grid>
 

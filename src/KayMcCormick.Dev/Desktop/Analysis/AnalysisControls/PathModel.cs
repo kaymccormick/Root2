@@ -60,7 +60,7 @@ namespace AnalysisControls
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{nameof(Entries)}: {Entries.Keys.Join(";")}, {nameof(Path)}: {Path}, {nameof(Item)}: {Item}, {nameof(Parent)}: {Parent}, {nameof(ElementName)}: {ElementName}";
+            return $"{nameof(Entries)}: {Entries.Keys}, {nameof(Path)}: {Path}, {nameof(Item)}: {Item}, {nameof(Parent)}: {Parent}, {nameof(ElementName)}: {ElementName}";
         }
 
         /// <summary>

@@ -9,7 +9,7 @@ using AnalysisControls;
 using Autofac;
 using Autofac.Core;
 using Autofac.Features.Metadata;
-using CommandLine;
+// using CommandLine;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Application;
@@ -89,24 +89,24 @@ namespace Client2
             // w.Show();
             // return;
             
-            var result = Parser.Default.ParseArguments<ProjInterfaceOptions>(e.Args)
-                .WithNotParsed(errors => MessageBox.Show(String.Join("", errors), "error"));
+            // var result = Parser.Default.ParseArguments<ProjInterfaceOptions>(e.Args)
+                // .WithNotParsed(errors => MessageBox.Show(String.Join("", errors), "error"));
 
-            result.WithParsed(options =>
-            {
-                Options = options;
-            });
+            // result.WithParsed(options =>
+            // {
+                // Options = options;
+            // });
 
-            var t = typeof(WpfAppCommands);
-            RoutedUICommand selCmd = null;
-            foreach (var fieldInfo in t.GetFields(BindingFlags.Static | BindingFlags.Public))
-            {
-                var cmd = (RoutedUICommand) fieldInfo.GetValue(null);
-                if (Options.Command != null && Options.Command == cmd.Text)
-                {
-                    selCmd = cmd;
-                }
-            }
+            // var t = typeof(WpfAppCommands);
+            // RoutedUICommand selCmd = null;
+            // foreach (var fieldInfo in t.GetFields(BindingFlags.Static | BindingFlags.Public))
+            // {
+                // var cmd = (RoutedUICommand) fieldInfo.GetValue(null);
+                // if (Options.Command != null && Options.Command == cmd.Text)
+                // {
+                    // selCmd = cmd;
+                // }
+            // }
 
             if (e.Args.Any())
             {
@@ -115,8 +115,8 @@ namespace Client2
             var wins = Scope.Resolve<IEnumerable<Meta<Lazy<Window>>>>();
 
 
-
-            var winChose = wins.Where(z => z.Metadata.ContainsKey("ShortKey") && (string)z.Metadata["ShortKey"] == Options.Window);
+            Options = new ProjInterfaceOptions();
+            var winChose = wins.Where(z => Options != null && (z.Metadata.ContainsKey("ShortKey") && (string)z.Metadata["ShortKey"] == Options.Window));
             var enumerable = winChose as Meta<Lazy<Window>>[] ?? winChose.ToArray();
             if (!enumerable.Any())
             {
@@ -129,11 +129,11 @@ namespace Client2
             var win = enumerable.First().Value.Value;
             // var win = new RibbonWin1();
 
-            if (selCmd != null)
-            {
-                DebugUtils.WriteLine(selCmd.ToString());
-                win.Loaded += (sender, args) => selCmd.Execute(Options.Argument, win);
-            }
+            // if (selCmd != null)
+            // {
+                // DebugUtils.WriteLine(selCmd.ToString());
+                // win.Loaded += (sender, args) => selCmd.Execute(Options.Argument, win);
+            // }
             win.Show();
 
             // if (lifetimeScope?.IsRegistered<Window1>() == false)
@@ -204,6 +204,12 @@ namespace Client2
             return TryFindResource ( resourceKey ) ;
         }
         #endregion
+    }
+
+    internal class ProjInterfaceOptions
+    {
+        public string Window { get; set; } = "Client2Window1";
+            
     }
 
     internal class Client2Module :Module

@@ -41,7 +41,7 @@ namespace Client2
             loggingConfiguration.MinLogLevel          = LogLevel.Debug ;
             loggingConfiguration.IsEnabledDebuggerTarget = false;
 
-            Main1Model.SelectVsInstance();
+            Main1Model.TrySelectVsInstance();
             AppDomain.CurrentDomain.AssemblyLoad += CurrentDomainOnAssemblyLoad;
             AppLoggingConfigHelper.EnsureLoggingConfigured(message => DebugUtils.WriteLine(message),
                 loggingConfiguration);

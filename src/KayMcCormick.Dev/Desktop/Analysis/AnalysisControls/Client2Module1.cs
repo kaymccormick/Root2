@@ -148,6 +148,7 @@ namespace AnalysisControls
                 .WithCallerMetadata();
             builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering();
             builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering();
+#if false
             builder.Register((c) =>
             {
                 return new OpenFileCommand2(new LambdaAppCommand("Extract docs",
@@ -156,6 +157,7 @@ namespace AnalysisControls
 
             }).AsSelf().AsImplementedInterfaces().WithMetadata("Title", "Extract docs");
             builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces().WithAttributeFiltering();
+#endif
             builder.RegisterType<AppCommandTypeConverter>().AsSelf();
             builder.RegisterType<ObjectStringTypeConverter>().AsSelf();
         }

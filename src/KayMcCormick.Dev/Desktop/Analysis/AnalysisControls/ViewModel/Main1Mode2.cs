@@ -16,13 +16,13 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Completion;
+
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.MSBuild;
-using Microsoft.CodeAnalysis.QuickInfo;
+
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.VisualStudio.Threading;
+
 using NLog;
 using Path = System.IO.Path;
 
@@ -98,7 +98,7 @@ namespace AnalysisControls.ViewModel
         public Main1Mode2(ReplaySubject<Workspace> replay, JsonSerializerOptions jsonSerializerOptions = null, IDocumentHost docHost = null, IAnchorableHost anchHost=null) : this()
         {
 
-            _f = new JoinableTaskFactory(new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current)); 
+      
             JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
             _replay = replay;
             _docHost = docHost;
@@ -110,7 +110,7 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         public Main1Mode2()
         {
-            _f = _f ?? new JoinableTaskFactory(new JoinableTaskContext());
+            
           
         }
 
@@ -171,7 +171,7 @@ namespace AnalysisControls.ViewModel
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private IClientModel _clientViewModel;
-        private JoinableTaskFactory _f;
+        
 
         private void WorkspaceOnDocumentClosed(object sender, DocumentEventArgs e)
         {
@@ -512,8 +512,8 @@ namespace AnalysisControls.ViewModel
             Solution r = null;
             try
             {
-                r = await msBuildWorkspace.OpenSolutionAsync(file,
-                    new ProgressWithCompletion<ProjectLoadProgress>(Handler));
+                r = await msBuildWorkspace.OpenSolutionAsync(file);
+                    // new ProgressWithCompletion<ProjectLoadProgress>(Handler));
             }
             catch (Exception ex)
             {
@@ -537,8 +537,7 @@ namespace AnalysisControls.ViewModel
             var msBuildWorkspace = MSBuildWorkspace.Create(props);
             Workspace = msBuildWorkspace;
             CurrentOperation = new CurrentOperation() { Description = "load solution" };
-            var r = await msBuildWorkspace.OpenProjectAsync(file,
-                new ProgressWithCompletion<ProjectLoadProgress>(Handler));
+            var r = await msBuildWorkspace.OpenProjectAsync(file);//ProgressWithCompletion<ProjectLoadProgress>(Handler));
             CurrentOperation = null;
             DebugUtils.WriteLine(r.ToString());
         }
