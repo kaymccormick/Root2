@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AnalysisControlsCore", "Des
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KmDevWpfControlsCore", "..\KmDevWpfControls\KmDevWpfControls\KmDevWpfControlsCore.csproj", "{B8944BEE-A2F8-4525-9B76-BBA8BC02EE31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RibbonLib", "..\RibbonLib\src\RibbonLibCore\RibbonLibCore.csproj", "{42CC9D74-3C3E-43FF-9900-B28A6D133156}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RibbonLibCore", "..\RibbonLib\src\RibbonLibCore\RibbonLibCore.csproj", "{42CC9D74-3C3E-43FF-9900-B28A6D133156}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvalonDock", "..\AvalonDock\source\Components\AvalonDock\AvalonDock.csproj", "{AD20767C-69DF-4A9D-A80A-99F0E090126C}"
 EndProject

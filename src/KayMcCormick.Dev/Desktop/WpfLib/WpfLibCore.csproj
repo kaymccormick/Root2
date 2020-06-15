@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="4.4.1" />
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="3.8.1" />
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
     <PackageReference Include="NLog" Version="4.7.2" />
   </ItemGroup>

@@ -46,7 +46,7 @@ namespace AnalysisControls.ViewModel
 
         private uint[] _hierarchyColors =
         {
-            0xff9cbf60 , 0xff786482 , 0xffb89428 , 0xff9ec28c , 0xff3c6e7d , 0xff533ca3
+            0xff9cbf60 , 0xff786482 , 0xffb89428 , 0xff9ec28c , 0xff3c6e7d , 0xff533ca3, 0xff533ca3
         } ;
 
         private AppTypeInfo   _root ;

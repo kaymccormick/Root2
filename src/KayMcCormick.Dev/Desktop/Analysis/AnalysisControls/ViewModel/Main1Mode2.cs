@@ -8,17 +8,14 @@ using System.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using AnalysisControls.Properties;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.MSBuild;
 
 using Microsoft.CodeAnalysis.Text;
@@ -41,54 +38,6 @@ namespace AnalysisControls.ViewModel
         private WorkspaceView _workspaceView;
         
         private ProjectLoadProgress _projectLoadProgress;
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <exception cref="InvalidOperationException"></exception>
-        public static void SelectVsInstance()
-        {
-            if (TrySelectVsInstance())
-                return;
-            throw new AppInvalidOperationException("Cant register");
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public static bool TrySelectVsInstance()
-        {
-            if (!MSBuildLocator.CanRegister) return false;
-
-            var vsInstances = MSBuildLocator
-                .QueryVisualStudioInstances(
-                    new VisualStudioInstanceQueryOptions
-                    {
-                        DiscoveryTypes =
-                            DiscoveryType.VisualStudioSetup
-                    }
-                );
-
-            var visualStudioInstances = vsInstances as VisualStudioInstance[] ?? vsInstances.ToArray();
-            foreach (var vsi in visualStudioInstances) DebugUtils.WriteLine($"{vsi.Name} {vsi.Version}");
-
-            var versions = visualStudioInstances.Select(x => x.Version.Major).Distinct().OrderByDescending(i => i)
-                .ToList();
-            DebugUtils.WriteLine(String.Join(", ", versions));
-            var inst = versions.FirstOrDefault();
-
-
-            var visualStudioInstance = visualStudioInstances.Where(instance => instance.Version.Major == inst)
-                .OrderByDescending(instance => instance.Version).FirstOrDefault();
-            DebugUtils.WriteLine($"Registering {visualStudioInstance}");
-            MSBuildLocator.RegisterInstance(visualStudioInstance);
-            VisualStudioInstance = visualStudioInstance;
-            return true;
-        }
-
-        // ReSharper disable once UnusedAutoPropertyAccessor.Local
-        private static VisualStudioInstance VisualStudioInstance { get; set; }
 
 
         /// <summary>
@@ -97,8 +46,6 @@ namespace AnalysisControls.ViewModel
         /// <param name="replay"></param>
         public Main1Mode2(ReplaySubject<Workspace> replay, JsonSerializerOptions jsonSerializerOptions = null, IDocumentHost docHost = null, IAnchorableHost anchHost=null) : this()
         {
-
-      
             JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
             _replay = replay;
             _docHost = docHost;
@@ -503,7 +450,7 @@ namespace AnalysisControls.ViewModel
         /// <returns></returns>
         public async Task LoadSolutionAsync(string file)
         {
-            TrySelectVsInstance();
+            //TrySelectVsInstance();
             IDictionary<string, string> props = new Dictionary<string, string>();
             props["Platform"] = "x86";
             var msBuildWorkspace = MSBuildWorkspace.Create(props);
@@ -531,7 +478,7 @@ namespace AnalysisControls.ViewModel
         /// <returns></returns>
         public async Task LoadProjectAsync(string file)
         {
-            TrySelectVsInstance();
+            //TrySelectVsInstance();
             IDictionary<string, string> props = new Dictionary<string, string>();
             props["Platform"] = "x86";
             var msBuildWorkspace = MSBuildWorkspace.Create(props);
@@ -734,7 +681,7 @@ namespace AnalysisControls.ViewModel
 
         /// <inheritdoc />
         public override IEnumerable ContextualTabGroupHeaders =>
-            new[] {RibbonResources.ContextualTabGroupHeader_CodeAnalysis};
+            new[] {"Code Analysis"};
 
         /// <inheritdoc />
         public override object Content => CodeControl;

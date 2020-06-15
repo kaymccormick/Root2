@@ -3,27 +3,20 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:local="clr-namespace:AnalysisControls"
   xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLibCore"
-  xmlns:system="clr-namespace:System;assembly=mscorlib"
-
-  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
-  xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
   xmlns:converters="clr-namespace:AnalysisControls.Converters"
   xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
   xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
   xmlns:cSharp="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
   xmlns:classic="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
-  xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
   xmlns:primitives="clr-namespace:System.Windows.Controls.Ribbon.Primitives;assembly=System.Windows.Controls.Ribbon"
   xmlns:controls="clr-namespace:AnalysisControls.Controls"
   xmlns:typeDescriptors="clr-namespace:AnalysisControls.TypeDescriptors"
-  xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=System"
   xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControlsCore"
-  xmlns:powerShellShared="clr-namespace:PowerShellShared;assembly=WpfCustomControlLibrary1"
-  xmlns:local1="clr-namespace:AnalysisControls2;assembly=AnalysisControls2"
-  xmlns:kmDevWpfControls1="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControlsCore"
   xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=WpfLibCore"
   xmlns:wpfTerminalControlLib="clr-namespace:WpfTerminalControlLib;assembly=WpfTerminalControlLib"
-  xmlns:syntax1="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLibCore">
+  xmlns:syntax1="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLibCore"
+  xmlns:system="clr-namespace:System;assembly=System.Runtime"
+  xmlns:reflection="clr-namespace:System.Reflection;assembly=System.Runtime">
   <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
   <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
   <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
@@ -47,40 +40,77 @@
   </LinearGradientBrush>
   <SolidColorBrush x:Key="ĉ" Color="#EEFFFFFF" />
 
-  <Style TargetType="{x:Type local:MyRibbonControl}">
-    <Style.Triggers>
-      <DataTrigger
-        Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.MinWidth.RibbonControlLengthUnitType}"
-        Value="Pixel">
-        <Setter Property="FrameworkElement.MinWidth"
-                Value="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.MinWidth.Value}" />
-      </DataTrigger>
-      <DataTrigger
-        Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.MaxWidth.RibbonControlLengthUnitType}"
-        Value="Pixel">
-        <Setter Property="FrameworkElement.MaxWidth"
-                Value="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.MaxWidth.Value}" />
-      </DataTrigger>
-      <DataTrigger
-        Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.Width.RibbonControlLengthUnitType}"
-        Value="Pixel">
-        <Setter Property="FrameworkElement.Width"
-                Value="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.Width.Value}" />
-      </DataTrigger>
-      <DataTrigger
-        Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.Width.RibbonControlLengthUnitType}"
-        Value="Auto">
-        <Setter Property="FrameworkElement.Width" Value="Auto" />
-      </DataTrigger>
-    </Style.Triggers>
-    <Setter Property="Control.Template">
+  <Style TargetType="{x:Type local:Main1}">
+    <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="{x:Type local:MyRibbonControl}">
-          <RibbonContentPresenter x:Name="PART_ContentPresenter" />
+        <ControlTemplate TargetType="{x:Type local:Main1}">
+          <ControlTemplate.Resources>
+          </ControlTemplate.Resources>
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Stretch">
+            <Grid AllowDrop="True" x:Name="Grid" VerticalAlignment="Stretch">
+              <Grid.Resources>
+                <local:TestConverter2 x:Key="TestConverter" />
+              </Grid.Resources>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <ToolBarTray Grid.Row="0" Grid.Column="0">
+                <ToolBar Band="1" BandIndex="1">
+                  <TextBlock Text="{Binding CurrentOperation.Desc}" />
+                  <Button Content="Create workspace" Command="wpf:WpfAppCommands.CreateWorkspace" />
+                  <Button Content="Create solution" Command="wpf:WpfAppCommands.CreateSolution" />
+                  <Button Content="Create project" Command="wpf:WpfAppCommands.CreateProject" />
+                  <Button Content="Create document" Command="wpf:WpfAppCommands.CreateDocument" />
+                  <Button Content="Create Class" Command="wpf:WpfAppCommands.CreateClass" />
+
+                </ToolBar>
+              </ToolBarTray>
+              <Border Grid.Row="1" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">
+                <avalondock:DockingManager
+                  DocumentsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.Documents,Mode=TwoWay}"
+                  x:Name="DockingManager" AnchorablesSource="{Binding Anchorables}"
+                  VerticalAlignment="Stretch"
+                  ActiveContent="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.ActiveContent,Mode=TwoWay}">
+                  <avalondock:DockingManager.DocumentHeaderTemplate>
+                    <DataTemplate
+                      DataType="{x:Type avalondock:LayoutDocument}">
+                      <StackPanel Opacity="1.0"
+                                  Orientation="Horizontal">
+                        <Image Source="{Binding IconSource}"
+                               Margin="6,4,4,0" />
+                        <TextBlock Text="{Binding Content.Title,Converter={StaticResource TestConverter}}"
+                                   VerticalAlignment="Center" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </avalondock:DockingManager.DocumentHeaderTemplate>
+                  <avalondock:DockingManager.AnchorableHeaderTemplate>
+                    <DataTemplate
+                      DataType="{x:Type avalondock:LayoutAnchorable}">
+                      <StackPanel Opacity="1.0"
+                                  Orientation="Horizontal">
+                        <Image Source="{Binding IconSource}"
+                               Margin="6,4,4,0" />
+                        <TextBlock Text="{Binding Content.Title}"
+                                   VerticalAlignment="Center" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </avalondock:DockingManager.AnchorableHeaderTemplate>
+                </avalondock:DockingManager>
+              </Border>
+            </Grid>
+          </Border>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
   </Style>
+
 
   <!-- ReSharper disable once InconsistentNaming -->
   <BooleanToVisibilityConverter x:Key="à" />
@@ -4687,7 +4717,7 @@
       </Setter.Value>
     </Setter>
   </Style>
- 
+
   <Style TargetType="{x:Type local:FormattedTextControl}">
     <Setter Property="Template">
       <Setter.Value>
@@ -5175,9 +5205,9 @@
                 <TextBlock Text="{Binding Name}">
                   <TextBlock.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Symbols" Command="kmWpf:WpfAppCommands.BrowseSymbols"
+                      <MenuItem Header="Symbols" Command="wpf:WpfAppCommands.BrowseSymbols"
                                 CommandParameter="{Binding}" />
-                      <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails"
+                      <MenuItem Header="Details" Command="wpf:WpfAppCommands.ViewDetails"
                                 CommandParameter="{Binding}" />
                     </ContextMenu>
                   </TextBlock.ContextMenu>
@@ -5191,7 +5221,7 @@
                 <TextBlock Text="{Binding ElementName}">
                   <TextBlock.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails"
+                      <MenuItem Header="Details" Command="wpf:WpfAppCommands.ViewDetails"
                                 CommandParameter="{Binding}" />
                     </ContextMenu>
                   </TextBlock.ContextMenu>
@@ -5201,7 +5231,7 @@
                 <TextBlock Text="{Binding Name}">
                   <TextBlock.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails"
+                      <MenuItem Header="Details" Command="wpf:WpfAppCommands.ViewDetails"
                                 CommandParameter="{Binding}" />
                     </ContextMenu>
                   </TextBlock.ContextMenu>
@@ -5267,9 +5297,9 @@
                   <Setter Property="ContextMenu">
                     <Setter.Value>
                       <ContextMenu>
-                        <MenuItem Header="Details" Command="kmWpf:WpfAppCommands.ViewDetails"
+                        <MenuItem Header="Details" Command="wpf:WpfAppCommands.ViewDetails"
                                   CommandParameter="{Binding}" />
-                        <MenuItem Header="Resources" Command="kmWpf:WpfAppCommands.ViewResources"
+                        <MenuItem Header="Resources" Command="wpf:WpfAppCommands.ViewResources"
                                   CommandParameter="{Binding}" />
                       </ContextMenu>
                     </Setter.Value>
@@ -6667,7 +6697,7 @@
                       </VisualStateManager.VisualStateGroups>
                       <local:CustomToggleButton x:Name="Expander"
                                                 Style="{StaticResource ExpandCollapseToggleStyle}"
-                                                Command="kmWpf:WpfAppCommands.ToggleNodeIsExpanded"
+                                                Command="wpf:WpfAppCommands.ToggleNodeIsExpanded"
                                                 ClickMode="Press"
                                                 CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"
                                                 IsChecked="{Binding IsExpanded, 
@@ -6734,14 +6764,14 @@
             <HierarchicalDataTemplate DataType="{x:Type local:RootNode}" ItemsSource="{Binding Items}">
               <TextBlock Text="{Binding Name}">
                 <TextBlock.ToolTip>
-                  <kmDevWpfControls1:TablePanel ColumnSpacing="10" RowSpacing="3">
+                  <kmDevWpfControls:TablePanel ColumnSpacing="10" RowSpacing="3">
                     <TextBlock Text="FileName" />
                     <TextBlock Text="{Binding FileName}" />
                     <TextBlock Text="Resource Location" />
                     <TextBlock Text="{Binding ResourceLocation}" />
                     <TextBlock Text="Referenced Assembly" />
                     <TextBlock Text="{Binding ReferencedAssembly}" TextTrimming="CharacterEllipsis" />
-                  </kmDevWpfControls1:TablePanel>
+                  </kmDevWpfControls:TablePanel>
                 </TextBlock.ToolTip>
               </TextBlock>
             </HierarchicalDataTemplate>
@@ -7502,19 +7532,6 @@
       </Setter.Value>
     </Setter>
   </Style>
-
-
-  <Style TargetType="{x:Type local:WrappedPropertyGrid}">
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type local:WrappedPropertyGrid}">
-          <Border x:Name="Border" Background="{TemplateBinding Background}"
-                  BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}" />
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-  </Style>
   <Style TargetType="{x:Type typeDescriptors:GenericInterface}">
     <Setter Property="Template">
       <Setter.Value>
@@ -7532,21 +7549,19 @@
         <ControlTemplate TargetType="{x:Type typeDescriptors:GenericInterface3}">
 
           <ControlTemplate.Resources>
-            <kmDevWpfControls1:GetTypeConverter1 x:Key="GetTypeConverter" />
+            <kmDevWpfControls:GetTypeConverter1 x:Key="GetTypeConverter" />
             <DataTemplate x:Key="{x:Type system:Enum}" DataType="{x:Type typeDescriptors:InstanceProperty}">
-              <kmDevWpfControls1:EnumFlagsSelector EnumValue="{Binding}"
+              <kmDevWpfControls:EnumFlagsSelector EnumValue="{Binding}"
                                                    EnumType="{Binding Converter={StaticResource GetTypeConverter}}" />
             </DataTemplate>
             <DataTemplate x:Key="EnumFlags" DataType="{x:Type typeDescriptors:InstanceProperty}">
-              <kmDevWpfControls1:EnumFlagsSelector EnumValue="{Binding Value,Mode=TwoWay}"
+              <kmDevWpfControls:EnumFlagsSelector EnumValue="{Binding Value,Mode=TwoWay}"
                                                    EnumType="{Binding Value,Converter={StaticResource GetTypeConverter}}" />
             </DataTemplate>
             <local:CTS x:Key="cts" />
             <DataTemplate x:Key="StandardValues" DataType="{x:Type typeDescriptors:InstanceProperty}">
               <ComboBox SelectedItem="{Binding Value}"
-                        ItemsSource="{Binding StandardValues
-                
-                }" />
+                        ItemsSource="{Binding StandardValues}" />
             </DataTemplate>
             <DataTemplate x:Key="DefaultValue" DataType="{x:Type typeDescriptors:InstanceProperty}">
               <ContentPresenter Content="{Binding Value}" />
@@ -7579,7 +7594,7 @@
             <typeDescriptors:PropItems x:Name="ListView">
               <typeDescriptors:PropItems.ItemsPanel>
                 <ItemsPanelTemplate>
-                  <kmDevWpfControls1:TablePanel ColumnSpacing="20" ColumnBasedOnWidth="True" IsItemsHost="True" />
+                  <kmDevWpfControls:TablePanel ColumnSpacing="20" ColumnBasedOnWidth="True" IsItemsHost="True" />
                 </ItemsPanelTemplate>
               </typeDescriptors:PropItems.ItemsPanel>
               <typeDescriptors:PropItems.ItemContainerStyle>
@@ -7633,7 +7648,7 @@
                       Value="False" />
               <Setter Property="Template">
                 <Setter.Value>
-                  <ControlTemplate TargetType="kmDevWpfControls1:CustomToggleButton1">
+                  <ControlTemplate TargetType="kmDevWpfControls:CustomToggleButton1">
                     <Grid Width="15"
                           Height="13"
                           Background="Azure">
@@ -7689,8 +7704,8 @@
               </Setter>
             </Style>
 
-            <Style x:Key="{x:Type kmDevWpfControls1:CustomTreeViewItem}"
-                   TargetType="{x:Type kmDevWpfControls1:CustomTreeViewItem}">
+            <Style x:Key="{x:Type kmDevWpfControls:CustomTreeViewItem}"
+                   TargetType="{x:Type kmDevWpfControls:CustomTreeViewItem}">
               <Setter Property="IsExpanded"
                       Value="{Binding IsExpanded, Mode=OneWay}" />
               <Setter Property="IsSelected"
@@ -7698,7 +7713,7 @@
               <Setter Property="Template">
                 <Setter.Value>
                   <ControlTemplate
-                    TargetType="{x:Type kmDevWpfControls1:CustomTreeViewItem}">
+                    TargetType="{x:Type kmDevWpfControls:CustomTreeViewItem}">
                     <Grid ShowGridLines="False">
                       <Grid.ColumnDefinitions>
                         <ColumnDefinition MinWidth="19"
@@ -7756,7 +7771,7 @@
                           <VisualState x:Name="Collapsed" />
                         </VisualStateGroup>
                       </VisualStateManager.VisualStateGroups>
-                      <kmDevWpfControls1:CustomToggleButton1 x:Name="Expander"
+                      <kmDevWpfControls:CustomToggleButton1 x:Name="Expander"
                                                              Style="{StaticResource ExpandCollapseToggleStyle}"
                                                              Command="kmDevWpfControls:CustomTreeView.ToggleNodeIsExpanded"
                                                              ClickMode="Press"
@@ -7827,7 +7842,7 @@
           <Border Background="{TemplateBinding Background}"
                   BorderBrush="{TemplateBinding BorderBrush}"
                   BorderThickness="{TemplateBinding BorderThickness}">
-            <kmDevWpfControls1:CustomTreeView x:Name="TreeView"
+            <kmDevWpfControls:CustomTreeView x:Name="TreeView"
                                               ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Root}" />
           </Border>
         </ControlTemplate>
@@ -7836,7 +7851,6 @@
   </Style>
 
   <ControlTemplate x:Key="PowerShellTemplate" TargetType="{x:Type local:PowerShellConsole}">
-
     <Grid>
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
@@ -7852,8 +7866,9 @@
                                                 CursorBrush="DarkOrange" x:Name="Terminal"
                                                 BorderBrush="Green" BorderThickness="1" Focusable="False" />
       <wpfTerminalControlLib:WrappedPowerShell x:Name="Shell" Terminal="{x:Reference Terminal}" />
-      <wpfTerminalControlLib:WpfInputLine LineMode="True" InputOnly="True" CursorBrush="Azure" x:Name="Input" BorderBrush="Red"
-                                         BorderThickness="1" AutoResize="True" Grid.Row="2" Focusable="True" />
+      <wpfTerminalControlLib:WpfInputLine LineMode="True" InputOnly="True" CursorBrush="Azure" x:Name="Input"
+                                          BorderBrush="Red"
+                                          BorderThickness="1" AutoResize="True" Grid.Row="2" Focusable="True" />
       <StatusBar Grid.Row="3">
         <TextBlock x:Name="MainStatus" Width="200" />
         <ProgressBar Width="200" Maximum="100" x:Name="ProgressBar" />
@@ -7863,88 +7878,6 @@
   </ControlTemplate>
   <Style TargetType="{x:Type local:PowerShellConsole}">
     <Setter Property="Template" Value="{StaticResource PowerShellTemplate}" />
-  </Style>
-  <Style TargetType="{x:Type local:Main1}">
-    <Setter Property="Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type local:Main1}">
-          <ControlTemplate.Resources>
-            <ResourceDictionary>
-              <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary
-
-                  Source="pack://application:,,,/WpfLibCore;component/SharedResources.xaml" />
-                <ResourceDictionary
-                  Source="pack://application:,,,/WpfLibCore;component/ResourcesMisc.xaml" />
-                <ResourceDictionary
-                  Source="pack://application:,,,/AnalysisControlsCore;component/Templates.xaml" />
-              </ResourceDictionary.MergedDictionaries>
-
-            </ResourceDictionary>
-          </ControlTemplate.Resources>
-          <Border Background="{TemplateBinding Background}"
-                  BorderBrush="{TemplateBinding BorderBrush}"
-                  BorderThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Stretch">
-            <Grid AllowDrop="True" x:Name="Grid" VerticalAlignment="Stretch">
-              <Grid.Resources>
-                <local:TestConverter2 x:Key="TestConverter" />
-              </Grid.Resources>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-              </Grid.RowDefinitions>
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-              </Grid.ColumnDefinitions>
-              <ToolBarTray Grid.Row="0" Grid.Column="0">
-                <ToolBar Band="1" BandIndex="1">
-                  <TextBlock Text="{Binding CurrentOperation.Desc}" />
-                  <Button Content="Create workspace" Command="kmWpf:WpfAppCommands.CreateWorkspace" />
-                  <Button Content="Create solution" Command="kmWpf:WpfAppCommands.CreateSolution" />
-                  <Button Content="Create project" Command="kmWpf:WpfAppCommands.CreateProject" />
-                  <Button Content="Create document" Command="kmWpf:WpfAppCommands.CreateDocument" />
-                  <Button Content="Create Class" Command="kmWpf:WpfAppCommands.CreateClass" />
-
-                </ToolBar>
-              </ToolBarTray>
-              <Border Grid.Row="1" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">
-                <avalondock:DockingManager
-                  DocumentsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.Documents,Mode=TwoWay}"
-                  x:Name="DockingManager" AnchorablesSource="{Binding Anchorables}"
-                  VerticalAlignment="Stretch"
-                  ActiveContent="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.ActiveContent,Mode=TwoWay}">
-                  <avalondock:DockingManager.DocumentHeaderTemplate>
-                    <DataTemplate
-                      DataType="{x:Type avalondock:LayoutDocument}">
-                      <StackPanel Opacity="1.0"
-                                  Orientation="Horizontal">
-                        <Image Source="{Binding IconSource}"
-                               Margin="6,4,4,0" />
-                        <TextBlock Text="{Binding Content.Title,Converter={StaticResource TestConverter}}"
-                                   VerticalAlignment="Center" />
-                      </StackPanel>
-                    </DataTemplate>
-                  </avalondock:DockingManager.DocumentHeaderTemplate>
-                  <avalondock:DockingManager.AnchorableHeaderTemplate>
-                    <DataTemplate
-                      DataType="{x:Type avalondock:LayoutAnchorable}">
-                      <StackPanel Opacity="1.0"
-                                  Orientation="Horizontal">
-                        <Image Source="{Binding IconSource}"
-                               Margin="6,4,4,0" />
-                        <TextBlock Text="{Binding Content.Title}"
-                                   VerticalAlignment="Center" />
-                      </StackPanel>
-                    </DataTemplate>
-                  </avalondock:DockingManager.AnchorableHeaderTemplate>
-                </avalondock:DockingManager>
-              </Border>
-            </Grid>
-          </Border>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
   </Style>
 
 

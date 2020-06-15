@@ -29,7 +29,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class Main1 : Control, IView<Main1Model>
+    public class Main1 : AppControl, IView<Main1Model>
     {
         /// <summary>
         /// 
@@ -201,7 +201,7 @@ namespace AnalysisControls
             }
         }
 
-        private  async void OnOpenExecuted(object sender, ExecutedRoutedEventArgs e)
+        private async void OnOpenExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             switch (e.Parameter)
             {

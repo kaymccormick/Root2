@@ -4,12 +4,11 @@
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
               xmlns:local="clr-namespace:Client2"
-              xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
               xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=WpfLibCore"
               xmlns:viewModel1="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControlsCore"
               xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControlsCore"
+              xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
               mc:Ignorable="d"
-              Background="Blue"
               Loaded="Client2Window1_OnLoaded"
               DataContext="{Binding RelativeSource={RelativeSource Self}}"
               Title="Client2Window1" Height="900" Width="1600">
@@ -30,18 +29,85 @@
           Source="pack://application:,,,/AnalysisControlsCore;component/Templates.xaml" />
         <ResourceDictionary
           Source="pack://application:,,,/RibbonLibCore;component/RibbonStyles.xaml" />
-
-        <ResourceDictionary>
-         
-        </ResourceDictionary>
+        <ResourceDictionary />
       </ResourceDictionary.MergedDictionaries>
+      <Style TargetType="{x:Type analysisControls:Main1}">
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="{x:Type analysisControls:Main1}">
+              <ControlTemplate.Resources>
+              </ControlTemplate.Resources>
+              <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="{TemplateBinding BorderThickness}" VerticalAlignment="Stretch">
+                <Grid AllowDrop="True" x:Name="Grid" VerticalAlignment="Stretch">
+                  <Grid.Resources>
+                    <analysisControls:TestConverter2 x:Key="TestConverter" />
+                  </Grid.Resources>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <ToolBarTray Grid.Row="0" Grid.Column="0">
+                    <ToolBar Band="1" BandIndex="1">
+                      <TextBlock Text="{Binding CurrentOperation.Desc}" />
+                      <Button Content="Create workspace" Command="wpf:WpfAppCommands.CreateWorkspace" />
+                      <Button Content="Create solution" Command="wpf:WpfAppCommands.CreateSolution" />
+                      <Button Content="Create project" Command="wpf:WpfAppCommands.CreateProject" />
+                      <Button Content="Create document" Command="wpf:WpfAppCommands.CreateDocument" />
+                      <Button Content="Create Class" Command="wpf:WpfAppCommands.CreateClass" />
+
+                    </ToolBar>
+                  </ToolBarTray>
+                  <Border Grid.Row="1" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">
+                    <avalondock:DockingManager
+                  DocumentsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.Documents,Mode=TwoWay}"
+                  x:Name="DockingManager" AnchorablesSource="{Binding Anchorables}"
+                  VerticalAlignment="Stretch"
+                  ActiveContent="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.ActiveContent,Mode=TwoWay}">
+                      <avalondock:DockingManager.DocumentHeaderTemplate>
+                        <DataTemplate
+                      DataType="{x:Type avalondock:LayoutDocument}">
+                          <StackPanel Opacity="1.0"
+                                  Orientation="Horizontal">
+                            <Image Source="{Binding IconSource}"
+                               Margin="6,4,4,0" />
+                            <TextBlock Text="{Binding Content.Title,Converter={StaticResource TestConverter}}"
+                                   VerticalAlignment="Center" />
+                          </StackPanel>
+                        </DataTemplate>
+                      </avalondock:DockingManager.DocumentHeaderTemplate>
+                      <avalondock:DockingManager.AnchorableHeaderTemplate>
+                        <DataTemplate
+                      DataType="{x:Type avalondock:LayoutAnchorable}">
+                          <StackPanel Opacity="1.0"
+                                  Orientation="Horizontal">
+                            <Image Source="{Binding IconSource}"
+                               Margin="6,4,4,0" />
+                            <TextBlock Text="{Binding Content.Title}"
+                                   VerticalAlignment="Center" />
+                          </StackPanel>
+                        </DataTemplate>
+                      </avalondock:DockingManager.AnchorableHeaderTemplate>
+                    </avalondock:DockingManager>
+                  </Border>
+                </Grid>
+              </Border>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
       <local:TabItemTemplateSelector x:Key="TabItemTemplateSelector" />
       <CollectionViewSource Source="{Binding ViewModel.PrimaryRibbon.QuickAccessToolBar.Items}" x:Key="QATView" />
     </ResourceDictionary>
   </RibbonWindow.Resources>
   <RibbonWindow.CommandBindings>
     <CommandBinding Command="Paste" CanExecute="CanExecutePaste" Executed="OnExecutedPaste" />
-    <CommandBinding Command="kmWpf:WpfAppCommands.CustomizeQAT" Executed="CustomizeQATExecuted" />
+    <CommandBinding Command="wpf:WpfAppCommands.CustomizeQAT" Executed="CustomizeQATExecuted" />
   </RibbonWindow.CommandBindings>
   <RibbonWindow.InputBindings>
     <KeyBinding Command="Paste" Key="V" Modifiers="Control" />
@@ -58,8 +124,12 @@
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
-      <Ribbon DataContext="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=RibbonWindow,AncestorLevel=1},Path=ViewModel.PrimaryRibbon}"/>
-      <analysisControls:Main1 VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"   ViewModel="{wpf:Resolve viewModel1:Main1Model}" ViewModel2="{wpf:Resolve viewModel1:Main1Mode2}"/>
+      <Ribbon
+        DataContext="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=RibbonWindow,AncestorLevel=1},Path=ViewModel.PrimaryRibbon}" />
+      <analysisControls:Main1 HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"
+        ViewModel="{wpf:Resolve viewModel1:Main1Model}"
+        ViewModel2="{wpf:Resolve viewModel1:Main1Mode2}" />
     </Grid>
   </Grid>
 
