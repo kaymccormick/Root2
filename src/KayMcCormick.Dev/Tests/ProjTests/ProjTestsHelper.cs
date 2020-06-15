@@ -7,6 +7,7 @@ using System.Xaml;
 using AnalysisAppLib;
 using AnalysisAppLib.Properties;
 using AnalysisControls;
+using AnalysisControlsCore;
 using AvalonDock;
 using AvalonDock.Layout;
 using KayMcCormick.Dev;
@@ -14,7 +15,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.VisualBasic;
-using Remotion.FunctionalProgramming;
+
 using CSharpExtensions = Microsoft.CodeAnalysis.CSharp.CSharpExtensions;
 using SyntaxFactory = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using XamlReader = System.Windows.Markup.XamlReader;
@@ -82,7 +83,7 @@ namespace ProjTests
         {
             if (code == null)
             {
-                code = Resources.Program_Parse;
+                code = Resource1.Program_Parse;
             }
             var unitSyntax = SyntaxNodeExtensions.NormalizeWhitespace<CompilationUnitSyntax>(SyntaxFactory.ParseCompilationUnit(code), "    ");
             var tree = SyntaxFactory.SyntaxTree(unitSyntax);
@@ -106,7 +107,7 @@ namespace ProjTests
         {
             var assembly = typeof(AnalysisControlsModule).Assembly;
             var x = new ResourceManager(
-                "AnalysisControls.g"
+                "AnalysisControlsCore.g"
                 , assembly
             );
 

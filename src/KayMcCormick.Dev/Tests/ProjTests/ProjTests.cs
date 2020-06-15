@@ -34,7 +34,7 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.ExceptionServices;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Runtime.Serialization.Formatters.Soap;
+//using System.Runtime.Serialization.Formatters.Soap;
 using System.Security.Permissions;
 using System.Text;
 using System.Text.Json;
@@ -68,6 +68,7 @@ using AnalysisControls.Converters;
 using AnalysisControls.Properties;
 using AnalysisControls.TypeDescriptors;
 using AnalysisControls.ViewModel;
+using AnalysisControlsCore;
 using Autofac;
 using Autofac.Features.AttributeFilters;
 using Autofac.Features.Metadata;
@@ -75,9 +76,9 @@ using AvalonDock;
 using AvalonDock.Layout;
 using AvalonDock.Themes;
 using Castle.DynamicProxy;
-using CsvHelper;
-using CsvHelper.Excel;
-using DocumentFormat.OpenXml.Office.Word;
+// using CsvHelper;
+// using CsvHelper.Excel;
+
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Application;
@@ -94,7 +95,7 @@ using KmDevWpfControls;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Moq;
+
 using NLog;
 using RibbonLib.Model;
 using Xunit;
@@ -657,21 +658,6 @@ namespace ProjTests
             return m;
         }
 
-//        [WpfFact]
-        public void TestExceptionInfo()
-        {
-            var @in = File.OpenRead(@"c:\data\logs\exception.bin");
-            var f = new BinaryFormatter();
-            var exception = (Exception) f.Deserialize(@in);
-            var h = new HandleExceptionImpl();
-            h.HandleException(exception);
-            var f2 = new SoapFormatter();
-            var w = File.OpenWrite(@"C:\data\logs\exception.xml");
-            f2.Serialize(w, exception);
-            w.Flush();
-            w.Close();
-        }
-
 
         // ReSharper disable once UnusedMember.Local
         private int CountChildren([NotNull] DependencyObject tv)
@@ -682,24 +668,6 @@ namespace ProjTests
             return count;
         }
 
-//        [WpfFact]
-        public void TestResourcesModel()
-        {
-            using (var instance =
-                new ApplicationInstance(
-                    new ApplicationInstance.ApplicationInstanceConfiguration(_output.WriteLine, ApplicationGuid)
-                ))
-            {
-                instance.AddModule(new AnalysisControlsModule());
-                instance.AddModule(new AnalysisAppLibModule());
-                instance.Initialize();
-                var lifetimescope = instance.GetLifetimeScope();
-
-                var model = lifetimescope.Resolve<AllResourcesTreeViewModel>();
-
-                DumpTree(null, model.AllResourcesCollection);
-            }
-        }
 
         [WpfFact(Timeout = 30000)]
         public void Test123()
@@ -744,6 +712,7 @@ namespace ProjTests
             var json = Encoding.UTF8.GetString(bytes);
         }
 
+#if ALLRESOURCESTREE
         // ReSharper disable once UnusedMember.Local
         private void DumpTree(
             AllResourcesTree tree
@@ -793,21 +762,13 @@ namespace ProjTests
                 DumpTree(tree, resourceNodeInfo.Children, depth + 1);
             }
         }
-
+#endif
         public JsonSerializerOptions TestJsonSerializerOptions
         {
             get { return _testJsonSerializerOptions; }
             set { _testJsonSerializerOptions = value; }
         }
 
-//        [Fact]
-        public void TestModule1()
-        {
-            var module = new AnalysisAppLibModule();
-
-            var mock = new Mock<ContainerBuilder>();
-            mock.Setup(cb => module.DoLoad(cb));
-        }
 
         //[Fact]
         public void DeserializeLog()
@@ -821,7 +782,7 @@ namespace ProjTests
 
             var options = new JsonSerializerOptions();
             options.Converters.Add(new JsonConverterLogEventInfo());
-            options.Converters.Add(new JsonSyntaxNodeConverter());
+            //options.Converters.Add(new JsonSyntaxNodeConverter());
 
             var json = JsonSerializer.Serialize(info1, options);
             Logger.Info(json);
@@ -1344,7 +1305,7 @@ namespace ProjTests
         {
             var x = new ResourceManager(
                 "AnalysisControls.g"
-                , typeof(PythonControl).Assembly
+                , typeof(FormattedTextControl).Assembly
             );
             // ReSharper disable once ResourceItemNotResolved
             var y = x.GetStream("mainstatusbar.baml");
@@ -1539,7 +1500,7 @@ namespace ProjTests
             }
         }
 
-        public static async void OnWorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args)
+        private static async void OnWorkspaceOnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args)
         {
             DebugUtils.WriteLine(args.Kind.ToString());
             var project = args.NewSolution.GetProject(args.ProjectId);
@@ -1668,7 +1629,7 @@ namespace ProjTests
         public void TestStore3()
         {
             var x = new CustomTextSource3(100, new DefaultTypefaceManager());
-            var comp = AnalysisService.Parse(Resources.Program_Parse, "test", false);
+            var comp = AnalysisService.Parse(Resource1.Program_Parse, "test", false);
             x.Tree = comp.SyntaxTree;
             x.Node = comp.CompilationUnit;
             foreach (var diagnostic in comp.Compilation.GetDiagnostics())
@@ -1847,15 +1808,15 @@ namespace ProjTests
                 from ch in r.Characters
                 select ProjTestsHelper.Merge(ch, r, li)).ToList();
 
-            using (var writer = new CsvWriter(new ExcelSerializer("c:\\temp\\out.xlsx")))
-            {
-                writer.WriteRecords(allLineInfos);
-            }
+            // using (var writer = new CsvWriter(new ExcelSerializer("c:\\temp\\out.xlsx")))
+            // {
+                // writer.WriteRecords(allLineInfos);
+            // }
 
-            using (var writer = new CsvWriter(new ExcelSerializer("c:\\temp\\out2.xlsx")))
-            {
-                writer.WriteRecords(outq);
-            }
+            // using (var writer = new CsvWriter(new ExcelSerializer("c:\\temp\\out2.xlsx")))
+            // {
+                // writer.WriteRecords(outq);
+            // }
         }
 
    //     [WpfFact]
@@ -1864,7 +1825,7 @@ namespace ProjTests
             ProjTestsHelper.TestSyntaxControl(new EnhancedCodeControl());
         }
 
-   //     [WpfFact]
+       [WpfFact]
         public void TestFormattedControl()
         {
             ProjTestsHelper.TestSyntaxControl(new FormattedTextControl());
@@ -2028,44 +1989,6 @@ namespace ProjTests
             var m = new ProjectModel(null);
             m.Documents.Add(new DocumentModel(m, null) {FilePath = "test\\one\\tewo"});
             foreach (var kv in m.RootPathInfo.Entries) DebugUtils.WriteLine(kv.Value.ToString());
-        }
-
-        [WpfFact]
-        public void TestTypeAdapter()
-        {
-            var code = "namespace foo.bar { public class foo { class bar { } } }";
-            var tree = ProjTestsHelper.SetupSyntaxParams(out var comp, code);
-            foreach (var typeSymbol in comp.GetSymbolsWithName(n => true).OfType<ITypeSymbol>())
-            {
-                switch (typeSymbol)
-                {
-                    case IArrayTypeSymbol arrayTypeSymbol:
-                        break;
-                    case IDynamicTypeSymbol dynamicTypeSymbol:
-                        break;
-                    case IErrorTypeSymbol errorTypeSymbol:
-                        break;
-                    case INamedTypeSymbol namedTypeSymbol:
-
-                        DebugUtils.WriteLine(namedTypeSymbol.ConstructedFrom.ToString());
-                        break;
-                    case IPointerTypeSymbol pointerTypeSymbol:
-                        break;
-                    case ITypeParameterSymbol typeParameterSymbol:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(typeSymbol));
-                }
-
-                var prov = new TypeInfoProvider2(typeSymbol);
-                DebugUtils.WriteLine(typeSymbol.ToDisplayString());
-                DebugUtils.WriteLine(prov.IsNested.ToString());
-                DebugUtils.WriteLine(prov.Assembly.Name.ToString());
-                DebugUtils.WriteLine(typeof(string).AssemblyQualifiedName);
-                var cc = new CustomControl2() {TypeInfoProvider = prov};
-                var w = new Window {Content = cc};
-                w.Show();
-            }
         }
 
      
@@ -2295,14 +2218,14 @@ namespace ProjTests
             panel.SetBinding(AssemblyResourceTree.AssemblyProperty, new Binding("SelectedAssembly") {Source = left});
             c.Children.Add(left);
             c.Children.Add(panel);
-            using (var hexa = new WpfHexaEditor.HexEditor())
-            {
-                c.Children.Add(hexa);
+            // using (var hexa = new WpfHexaEditor.HexEditor())
+            // {
+                // c.Children.Add(hexa);
 
-                panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
-                var w = new Window {Content = c};
-                w.Show();
-            }
+                // panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
+                // var w = new Window {Content = c};
+                // w.Show();
+            // }
         }
 
 
@@ -2708,7 +2631,7 @@ namespace ProjTests
         {
             var dm = ProjTestsHelper.CreateDockingManager(out var layoutDocumentPane, out var layoutDocumentPaneGroup,
                 out var layoutRootPanel, out var layoutRoot);
-            dm.Theme = new AeroTheme();
+            //dm.Theme = new AeroTheme();
             var w = new Window {Content = dm};
             var anchorables = new ObservableCollection<LayoutAnchorable>();
             var table1 = new TablePanel();

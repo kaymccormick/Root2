@@ -31,7 +31,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    [TitleMetadata("Formatted Code Control")]
+//    [TitleMetadata("Formatted Code Control")]
     public class FormattedTextControl : SyntaxNodeControl
     {
         /// <summary>

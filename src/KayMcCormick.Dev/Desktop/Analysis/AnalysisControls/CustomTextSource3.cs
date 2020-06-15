@@ -73,7 +73,7 @@ namespace AnalysisControls
 
             if (textSourceCharacterIndex >= Length)
             {
-                DebugUtils.WriteLine(Resources.CustomTextSource3_GetTextRun_past_text_source_length, DebugCategory.TextFormatting);
+                //DebugUtils.WriteLine(Resources.CustomTextSource3_GetTextRun_past_text_source_length, DebugCategory.TextFormatting);
                 return new TextEndOfParagraph(2);
             }
 

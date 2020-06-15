@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Program-Parse.cs" />
     <Compile Remove="Properties\AssemblyInfo.cs" />
     <Compile Remove="PythonControl.xaml.cs" />
   </ItemGroup>
@@ -20,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Program-Parse.cs" />
     <EmbeddedResource Include="TypesViewModel.xaml" />
   </ItemGroup>
 
@@ -42,6 +44,21 @@
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KmDevLib.csproj" />
     <ProjectReference Include="..\..\WpfLib\WpfLibCore.csproj" />
     <ProjectReference Include="..\AnalysisAppLib\AnalysisAppLibCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resource1.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resource1.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
