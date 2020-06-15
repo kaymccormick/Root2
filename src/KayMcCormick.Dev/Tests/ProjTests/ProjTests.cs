@@ -1819,7 +1819,7 @@ namespace ProjTests
             // }
         }
 
-   //     [WpfFact]
+   [WpfFact]
         public void TestEnhanced()
         {
             ProjTestsHelper.TestSyntaxControl(new EnhancedCodeControl());

@@ -206,6 +206,10 @@ namespace AnalysisControls
             else
             {
                 var f = new SyntaxWalkerF(col, this, TakeTextRun, MakeProperties);
+                var token = Node.GetFirstToken();
+                DebugUtils.WriteLine(token.Span.ToString());
+                var t2 = token.GetNextToken();
+                DebugUtils.WriteLine(t2.Span.ToString());
                 f.DefaultVisit(Node ?? Tree.GetRoot());
             }
 
