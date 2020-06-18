@@ -1,13 +1,10 @@
 ﻿<UserControl x:Name="TypesViewControl"
              x:Class="AnalysisControls.Views.TypesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:reflection="clr-namespace:System.Reflection;assembly=mscorlib"
-             xmlns:classLib="clr-namespace:KayMcCormick.Dev;assembly=KayMcCormick.Dev"
-             xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLib"
              xmlns:analysisControls="clr-namespace:AnalysisControls"
              xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=WpfLibCore"
              xmlns:syntax1="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLibCore"
@@ -221,7 +218,7 @@
                     </VisualStateManager.VisualStateGroups>
                     <ToggleButton x:Name="Expander"
                                   Style="{StaticResource ExpandCollapseToggleStyle}"
-                                  Command="kmWpf:WpfAppCommands.ToggleNodeIsExpanded"
+                                  Command="wpf:WpfAppCommands.ToggleNodeIsExpanded"
                                   ClickMode="Press"
                                   IsChecked="{Binding IsExpanded, 
             RelativeSource={RelativeSource TemplatedParent}}" />

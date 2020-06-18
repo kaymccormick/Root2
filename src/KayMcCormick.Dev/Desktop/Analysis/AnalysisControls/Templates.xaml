@@ -5,14 +5,14 @@
   xmlns:analysisControls="clr-namespace:AnalysisControls"
   xmlns:autofac="clr-namespace:Autofac;assembly=Autofac"
   xmlns:core="clr-namespace:Autofac.Core;assembly=Autofac"
-  xmlns:system="clr-namespace:System;assembly=mscorlib"
   xmlns:codeAnalysis1="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis.Workspaces"
   xmlns:converters="clr-namespace:AnalysisControls.Converters"
   xmlns:operations="clr-namespace:Microsoft.CodeAnalysis.Operations;assembly=Microsoft.CodeAnalysis"
   xmlns:typeDescriptors="clr-namespace:AnalysisControls.TypeDescriptors"
-  xmlns:io="clr-namespace:System.IO;assembly=System.Runtime"
   xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLibCore"
-  xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=WpfLibCore">
+  xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=WpfLibCore"
+  xmlns:io="clr-namespace:System.IO;assembly=System.IO.FileSystem"
+  xmlns:system="clr-namespace:System;assembly=System.Runtime">
   <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter"/>
   <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
 

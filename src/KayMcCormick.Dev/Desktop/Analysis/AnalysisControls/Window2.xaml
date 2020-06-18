@@ -44,7 +44,7 @@
                                                           SelectedType="{Binding ElementName=mainWindow,Path=ViewModel.SelectedType,Mode=TwoWay}" />
                   </avalondock:LayoutDocument>
                   <avalondock:LayoutDocument Title="Main">
-                    <kmDevWpfControls:AssembliesControl1 x:Name="a1" />
+                    <kmDevWpfControls:AssembliesControl x:Name="a1" />
                   </avalondock:LayoutDocument>
                 </avalondock:LayoutDocumentPane>
               </avalondock:LayoutDocumentPaneGroup>
@@ -70,7 +70,7 @@
             <avalondock:LayoutAnchorSide>
               <avalondock:LayoutAnchorGroup>
                 <avalondock:LayoutAnchorable Title="zz">
-                  <kmDevWpfControls:VisualTreeView1 />
+                  <kmDevWpfControls:VisualTreeView />
                 </avalondock:LayoutAnchorable>
               </avalondock:LayoutAnchorGroup>
             </avalondock:LayoutAnchorSide>
@@ -79,7 +79,7 @@
             <avalondock:LayoutAnchorSide>
               <avalondock:LayoutAnchorGroup>
                 <avalondock:LayoutAnchorable Title="beep">
-                  <kmDevWpfControls:AssembliesControl1 />
+                  <kmDevWpfControls:AssembliesControl />
                 </avalondock:LayoutAnchorable>
               </avalondock:LayoutAnchorGroup>
             </avalondock:LayoutAnchorSide>

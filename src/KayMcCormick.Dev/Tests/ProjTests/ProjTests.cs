@@ -101,6 +101,7 @@ using RibbonLib.Model;
 using Xunit;
 using Xunit.Abstractions;
 using static AnalysisControls.TypeDescriptors.UiElementTypeConverter;
+using AssembliesControl = AnalysisControls.AssembliesControl;
 using Binding = System.Windows.Data.Binding;
 using Brushes = System.Windows.Media.Brushes;
 using Button = System.Windows.Controls.Button;

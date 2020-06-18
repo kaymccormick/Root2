@@ -625,9 +625,9 @@ namespace AnalysisControls.ViewModel
         ///
         public delegate DocModel Del1(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file);
 
-        public async Task CodeDocAsync(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)
+        public static async Task CodeDocAsync(Main1Mode2 main1Mode2, SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)
         { 
-            await Dispatcher.BeginInvoke(new Del1(Method1), contextSyntaxTree, cSharpCompilation, file);
+            await main1Mode2.Dispatcher.BeginInvoke(new Del1(main1Mode2.Method1), contextSyntaxTree, cSharpCompilation, file);
         }
 
         private DocModel Method1(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)

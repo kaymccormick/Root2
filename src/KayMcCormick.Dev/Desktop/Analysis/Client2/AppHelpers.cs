@@ -63,7 +63,7 @@ namespace Client2
             //     if (client2App2.StartWindow is Type t)
             //     {
             //         var window = (Window) Activator.CreateInstance((Type) client2App2.StartWindow);
-            //         client2App2.MainWindow = window;
+            //         client2App2.TerminalUserControl0 = window;
             //         window.Closed += (sender, args) => { SelectAppAction(client2App2); };
             //         client2App2.RunWindow(window);
             //         

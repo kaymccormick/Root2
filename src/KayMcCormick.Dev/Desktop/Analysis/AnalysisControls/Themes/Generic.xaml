@@ -6959,7 +6959,7 @@
             <Grid VerticalAlignment="Stretch">
               <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="80" />
+                <RowDefinition Height="0.00001" />
                 <RowDefinition Height="Auto" />
               </Grid.RowDefinitions>
               <Grid.ColumnDefinitions>

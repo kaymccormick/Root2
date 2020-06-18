@@ -8,7 +8,6 @@ using System.Reactive.Subjects;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,7 +18,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using AnalysisControls;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
@@ -29,6 +27,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using NLog;
 using RibbonLib.Model;
+using WpfApp4;
 using TypeControl = KayMcCormick.Lib.Wpf.TypeControl;
 
 namespace AnalysisControls.ViewModel
@@ -249,11 +248,21 @@ namespace AnalysisControls.ViewModel
             AddTypeProvider();
             AddControlsDocq();
             AddPowerShell();
+            AddPowerShell2();
+        }
+
+        private void AddPowerShell2()
+        {
+            TerminalUserControl0 terminal0  = new TerminalUserControl0();
+            var doc = DocModel.CreateInstance();
+            doc.Title = "PowerShell 0";
+            doc.Content = terminal0;
+            Documents.Add(doc);
         }
 
         private void AddVisualTreeViewDoc()
         {
-            var c = new VisualTreeView1();
+            var c = new VisualTreeView();
             var doc = DocModel.CreateInstance();
             doc.Title = "Visual Tree View";
             doc.Content = c;

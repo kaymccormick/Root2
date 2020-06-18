@@ -148,7 +148,7 @@ namespace AnalysisControls
             CommandBindings.Add(new CommandBinding(WpfAppCommands.BrowseSymbols, OnBrowseSymbolsExecutedAsync));
             
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewResources, OnViewResourcesExecuted));
-            CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, OnOpenExecuted , OnOpenCanExecute));
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, (sender, e) => OnOpenExecuted(ViewModel, ViewModel2, sender, e) , OnOpenCanExecute));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ConvertToJson, OnConvertToJsonExecuted));
 
             //Documents.Add(new DocInfo { Description = "test", Content = Properties.Resources.Program_Parse});
@@ -201,7 +201,7 @@ namespace AnalysisControls
             }
         }
 
-        private async void OnOpenExecuted(object sender, ExecutedRoutedEventArgs e)
+        private static async void OnOpenExecuted(Main1Model main1Model, Main1Mode2 main1Mode2, object sender, ExecutedRoutedEventArgs e)
         {
             switch (e.Parameter)
             {
@@ -240,17 +240,15 @@ namespace AnalysisControls
                             tree = context.SyntaxTree;
                         }
 
-                        await  ViewModel2.CodeDocAsync(tree, compilation, file);
-                        //ViewModel.Documents.Add(doc);
-                        
+                        await  Main1Mode2.CodeDocAsync(main1Mode2, tree, compilation, file);
                     }
                     else if (file.ToLowerInvariant().EndsWith(".sln"))
                     {
-                        await ViewModel2.LoadSolutionAsync(file);
+                        await main1Mode2.LoadSolutionAsync(file);
                     }
                     else if (file.ToLowerInvariant().EndsWith(".csproj") || file.EndsWith(".vbproj"))
                     {
-                        await ViewModel2.LoadProjectAsync(file);
+                        await main1Mode2.LoadProjectAsync(file);
                     }
 
                     return;
@@ -260,8 +258,8 @@ namespace AnalysisControls
                     var control = controlItem.Value.Value;
                     var doc = DocModel.CreateInstance();
                     doc.Content = control;
-                    ViewModel.Documents.Add(doc);
-                    ViewModel.ActiveContent = doc;
+                    main1Model.Documents.Add(doc);
+                    main1Model.ActiveContent = doc;
                     break;
                 }
             }
