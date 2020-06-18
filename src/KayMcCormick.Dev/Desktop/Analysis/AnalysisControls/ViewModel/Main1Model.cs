@@ -243,7 +243,7 @@ namespace AnalysisControls.ViewModel
             AddRibbonModelViewDoc1();
             AddAssembliesDoc();
             //            AddPropertiesGridDoc();
-            AddVisualTreeViewDoc();
+            //AddVisualTreeViewDoc();
             AddVisualTreeViewDoc1();
             AddTypeProvider();
             AddControlsDocq();
@@ -260,14 +260,14 @@ namespace AnalysisControls.ViewModel
             Documents.Add(doc);
         }
 
-        private void AddVisualTreeViewDoc()
-        {
-            var c = new VisualTreeView();
-            var doc = DocModel.CreateInstance();
-            doc.Title = "Visual Tree View";
-            doc.Content = c;
-            Documents.Add(doc);
-        }
+        // private void AddVisualTreeViewDoc()
+        // {
+            // var c = new VisualTreeView();
+            // var doc = DocModel.CreateInstance();
+            // doc.Title = "Visual Tree View";
+            // doc.Content = c;
+            // Documents.Add(doc);
+        // }
 
         private void AddVisualTreeViewDoc1()
         {

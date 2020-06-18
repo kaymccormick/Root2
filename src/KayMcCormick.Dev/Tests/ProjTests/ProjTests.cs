@@ -1829,7 +1829,7 @@ namespace ProjTests
        [WpfFact]
         public void TestFormattedControl()
         {
-            ProjTestsHelper.TestSyntaxControl(new FormattedTextControl());
+            ProjTestsHelper.TestSyntaxControl(new FormattedTextControl3());
         }
 
         [WpfFact]
