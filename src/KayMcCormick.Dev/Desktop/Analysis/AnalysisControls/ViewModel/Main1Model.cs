@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -18,6 +20,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using AnalysisAppLib;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
@@ -131,6 +134,7 @@ namespace AnalysisControls.ViewModel
 
 
         private readonly ReplaySubject<Workspace> _replay;
+        private readonly IEnumerable<IMySubject> _subs;
         private Workspace _workspace;
         private Main1 _view;
         private WorkspaceView _workspaceView;
@@ -219,10 +223,11 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         /// <param name="replay"></param>
-        public Main1Model(ReplaySubject<Workspace> replay, JsonSerializerOptions jsonSerializerOptions = null) : this()
+        public Main1Model(ReplaySubject<Workspace> replay, IEnumerable<IMySubject> subs, JsonSerializerOptions jsonSerializerOptions = null) : this()
         {
             JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
             _replay = replay;
+            _subs = subs;
         }
 
         /// <summary>

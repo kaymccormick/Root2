@@ -97,6 +97,7 @@ namespace AnalysisControls
         private Main1Model _viewModel;
         private DockingManager _dockingManager;
         private Main1Mode2 _viewModel2;
+        private MyReplaySubject<string> r;
 
         /// <summary>
         /// 
@@ -115,9 +116,20 @@ namespace AnalysisControls
 
         private static object CoerceLifetimeScope(DependencyObject d, object basevalue)
         {
+            var vs = DependencyPropertyHelper.GetValueSource(d, AttachedProperties.LifetimeScopeProperty);
             var lifetimeScope = (ILifetimeScope)basevalue;
+            if (lifetimeScope.Tag == "Main1")
+            {
+                return lifetimeScope;
+            }
             var main1 = (Main1) d;
-            return lifetimeScope.BeginLifetimeScope($"Scope for {d}", main1.ConfigAction);
+            var coerceLifetimeScope = lifetimeScope.BeginLifetimeScope($"Main1", main1.ConfigAction);
+            if (main1.r == null)
+            {
+                main1.r = coerceLifetimeScope.Resolve<MyReplaySubject<string>>();
+            }
+
+            return coerceLifetimeScope;
         }
 
         private void ConfigAction(ContainerBuilder obj)
