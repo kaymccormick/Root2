@@ -223,7 +223,7 @@ namespace ProjTests
             var x = XamlReader.Load(fileStream);
         }
 
-        //[Fact]
+        [Fact]
         public void TestSubstituteType()
         {
             using (var instance = new ApplicationInstance(
@@ -239,18 +239,9 @@ namespace ProjTests
                 instance.AddModule(new AnalysisAppLibModule());
                 instance.Initialize();
                 var lifetimeScope = instance.GetLifetimeScope();
-                var model = lifetimeScope.Resolve<TypesViewModel>();
-                var sts = lifetimeScope.Resolve<ISyntaxTypesService>();
-                var cMap = sts.CollectionMap();
-                var appTypeInfo = sts.GetAppTypeInfo(typeof(AssignmentExpressionSyntax));
-                var field = (SyntaxFieldInfo) appTypeInfo.Fields[0];
-                var typeSyntax = SyntaxFactory.ParseTypeName(
-                    typeof(ArgumentSyntax).FullName
-                    ?? throw new
-                        InvalidOperationException()
-                );
-                var substType =
-                    XmlDocElements.SubstituteType(field, typeSyntax, cMap, model);
+                var model = lifetimeScope.Resolve<MyReplaySubject<FileInfo>>();
+
+
             }
         }
 

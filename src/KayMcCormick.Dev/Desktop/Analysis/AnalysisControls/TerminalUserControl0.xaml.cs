@@ -20,6 +20,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AnalysisControls.ViewModel;
 using NLog;
 using Terminal1;
 using WpfTerminalControlLib;
@@ -59,15 +60,21 @@ namespace WpfApp4
             Terminal.ExecuteCommandComplete += TerminalOnExecuteCommandComplete;
             if (Shell.InitialSessionState != null)
             {
+                Shell.InitialSessionState.Providers.Add(new SessionStateProviderEntry("Test", typeof(RibbonModelProvider), ""));
                 Shell.InitialSessionState.Commands.Add(new SessionStateCmdletEntry("my-command", typeof(MyCommandCmdlet),
                     ""));
+
             }
 
             Shell.InitialSessionStateChanged += (sender, args) =>
             {
+
                 if (args.NewValue != null)
+                {
                     args.NewValue.Commands.Add(new SessionStateCmdletEntry("my-command", typeof(MyCommandCmdlet),
                         ""));
+                    args.NewValue.Providers.Add(new SessionStateProviderEntry("Test", typeof(RibbonModelProvider), ""));
+                }
             };
             Shell.CoerceValue(WrappedPowerShell.InitialSessionStateProperty);
             Shell.CoerceValue(WrappedPowerShell.RunspaceProperty);
