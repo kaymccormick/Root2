@@ -168,6 +168,7 @@ namespace AnalysisControls
 
         private void OnCreateClass(object sender, ExecutedRoutedEventArgs e)
         {
+            
             ViewModel2.CreateClass();
         }
 
@@ -406,6 +407,7 @@ namespace AnalysisControls
 
         private void OnCreateWorkSpaceExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            r.Subject1.OnNext("create");
             DebugUtils.WriteLine(nameof(OnCreateProjectExecuted));
             ViewModel2.CreateWorkspace();
         }

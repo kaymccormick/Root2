@@ -42,7 +42,7 @@ namespace AnalysisAppLib
         // ReSharper disable once RedundantDefaultMemberInitializer
         private bool _registerExplorerTypes = false;
         private readonly ReplaySubject<ActivationInfo> _activations = new ReplaySubject<ActivationInfo>();
-        private MyReplaySubject<ActivationInfo> _act2;
+        private MyReplaySubjectImpl _act2;
 
         /// <summary>
         ///     Parameter-less constructor.
@@ -125,8 +125,8 @@ namespace AnalysisAppLib
         {
             builder.RegisterSource<MM>();
             builder.RegisterType<AppDbContext>().As<IAppDbContext1>().AsSelf().WithCallerMetadata().SingleInstance();
-            _act2 = new MyReplaySubject<ActivationInfo>();
-            builder.RegisterInstance(_act2);
+            _act2 = new MyReplaySubjectImpl();
+            builder.RegisterInstance(_act2).AsSelf().As<IActivationStream>();
             //builder.RegisterType<ResourceNodeInfo>().As<IHierarchicalNode>();
 
             // builder.Register((c, p) =>
@@ -369,6 +369,10 @@ namespace AnalysisAppLib
         }
     }
 
+    public interface IActivationStream : IMySubject
+    {
+    }
+
     public class MyReplaySubject<T> : IMySubject
     {
         private ReplaySubject<object> _s1 = new ReplaySubject<object>();
@@ -376,8 +380,11 @@ namespace AnalysisAppLib
 
         public MyReplaySubject()
         {
+            Type1 = typeof(T);
             Subject1.Subscribe(obj => ObjectSubject.OnNext(obj));
         }
+
+        public Type Type1 { get; set; }
 
         public ReplaySubject<T> Subject1
         {
@@ -392,8 +399,13 @@ namespace AnalysisAppLib
         }
     }
 
+    class MyReplaySubjectImpl : MyReplaySubject<ActivationInfo>, IActivationStream
+    {
+    }
+
     public interface IMySubject
     {
+        Type Type1 { get; }
         ReplaySubject<object> ObjectSubject { get; }
     }
 
@@ -405,21 +417,29 @@ namespace AnalysisAppLib
         {
             if (service is IServiceWithType ss)
             {
-                
+                if (service is DecoratorService)
+                {
+                    return Enumerable.Empty<IComponentRegistration>();
+                }
                 if (ss.ServiceType.IsGenericType &&
                     ss.ServiceType.GetGenericTypeDefinition() == typeof(MyReplaySubject<>))
                 {
+                    
                     var xyz = registrationAccessor.Invoke(service);
                     var newGuid = Guid.NewGuid();
                     var delegateActivator = new DelegateActivator(ss.ServiceType,
                         (c, p) =>
                         {
                             Debug.WriteLine($"{registrationAccessor}{xyz}");
-                            return Activator.CreateInstance(ss.ServiceType);
+                            var w = c.Resolve<ISubjectWatcher>();
+                            
+                            var instance = Activator.CreateInstance(ss.ServiceType);
+                            w.Subject((IMySubject) instance);
+                            return instance;
                         });
                     return new[]
                     {
-                        new ComponentRegistration(newGuid, delegateActivator, new RootScopeLifetime(),
+                        new ComponentRegistration(newGuid, delegateActivator, new RootScopeLifetime(), 
                             InstanceSharing.Shared, InstanceOwnership.OwnedByLifetimeScope, new[] {service,new TypedService(typeof(IMySubject))},
                             new Dictionary<string, object?>())
 
@@ -437,4 +457,11 @@ namespace AnalysisAppLib
         /// <inheritdoc />
         public bool IsAdapterForIndividualComponents { get; }
     }
+
+    public interface ISubjectWatcher
+    {
+        void Subject(IMySubject x);
+
+    }
+
 }

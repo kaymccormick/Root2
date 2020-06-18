@@ -128,8 +128,9 @@ namespace KayMcCormick.Lib.Wpf
             {
                 // if (providerType.Assembly.FullName == typeof(CSharpSyntaxNode).Assembly.FullName)
                 // {
-                    // DebugUtils.WriteLine(providerType.ToString());
+                // DebugUtils.WriteLine(providerType.ToString());
                 // }
+                DebugUtils.WriteLine(providerType.ToString());
                 TypeDescriptor.AddProvider(provider.Provider, providerType);
                 
             }

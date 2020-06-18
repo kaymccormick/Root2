@@ -132,6 +132,7 @@ namespace AnalysisControls
                 // }
             // }
             kayTypes.Add(typeof(IInstanceLookup));
+            kayTypes.Add(typeof(ActivationInfo));
             kayTypes.Add(typeof(Container));
             kayTypes.Add(typeof(IResolveOperation));
             //kayTypes.Add(typeof(Type));
@@ -147,7 +148,7 @@ namespace AnalysisControls
                 kayTypes.Add(type);
             }
 
-            kayTypes.Clear();
+            //kayTypes.Clear();
             var xx = new CustomTypes(kayTypes);
             builder.RegisterInstance(xx).OnActivating(args =>
             {
@@ -423,14 +424,16 @@ namespace AnalysisControls
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         public static ListView ReplayListView<T>(ObservableCollection<T> collection, ReplaySubject<T> observable,
-            ResourceDictionary resources)
+            ResourceDictionary resources, Type t =null)
         {
+            
             var lv = new ListView() {Resources = resources};
             var gv = new GridView();
             //gv.Columns.Add(new GridViewColumn() {DisplayMemberBinding = new Binding(".")});
             lv.View = gv;
             lv.ItemsSource = collection;
-            var props = TypeDescriptor.GetProperties(typeof(T));
+            
+            var props = TypeDescriptor.GetProperties(t);
             foreach (PropertyDescriptor prop in props)
             {
                 if (!prop.IsBrowsable) continue;
