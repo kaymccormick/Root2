@@ -12,30 +12,83 @@
   xmlns:analysisAppLib="clr-namespace:AnalysisAppLib;assembly=AnalysisAppLibCore"
   xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=WpfLibCore"
   xmlns:io="clr-namespace:System.IO;assembly=System.IO.FileSystem"
-  xmlns:system="clr-namespace:System;assembly=System.Runtime">
+  xmlns:system="clr-namespace:System;assembly=System.Runtime"
+  xmlns:kmDevLib="clr-namespace:KmDevLib;assembly=KmDevLib">
   <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter"/>
   <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
-
+  <analysisControls:UiConverter x:Key="UiConverter" />
+    <DataTemplate DataType="{x:Type analysisAppLib:RegInfo}" x:Key="RegInfo.RegistrationMetadata">
+        <ContentControl Content="{Binding RegistrationMetadata,Converter={StaticResource UiConverter}}"/>
+    </DataTemplate>
+    <ControlTemplate x:Key="ListView1" TargetType="ListView">
+        <Grid/>
+    </ControlTemplate>
   <DataTemplate DataType="{x:Type io:FileInfo}">
     <typeDescriptors:GenericInterface Target="{Binding}"/>
   </DataTemplate>
   <DataTemplate DataType="{x:Type system:DateTime}">
     <TextBlock Text="{Binding}"/>
   </DataTemplate>
+  <DataTemplate DataType="{x:Type analysisControls:CodeElementDocumentation}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{Binding Path=ElementId}"/>
+            <TextBlock Grid.Column="1" Text="{Binding Path=Type}"/>
+            <ContentPresenter Grid.Column="2" Content="{Binding XmlDoc}"/>
+        </Grid>
+  </DataTemplate>
+  <DataTemplate x:Key="CodeDocumentationElement.NeedsAttention">
+      <ContentPresenter Content="{Binding NeedsAttention}"/>
+  </DataTemplate>
+    <DataTemplate x:Key="CodeDocumentationElement.Type">
+      <ContentPresenter Content="{Binding Type}"/>
+  </DataTemplate>
+
+    <DataTemplate x:Key="CodeDocumentationElement.XmlDoc">
+      <ContentPresenter Content="{Binding XmlDoc}"/>
+  </DataTemplate>
+    <DataTemplate x:Key="CodeDocumentationElement.ElementId">
+      <TextBlock Text="{Binding ElementId}"/>
+  </DataTemplate>
+<DataTemplate x:Key="PropertyDocumentation.ElementId">
+      <TextBlock Text="{Binding ElementId}"/>
+  </DataTemplate>
+        <DataTemplate DataType="{x:Type analysisControls:Summary}">
+        <GroupBox Header="Summary">
+            <ContentPresenter Content="{Binding DocumentElementCollection}"/>
+        </GroupBox>
+    </DataTemplate>
+  <DataTemplate DataType="{x:Type analysisControls:Param}">
+        <WrapPanel>
+            <TextBlock Text="Param"/>
+            <TextBlock Text="{Binding Name}"/>
+            <ContentPresenter Content="{Binding DocumentElementCollection}"/>
+        </WrapPanel>
+  </DataTemplate>
+
+    <DataTemplate DataType="{x:Type analysisControls:XmlDocumentElementCollection}">
+        <ItemsControl ItemsSource="{Binding}">
+
+        </ItemsControl>
+    </DataTemplate>
   <analysisControls:TestConverter2 x:Key="TestConverter2" />
-  <DataTemplate x:Key="ActivationInfo.Context" DataType="{x:Type analysisAppLib:ActivationInfo}">
+  <DataTemplate x:Key="ActivationInfo.Context" DataType="{x:Type kmDevLib:ActivationInfo}">
     <WrapPanel><ContentControl Content="{Binding Context.Tag}"/>
       <ContentControl Content="{Binding Context.NewInstanceActivated}"/>
     </WrapPanel>
   </DataTemplate>
-  <DataTemplate x:Key="ActivationInfo.Instance" DataType="{x:Type analysisAppLib:ActivationInfo}">
+  <DataTemplate x:Key="ActivationInfo.Instance" DataType="{x:Type kmDevLib:ActivationInfo}">
     <ContentControl Content="{Binding Instance}"/>
   </DataTemplate>
-  <analysisControls:UiConverter x:Key="UiConverter" />
-  <DataTemplate x:Key="ActivationInfo.Metadata" DataType="{x:Type analysisAppLib:ActivationInfo}">
+
+  <DataTemplate x:Key="ActivationInfo.Metadata" DataType="{x:Type kmDevLib:ActivationInfo}">
     <ContentControl Content="{Binding Metadata,Converter={StaticResource UiConverter}}"/>
   </DataTemplate>
-  <DataTemplate x:Key="ActivationInfo.InstanceType" DataType="{x:Type analysisAppLib:ActivationInfo}">
+  <DataTemplate x:Key="ActivationInfo.InstanceType" DataType="{x:Type kmDevLib:ActivationInfo}">
     <wpf:TypeControl>
       <wpf:AttachedProperties.RenderedType>
         <Binding Path="InstanceType"/>
@@ -43,14 +96,14 @@
     </wpf:TypeControl>
   </DataTemplate>
 
-  <DataTemplate x:Key="ActivationInfo.CreatedDateTime" DataType="{x:Type analysisAppLib:ActivationInfo}">
+  <DataTemplate x:Key="ActivationInfo.CreatedDateTime" DataType="{x:Type kmDevLib:ActivationInfo}">
     <TextBlock Text="{Binding CreatedDateTime}"/>
   </DataTemplate>
-  <DataTemplate x:Key="ActivationInfo.ManagedThreadId" DataType="{x:Type analysisAppLib:ActivationInfo}">
+  <DataTemplate x:Key="ActivationInfo.ManagedThreadId" DataType="{x:Type kmDevLib:ActivationInfo}">
     <TextBlock Text="{Binding ManagedThreadId}"/>
   </DataTemplate>
 
-<DataTemplate x:Key="ActivationInfo.Parameters" DataType="{x:Type analysisAppLib:ActivationInfo}">
+<DataTemplate x:Key="ActivationInfo.Parameters" DataType="{x:Type kmDevLib:ActivationInfo}">
     <ItemsControl ItemsSource="{Binding Parameters}">
       <ItemsControl.Resources>
         <DataTemplate DataType="{x:Type autofac:TypedParameter}">
@@ -82,7 +135,7 @@
       </ItemsControl.ItemsPanel>
     </ItemsControl>
   </DataTemplate>
-  <DataTemplate x:Key="ActivationInfo.Component" DataType="{x:Type analysisAppLib:ActivationInfo}">
+  <DataTemplate x:Key="ActivationInfo.Component" DataType="{x:Type kmDevLib:ActivationInfo}">
     <ContentControl Content="{Binding Component}"/>
   </DataTemplate>
  

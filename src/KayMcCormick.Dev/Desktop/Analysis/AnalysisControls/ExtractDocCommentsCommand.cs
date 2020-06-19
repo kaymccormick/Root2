@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Composition;
 using System.IO;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Markup;
@@ -14,6 +15,7 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Attributes;
 using KayMcCormick.Dev.Command;
+using KmDevLib;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -25,9 +27,20 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public static class ExtractDocCommentsCommand
+    public class ExtractDocCommentsCommand
     {
-        /// <summary>
+    private MyReplaySubject<CodeElementDocumentation> _replay;
+    private readonly MyReplaySubject<Document> _docs;
+
+    public ExtractDocCommentsCommand(MyReplaySubject<CodeElementDocumentation> replay, MyReplaySubject<Document> docs)
+    {
+        replay.ListView = false;
+        docs.ListView = false;
+        _replay = replay;
+        _docs = docs;
+    }
+
+    /// <summary>
         /// 
         /// </summary>
         /// <param name="command"></param>
@@ -38,7 +51,7 @@ namespace AnalysisControls
         [RequiredParameterMetadata("Solution file")]
         [ UsedImplicitly ]
         // ReSharper disable once FunctionComplexityOverflow
-        public static async Task<IAppCommandResult> ProcessSolutionAsync(IBaseLibCommand command, string SolutionFilePath)
+        public async Task<IAppCommandResult> ProcessSolutionAsync(IBaseLibCommand command, string SolutionFilePath)
         {
             //options.WriteIndented = true ;
             var workspace = MSBuildWorkspace.Create ( ) ;
@@ -68,23 +81,14 @@ namespace AnalysisControls
 
                 DebugUtils.WriteLine ( $"{project} {project.CompilationOptions.OutputKind}" ) ;
                 // ReSharper disable once UnusedVariable
-                var compilation = await project.GetCompilationAsync ( ) ;
-                foreach ( var diagnostic in compilation
-                    .GetDiagnostics ( )
-                    .Where (
-                        d => ! d.IsSuppressed
-                             && d.Severity >= DiagnosticSeverity.Info
-                    ) )
-                {
-                    DebugUtils.WriteLine ( diagnostic.ToString ( ) ) ;
-                }
+                var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
 
                 var compilationAssembly = compilation.Assembly ;
-                foreach ( var tn in compilationAssembly.TypeNames )
-                {
-                    DebugUtils.WriteLine ( compilationAssembly.Name ) ;
-                    DebugUtils.WriteLine ( tn ) ;
-                }
+                // foreach ( var tn in compilationAssembly.TypeNames )
+                // {
+                    // DebugUtils.WriteLine ( compilationAssembly.Name ) ;
+                    // DebugUtils.WriteLine ( tn ) ;
+                // }
 
 #if false
                 foreach ( var symbol in compilation.GetSymbolsWithName ( s => true ) )
@@ -188,6 +192,7 @@ namespace AnalysisControls
                 // }
                 foreach ( var doc in project.Documents )
                 {
+                    _docs.Subject1.OnNext(doc);
                     // var textAsync = await doc.GetTextAsync() ;
                     // var classified = await Microsoft.CodeAnalysis.Classification.Classifier.GetClassifiedSpansAsync (
                     // doc
@@ -227,9 +232,9 @@ namespace AnalysisControls
                         if ( declared.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Public
                              || !SupportsDocumentationComments ( node ) )
                         {
-                            DebugUtils.WriteLine (
-                                $"Documentation accessibility is {declared.DeclaredAccessibility}"
-                            ) ;
+                            // DebugUtils.WriteLine (
+                                // $"Documentation accessibility is {declared.DeclaredAccessibility}"
+                            // ) ;
                         }
                         else
                         {
@@ -281,6 +286,7 @@ namespace AnalysisControls
                                     o1.NeedsAttention = true ;
                                 }
 
+                                _replay.Subject1.OnNext(o1);
                                 documentsOut.Add ( o1 ) ;
                             }
                             catch ( Exception ex )

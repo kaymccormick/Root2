@@ -1,4 +1,4 @@
-﻿#if FINDLOGUSAGES
+﻿
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using AnalysisAppLib;
 using AnalysisAppLib.Project;
-using FindLogUsages;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Command;
@@ -82,7 +81,7 @@ namespace AnalysisControls.Commands
 
             // Open document
             var filename = dlg.FileName;
-            var resul2 = await _command.ExecuteAsync(filename);
+            var resul2 = await _command.ExecuteAsync(filename).ConfigureAwait(false);
 
             return resul2;
         }
@@ -113,4 +112,3 @@ namespace AnalysisControls.Commands
         }
     }
 }
-#endif

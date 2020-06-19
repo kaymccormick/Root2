@@ -21,6 +21,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using AnalysisControls.ViewModel;
 using Autofac;
+using KmDevLib;
 using Microsoft.Win32;
 using SyntaxFactory = Microsoft.CodeAnalysis.VisualBasic.SyntaxFactory;
 
@@ -225,13 +226,7 @@ namespace AnalysisControls
                     var file = x.FileName;
                     if (file.ToLowerInvariant().EndsWith(".cs") || file.EndsWith(".vb"))
                     {
-                        // if (ViewModel2.SelectedProject != null)
-                        // {
-                        // ViewModel2.AddDocument(ViewModel2.SelectedProject, file);
-                        // return;
-                        // }
-
-                        Compilation compilation = null;
+		        Compilation compilation = null;
                         SyntaxTree tree;
                         if (file.ToLowerInvariant().EndsWith(".vb"))
                         {

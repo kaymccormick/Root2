@@ -31,6 +31,7 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Threading;
 using AnalysisAppLib;
+using AnalysisAppLib.Syntax;
 using AnalysisAppLib.ViewModel;
 using AnalysisControls.TypeDescriptors;
 using AnalysisControls.ViewModel;
@@ -46,8 +47,10 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Command;
 using KayMcCormick.Dev.Container;
+using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
 using KayMcCormick.Lib.Wpf.Command;
+using KmDevLib;
 using Microsoft.CodeAnalysis.CSharp;
 using Container = Autofac.Core.Container;
 using MethodInfo = AnalysisAppLib.MethodInfo;
@@ -60,6 +63,8 @@ namespace AnalysisControls
     /// </summary>
     public sealed class AnalysisControlsModule : Module
     {
+        private MyReplaySubject<LogEventInstance> _logr;
+
         /// <summary>
         /// </summary>
         /// <param name="builder"></param>
@@ -148,6 +153,9 @@ namespace AnalysisControls
                 kayTypes.Add(type);
             }
 
+            _logr = new MyReplaySubject<LogEventInstance>();
+            builder.RegisterInstance(_logr).AsSelf().AsImplementedInterfaces();
+            builder.RegisterInstance(_logr.Subject1).AsSelf().AsImplementedInterfaces();
             //kayTypes.Clear();
             var xx = new CustomTypes(kayTypes);
             builder.RegisterInstance(xx).OnActivating(args =>
@@ -221,7 +229,8 @@ namespace AnalysisControls
                                     context
                                         .Resolve<
                                             JsonSerializerOptions
-                                        >()
+                                        >(), 
+                                    context.Resolve<MyReplaySubject<AppTypeInfo>>()
                                 );
                         }
                         catch (Exception ex)
@@ -242,6 +251,9 @@ namespace AnalysisControls
                                     context
                                         .Resolve<
                                             JsonSerializerOptions
+                                        >(), context
+                                        .Resolve<
+                                            MyReplaySubject<AppTypeInfo>
                                         >()
                                 );
                             }
@@ -255,12 +267,13 @@ namespace AnalysisControls
                             }
                             catch (Exception)
                             {
-                                return new TypesViewModel(
-                                    context
-                                        .Resolve<
-                                            JsonSerializerOptions
-                                        >()
-                                );
+                                // return new TypesViewModel(
+                                    // context
+                                        // .Resolve<
+                                            // JsonSerializerOptions
+                                        // >()
+                                // );
+                                throw;
                             }
                         }
                     }
@@ -427,7 +440,8 @@ namespace AnalysisControls
             ResourceDictionary resources, Type t =null)
         {
             
-            var lv = new ListView() {Resources = resources};
+            var lv = new ListView() {Resources = resources,};
+            lv.SetValue(ScrollViewer.CanContentScrollProperty, false);
             var gv = new GridView();
             //gv.Columns.Add(new GridViewColumn() {DisplayMemberBinding = new Binding(".")});
             lv.View = gv;
@@ -456,13 +470,15 @@ namespace AnalysisControls
         /// <param name="collection"></param>
         /// <param name="observable"></param>
         /// <param name="resources"></param>
+        /// <param name="xType1"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static ItemsControl ReplayItemsControl<T>(ObservableCollection<T> collection,
-            ReplaySubject<T> observable,
-            ResourceDictionary resources)
+        public static UIElement ReplayItemsControl<T>(ObservableCollection<T> collection,
+            [NotNull] ReplaySubject<T> observable,
+            ResourceDictionary resources, Type xType1)
         {
-            var itemsControl = new ItemsControl {Resources = resources, ItemsSource = collection};
+            if (observable == null) throw new ArgumentNullException(nameof(observable));
+            var itemsControl = new ItemsControl {ItemsSource = collection};
             var props = TypeDescriptor.GetProperties(typeof(T));
             // foreach (PropertyDescriptor prop in props)
             // {
@@ -475,17 +491,23 @@ namespace AnalysisControls
 
             observable.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send).Subscribe(
                 collection.Add);
-            return itemsControl;
+            var d = new DockPanel() { LastChildFill = true };
+            d.Children.Add(new ScrollViewer { Content = itemsControl });
+            return d;
+
+//            return itemsControl;
         }
 
         // ReSharper disable once UnusedMember.Local
-        private static ListBox ReplayListBox<T>(ObservableCollection<T> collection, ReplaySubject<T> observable)
+        private static UIElement ReplayListBox<T>(ObservableCollection<T> collection, ReplaySubject<T> observable)
         {
             var lb = new ListBox {ItemsSource = collection};
 
             observable.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send).Subscribe(
                 item => { collection?.Add(item); });
-            return lb;
+            var d = new DockPanel(){LastChildFill = true};
+            d.Children.Add(new ScrollViewer { Content = lb });
+            return d;
         }
     }
 }

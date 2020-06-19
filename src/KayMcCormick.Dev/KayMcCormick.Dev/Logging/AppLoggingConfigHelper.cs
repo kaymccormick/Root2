@@ -186,7 +186,7 @@ namespace KayMcCormick.Dev.Logging
 
         /// <summary>
         /// </summary>
-        public static MyCacheTarget2 CacheTarget2 { get ; private set ; }
+        public static MyCacheTarget2 CacheTarget2 { get ; set ; }
 
         /// <summary>
         /// </summary>
@@ -496,9 +496,9 @@ namespace KayMcCormick.Dev.Logging
             {
                 _cacheTarget = new MyCacheTarget ( ) ;
                 _dict[ LogLevel.Debug ].Add ( _cacheTarget ) ;
-                CacheTarget2 = new MyCacheTarget2 { Layout = new MyJsonLayout (  ) } ;
-                _dict[ LogLevel.Debug ].Add ( CacheTarget2 ) ;
-            }
+                // CacheTarget2 = new MyCacheTarget2 { Layout = new MyJsonLayout (  ) } ;
+                // _dict[ LogLevel.Debug ].Add ( CacheTarget2 ) ;
+                }
             #endregion
             #region NLogViewer Target
             var viewer = await ViewerAsync ( ) ;
@@ -1223,7 +1223,7 @@ namespace KayMcCormick.Dev.Logging
             }
 
 
-            LogManager.Configuration.AddTarget ( target ) ;
+            LogManager.Configuration.AddTarget ( target.GetType().Name, target ) ;
 
             if ( ! addRules )
             {

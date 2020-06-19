@@ -17,6 +17,7 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Attributes;
 using KayMcCormick.Dev.Command;
+using KmDevLib;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -210,7 +211,7 @@ namespace AnalysisControls
 
             var factory = scope.Resolve<Func<ITypesViewModel>>();
             var r = TypesViewModel_Stage1(out var typesViewModel, db, helper, factory, scope.Resolve<JsonSerializerOptions>());
-            var t2 = new TypesViewModel(r);
+            var t2 = new TypesViewModel(scope.Resolve<MyReplaySubject<AppTypeInfo>>(), r);
             t2.BeginInit();
             t2.EndInit();
             var sts = scope.Resolve<ISyntaxTypesService>();

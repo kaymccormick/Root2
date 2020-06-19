@@ -19,7 +19,7 @@ using KayMcCormick.Dev.Application ;
 using KayMcCormick.Dev.Container ;
 using KayMcCormick.Dev.DataBindingTraceFilter;
 using KayMcCormick.Dev.Logging ;
-
+using KmDevLib;
 using NLog ;
 using NLog.Targets;
 using Application = System.Windows.Application ;
@@ -119,6 +119,20 @@ namespace KayMcCormick.Lib.Wpf
             _applicationInstance.Initialize ( ) ;
             _applicationInstance.Startup ( ) ;
             Scope = _applicationInstance.GetLifetimeScope ( ) ;
+            MyReplaySubject<string> my1=null;
+            try
+            {
+                my1 = Scope.Resolve<MyReplaySubject<string>>();
+            }
+            catch (Exception ex)
+            {
+                DebugUtils.WriteLine(ex.ToString());
+            }
+
+            MyCacheTarget2 t = new MyCacheTarget2(my1);
+            AppLoggingConfigHelper.CacheTarget2 = t;
+            AppLoggingConfigHelper.AddTarget(t, LogLevel.Debug);
+
             var options = Scope.Resolve<JsonSerializerOptions>();
             options.Converters.Add(new JsonConverterLogEventInfo());
             TypeDescriptor.AddProvider(new InstanceInfoProvider(), typeof(InstanceInfo));

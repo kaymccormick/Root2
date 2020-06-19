@@ -148,15 +148,17 @@ namespace AnalysisControls
                 .WithCallerMetadata();
             builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering();
             builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering();
-#if false
+#if true
+            builder.RegisterType<ExtractDocCommentsCommand>();
             builder.Register((c) =>
             {
-                return new OpenFileCommand2(new LambdaAppCommand("Extract docs",
-                    (l, arg) => ExtractDocCommentsCommand.ProcessSolutionAsync(l, (string) arg),
+                var zz = c.Resolve<ExtractDocCommentsCommand>();
+                    return new OpenFileCommand2(new LambdaAppCommand("Extract docs",
+                    async (l, arg) => await zz.ProcessSolutionAsync(l, (string) arg).ConfigureAwait(false),
                     null));
 
             }).AsSelf().AsImplementedInterfaces().WithMetadata("Title", "Extract docs");
-            builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces().WithAttributeFiltering();
+            // builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces().WithAttributeFiltering();
 #endif
             builder.RegisterType<AppCommandTypeConverter>().AsSelf();
             builder.RegisterType<ObjectStringTypeConverter>().AsSelf();

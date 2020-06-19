@@ -17,6 +17,7 @@ using AnalysisAppLib.Xaml ;
 using JetBrains.Annotations ;
 using KayMcCormick.Dev ;
 using KayMcCormick.Dev.Serialization ;
+using KmDevLib;
 using Microsoft.CodeAnalysis ;
 using Microsoft.CodeAnalysis.CSharp ;
 using Microsoft.CodeAnalysis.CSharp.Syntax ;
@@ -34,7 +35,9 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public TypesViewModel ( ) {
+        public TypesViewModel (MyReplaySubject<AppTypeInfo> infos)
+        {
+            this.infos = infos;
         }
 
         private readonly List < AppTypeInfo > _typeInfos ;
@@ -60,7 +63,7 @@ namespace AnalysisControls.ViewModel
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 #else
 #endif
-
+        private MyReplaySubject<AppTypeInfo> infos;
         // ReSharper disable once CollectionNeverUpdated.Local
         private readonly Dictionary < Type , TypeDocInfo > _docs =
             new Dictionary < Type , TypeDocInfo > ( ) ;
@@ -72,13 +75,18 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public TypesViewModel ( List < AppTypeInfo > typeInfos =null) { _typeInfos = typeInfos ; }
+        public TypesViewModel (MyReplaySubject<AppTypeInfo> infos, List < AppTypeInfo > typeInfos =null)
+        {
+            this.infos = infos;
+            _typeInfos = typeInfos ;
+        }
 
         /// <summary>
         /// </summary>
         // ReSharper disable once EmptyConstructor
-        public TypesViewModel ( JsonSerializerOptions options )
+        public TypesViewModel ( JsonSerializerOptions options, MyReplaySubject<AppTypeInfo> infos)
         {
+            this.infos = infos;
             options.WriteIndented = true ;
         }
 
@@ -358,7 +366,10 @@ var mapCount = Map.Count ;
             {
                 PopulateMap ( Root ) ;
             }
-
+            foreach (var appTypeInfo in GetAppTypeInfos())
+            {
+                infos.Subject1.OnNext(appTypeInfo);
+            }
             DetailFields ( ) ;
 
             LoadSyntaxFactoryDocs ( _docs ) ;

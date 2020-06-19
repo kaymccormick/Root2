@@ -403,17 +403,17 @@ namespace AnalysisControls
           , string                              elementId
         )
         {
-            CodeElementDocumentation docElem ;
-            if ( KindType.TryGetValue ( member.Kind ( ) , out var kind1 ) )
-            {
-                docElem = ( CodeElementDocumentation ) Activator.CreateInstance ( kind1 ) ;
-            }
-            else
-            {
-                throw new AppInvalidOperationException (
-                                                     $"Unrecognized member kind {member.Kind ( )}"
-                                                    ) ;
-            }
+            CodeElementDocumentation docElem =  new CodeElementDocumentation();
+            // if ( KindType.TryGetValue ( member.Kind ( ) , out var kind1 ) )
+            // {
+                // docElem = ( CodeElementDocumentation ) Activator.CreateInstance ( kind1 ) ;
+            // }
+            // else
+            // {
+                // throw new AppInvalidOperationException (
+                                                     // $"Unrecognized member kind {member.Kind ( )}"
+                                                    // ) ;
+            // }
 
             if ( docElem != null )
             {

@@ -1,0 +1,9 @@
+public interface IAppRobot {
+Main1Model main1model;
+Main1 main1;
+Main2Mode2 main2model;
+
+public void LoadCode()
+{
+
+}

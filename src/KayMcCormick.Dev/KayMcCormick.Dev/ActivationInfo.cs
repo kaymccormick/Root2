@@ -5,7 +5,7 @@ using System.Threading;
 using Autofac;
 using Autofac.Core;
 
-namespace AnalysisAppLib
+namespace KmDevLib
 {
     /// <summary>
     /// Activation informatio 

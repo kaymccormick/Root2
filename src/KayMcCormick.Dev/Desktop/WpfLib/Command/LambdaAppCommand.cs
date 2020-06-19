@@ -88,29 +88,32 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
-        public override Task<IAppCommandResult> ExecuteAsync(object parameter)
+        public override async Task<IAppCommandResult> ExecuteAsync(object parameter)
         {
             DebugUtils.WriteLine ( nameof(ExecuteAsync)) ;
             Task<IAppCommandResult> task;
+            IAppCommandResult result1;
             if (_commandFuncWithArg != null)
             {
-                task = _commandFuncWithArg(this, parameter);
+                result1 = await _commandFuncWithArg(this, parameter);
             }
             else
             {
-                task = (CommandFunc(this));
+                result1 = await (CommandFunc(this));
             }
-            return  task.ContinueWith(
-                                                     task2 => {
-                                                         if ( task2.IsFaulted )
-                                                         {
-                                                             DebugUtils.WriteLine (
-                                                                                   task2.Exception?.ToString ( )
-                                                                                  ) ;
-                                                         }
+            // return  task.ContinueWith(
+                                                     // task2 => {
+                                                         // if ( task2.IsFaulted )
+                                                         // {
+                                                             // DebugUtils.WriteLine (
+                                                                                   // task2.Exception?.ToString ( )
+                                                                                  // ) ;
+                                                         // }
 
-                                                         return task2.Result ;
-                                                     }) ;
+                                                         // return task2.Result ;
+                                                     // }) ;
+                                                     return result1;
+
         }
 
         /// <summary>

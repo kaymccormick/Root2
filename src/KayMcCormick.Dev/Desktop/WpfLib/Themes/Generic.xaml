@@ -103,7 +103,7 @@
                                 Value="{Binding RelativeSource={RelativeSource TemplatedParent},Path=EndPointY,Mode=TwoWay}"
                         />
               <StackPanel Grid.Column="4" Grid.Row="0" Grid.RowSpan="4" Visibility="Collapsed" x:Name="DebugPanel" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                         TextElement.FontSize="20">
+                         TextElement.FontSize="16">
                 <WrapPanel>
                 <TextBlock Text="Mouse In Rect: "/>
                 <TextBlock Text="{Binding MouseInRectX,StringFormat=N2}"/>

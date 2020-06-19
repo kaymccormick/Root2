@@ -91,6 +91,7 @@ using KayMcCormick.Lib.Wpf;
 using KayMcCormick.Lib.Wpf.Command;
 using KayMcCormick.Lib.Wpf.JSON;
 using KayMcCormick.Lib.Wpf.ViewModel;
+using KmDevLib;
 using KmDevWpfControls;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -1329,19 +1330,19 @@ namespace ProjTests
                 , exception
                     => DebugUtils.WriteLine($"badness: {exception}")
             );
-            c.ExecuteAsync(null)
-                .ContinueWith(
-                    task =>
-                    {
-                        if (task.IsFaulted) DebugUtils.WriteLine("Faulted");
+            // c.ExecuteAsync(null)
+                // .ContinueWith(
+                    // task =>
+                    // {
+                        // if (task.IsFaulted) DebugUtils.WriteLine("Faulted");
 
-                        if (!task.IsCompleted) return;
+                        // if (!task.IsCompleted) return;
 
-                        DebugUtils.WriteLine("completed");
-                        DebugUtils.WriteLine(task.Result.ToString());
-                    }
-                )
-                .Wait(10000);
+                        // DebugUtils.WriteLine("completed");
+                        // DebugUtils.WriteLine(task.Result.ToString());
+                    // }
+                // )
+                // .Wait(10000);
         }
 
         private void SlogMethod(string message)
@@ -1435,7 +1436,7 @@ namespace ProjTests
                 workspaceReplaySubject.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send)
                     .Subscribe(
                         workspace =>
-                        {
+                                {
                             workspace.WorkspaceFailed += (sender, args) =>
                             {
                                 DebugUtils.WriteLine(args.Diagnostic.Message);

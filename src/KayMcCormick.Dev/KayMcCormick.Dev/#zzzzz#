@@ -1,0 +1,28 @@
+Exception thrown: 'Autofac.Core.DependencyResolutionException' in Autofac.dll
+An exception was thrown while activating λ:KmDevLib.MyReplaySubject`1[[System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]] -> AnalysisControls.ViewModel.Main1Model.
+
+<KM> [1;]BaseApp:129[.ctor] Autofac.Core.DependencyResolutionException: An exception was thrown while activating λ:KmDevLib.MyReplaySubject`1[[System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]] -> AnalysisControls.ViewModel.Main1Model.
+ ---> Autofac.Core.DependencyResolutionException: Circular component dependency detected: λ:KmDevLib.MyReplaySubject`1[[System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]] -> AnalysisControls.ViewModel.Main1Model -> λ:KmDevLib.MyReplaySubject`1[[System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]].
+   at Autofac.Core.Resolving.CircularDependencyDetector.CheckForCircularDependency(IComponentRegistration registration, Stack`1 activationStack, Int32 callDepth)
+   at Autofac.Core.Resolving.ResolveOperation.GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request)
+   at Autofac.Core.Resolving.InstanceLookup.ResolveComponent(ResolveRequest request)
+   at Autofac.Core.Activators.Reflection.AutowiringParameter.<>c__DisplayClass0_0.<CanSupplyValue>b__0()
+   at Autofac.Core.Activators.Reflection.ConstructorParameterBinding.Instantiate()
+   at Autofac.Core.Activators.Reflection.ReflectionActivator.ActivateInstance(IComponentContext context, IEnumerable`1 parameters)
+   at Autofac.Core.Resolving.InstanceLookup.CreateInstance(IEnumerable`1 parameters)
+   --- End of inner exception stack trace ---
+   at Autofac.Core.Resolving.InstanceLookup.CreateInstance(IEnumerable`1 parameters)
+   at Autofac.Core.Resolving.InstanceLookup.<Execute>b__8_0()
+   at Autofac.Core.Lifetime.LifetimeScope.CreateSharedInstance(Guid id, Func`1 creator)
+   at Autofac.Core.Lifetime.LifetimeScope.CreateSharedInstance(Guid primaryId, Nullable`1 qualifyingId, Func`1 creator)
+   at Autofac.Core.Resolving.InstanceLookup.Execute()
+   at Autofac.Core.Resolving.ResolveOperation.GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request)
+   at Autofac.Core.Resolving.ResolveOperation.ResolveComponent(ResolveRequest request)
+   at Autofac.Core.Resolving.ResolveOperation.Execute(ResolveRequest request)
+   at Autofac.Core.Lifetime.LifetimeScope.ResolveComponent(ResolveRequest request)
+   at Autofac.ResolutionExtensions.TryResolveService(IComponentContext context, Service service, IEnumerable`1 parameters, Object& instance)
+   at Autofac.ResolutionExtensions.ResolveService(IComponentContext context, Service service, IEnumerable`1 parameters)
+   at Autofac.ResolutionExtensions.Resolve(IComponentContext context, Type serviceType, IEnumerable`1 parameters)
+   at Autofac.ResolutionExtensions.Resolve[TService](IComponentContext context, IEnumerable`1 parameters)
+   at Autofac.ResolutionExtensions.Resolve[TService](IComponentContext context)
+   at KayMcCormick.Lib.Wpf.BaseApp..ctor(ApplicationInstanceBase applicationInstance, Boolean disableLogging, Boolean disableRuntimeConfiguration, Boolean disableServiceHost, IModule[] modules, Action initAction) in C:\Users\jade\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\Desktop\WpfLib\BaseApp.cs:line 125

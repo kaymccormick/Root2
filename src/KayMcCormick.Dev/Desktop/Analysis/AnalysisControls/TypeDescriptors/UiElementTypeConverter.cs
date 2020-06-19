@@ -439,7 +439,7 @@ namespace AnalysisControls.TypeDescriptors
         public virtual UIElement ConvertToUiElement(object value)
         {
             var g = ControlForValue(value, 0);
-            return g;
+            return g;   
         }
 
         public UIElement CreateUiElement()

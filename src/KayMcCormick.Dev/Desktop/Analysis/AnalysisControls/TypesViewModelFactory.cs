@@ -24,7 +24,7 @@ namespace AnalysisControls
                 if (stream == null)
                 {
                     DebugUtils.WriteLine("no stream");
-                    return new TypesViewModel(
+                    return new TypesViewModel(null
                     );
                 }
 
@@ -37,7 +37,7 @@ namespace AnalysisControls
                 }
                 catch (Exception)
                 {
-                    return new TypesViewModel();
+                    return new TypesViewModel(null);
                 }
             }
         }

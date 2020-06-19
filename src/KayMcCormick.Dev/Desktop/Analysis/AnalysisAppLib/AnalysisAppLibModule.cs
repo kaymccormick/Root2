@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Reactive.Subjects;
@@ -12,12 +11,9 @@ using System.Threading.Tasks;
 using AnalysisAppLib.Dataflow;
 using Autofac;
 using Autofac.Core;
-using Autofac.Core.Activators.Delegate;
-using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
 using Autofac.Extras.AttributeMetadata;
 using Autofac.Features.AttributeFilters;
-using Autofac.Features.Decorators;
 using Autofac.Integration.Mef;
 #if FINDLOGUSAGES
 using FindLogUsages ;
@@ -26,6 +22,7 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Container;
 using KayMcCormick.Dev.Logging;
+using KmDevLib;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using Document = Microsoft.CodeAnalysis.Document;
@@ -35,7 +32,7 @@ using Document = Microsoft.CodeAnalysis.Document;
 namespace AnalysisAppLib
 {
     /// <summary>
-    ///     Autofac module for the base Analysis App Lib.
+    ///     Autofac moule for the base Analysis App Lib.
     /// </summary>
     public sealed class AnalysisAppLibModule : IocModule
     {
@@ -43,6 +40,7 @@ namespace AnalysisAppLib
         private bool _registerExplorerTypes = false;
         private readonly ReplaySubject<ActivationInfo> _activations = new ReplaySubject<ActivationInfo>();
         private MyReplaySubjectImpl _act2;
+        private MyReplaySubjectImpl3 _impl3 = new MyReplaySubjectImpl3(){ListView = true};
 
         /// <summary>
         ///     Parameter-less constructor.
@@ -64,7 +62,7 @@ namespace AnalysisAppLib
 
         /// <summary>
         /// </summary>
-        /// <param name="componentRegistry"></param>
+        /// <param nam="componentRegistry"></param>
         /// <param name="registration"></param>
         protected override void AttachToComponentRegistration(
             IComponentRegistryBuilder componentRegistry
@@ -72,6 +70,7 @@ namespace AnalysisAppLib
             , IComponentRegistration registration
         )
         {
+            _impl3.Subject1.OnNext(new RegInfo(registration.Metadata,registration));
             // ReSharper disable once UnusedVariable
             var svc = string.Join("; ", registration.Services.Select(s => s.ToString()));
             // DebugUtils.WriteLine (
@@ -85,8 +84,30 @@ namespace AnalysisAppLib
                     Instance = args.Instance,
                     Component = args.Component,
                     Parameters = args.Parameters,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    
                     Context = args.Context
                 };
+                
                 _act2.Subject1.OnNext(x);
                 _activations.OnNext(x);
             };
@@ -123,9 +144,15 @@ namespace AnalysisAppLib
         /// <param name="builder"></param>
         public override void DoLoad([NotNull] ContainerBuilder builder)
         {
-            builder.RegisterSource<MM>();
+            MyReplaySubjectImpl2 impl2 = new MyReplaySubjectImpl2();
+            builder.RegisterInstance(impl2).AsSelf();
+            builder.RegisterInstance(_impl3).AsSelf();
+            impl2.Subject1.Subscribe(subject => { });
+    impl2.Subject1.OnNext(_impl3);            
+            builder.RegisterSource(new MM(impl2));
             builder.RegisterType<AppDbContext>().As<IAppDbContext1>().AsSelf().WithCallerMetadata().SingleInstance();
             _act2 = new MyReplaySubjectImpl();
+            impl2.Subject1.OnNext(_act2);
             builder.RegisterInstance(_act2).AsSelf().As<IActivationStream>();
             //builder.RegisterType<ResourceNodeInfo>().As<IHierarchicalNode>();
 
@@ -369,99 +396,24 @@ namespace AnalysisAppLib
         }
     }
 
-    public interface IActivationStream : IMySubject
+    internal class MyReplaySubjectImpl3 : MyReplaySubject<RegInfo>
     {
-    }
-
-    public class MyReplaySubject<T> : IMySubject
-    {
-        private ReplaySubject<object> _s1 = new ReplaySubject<object>();
-        private ReplaySubject<T> subject = new ReplaySubject<T>();
-
-        public MyReplaySubject()
+        public MyReplaySubjectImpl3()
         {
-            Type1 = typeof(T);
-            Subject1.Subscribe(obj => ObjectSubject.OnNext(obj));
+            ListView = false;
         }
 
-        public Type Type1 { get; set; }
+    }
 
-        public ReplaySubject<T> Subject1
+    public class RegInfo
+    {
+        public IDictionary<string, object> RegistrationMetadata { get; }
+        public IComponentRegistration Registration { get; }
+
+        public RegInfo(IDictionary<string, object> registrationMetadata, IComponentRegistration registration)
         {
-            get { return subject; }
-            set { subject = value; }
+            RegistrationMetadata = registrationMetadata;
+            Registration = registration;
         }
-
-        public ReplaySubject<object> ObjectSubject
-        {
-            get { return _s1; }
-            set { _s1 = value; }
-        }
     }
-
-    class MyReplaySubjectImpl : MyReplaySubject<ActivationInfo>, IActivationStream
-    {
-    }
-
-    public interface IMySubject
-    {
-        Type Type1 { get; }
-        ReplaySubject<object> ObjectSubject { get; }
-    }
-
-    public class MM : IRegistrationSource
-    {
-        /// <inheritdoc />
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service,
-            Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
-        {
-            if (service is IServiceWithType ss)
-            {
-                if (service is DecoratorService)
-                {
-                    return Enumerable.Empty<IComponentRegistration>();
-                }
-                if (ss.ServiceType.IsGenericType &&
-                    ss.ServiceType.GetGenericTypeDefinition() == typeof(MyReplaySubject<>))
-                {
-                    
-                    var xyz = registrationAccessor.Invoke(service);
-                    var newGuid = Guid.NewGuid();
-                    var delegateActivator = new DelegateActivator(ss.ServiceType,
-                        (c, p) =>
-                        {
-                            Debug.WriteLine($"{registrationAccessor}{xyz}");
-                            var w = c.Resolve<ISubjectWatcher>();
-                            
-                            var instance = Activator.CreateInstance(ss.ServiceType);
-                            w.Subject((IMySubject) instance);
-                            return instance;
-                        });
-                    return new[]
-                    {
-                        new ComponentRegistration(newGuid, delegateActivator, new RootScopeLifetime(), 
-                            InstanceSharing.Shared, InstanceOwnership.OwnedByLifetimeScope, new[] {service,new TypedService(typeof(IMySubject))},
-                            new Dictionary<string, object?>())
-
-                    };
-                }
-
-
-
-
-            }
-
-            return Enumerable.Empty<IComponentRegistration>();
-            }
-
-        /// <inheritdoc />
-        public bool IsAdapterForIndividualComponents { get; }
-    }
-
-    public interface ISubjectWatcher
-    {
-        void Subject(IMySubject x);
-
-    }
-
 }

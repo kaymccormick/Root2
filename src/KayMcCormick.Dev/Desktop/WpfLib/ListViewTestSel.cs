@@ -19,10 +19,11 @@ namespace KayMcCormick.Lib.Wpf
             // if (selectTemplate == null)
             
             object resourceKey = $"{item.GetType().Name}.{_prop.Name}";
-            DebugUtils.WriteLine(resourceKey.ToString());
+            
             var tryFindResource = ((FrameworkElement) container).TryFindResource(resourceKey) as DataTemplate;
             if (tryFindResource == null)
             {
+                DebugUtils.WriteLine(resourceKey.ToString());
                 return ((FrameworkElement)container).TryFindResource("Fallback") as DataTemplate;
             }
             return tryFindResource;
