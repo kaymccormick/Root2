@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <Compile Remove="Program-Parse.cs" />
-    <Compile Remove="Properties\AssemblyInfo.cs" />
     <Compile Remove="PythonControl.xaml.cs" />
   </ItemGroup>
 
