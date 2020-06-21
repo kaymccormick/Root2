@@ -12,7 +12,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using AnalysisControls;
 
-namespace AnalysisControlsCore
+namespace AnalysisControls
 {
     /// <summary>
     /// Interaction logic for Main1UserControl.xaml

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Company>Kay McCormick</Company>
+    <RootNamespace>AnalysisAppLib</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

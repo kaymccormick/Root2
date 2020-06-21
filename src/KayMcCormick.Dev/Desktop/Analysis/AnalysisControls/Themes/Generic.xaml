@@ -8293,7 +8293,7 @@
                             </Grid.ColumnDefinitions>
                             <kmDevWpfControls:CustomTreeView x:Name="TreeView"
                                                              ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Root}" />
-                            <ContentPresenter Content="{Binding ElementName=TreeView,Path=SelectedItem}" Grid.Column="1"/>
+                            <ContentPresenter Content="{Binding ElementName=TreeView,Path=SelectedItem.NodeItem}" Grid.Column="1"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>

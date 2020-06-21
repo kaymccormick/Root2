@@ -25,7 +25,7 @@
                 </analysisControls:RibbonModelTanProviderCollection>
             </analysisControls:RibbonBuilder1.RibbonModelTabProviders>
         </analysisControls:RibbonBuilder1>
-        <Style TargetType="local:Main1UserControl">
+        <Style TargetType="analysisControls:Main1UserControl">
             <Setter Property="analysisControls:Main1.ViewModel" Value="{StaticResource Main1Model}"/>
         </Style>
     </Window.Resources>
@@ -35,7 +35,7 @@
         <Grid.RowDefinitions><RowDefinition MinHeight="180"/><RowDefinition Height="*"/></Grid.RowDefinitions>
             <Ribbon Grid.Row="0" DataContext="{Binding Source={StaticResource RibbonBuilder1},Path=RibbonModel}"/>
             <Border Grid.Row="1" VerticalAlignment="Stretch">
-            <local:Main1UserControl VerticalAlignment="Stretch"/>
+            <analysisControls:Main1UserControl VerticalAlignment="Stretch"/>
             </Border>
 </Grid>
     </Border>
