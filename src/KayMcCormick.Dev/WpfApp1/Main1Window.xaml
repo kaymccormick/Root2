@@ -12,8 +12,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary
-          Source="Client2Global.xaml" />
-                <ResourceDictionary
           Source="pack://application:,,,/AnalysisControlsCore;component/AppRibbonResources.xaml" />
 
                 <ResourceDictionary

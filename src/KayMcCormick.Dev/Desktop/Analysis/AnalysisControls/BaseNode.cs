@@ -12,17 +12,7 @@ namespace AnalysisControls
 {
     public abstract class BaseNode : ITreeViewNode, INotifyPropertyChanged, KmDevWpfControls.IAsyncExpand
     {
-        public object NodeItem
-        {
-            get { return _nodeItem; }
-            set
-            {
-                if (Equals(value, _nodeItem)) return;
-                _nodeItem = value;
-                OnPropertyChanged();
-            }
-        }
-
+        public abstract object NodeItem { get; }
         protected BaseNode()
         {
             _items.Add(new object());

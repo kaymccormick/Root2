@@ -153,6 +153,7 @@ namespace AnalysisControls
                 kayTypes.Add(type);
             }
 
+		kayTypes.Clear();
             _logr = new MyReplaySubject<LogEventInstance>();
             builder.RegisterInstance(_logr).AsSelf().AsImplementedInterfaces();
             builder.RegisterInstance(_logr.Subject1).AsSelf().AsImplementedInterfaces();

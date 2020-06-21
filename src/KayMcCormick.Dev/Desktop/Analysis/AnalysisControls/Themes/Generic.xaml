@@ -18,7 +18,10 @@
     xmlns:syntax1="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLibCore"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:reflection="clr-namespace:System.Reflection;assembly=System.Runtime"
-    xmlns:analysisControl="clr-namespace:AnalysisControl">
+    xmlns:analysisControl="clr-namespace:AnalysisControl"
+    xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KmDevLib"
+    xmlns:lifetime="clr-namespace:Autofac.Core.Lifetime;assembly=Autofac"
+    xmlns:reg="clr-namespace:Autofac.Core.Registration;assembly=Autofac">
     <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
     <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
     <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
@@ -8293,7 +8296,41 @@
                             </Grid.ColumnDefinitions>
                             <kmDevWpfControls:CustomTreeView x:Name="TreeView"
                                                              ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Root}" />
-                            <ContentPresenter Content="{Binding ElementName=TreeView,Path=SelectedItem.NodeItem}" Grid.Column="1"/>
+                            <ContentPresenter Content="{Binding ElementName=TreeView,Path=SelectedItem.NodeItem}" Grid.Column="1">
+                                <ContentPresenter.Resources>
+                                    <DataTemplate DataType="{x:Type lifetime:LifetimeScope}">
+                                        <StackPanel>
+                                            <GroupBox Header="Tag">
+                                                <ContentPresenter Content="{Binding Path=Tag}"/>
+                                            </GroupBox>
+
+                                            <GroupBox Header="Parent">
+                                            <ContentPresenter Content="{Binding Path=ParentLifetimeScope}"/>
+                                            </GroupBox>
+                                        </StackPanel>
+                                    </DataTemplate>
+
+                                    <DataTemplate DataType="{x:Type dev:InstanceInfo}">
+                                        <StackPanel>
+                                            <ContentPresenter Content="{Binding Instance}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+				                                        <DataTemplate DataType="{x:Type reg:ComponentRegistration}">
+                                        <StackPanel>
+                                            <ContentPresenter Content="{Binding Path=Id}"/>
+                                            <ContentPresenter Content="{Binding Path=Activator}"/>
+                                            <GroupBox Header="Metadata"><ItemsControl ItemsSource="{Binding Metadata}"><ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <StackPanel Orientation="Horizontal"><TextBlock Text="{Binding Key}"/>
+                                                                <TextBlock Text="{Binding Value}"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                            </ItemsControl.ItemTemplate></GroupBox>
+                                        </StackPanel>
+                                    </DataTemplate>
+
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
                         </Grid>
                     </Border>
                 </ControlTemplate>

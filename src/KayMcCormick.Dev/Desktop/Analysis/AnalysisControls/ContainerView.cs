@@ -166,6 +166,8 @@ namespace AnalysisControls
 
     public class LifetimeScopeNode : BaseNode
     {
+        public override object NodeItem => LifetimeScope;
+
         /// <inheritdoc />
         public override object Header => $"LifetimeScopoe {LifetimeScope.Tag}";
 
@@ -189,6 +191,8 @@ namespace AnalysisControls
     public class RegNode : BaseNode
     {
         public IComponentRegistration Registration { get; set; }
+
+        public override object NodeItem => Registration;    
 
         /// <inheritdoc />
         public override object Header => Registration.Activator.LimitType.FullName;
@@ -216,6 +220,8 @@ namespace AnalysisControls
 
     public class InstanceNode : BaseNode
     {
+        public override object NodeItem => InstanceInfo;
+
         /// <inheritdoc />
         public override object Header => InstanceInfo.Instance.GetType().FullName;
 
