@@ -31,6 +31,7 @@ using System.Xaml;
 using AnalysisAppLib;
 using AnalysisControl;
 using AnalysisControls;
+using AnalysisControls.TypeDescriptors;
 using AnalysisControlsCore;
 
 using JetBrains.Annotations;
@@ -346,25 +347,35 @@ namespace AnalysisControls.ViewModel
         private void AddInitialDocuments()
         {
             AddtraceConfigurationVoew();
+            AddTest1();
             //            AddModelDoc();
             // AddRibbonModelViewDoc();
             // AddRibbonModelViewDoc1();
             // AddAssembliesDoc();
             //            AddPropertiesGridDoc();
             //AddVisualTreeViewDoc();
-            // AddVisualTreeViewDoc1();
+            AddConrainerView();
             // AddTypeProvider();
-            
+
             // AddPowerShell();
             // AddPowerShell2();
             // ObservableCollection<CodeElementDocumentation> coll = new ObservableCollection<CodeElementDocumentation>();
             // DocModel dm = DocModel.CreateInstance();
             // dm.Content = new ScrollViewer
             // {
-                // Content =
-                    // AnalysisControlsModule.ReplayItemsControl<CodeElementDocumentation>(coll, _r, ControlsResources("templates.baml" ))
+            // Content =
+            // AnalysisControlsModule.ReplayItemsControl<CodeElementDocumentation>(coll, _r, ControlsResources("templates.baml" ))
             // };
             // Documents.Add(dm);
+        }
+
+        private void AddTest1()
+        {
+            GenericInterface3 gi = new GenericInterface3();
+            gi.Instance = ClientViewModel?.PrimaryRibbon;
+            var doc = DocModel.CreateInstance("Generic");
+            doc.Content = gi;
+            AddDocument(doc);
         }
 
         public static ResourceDictionary ControlsResources(string filename)
@@ -408,7 +419,7 @@ namespace AnalysisControls.ViewModel
             // Documents.Add(doc);
         // }
 
-        private void AddVisualTreeViewDoc1()
+        private void AddConrainerView()
         {
             var c = new ContainerView();
             var doc = DocModel.CreateInstance();
@@ -745,7 +756,7 @@ namespace AnalysisControls.ViewModel
 
         public void AddDocument(object doc)
         {
-            if (Dispatcher.CheckAccess())
+            if (Dispatcher == null || Dispatcher.CheckAccess())
             {
                 DocumentsCollection.Add(doc);
             }

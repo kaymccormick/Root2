@@ -2,10 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -21,11 +19,9 @@ using System.Windows.Threading;
 using Autofac;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
-using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Interfaces;
 using KayMcCormick.Lib.Wpf;
-using KmDevWpfControls;
 
 namespace AnalysisControls
 {
@@ -168,74 +164,6 @@ namespace AnalysisControls
         }
     }
 
-    public abstract class BaseNode : ITreeViewNode, INotifyPropertyChanged, KmDevWpfControls.IAsyncExpand
-    {
-        protected BaseNode()
-        {
-            _items.Add(new object());
-            Items = _items;
-        }
-
-        protected bool _isExpanded;
-        private bool _isSelected;
-        private LifetimeScope _lifetimeScope;
-        protected ObservableCollection<object> _items = new ObservableCollection<object>();
-
-        /// <inheritdoc />
-        public abstract object Header { get; }
-
-        /// <inheritdoc />
-        public virtual bool IsExpanded
-        {
-            get { return _isExpanded; }
-        }
-
-        /// <inheritdoc />
-        public virtual IEnumerable Items { get; }
-
-        /// <inheritdoc />
-        public virtual bool IsSelected
-        {
-            get { return _isSelected; }
-            set
-            {
-                if (value == _isSelected) return;
-                _isSelected = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public LifetimeScope LifetimeScope
-        {
-            get { return _lifetimeScope; }
-            set
-            {
-                if (Equals(value, _lifetimeScope)) return;
-                _lifetimeScope = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public IObjectIdProvider IdProvider { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <inheritdoc />
-        public virtual void Collapse()
-        {
-            _isExpanded = false;
-            OnPropertyChanged(nameof(IsExpanded));
-        }
-
-        /// <inheritdoc />
-        public abstract Task ExpandAsync();
-    }
     public class LifetimeScopeNode : BaseNode
     {
         /// <inheritdoc />
