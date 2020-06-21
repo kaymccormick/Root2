@@ -1216,6 +1216,7 @@ namespace KayMcCormick.Dev.Logging
           , bool               addRules = true
         )
         {
+            if (target == null) throw new ArgumentNullException(nameof(target));
             LogAddTarget ( target ) ;
             if ( minLevel == null )
             {

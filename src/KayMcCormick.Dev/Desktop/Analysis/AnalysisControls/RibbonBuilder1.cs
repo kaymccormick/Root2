@@ -161,6 +161,10 @@ namespace AnalysisControls
                             var button = new RibbonModelButton() {Label = cmd.DisplayName, Command = cmdz};
                             Group1.Items.Add(button);
                         }
+                        else
+                        {
+
+                        }
                     }
 
                 var PasteButton = new RibbonModelButton {Label = "Paste", Command = ApplicationCommands.Paste};

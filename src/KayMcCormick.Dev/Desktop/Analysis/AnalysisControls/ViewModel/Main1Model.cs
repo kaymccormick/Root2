@@ -745,13 +745,21 @@ namespace AnalysisControls.ViewModel
 
         public void AddDocument(object doc)
         {
-            DocumentsCollection.Add(doc);
+            if (Dispatcher.CheckAccess())
+            {
+                DocumentsCollection.Add(doc);
+            }
+            else
+            {
+                throw new InvalidOperationException("wrong thread");
+            }
         }
 
         /// <inheritdoc />
         public void SetActiveDocument(object doc)
         {
             ActiveContent = doc;
+            View.DockingManager.ActiveContent = doc;
         }
 
         public void AddAnchorable(object anchorable)
@@ -764,11 +772,12 @@ namespace AnalysisControls.ViewModel
         public void Subject(IMySubject x)
         {
             DocModel dm = DocModel.CreateInstance(x.Title);
+            dm.GroupHeader = "Incoming";
             if (View != null) dm.LargeImageSource = View.TryFindResource("BlueArrowDrawingImage");
-            if(x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(MyReplaySubject<>))
-            {
+            // if(x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(MyReplaySubject<>))
+            // {
                 BindingOperations.SetBinding(dm, DocModel.TitleProperty, new Binding ("Title") { Source = x});
-            }
+            // }
             
             dm.Content = new SubjectView(){Observable = x.ObjectSubject,ItemType = x.Type1};
             // ObservableCollection<object> c=new ObservableCollection<object>();

@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using AnalysisControls;
 using AnalysisControls.ViewModel;
 using KayMcCormick.Dev;
@@ -226,7 +227,12 @@ namespace Client2
 
         public override void WriteLine(string value)
         {
-            ConsoleTerm.Dispatcher.InvokeAsync(() => { ConsoleTerm.WriteLine(DateTime.Now.ToString() + ": " +value); });
+            // if (ConsoleTerm.Dispatcher.CheckAccess())
+            // {
+                // Task.Run(() => ConsoleTerm.WriteLine(DateTime.Now.ToString() + ": " + value));
+                // return;
+            // }
+            ConsoleTerm.Dispatcher.InvokeAsync(() => { ConsoleTerm.WriteLine(DateTime.Now.ToString() + ": " +value); }, DispatcherPriority.Send);
         }
     }
 }

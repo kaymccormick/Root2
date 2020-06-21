@@ -40,6 +40,8 @@ namespace AnalysisControls
         /// </summary>
         public string ContentId { get; set; }
 
+        public string GroupHeader { get; set; }
+
         public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
             "Title", typeof(string), typeof(DocModel), new PropertyMetadata(default(string)));
 

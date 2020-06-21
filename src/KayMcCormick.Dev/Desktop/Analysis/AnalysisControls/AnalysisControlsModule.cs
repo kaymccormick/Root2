@@ -305,6 +305,7 @@ namespace AnalysisControls
 
                     return true;
                 }) {LargeImageSourceKey = imageSource};
+
         }
 
 #pragma warning disable 1998
@@ -315,11 +316,14 @@ namespace AnalysisControls
             var view = x.Item1.Value;
             DebugUtils.WriteLine($"Calling view func ({command})");
             var n = DateTime.Now;
-            var pane1 = x.Item2.Resolve<ReplaySubject<IControlView>>();
-            DebugUtils.WriteLine((DateTime.Now - n).ToString());
-            var props = MetaHelper.GetMetadataProps(x.Item1.Metadata);
+            DocModel doc1 = DocModel.CreateInstance(command.DisplayName);
+            doc1.Content = view.Value;
+            x.Item2.Resolve<IDocumentHost>().AddDocument(doc1);
+            // var pane1 = x.Item2.Resolve<ReplaySubject<IControlView>>();
+            // DebugUtils.WriteLine((DateTime.Now - n).ToString());
+            // var props = MetaHelper.GetMetadataProps(x.Item1.Metadata);
             //var doc = new DocModel {Content = view, Title = props.Title};
-            pane1.OnNext(view.Value);
+            // pane1.OnNext(view.Value);
             DebugUtils.WriteLine("returning success");
             return AppCommandResult.Success;
         }

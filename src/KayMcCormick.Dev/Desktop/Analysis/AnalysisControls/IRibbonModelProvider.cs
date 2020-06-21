@@ -29,6 +29,7 @@ namespace AnalysisControls
     {
         private IDocumentHost docHost;
         private RibbonModelGroup _group;
+        private RibbonModelTab _tab;
 
         public NavigationTabProvider(IDocumentHost docHost)
         {
@@ -37,10 +38,10 @@ namespace AnalysisControls
 
         public RibbonModelTab ProvideModelItem()
         {
-            var tab = new RibbonModelTab();
-            tab.Header = "Navigation";
+            _tab = new RibbonModelTab();
+            _tab.Header = "Navigation";
             _group = new RibbonModelGroup(){Header="Windows"};
-            tab.ItemsCollection.Add(_group);
+            _tab.ItemsCollection.Add(_group);
             if (docHost.Documents is INotifyCollectionChanged cc)
             {
                 foreach (var docHostDocument in docHost.Documents)
@@ -50,7 +51,7 @@ namespace AnalysisControls
 
                 cc.CollectionChanged += CcOnCollectionChanged;
             }
-            return tab;
+            return _tab;
             //var menuButton = new RibbonModelItemMenuButton(){Header=};
         }
 
@@ -88,8 +89,17 @@ namespace AnalysisControls
                 return AppCommandResult.Success;
             }, eNewItem);
             b.Command = lambdaAppCommand.Command;
-            if (eNewItem is DocModel dm) 
+            IRibbonModelGroup g = _group;
+            if (eNewItem is DocModel dm)
             {
+                var h = dm.GroupHeader;
+                g = _tab.ItemsCollection.Where(g => g.Label == dm.GroupHeader).FirstOrDefault();
+                if(g == null)
+                {
+                    g = new RibbonModelGroup(){Label=h};
+                    _tab.ItemsCollection.Add(g);
+                }
+                
                 b.LargeImageSource = dm.LargeImageSource;
                 dm.PropertyChanged += (sender, args) =>
                 {
@@ -115,7 +125,7 @@ namespace AnalysisControls
             }
 
             
-            _group.Items.Add(b);
+            g.Items.Add(b);
         }
     }
 }
