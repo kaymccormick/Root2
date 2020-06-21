@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Markup;
+using JetBrains.Annotations;
 
 namespace AnalysisControls
 {
@@ -9,16 +12,18 @@ namespace AnalysisControls
     /// 
     /// </summary>
     [ContentProperty("Content")]
-    public class DocModel
+    public class DocModel : INotifyPropertyChanged
     {
-        public override string ToString() => Title;
+        private string _title;
+        private bool _isVisible;
+        public override string ToString() => $"<DocModel>: \"{Title}\"";
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public static DocModel CreateInstance()
+        public static DocModel CreateInstance(string Title = null)
         {
-            return new DocModel();
+            return new DocModel(){Title = Title};
         }
 
         /// <summary>
@@ -32,10 +37,21 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public string ContentId { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
-        public string Title { get; set; }
+        public string Title
+        {
+            get { return _title; }
+            set
+            {
+                if (value == _title) return;
+                _title = value;
+                OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -44,10 +60,21 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public DateTime? LastActivationTimeStamp { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
-        public bool IsVisible { get; set; }
+        public bool IsVisible   
+        {
+            get { return _isVisible; }
+            set
+            {
+                if (value == _isVisible) return;
+                _isVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -59,5 +86,12 @@ namespace AnalysisControls
         public virtual IEnumerable ContextualTabGroupHeaders { get; set; } = new ObservableCollection<object>();
 
         public virtual IEnumerable RibbonItems { get;  } = new ObservableCollection<object>();
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

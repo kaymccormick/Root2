@@ -144,7 +144,7 @@ namespace AnalysisControls.TypeDescriptors
         /// <returns></returns>
         public override TypeConverter GetConverter()
         {
-            // DebugUtils.WriteLine("Returning converter for " + Type.FullName);
+             DebugUtils.WriteLine("Returning converter for " + Type.FullName);
             return _uiElementTypeConverter;
         }
 

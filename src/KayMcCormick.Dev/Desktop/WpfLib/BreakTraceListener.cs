@@ -12,6 +12,7 @@
 
 using System;
 using System.Diagnostics;
+using KayMcCormick.Dev;
 
 namespace KayMcCormick.Lib.Wpf
 {
@@ -46,7 +47,7 @@ namespace KayMcCormick.Lib.Wpf
             Debug.WriteLine(message);
             if (DoBreak)
             {
-                throw new InvalidOperationException(message); // invDebugger.Break ( ) ; }
+                throw new AppInvalidOperationException(message); // invDebugger.Break ( ) ; }
             }
         }
     }

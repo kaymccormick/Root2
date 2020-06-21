@@ -156,12 +156,6 @@
       </TextBlock>
     </StackPanel>
   </DataTemplate>
-  <DataTemplate DataType="{x:Type analysisControls:DocModel}">
-    <analysisControls:DocumentView Document="{Binding}"/>
-  </DataTemplate>
-  <DataTemplate DataType="{x:Type analysisControls:AnchorableModel}">
-    <ContentControl Content="{Binding Content}"></ContentControl>
-  </DataTemplate>
   <DataTemplate DataType="{x:Type analysisControls:CodeToolTipContent}">
     <StackPanel Orientation="Vertical">
       <ItemsControl ItemsSource="{Binding Nodes}">

@@ -16,7 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace AnalysisControlsCore
+namespace AnalysisControl
 {
     /// <summary>
     /// Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
@@ -71,6 +71,7 @@ namespace AnalysisControlsCore
         public static readonly DependencyProperty ItemTypeProperty = DependencyProperty.Register(
             "ItemType", typeof(Type), typeof(SubjectView), new PropertyMetadata(default(Type), PropertyChangedCallback2));
 
+        
         private static void PropertyChangedCallback2(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             SubjectView v1 = (SubjectView) d;
@@ -81,6 +82,11 @@ namespace AnalysisControlsCore
         {
             get { return (Type) GetValue(ItemTypeProperty); }
             set { SetValue(ItemTypeProperty, value); }
+        }
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+
         }
         public IObservable<object> Observable
         {
@@ -114,6 +120,24 @@ namespace AnalysisControlsCore
         {
             base.OnApplyTemplate();
             
+        }
+    }
+
+    public class ReplayGridView:GridView
+    {
+        
+        /// <summary>
+        /// Key used to mark the Style of GridView
+        /// </summary>
+        public static object GridViewStyleKey
+        {
+            get { return "xx1"; }
+        }
+
+
+        protected override object DefaultStyleKey
+        {
+            get { return GridViewStyleKey; }
         }
     }
 }

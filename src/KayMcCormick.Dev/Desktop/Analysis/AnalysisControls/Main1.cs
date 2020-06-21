@@ -1,4 +1,5 @@
-﻿using AnalysisAppLib;
+﻿
+using AnalysisAppLib;
 using Autofac.Features.Metadata;
 using AvalonDock;
 using AvalonDock.Layout;
@@ -52,6 +53,10 @@ namespace AnalysisControls
             // DebugUtils.WriteLine($"Arrange input {arrangeBounds} out {outv}");
             return outv;
         }
+        public override void EndInit()
+        {
+            base.EndInit();
+        }
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
@@ -95,7 +100,6 @@ namespace AnalysisControls
             set { SetValue(DocumentsProperty, value); }
         }
 
-        private Main1Model _viewModel;
         private DockingManager _dockingManager;
         private Main1Mode2 _viewModel2;
         private MyReplaySubject<string> r;
@@ -148,6 +152,7 @@ namespace AnalysisControls
             Anchorables = _anchorables;
             SetBinding(DocumentsProperty, new Binding("ViewModel.Documents") {Source = this});
             SetBinding(AnchorablesProperty, new Binding("ViewModel.Anchorables") {Source = this});
+
 
             CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateWorkspace, OnCreateWorkSpaceExecuted,
                 CanExecute));
@@ -205,7 +210,7 @@ namespace AnalysisControls
                         var dp = new DockPanel();
                         dp.Children.Add(new TextBox {Text = json});
                         d.Content = dp;
-                        ViewModel.Documents.Add(d);
+                        ViewModel.AddDocument(d);
                     } catch(Exception ex)
                     {
                         DebugUtils.WriteLine(ex.ToString());
@@ -266,7 +271,7 @@ namespace AnalysisControls
                     var control = controlItem.Value.Value;
                     var doc = DocModel.CreateInstance();
                     doc.Content = control;
-                    main1Model.Documents.Add(doc);
+                    main1Model.AddDocument(doc);
                     main1Model.ActiveContent = doc;
                     break;
                 }
@@ -279,7 +284,7 @@ namespace AnalysisControls
             var doc = DocModel.CreateInstance();
             doc.Title = "Resources";
             doc.Content = new AssemblyResourceTree() {Assembly = a};
-            ViewModel.Documents.Add(doc);
+            ViewModel.AddDocument(doc);
             ViewModel.ActiveContent = doc;
         }
 
@@ -427,22 +432,45 @@ namespace AnalysisControls
             await ViewModel.ProcessDrop(e);
         }
 
-        /// <inheritdoc />
+        public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
+            "ViewModel", typeof(Main1Model), typeof(Main1), new PropertyMetadata(default(Main1Model), PropertyChangedCallback));
+
+        private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((Main1)d).OnViewModelChanged((Main1Model) e.OldValue, (Main1Model) e.NewValue);
+        }
+
+        private void OnViewModelChanged(Main1Model oldValue, Main1Model newValue)
+        {
+            newValue.Dispatcher = Dispatcher;
+            newValue.View = this;
+            DataContext = newValue;
+        }
+
         public Main1Model ViewModel
         {
-            get { return _viewModel; }
-            set
-            {
-                _viewModel = value;
-                DataContext = _viewModel;
-                if (_viewModel != null)
-                {
-                    _viewModel.Dispatcher = Dispatcher;
-                    foreach (var anchorable in _anchorables) _viewModel.Anchorables.Add(anchorable);
+            get { return (Main1Model) GetValue(ViewModelProperty); }
+            set { SetValue(ViewModelProperty, value); }
+        }
 
-                    _viewModel.View = this;
-                }
-            }
+        public static readonly DependencyProperty DockingManagerProperty = DependencyProperty.Register(
+            "DockingManager", typeof(DockingManager), typeof(Main1), new PropertyMetadata(default(DockingManager), PropertyChangedCallback2));
+
+        private static void PropertyChangedCallback2(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((DockingManager) e.NewValue).DocumentClosed += ((Main1) d).HandleDocumentClosed;
+        }
+
+        private void HandleDocumentClosed(object sender, DocumentClosedEventArgs e)
+        {
+            IList c = (IList) DockingManager.DocumentsSource;
+            c.Remove(e.Document.Content);
+        }
+
+        public DockingManager DockingManager
+        {
+            get { return (DockingManager) GetValue(DockingManagerProperty); }
+            set { SetValue(DockingManagerProperty, value); }
         }
     }
 }

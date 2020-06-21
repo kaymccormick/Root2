@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Input;
 using AnalysisControls;
+using AnalysisControlsCore;
 using Autofac;
 using Autofac.Core;
 using Autofac.Features.Metadata;
@@ -123,7 +124,9 @@ namespace Client2
                 MessageBox.Show("Unknown window " + Options.Window, "error");
                 Current.Shutdown(1);
             }
-
+            // var win0 = new Main1Window();
+            //win0.Content = new Main1UserControl();
+            // win0.ShowDialog();
             // var wwww = new Window2();
             // wwww.Show();
             var win = enumerable.First().Value.Value;

@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Reactive.Subjects;
+using System.Windows;
 
 namespace AnalysisControls
 {
@@ -7,9 +9,14 @@ namespace AnalysisControls
     /// </summary>
     public partial class RandoWindow : Window
     {
+        private ReplaySubject<object> s = new ReplaySubject<object>();
         public RandoWindow()
         {
+            
             InitializeComponent();
+            S.Observable = s;
+            S.ItemType = typeof(System.IO.FileInfo);
+            s.OnNext(new FileInfo(@"C:\temp\z"));
         }
     }
 }

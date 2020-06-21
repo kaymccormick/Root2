@@ -29,6 +29,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xaml;
 using AnalysisAppLib;
+using AnalysisControl;
 using AnalysisControls;
 using AnalysisControlsCore;
 
@@ -53,85 +54,109 @@ namespace AnalysisControls.ViewModel
     /// <summary>
     /// 
     /// </summary>
-    public sealed class Main1Model : INotifyPropertyChanged, IDocumentHost, IAnchorableHost, ISubjectWatcher
+    public sealed class Main1Model : DependencyObject, INotifyPropertyChanged,
+        IDocumentHost,
+        IAnchorableHost,
+        ISubjectWatcher
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public object ActiveContent
 
+        public static readonly DependencyProperty CatchphraseProperty = DependencyProperty.Register(
+            "Catchphrase", typeof(string), typeof(Main1Model), new PropertyMetadata(default(string)));
+
+        public string Catchphrase
         {
-            // ReSharper disable once UnusedMember.Global
-            get { return _activeContent; }
-            set
+            get { return (string) GetValue(CatchphraseProperty); }
+            set { SetValue(CatchphraseProperty, value); }
+        }
+        public static readonly DependencyProperty ActiveContentProperty = DependencyProperty.Register(
+            "ActiveContent", typeof(object), typeof(Main1Model), new PropertyMetadata(default(object), PropertyChangedCallback));
+
+        private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((Main1Model) d).OnActiveContentChanged(e.OldValue, e.NewValue);
+        }
+
+        private void OnActiveContentChanged(object eOldValue, object eNewValue)
+        {
+            DebugUtils.WriteLine("new active document is " + eNewValue);
+            OnPropertyChanged(nameof(ActiveContent));
+            if (ClientViewModel != null)
+                if (ClientViewModel.PrimaryRibbon != null)
+                    ClientViewModel.PrimaryRibbon.ActiveContent = _activeContent;
+
+            if (eNewValue is DocModel d)
             {
-                if (Equals(value, _activeContent)) return;
-                var old = _activeContent;
-                _activeContent = value;
-                DebugUtils.WriteLine("new active document is " + _activeContent);
-                OnPropertyChanged(nameof(ActiveContent));
-                if (ClientViewModel != null)
-                    if (ClientViewModel.PrimaryRibbon != null)
-                        ClientViewModel.PrimaryRibbon.ActiveContent = _activeContent;
-
-                if (value is DocModel d)
-                {
-                    foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
-                    foreach (var item in primaryRibbonRibbonItem.Items)
-                        if (item is RibbonModelGroup g)
-                            if (g.Header != null && g.Header.Equals("Context"))
-                            {
-                                g.Items.Clear();
-
-                                foreach (var dRibbonItem in d.RibbonItems) g.Items.Add((RibbonModelItem) dRibbonItem);
-                            }
-
-                    if (old is DocModel dd)
-                    {
-                        var ddContextualTabGroupHeaders = dd.ContextualTabGroupHeaders.Cast<object>();
-                        foreach (var xx in ddContextualTabGroupHeaders.Where(x =>
-                            !ddContextualTabGroupHeaders.Contains(x)))
+                foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
+                foreach (var item in primaryRibbonRibbonItem.Items)
+                    if (item is RibbonModelGroup g)
+                        if (g.Header != null && g.Header.Equals("Context"))
                         {
-                            ContextualTabGroups.Remove(xx);
-                            if (ClientViewModel?.PrimaryRibbon != null)
-                            {
-                                foreach (var primaryRibbonContextualTabGroup in ClientViewModel.PrimaryRibbon
-                                    .ContextualTabGroups)
-                                    if (Equals(primaryRibbonContextualTabGroup.Header, xx))
-                                        primaryRibbonContextualTabGroup.Visibility = Visibility.Collapsed;
+                            g.Items.Clear();
 
-                                foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
-                                    if (Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, xx))
-                                        primaryRibbonRibbonItem.Visibility = Visibility.Collapsed;
-                            }
+                            foreach (var dRibbonItem in d.RibbonItems) g.Items.Add((RibbonModelItem) dRibbonItem);
                         }
-                    }
 
-                    foreach (var header in d.ContextualTabGroupHeaders)
+                if (eOldValue is DocModel dd)
+                {
+                    var ddContextualTabGroupHeaders = dd.ContextualTabGroupHeaders.Cast<object>();
+                    foreach (var xx in ddContextualTabGroupHeaders.Where(x =>
+                        !ddContextualTabGroupHeaders.Contains(x)))
                     {
-                        if (ContextualTabGroups.Contains(header)) continue;
-
-                        DebugUtils.WriteLine("Adding group " + header);
-                        ContextualTabGroups.Add(header);
+                        ContextualTabGroups.Remove(xx);
                         if (ClientViewModel?.PrimaryRibbon != null)
                         {
                             foreach (var primaryRibbonContextualTabGroup in ClientViewModel.PrimaryRibbon
                                 .ContextualTabGroups)
-                                if (Equals(primaryRibbonContextualTabGroup.Header, header))
-                                    primaryRibbonContextualTabGroup.Visibility = Visibility.Visible;
+                                if (Equals(primaryRibbonContextualTabGroup.Header, xx))
+                                    primaryRibbonContextualTabGroup.Visibility = Visibility.Collapsed;
 
                             foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
-                                if (Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, header))
-                                {
-                                    primaryRibbonRibbonItem.Visibility = Visibility.Visible;
-                                    primaryRibbonRibbonItem.OnContextualTabGroupActivated(this,
-                                        new ContextualTabGroupActivatedHandlerArgs(d));
-                                }
+                                if (Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, xx))
+                                    primaryRibbonRibbonItem.Visibility = Visibility.Collapsed;
                         }
                     }
                 }
+
+                foreach (var header in d.ContextualTabGroupHeaders)
+                {
+                    if (ContextualTabGroups.Contains(header)) continue;
+
+                    DebugUtils.WriteLine("Adding group " + header);
+                    ContextualTabGroups.Add(header);
+                    if (ClientViewModel?.PrimaryRibbon != null)
+                    {
+                        foreach (var primaryRibbonContextualTabGroup in ClientViewModel.PrimaryRibbon
+                            .ContextualTabGroups)
+                            if (Equals(primaryRibbonContextualTabGroup.Header, header))
+                                primaryRibbonContextualTabGroup.Visibility = Visibility.Visible;
+
+                        foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
+                            if (Equals(primaryRibbonRibbonItem.ContextualTabGroupHeader, header))
+                            {
+                                primaryRibbonRibbonItem.Visibility = Visibility.Visible;
+                                primaryRibbonRibbonItem.OnContextualTabGroupActivated(this,
+                                    new ContextualTabGroupActivatedHandlerArgs(d));
+                            }
+                    }
+
+
+
+                }
+
             }
         }
+
+
+        public object ActiveContent
+        {
+            get { return (object) GetValue(ActiveContentProperty); }
+            set { SetValue(ActiveContentProperty, value); }
+        }   
+        /// <summary>
+        /// 
+        /// </summary>
+        ///
+        /// 
 
         /// <summary>
         /// 
@@ -219,13 +244,26 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public ObservableCollection<object> Documents
+        public ObservableCollection<object> DocumentsCollection
         {
             get { return _documents; }
             set
             {
                 if (Equals(value, _documents)) return;
                 _documents = value;
+                _documents1 = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Documents));
+            }
+        }
+
+        public IEnumerable Documents
+        {
+            get { return _documents1; }
+            set
+            {
+                if (Equals(value, _documents1)) return;
+                _documents1 = value;
                 OnPropertyChanged();
             }
         }
@@ -240,7 +278,7 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         /// <param name="replay"></param>
-        public Main1Model(ReplaySubject<Workspace> replay, IActivationStream ss, MyReplaySubjectImpl2 impl2)
+        public Main1Model(ReplaySubject<Workspace> replay, IActivationStream ss, MyReplaySubjectImpl2 impl2) :this()
         {
             //JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
             _replay = replay;
@@ -260,39 +298,43 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         public Main1Model()
         {
+
+            DocumentsCollection = new ObservableCollection<object>();
+            Anchorables = new ObservableCollection<object>();
             //_r = r;
             // _aReplaySubject = aReplaySubject;
             // _aReplaySubject.SubscribeOn(Scheduler.Default)
-                // .ObserveOnDispatcher(DispatcherPriority.Background)
-                // .Subscribe(x =>
-                // {
-                    // if (x.Instance.GetType().IsGenericType &&
-                        // x.Instance.GetType().GetGenericTypeDefinition() == typeof(ReplaySubject<>))
-                    // {
-
-                        
-                        // var m = x.InstanceType.GetMethod("Subscribe");
-                        // Subject<object> subj = new Subject<object>();
-                        // Action<object> xxx = (o) => { subj.OnNext(o); };
-                        // m.Invoke(x.Instance, new object[] {xxx});
-                        
-                        // ObservableCollection<object> c = new ObservableCollection<object>();
-                            // var itemsControl = new ItemsControl { Resources = null, 
-                                // ItemsSource = c };
-                            // subj.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send)
-                                // .Subscribe(c.Add);
+            // .ObserveOnDispatcher(DispatcherPriority.Background)
+            // .Subscribe(x =>
+            // {
+            // if (x.Instance.GetType().IsGenericType &&
+            // x.Instance.GetType().GetGenericTypeDefinition() == typeof(ReplaySubject<>))
+            // {
 
 
-                        // var dm = DocModel.CreateInstance();
-                        // dm.Content = itemsControl;
-                        // _documents.Add(dm);
-                    // }
-                // });
+            // var m = x.InstanceType.GetMethod("Subscribe");
+            // Subject<object> subj = new Subject<object>();
+            // Action<object> xxx = (o) => { subj.OnNext(o); };
+            // m.Invoke(x.Instance, new object[] {xxx});
 
-        Documents.CollectionChanged += (sender, args) =>
-            {
-                foreach (var argsNewItem in args.NewItems) Debug.WriteLine(argsNewItem);
-            };
+            // ObservableCollection<object> c = new ObservableCollection<object>();
+            // var itemsControl = new ItemsControl { Resources = null, 
+            // ItemsSource = c };
+            // subj.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send)
+            // .Subscribe(c.Add);
+
+
+            // var dm = DocModel.CreateInstance();
+            // dm.Content = itemsControl;
+            // _documents.Add(dm);
+            // }
+            // });
+
+            if (DocumentsCollection != null)
+                    DocumentsCollection.CollectionChanged += (sender, args) =>
+                    {
+                        foreach (var argsNewItem in args.NewItems) DebugUtils.WriteLine(argsNewItem);
+                    };
         }
 
         private void AddInitialDocuments()
@@ -347,7 +389,7 @@ namespace AnalysisControls.ViewModel
             var doc = DocModel.CreateInstance();
             doc.Title = "PowerShell 0";
             doc.Content = terminal0;
-            Documents.Add(doc);
+            AddDocument(doc);
         }
 
         // private void AddVisualTreeViewDoc()
@@ -365,7 +407,7 @@ namespace AnalysisControls.ViewModel
             var doc = DocModel.CreateInstance();
             doc.Title = "Visual Tree View";
             doc.Content = c;
-            Documents.Add(doc);
+            AddDocument(doc);
         }
 
         private void AddTypeProvider()
@@ -374,7 +416,7 @@ namespace AnalysisControls.ViewModel
             var doc = DocModel.CreateInstance();
             doc.Title = "Type Provider";
             doc.Content = c;
-            Documents.Add(doc);
+            AddDocument(doc);
         }
 
         private void AddRibbonModelViewDoc()
@@ -385,7 +427,7 @@ namespace AnalysisControls.ViewModel
             var doc = DocModel.CreateInstance();
             doc.Title = "MyRibbon Model View";
             doc.Content = c;
-            Documents.Add(doc);
+            AddDocument(doc);
         }
 
         private void AddRibbonModelViewDoc1()
@@ -395,7 +437,7 @@ namespace AnalysisControls.ViewModel
             var doc = DocModel.CreateInstance();
             doc.Title = "MyRibbon Model View";
             doc.Content = c;
-            Documents.Add(doc);
+            AddDocument(doc);
         }
 
         private void AddControlsDoc()
@@ -403,7 +445,7 @@ namespace AnalysisControls.ViewModel
             var item = DocModel.CreateInstance();
             item.Title = "Controls";
             item.Content = new ControlView();
-            Documents.Add(item);
+            AddDocument(item);
         }
 
         private void AddControlsDocq()
@@ -412,7 +454,7 @@ namespace AnalysisControls.ViewModel
             item.Title = "Trace Configuration";
             item.Content = new TraceView {ListenerTypes = new[] {typeof(XmlWriterTraceListener)}};
 
-            Documents.Add(item);
+            AddDocument(item);
         }
 
         private void AddPropertiesGridDoc()
@@ -467,7 +509,7 @@ namespace AnalysisControls.ViewModel
             x.Children.Add(windowsFormsHost);
             var item = DocModel.CreateInstance();
             item.Content = x;
-            Documents.Add(item);
+            AddDocument(item);
         }
 
         private void AddPowerShell()
@@ -482,7 +524,7 @@ namespace AnalysisControls.ViewModel
 
             assembliesDoc.Content = powershell;
 
-            Documents.Add(assembliesDoc);
+            AddDocument(assembliesDoc);
         }
 
         private void AddAssembliesDoc()
@@ -497,7 +539,7 @@ namespace AnalysisControls.ViewModel
             x.Add(ribbonModelItemMenuButton);
             assembliesDoc.Title = "Assemblies";
             assembliesDoc.Content = new AssembliesControl {AssemblySource = AppDomain.CurrentDomain.GetAssemblies()};
-            Documents.Add(assembliesDoc);
+            AddDocument(assembliesDoc);
         }
 
         private void AddModelDoc()
@@ -529,7 +571,7 @@ namespace AnalysisControls.ViewModel
             var item = DocModel.CreateInstance();
             item.Title = "Model";
             item.Content = t1;
-            Documents.Add(item);
+            AddDocument(item);
         }
 
         private void AddInitialAnchorables()
@@ -556,9 +598,11 @@ namespace AnalysisControls.ViewModel
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private IClientModel _clientViewModel;
 
-        private ObservableCollection<object> _documents = new ObservableCollection<object>();
+        private ObservableCollection<object> _documents;
         private ReplaySubject<CodeElementDocumentation> _r;
         private ReplaySubject<ActivationInfo> _aReplaySubject;
+        private IEnumerable _documents1;
+
         /// <summary>
         /// 
         /// </summary>
@@ -657,7 +701,7 @@ namespace AnalysisControls.ViewModel
                 var item = DocModel.CreateInstance();
                 item.Title = "Symbols for " + pm.Name;
                 item.Content = listBox;
-                Documents.Add(item);
+                AddDocument(item);
             }
         }
 
@@ -670,7 +714,7 @@ namespace AnalysisControls.ViewModel
                 var img = new Image {Source = i};
                 var doc = DocModel.CreateInstance();
                 doc.Content = img;
-                Documents.Add(doc);
+                AddDocument(doc);
                 ActiveContent = doc;
             }
 
@@ -694,7 +738,7 @@ namespace AnalysisControls.ViewModel
 
         public void AddDocument(object doc)
         {
-            Documents.Add(doc);
+            DocumentsCollection.Add(doc);
         }
 
         /// <inheritdoc />
@@ -712,7 +756,7 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public void Subject(IMySubject x)
         {
-            DocModel dm = DocModel.CreateInstance();
+            DocModel dm = DocModel.CreateInstance(x.Title);
             dm.Content = new SubjectView(){Observable = x.ObjectSubject,ItemType = x.Type1};
             // ObservableCollection<object> c=new ObservableCollection<object>();
             // if (x.ListView)
@@ -729,7 +773,7 @@ namespace AnalysisControls.ViewModel
 
             // XamlServices.Save(dm.Content);
 
-            Documents.Add(dm);
+            AddDocument(dm);
         }
     }
 

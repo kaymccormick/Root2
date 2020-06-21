@@ -20,19 +20,8 @@ namespace AnalysisControls
         private object _hoverElement;
         private MyRibbon _myRibbon;
 
-        public ClientModel(PrimaryRibbonModel model, ReplaySubject<IControlView> replay)
+        public ClientModel(PrimaryRibbonModel model)
         {
-            replay.SubscribeOn(Scheduler.Default)
-                .ObserveOnDispatcher(DispatcherPriority.Send)
-                .Subscribe(
-                    infos =>
-                    {
-                        var doc = DocModel.CreateInstance();
-                        doc.Content = infos;
-                        Main1Model.Documents.Add(doc);
-                        Main1Model.ActiveContent = doc;
-                    }
-                );
             PrimaryRibbon = model;
         }
 

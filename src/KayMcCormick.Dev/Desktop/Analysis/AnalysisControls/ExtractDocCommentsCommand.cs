@@ -35,9 +35,11 @@ namespace AnalysisControls
     public ExtractDocCommentsCommand(MyReplaySubject<CodeElementDocumentation> replay, MyReplaySubject<Document> docs)
     {
         replay.ListView = false;
+        replay.Title = "Doc Comments";
         docs.ListView = false;
         _replay = replay;
         _docs = docs;
+            _docs.Title = "Roslyn Docs";
     }
 
     /// <summary>

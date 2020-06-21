@@ -7,11 +7,12 @@
         xmlns:analysisControls="clr-namespace:AnalysisControls"
         xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControlsCore"
         xmlns:syntax1="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLibCore"
+        xmlns:analysisControl="clr-namespace:AnalysisControl"
         mc:Ignorable="d"
         Title="RandoWindow" Height="450" Width="800">
     <WrapPanel>
-      <kmDevWpfControls:TablePanel/>
-    <kmDevWpfControls:TablePanel ColumnSpacing="10" Margin="10">
+      <kmDevWpfControls:TablePanel><analysisControl:SubjectView x:Name="S"/></kmDevWpfControls:TablePanel>
+        <kmDevWpfControls:TablePanel ColumnSpacing="10" Margin="10">
       <TextBlock>Test 123</TextBlock>
       <TextBlock>Test 123</TextBlock>
       <Rectangle Width="50" Height="50"/>

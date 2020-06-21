@@ -84,7 +84,7 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// </summary>
         // ReSharper disable once EmptyConstructor
-        public TypesViewModel ( JsonSerializerOptions options, MyReplaySubject<AppTypeInfo> infos)
+        public TypesViewModel ( JsonSerializerOptions options, MyReplaySubject<AppTypeInfo> infos=null)
         {
             this.infos = infos;
             options.WriteIndented = true ;

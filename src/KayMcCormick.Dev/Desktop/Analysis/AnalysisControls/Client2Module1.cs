@@ -143,6 +143,8 @@ namespace AnalysisControls
                 .WithAttributeFiltering();
             builder.RegisterType<CodeTab2>().As<IRibbonModelProvider<RibbonModelTab>>().SingleInstance()
                 .WithAttributeFiltering();
+            builder.RegisterType<NavigationTabProvider>().AsImplementedInterfaces()
+                .WithCallerMetadata();
 
             builder.RegisterType<CodeAnalysisContextualTabGroupProvider>().AsImplementedInterfaces()
                 .WithCallerMetadata();

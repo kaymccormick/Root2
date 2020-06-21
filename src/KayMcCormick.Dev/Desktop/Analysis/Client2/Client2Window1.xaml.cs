@@ -55,7 +55,7 @@ namespace Client2
         public Client2Window1()
         {
             InitializeComponent();
-            ViewModel = new ClientModel(new PrimaryRibbonModel(), new ReplaySubject<IControlView>());
+            ViewModel = new ClientModel(new PrimaryRibbonModel());
         }
 
         public Client2Window1(ILifetimeScope scope, ClientModel viewModel, MyCacheTarget2 myCacheTarget)

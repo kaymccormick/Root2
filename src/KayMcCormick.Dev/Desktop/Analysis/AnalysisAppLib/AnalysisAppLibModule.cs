@@ -401,6 +401,7 @@ namespace AnalysisAppLib
         public MyReplaySubjectImpl3()
         {
             ListView = false;
+            Title = "IOC Registrations";
         }
 
     }

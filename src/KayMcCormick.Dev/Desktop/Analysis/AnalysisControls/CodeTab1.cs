@@ -9,17 +9,15 @@ namespace AnalysisControls
     /// </summary>
     public class CodeTab1 : IRibbonModelProvider<RibbonModelTab>
     {
-        private IEnumerable<IRibbonModelProvider<RibbonModelGroup>> _provs;
-
+      
         /// <summary>
         /// 
         /// </summary>
         /// <param name="provs"></param>
-        public CodeTab1(IEnumerable<IRibbonModelProvider<RibbonModelGroup>> provs)
-        {
-            _provs = provs;
-        }
+       
 
+        public CodeTab1()
+        { }
 
         /// <inheritdoc />
         public RibbonModelTab ProvideModelItem()
