@@ -1,7 +1,13 @@
 ﻿using System.Collections.Specialized;
+
 using System.Linq;
+using System.Windows;
+using System.Windows.Data;
+using System.Windows.Media;
 using AnalysisControls.ViewModel;
 using Autofac;
+using KayMcCormick.Dev.Command;
+using KayMcCormick.Lib.Wpf.Command;
 using RibbonLib.Model;
 
 namespace AnalysisControls
@@ -75,15 +81,40 @@ namespace AnalysisControls
         private void Handle(object eNewItem)
         {
             var label = "";
-            if (eNewItem is DocModel dm)
+            RibbonModelButton b = new RibbonModelButton() { ModelInstance = eNewItem };
+            var lambdaAppCommand = new LambdaAppCommand("", async (command, o) =>
             {
+                docHost.SetActiveDocument(eNewItem);
+                return AppCommandResult.Success;
+            }, eNewItem);
+            b.Command = lambdaAppCommand.Command;
+            if (eNewItem is DocModel dm) 
+            {
+                b.LargeImageSource = dm.LargeImageSource;
+                dm.PropertyChanged += (sender, args) =>
+                {
+                    if (args.PropertyName == "IsActive")
+                    {
+                        if (dm.IsActive)
+                        {
+                            b.Background = Brushes.Gold;
+                            //b.FontSize = 18.0;
+                            b.FontWeight = FontWeights.Bold;
+                        } else
+                        {
+                            b.Background = null;
+                            b.FontWeight = FontWeights.Normal;
+                        }
+                    }
+                };
                 label = dm.Title;
+                BindingOperations.SetBinding(b, RibbonModelItem.LabelProperty, new Binding("Title") {Source = dm});
+            } else
+            {
+                label = eNewItem.ToString();
             }
 
-            if (string.IsNullOrEmpty(label))
-                label = eNewItem.ToString();
-
-            RibbonModelButton b = new RibbonModelButton() {Label = label, ModelInstance = eNewItem};
+            
             _group.Items.Add(b);
         }
     }

@@ -1,27 +1,68 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using AnalysisControls;
 using AnalysisControls.ViewModel;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
 using NLog;
+using Terminal1;
+using WpfTerminalControlLib;
 
 namespace Client2
 {
     internal static class CustomAppEntry
     {
+
+        private static void NewWindowHandler()
+        {
+            Thread newWindowThread = new Thread(new ThreadStart(ThreadStartingPoint));
+            newWindowThread.SetApartmentState(ApartmentState.STA);
+            newWindowThread.IsBackground = true;
+            newWindowThread.Start();
+        }
+
+        private static void ThreadStartingPoint()
+        {
+            WpfTerminalControl consoleTerm = new WpfTerminalControl() { AutoResize = true };
+            TerminalCharacteristics.AddNumRowsChangedEventHandler(consoleTerm, (sender, e) =>
+            {
+                Debug.WriteLine("Rows: " + e.NewValue);
+            });
+            consoleTerm.FontSize = 18.0;
+            consoleTerm.BackgroundColor = ConsoleColor.Black;
+            consoleTerm.ForegroundColor = ConsoleColor.Green;
+            consoleTerm.Background = Brushes.Black;
+            
+            Window consoleWindow = new Window();
+            var grid = new Grid();
+            grid.Children.Add(consoleTerm);
+            consoleWindow.Content = grid;
+            consoleWindow.Show();
+
+            Console.SetOut(new MyConsoleWriter(consoleTerm));
+
+            consoleWindow.Show();
+            System.Windows.Threading.Dispatcher.Run();
+        }
         /// <summary>
         /// Application Entry Point.
         /// </summary>
         [ STAThread ]
         public static void Main ( )
         {
+//            Console.WriteLine("hello");
+
+            NewWindowHandler();
             void RunApp()
             {
                 try
@@ -169,6 +210,23 @@ namespace Client2
         private static void CurrentDomainOnAssemblyLoad(object sender, AssemblyLoadEventArgs args)
         {
             // DebugUtils.WriteLine(args.LoadedAssembly.FullName);
+        }
+    }
+
+    internal class MyConsoleWriter : TextWriter
+    {
+        public WpfTerminalControl ConsoleTerm { get; }
+
+        public MyConsoleWriter(WpfTerminalControl consoleTerm)
+        {
+            ConsoleTerm = consoleTerm;
+        }
+
+        public override Encoding Encoding { get; } = Encoding.UTF8;
+
+        public override void WriteLine(string value)
+        {
+            ConsoleTerm.Dispatcher.InvokeAsync(() => { ConsoleTerm.WriteLine(DateTime.Now.ToString() + ": " +value); });
         }
     }
 }

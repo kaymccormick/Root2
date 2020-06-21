@@ -46,10 +46,16 @@
         <Setter Property="DockingManager">
             <Setter.Value>
                 <avalondock:DockingManager
+                    
                     DocumentsSource="{Binding Path=Documents,Mode=TwoWay}"
                     x:Name="_DockingManager" AnchorablesSource="{Binding Anchorables}"
                     VerticalAlignment="Stretch"
-                    ActiveContent="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.ActiveContent,Mode=TwoWay}">
+                    ActiveContent="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.ActiveContent,Mode=TwoWay,NotifyOnTargetUpdated=True}">
+                    <avalondock:DockingManager.DocumentPaneMenuItemHeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Title}"/>
+                        </DataTemplate>
+                    </avalondock:DockingManager.DocumentPaneMenuItemHeaderTemplate>
                     <avalondock:DockingManager.DocumentHeaderTemplate>
                         <DataTemplate
                             DataType="{x:Type avalondock:LayoutDocument}">
@@ -62,6 +68,10 @@
                             </StackPanel>
                         </DataTemplate>
                     </avalondock:DockingManager.DocumentHeaderTemplate>
+                    <avalondock:DockingManager.DocumentTitleTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Title}"/>
+                        </DataTemplate></avalondock:DockingManager.DocumentTitleTemplate>
                     <avalondock:DockingManager.AnchorableHeaderTemplate>
                         <DataTemplate
                             DataType="{x:Type avalondock:LayoutAnchorable}">

@@ -1,0 +1,10 @@
+﻿<Application x:Class="WpfApp1.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WpfApp1"
+             DispatcherUnhandledException="App_OnDispatcherUnhandledException"
+             StartupUri="pack://application:,,,/AnalysisControlsCore;component/Main1Window.xaml">
+    <Application.Resources>
+         
+    </Application.Resources>
+</Application>

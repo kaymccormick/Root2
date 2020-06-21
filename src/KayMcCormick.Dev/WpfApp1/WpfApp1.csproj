@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="Autofac" Version="5.2.0" />
+    <PackageReference Include="Microsoft.Build.Locator" Version="1.2.6" />
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="3.7.0-2.final" />
+    <PackageReference Include="Autofac.Extras.AttributeMetadata" Version="5.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.7.0-2.final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.7.0-2.final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.7.0-2.final" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\WpfPowershellHost\src\WpfTerminalControlLib\WpfTerminalControlLib.csproj" />
+    <ProjectReference Include="..\..\AvalonDock\source\Components\AvalonDock\AvalonDock.csproj" />
+    <ProjectReference Include="..\..\KmDevWpfControls\KmDevWpfControls\KmDevWpfControlsCore.csproj" />
+    <ProjectReference Include="..\..\RibbonLib\src\RibbonLibCore\RibbonLibCore.csproj" />
+    <ProjectReference Include="..\KayMcCormick.Dev\KmDevLib.csproj" />
+    <ProjectReference Include="..\Desktop\WpfLib\WpfLibCore.csproj" />
+    <ProjectReference Include="..\Desktop\Analysis\AnalysisAppLib\AnalysisAppLibCore.csproj" />
+    <ProjectReference Include="..\Desktop\Analysis\AnalysisControls\AnalysisControlsCore.csproj" />
+  </ItemGroup>
+
+</Project>

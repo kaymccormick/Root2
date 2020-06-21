@@ -37,7 +37,7 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         public TypesViewModel (MyReplaySubject<AppTypeInfo> infos)
         {
-            this.infos = infos;
+            this.InfosReplay = infos;
         }
 
         private readonly List < AppTypeInfo > _typeInfos ;
@@ -63,7 +63,18 @@ namespace AnalysisControls.ViewModel
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 #else
 #endif
-        private MyReplaySubject<AppTypeInfo> infos;
+        public MyReplaySubject<AppTypeInfo> InfosReplay
+        {
+            get { return _infosReplay; }
+            set
+            {
+                if (Equals(value, _infosReplay)) return;
+                _infosReplay = value;
+                _infosReplay.Title = "App Type Infos";
+                OnPropertyChanged();
+            }
+        }
+
         // ReSharper disable once CollectionNeverUpdated.Local
         private readonly Dictionary < Type , TypeDocInfo > _docs =
             new Dictionary < Type , TypeDocInfo > ( ) ;
@@ -71,13 +82,14 @@ namespace AnalysisControls.ViewModel
         private readonly DocumentCollection _documentCollection = new DocumentCollection ( ) ;
         [ CanBeNull ] private readonly object _docInfo = null ;
         private Dictionary<Type, AppTypeInfo> otherTyps = new Dictionary<Type, AppTypeInfo>();
+        private MyReplaySubject<AppTypeInfo> _infosReplay;
 
         /// <summary>
         /// 
         /// </summary>
         public TypesViewModel (MyReplaySubject<AppTypeInfo> infos, List < AppTypeInfo > typeInfos =null)
         {
-            this.infos = infos;
+            this.InfosReplay = infos;
             _typeInfos = typeInfos ;
         }
 
@@ -86,7 +98,7 @@ namespace AnalysisControls.ViewModel
         // ReSharper disable once EmptyConstructor
         public TypesViewModel ( JsonSerializerOptions options, MyReplaySubject<AppTypeInfo> infos=null)
         {
-            this.infos = infos;
+            this.InfosReplay = infos;
             options.WriteIndented = true ;
         }
 
@@ -368,7 +380,7 @@ var mapCount = Map.Count ;
             }
             foreach (var appTypeInfo in GetAppTypeInfos())
             {
-                infos.Subject1.OnNext(appTypeInfo);
+                InfosReplay.Subject1.OnNext(appTypeInfo);
             }
             DetailFields ( ) ;
 

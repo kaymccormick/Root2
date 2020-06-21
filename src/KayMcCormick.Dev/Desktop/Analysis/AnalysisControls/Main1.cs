@@ -368,7 +368,8 @@ namespace AnalysisControls
 
         private void DockingManagerOnActiveContentChanged(object sender, EventArgs e)
         {
-            if (_dockingManager.ActiveContent != null) DebugUtils.WriteLine(_dockingManager.ActiveContent.ToString());
+            if (DockingManager.ActiveContent != null) DebugUtils.WriteLine(DockingManager.ActiveContent.ToString());
+            ViewModel.ActiveContent = DockingManager.ActiveContent;
         }
 
         private async void OnSolutionItemExecutedAsync(object sender, ExecutedRoutedEventArgs e)
@@ -458,7 +459,10 @@ namespace AnalysisControls
 
         private static void PropertyChangedCallback2(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((DockingManager) e.NewValue).DocumentClosed += ((Main1) d).HandleDocumentClosed;
+            var dockingManager = (DockingManager)e.NewValue;
+            var main1 = (Main1) d;
+            dockingManager.DocumentClosed += main1.HandleDocumentClosed;
+            dockingManager.ActiveContentChanged += main1.DockingManagerOnActiveContentChanged;
         }
 
         private void HandleDocumentClosed(object sender, DocumentClosedEventArgs e)

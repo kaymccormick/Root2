@@ -256,7 +256,7 @@ namespace AnalysisControls
                                 XDocument doc1 = null ;
                                 if ( ! String.IsNullOrWhiteSpace ( xml1 ) )
                                 {
-                                    doc1 = XDocument.Parse ( xml1 ) ;
+                                            doc1 = XDocument.Parse ( xml1 ) ;
                                 }
 
                                 CodeElementDocumentation o1 ;

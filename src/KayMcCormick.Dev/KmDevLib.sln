@@ -21,11 +21,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfTerminalControlLib", "..
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client2Core", "Desktop\Analysis\Client2\Client2Core.csproj", "{CB18A238-0712-46B4-9FB1-8CE25C83888C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreTest1", "Tests\NetCoreTest1\NetCoreTest1.csproj", "{11E23261-4BB6-46B6-BF58-A05EE5F55DEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreTest1", "Tests\NetCoreTest1\NetCoreTest1.csproj", "{11E23261-4BB6-46B6-BF58-A05EE5F55DEC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfTestApp", "..\..\..\WpfPowershellHost\src\Test\WpfTestApp\WpfTestApp.csproj", "{7F6568E5-2A5F-4A8E-96F9-5FEA4577C431}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjTestsCore", "Tests\ProjTests\ProjTestsCore.csproj", "{76734411-D15C-4C12-B970-E2A23EADA840}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp1", "WpfApp1\WpfApp1.csproj", "{730CE047-8794-489A-A72F-3F2298C0F174}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -181,6 +183,18 @@ Global
 		{76734411-D15C-4C12-B970-E2A23EADA840}.Release|x64.Build.0 = Release|Any CPU
 		{76734411-D15C-4C12-B970-E2A23EADA840}.Release|x86.ActiveCfg = Release|Any CPU
 		{76734411-D15C-4C12-B970-E2A23EADA840}.Release|x86.Build.0 = Release|Any CPU
+		{730CE047-8794-489A-A72F-3F2298C0F174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{730CE047-8794-489A-A72F-3F2298C0F174}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{730CE047-8794-489A-A72F-3F2298C0F174}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{730CE047-8794-489A-A72F-3F2298C0F174}.Debug|x64.Build.0 = Debug|Any CPU
+		{730CE047-8794-489A-A72F-3F2298C0F174}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{730CE047-8794-489A-A72F-3F2298C0F174}.Debug|x86.Build.0 = Debug|Any CPU
+		{730CE047-8794-489A-A72F-3F2298C0F174}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{730CE047-8794-489A-A72F-3F2298C0F174}.Release|Any CPU.Build.0 = Release|Any CPU
+		{730CE047-8794-489A-A72F-3F2298C0F174}.Release|x64.ActiveCfg = Release|Any CPU
+		{730CE047-8794-489A-A72F-3F2298C0F174}.Release|x64.Build.0 = Release|Any CPU
+		{730CE047-8794-489A-A72F-3F2298C0F174}.Release|x86.ActiveCfg = Release|Any CPU
+		{730CE047-8794-489A-A72F-3F2298C0F174}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

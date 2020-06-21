@@ -808,7 +808,7 @@ namespace KayMcCormick.Dev.Logging
 
             var task = Task.Run ( Function ) ;
 
-            Task.WaitAll(task);
+            //Task.WaitAll(task);
             return;
         }
 

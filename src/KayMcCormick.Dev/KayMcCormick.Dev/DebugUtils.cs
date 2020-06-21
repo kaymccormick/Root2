@@ -25,12 +25,14 @@ namespace KayMcCormick.Dev
             [CallerMemberName] string callerMemberName = "", [CallerLineNumber] int lineno = 0)
 
         {
+            
             if ((DisplayCatgories & cat) != cat)
                 return;
             var fn = Path.GetFileNameWithoutExtension ( filename ) ;
             var id = Thread.CurrentThread.ManagedThreadId ;
+            Console.WriteLine(line);
             var taskId = Task.CurrentId ;
-            Debug.WriteLine ( $"<KM> [{id};{taskId}]{fn}:{lineno}[{callerMemberName}] {line}" ) ;
+            //Debug.WriteLine ( $"<KM> [{id};{taskId}]{fn}:{lineno}[{callerMemberName}] {line}" ) ;
         }
 
         public static DebugCategory DisplayCatgories { get; set; } = DebugCategory.Misc | DebugCategory.DataBinding | DebugCategory.Ribbon;

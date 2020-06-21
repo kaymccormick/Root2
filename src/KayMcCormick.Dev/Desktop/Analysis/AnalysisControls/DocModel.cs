@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Markup;
 using JetBrains.Annotations;
 
@@ -12,10 +13,11 @@ namespace AnalysisControls
     /// 
     /// </summary>
     [ContentProperty("Content")]
-    public class DocModel : INotifyPropertyChanged
+    public class DocModel : DependencyObject, INotifyPropertyChanged
     {
         private string _title;
         private bool _isVisible;
+        private bool _isActive;
         public override string ToString() => $"<DocModel>: \"{Title}\"";
         /// <summary>
         /// 
@@ -38,18 +40,13 @@ namespace AnalysisControls
         /// </summary>
         public string ContentId { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
+            "Title", typeof(string), typeof(DocModel), new PropertyMetadata(default(string)));
+
         public string Title
         {
-            get { return _title; }
-            set
-            {
-                if (value == _title) return;
-                _title = value;
-                OnPropertyChanged();
-            }
+            get { return (string) GetValue(TitleProperty); }
+            set { SetValue(TitleProperty, value); }
         }
 
         /// <summary>
@@ -86,6 +83,20 @@ namespace AnalysisControls
         public virtual IEnumerable ContextualTabGroupHeaders { get; set; } = new ObservableCollection<object>();
 
         public virtual IEnumerable RibbonItems { get;  } = new ObservableCollection<object>();
+
+        public bool IsActive
+        {
+            get { return _isActive; }
+            set
+            {
+                if (value == _isActive) return;
+                _isActive = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public object LargeImageSource { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]

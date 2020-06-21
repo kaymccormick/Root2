@@ -402,6 +402,25 @@
     BaseUri="pack://application:,,,/WpfLib;component/"
     UriSource="Assets/Document.ico"
     x:Key="DocumentIcon" />
-  <system:Double x:Key="DefaultFontSize">24</system:Double>
+  <DrawingImage x:Key="BlueArrowDrawingImage">
+      <DrawingImage.Drawing>
+          <DrawingGroup ClipGeometry="M0,0 V30 H30 V0 H0 Z">
+              <DrawingGroup Opacity="1">
+                  <DrawingGroup Opacity="1" Transform="-1,0,0,1,30,0">
+                      <GeometryDrawing Brush="#FF204A87" Geometry="F1 M30,30z M0,0z M12.5,2.5625C11.469289,2.6596416,10.683036,3.5272309,10.6875,4.5625L10.6875,7.1875 3.375,7.1875C2.2704762,7.1876104,1.3751104,8.0829762,1.375,9.1875L1.375,20.8125C1.3751104,21.917024,2.2704762,22.81239,3.375,22.8125L10.6875,22.8125 10.6875,25.4375C10.68761,26.542024,11.582976,27.43739,12.6875,27.4375L15,27.4375C15.454258,27.437839,15.895101,27.283544,16.25,27L27.875,17.71875C28.349387,17.338899,28.625351,16.763975,28.625,16.15625L28.625,13.84375C28.625351,13.236025,28.349387,12.661101,27.875,12.28125L16.25,3C15.895101,2.7164562,15.454258,2.562161,15,2.5625L12.6875,2.5625C12.625034,2.559569,12.562466,2.559569,12.5,2.5625z" />
+                      <GeometryDrawing Geometry="F1 M30,30z M0,0z M13.3125,5.1875L13.3125,9.1875C13.312465,9.5326637,13.032664,9.8124655,12.6875,9.8125L4,9.8125 4,20.1875 12.6875,20.1875C13.032664,20.187535,13.312465,20.467336,13.3125,20.8125L13.3125,24.8125 14.78125,24.8125 26,15.84375 26,14.15625 14.78125,5.1875 13.3125,5.1875z">
+                          <GeometryDrawing.Brush>
+                              <LinearGradientBrush StartPoint="13,11" EndPoint="23,21" MappingMode="Absolute" SpreadMethod="Pad" Opacity="1">
+                                  <GradientStop Color="#FF82AAD5" Offset="0" />
+                                  <GradientStop Color="#FF366AA2" Offset="1" />
+                              </LinearGradientBrush>
+                          </GeometryDrawing.Brush>
+                      </GeometryDrawing>
+                  </DrawingGroup>
+              </DrawingGroup>
+          </DrawingGroup>
+      </DrawingImage.Drawing>
+  </DrawingImage>
+    <system:Double x:Key="DefaultFontSize">24</system:Double>
 
 </ResourceDictionary>

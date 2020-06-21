@@ -79,13 +79,18 @@ namespace AnalysisControls.ViewModel
         private void OnActiveContentChanged(object eOldValue, object eNewValue)
         {
             DebugUtils.WriteLine("new active document is " + eNewValue);
-            OnPropertyChanged(nameof(ActiveContent));
             if (ClientViewModel != null)
                 if (ClientViewModel.PrimaryRibbon != null)
                     ClientViewModel.PrimaryRibbon.ActiveContent = _activeContent;
 
+            if (eOldValue is DocModel dd0)
+            {
+                dd0.IsActive = false;
+            }
+
             if (eNewValue is DocModel d)
             {
+                d.IsActive = true;
                 foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
                 foreach (var item in primaryRibbonRibbonItem.Items)
                     if (item is RibbonModelGroup g)
@@ -98,6 +103,7 @@ namespace AnalysisControls.ViewModel
 
                 if (eOldValue is DocModel dd)
                 {
+                    dd.IsActive = false;
                     var ddContextualTabGroupHeaders = dd.ContextualTabGroupHeaders.Cast<object>();
                     foreach (var xx in ddContextualTabGroupHeaders.Where(x =>
                         !ddContextualTabGroupHeaders.Contains(x)))
@@ -333,23 +339,24 @@ namespace AnalysisControls.ViewModel
             if (DocumentsCollection != null)
                     DocumentsCollection.CollectionChanged += (sender, args) =>
                     {
-                        foreach (var argsNewItem in args.NewItems) DebugUtils.WriteLine(argsNewItem);
+                        //foreach (var argsNewItem in args.NewItems) DebugUtils.WriteLine(argsNewItem);
                     };
         }
 
         private void AddInitialDocuments()
         {
+            AddtraceConfigurationVoew();
             //            AddModelDoc();
-            AddRibbonModelViewDoc();
-            AddRibbonModelViewDoc1();
-            AddAssembliesDoc();
+            // AddRibbonModelViewDoc();
+            // AddRibbonModelViewDoc1();
+            // AddAssembliesDoc();
             //            AddPropertiesGridDoc();
             //AddVisualTreeViewDoc();
-            AddVisualTreeViewDoc1();
-            AddTypeProvider();
-            AddControlsDocq();
-            AddPowerShell();
-            AddPowerShell2();
+            // AddVisualTreeViewDoc1();
+            // AddTypeProvider();
+            
+            // AddPowerShell();
+            // AddPowerShell2();
             // ObservableCollection<CodeElementDocumentation> coll = new ObservableCollection<CodeElementDocumentation>();
             // DocModel dm = DocModel.CreateInstance();
             // dm.Content = new ScrollViewer
@@ -405,7 +412,7 @@ namespace AnalysisControls.ViewModel
         {
             var c = new ContainerView();
             var doc = DocModel.CreateInstance();
-            doc.Title = "Visual Tree View";
+            doc.Title = "Container View";
             doc.Content = c;
             AddDocument(doc);
         }
@@ -435,7 +442,7 @@ namespace AnalysisControls.ViewModel
             var c = new DropControl();
             //c.SetBinding(RibbonModelView.RibbonModelProperty, new Binding("ClientViewModel.PrimaryRibbon") { Source = this });
             var doc = DocModel.CreateInstance();
-            doc.Title = "MyRibbon Model View";
+            doc.Title = "Drop Debug";
             doc.Content = c;
             AddDocument(doc);
         }
@@ -448,7 +455,7 @@ namespace AnalysisControls.ViewModel
             AddDocument(item);
         }
 
-        private void AddControlsDocq()
+        private void AddtraceConfigurationVoew()
         {
             var item = DocModel.CreateInstance();
             item.Title = "Trace Configuration";
@@ -757,6 +764,12 @@ namespace AnalysisControls.ViewModel
         public void Subject(IMySubject x)
         {
             DocModel dm = DocModel.CreateInstance(x.Title);
+            if (View != null) dm.LargeImageSource = View.TryFindResource("BlueArrowDrawingImage");
+            if(x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(MyReplaySubject<>))
+            {
+                BindingOperations.SetBinding(dm, DocModel.TitleProperty, new Binding ("Title") { Source = x});
+            }
+            
             dm.Content = new SubjectView(){Observable = x.ObjectSubject,ItemType = x.Type1};
             // ObservableCollection<object> c=new ObservableCollection<object>();
             // if (x.ListView)

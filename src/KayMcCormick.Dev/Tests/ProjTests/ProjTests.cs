@@ -303,7 +303,7 @@ namespace ProjTests
         [WpfFact]
         public void TestXaml2()
         {
-            var model = new TypesViewModel(new JsonSerializerOptions());
+            var model = new TypesViewModel(new JsonSerializerOptions(), new MyReplaySubject<AppTypeInfo>());
             var output = new StringWriter();
             Action<string> writeOut = output.WriteLine;
             var pu = new ProxyUtils(writeOut, ProxyUtilsBase.CreateInterceptor(writeOut));
@@ -1435,7 +1435,7 @@ namespace ProjTests
                 var lv = AnalysisControlsModule.ReplayListView(progresses, progress, oo);
                 workspaceReplaySubject.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send)
                     .Subscribe(
-                        workspace =>
+                            workspace =>
                                 {
                             workspace.WorkspaceFailed += (sender, args) =>
                             {
@@ -2051,7 +2051,7 @@ namespace ProjTests
                 if (stream == null)
                 {
                     DebugUtils.WriteLine("no stream");
-                    return new TypesViewModel(
+                    return new TypesViewModel(null
                     );
                 }
 
@@ -2064,7 +2064,7 @@ namespace ProjTests
                 }
                 catch (Exception)
                 {
-                    return new TypesViewModel();
+                    return new TypesViewModel(null);
                 }
             }
         }
@@ -2896,6 +2896,14 @@ namespace ProjTests
         }
 
         [WpfFact]
+        public void TestMain11()
+        {
+            Window w = new Window();
+            w.Content = new Main1();
+            w.ShowDialog();
+        }
+
+        [WpfFact]
         public void T1()
         {
             var assemblies = new[]
@@ -2945,29 +2953,6 @@ namespace ProjTests
         private void TdOnTraceListenerCreated(object sender, TraceListenerCreatedEventArgs e)
         {
             if (e.Instance is TestListener t) _elementTextFormatterControl.Source = t.Elements;
-        }
-    }
-
-    public class NullDrawer : ILineDrawer
-    {
-        /// <inheritdoc />
-        public void PrepareDrawLines(LineContext lineContext, bool clear)
-        {
-        }
-
-        /// <inheritdoc />
-        public void PrepareDrawLine(LineContext lineContext)
-        {
-        }
-
-        /// <inheritdoc />
-        public void DrawLine(LineContext lineContext)
-        {
-        }
-
-        /// <inheritdoc />
-        public void EndDrawLines(LineContext lineContext)
-        {
         }
     }
 
