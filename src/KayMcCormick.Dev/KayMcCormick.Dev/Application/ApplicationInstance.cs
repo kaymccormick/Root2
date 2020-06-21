@@ -748,7 +748,7 @@ scope.ResolveOperationBeginning += OnResolveOperationBeginning;
                 .AsSelf()
                 .AsImplementedInterfaces()
                 .WithAttributedMetadata()
-                .WithAttributeFiltering().WithCallerMetadata().WithMetadata();
+                .WithAttributeFiltering().WithCallerMetadata();
             if (AppLoggingConfigHelper.CacheTarget2 != null)
                 builder.RegisterInstance(AppLoggingConfigHelper.CacheTarget2)
                     .WithMetadata("Description", "Cache target")

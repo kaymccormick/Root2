@@ -184,7 +184,7 @@ namespace AnalysisControls
                         { LifetimeScope = scopes.Pop(), IdProvider = _objectIdprovider });
                     }
                     Dictionary<string,object> d = new Dictionary<string, object>();
-                    foreach (var reg in ((ILifetimeScope)_list[0]).ComponentRegistry.Registrations)
+                    foreach (var reg in ((LifetimeScopeNode)_list[0]).LifetimeScope.ComponentRegistry.Registrations)
                     {
                         foreach (var metadataKey in reg.Metadata.Keys)
                         {
