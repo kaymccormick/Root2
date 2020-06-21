@@ -204,6 +204,14 @@ namespace KayMcCormick.Lib.Wpf
                 "Convert to JSON"
                 , nameof(ConvertToJson)
                 , typeof(WpfAppCommands)
+
             );
+        public static readonly RoutedUICommand ResolveComponent =
+     new RoutedUICommand(
+         "resolve component"
+         , nameof(ResolveComponent)
+         , typeof(WpfAppCommands)
+     );
+
     }
 }

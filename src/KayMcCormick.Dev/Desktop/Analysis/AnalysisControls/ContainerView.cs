@@ -62,6 +62,20 @@ namespace AnalysisControls
         {
             CommandBindings.Add(new CommandBinding(KmDevWpfControls.CustomTreeView.ToggleNodeIsExpanded,
                 OnExpandNodeExecutedAsync));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.ResolveComponent, Exec));
+
+        }
+
+        private void Exec(object sender, ExecutedRoutedEventArgs e)
+        {
+            IComponentRegistration r = (IComponentRegistration)e.Parameter;
+            DebugUtils.WriteLine($"{r}");
+            var comp = Root.Cast<LifetimeScopeNode>().First().LifetimeScope.Resolve(((TypedService)r.Services.First()).ServiceType);
+            if (e.Source is Border bd)
+            {
+                bd.Child = new ContentPresenter() { Content = comp };
+            }
+
 
         }
 
@@ -69,7 +83,7 @@ namespace AnalysisControls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            _treeView = (KmDevWpfControls.CustomTreeView) GetTemplateChild("TreeView");
+            _treeView = (KmDevWpfControls.CustomTreeView)GetTemplateChild("TreeView");
         }
 
         private async void OnExpandNodeExecutedAsync(object sender, ExecutedRoutedEventArgs e)
@@ -109,7 +123,7 @@ namespace AnalysisControls
 
         private static void LifetimeScopeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((ContainerView) d).OnLifetimeScopeChanged((ILifetimeScope) e.OldValue, (ILifetimeScope) e.NewValue);
+            ((ContainerView)d).OnLifetimeScopeChanged((ILifetimeScope)e.OldValue, (ILifetimeScope)e.NewValue);
         }
 
         public static readonly DependencyProperty RootProperty = DependencyProperty.Register(
@@ -120,13 +134,13 @@ namespace AnalysisControls
 
         public IEnumerable Root
         {
-            get { return (IEnumerable) GetValue(RootProperty); }
+            get { return (IEnumerable)GetValue(RootProperty); }
             set { SetValue(RootProperty, value); }
         }
 
         private static void OnRootChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((ContainerView) d).OnRootChanged((IEnumerable) e.OldValue, (IEnumerable) e.NewValue);
+            ((ContainerView)d).OnRootChanged((IEnumerable)e.OldValue, (IEnumerable)e.NewValue);
         }
 
 
@@ -138,7 +152,7 @@ namespace AnalysisControls
 
         protected virtual void OnLifetimeScopeChanged(ILifetimeScope eOldValue, ILifetimeScope eNewValue)
         {
-            if(eNewValue != null)
+            if (eNewValue != null)
             {
                 if (eNewValue is LifetimeScope s)
                 {
@@ -153,10 +167,21 @@ namespace AnalysisControls
                     var _list = new ObservableCollection<object>();
                     Root = _list;
                     _objectIdprovider = eNewValue.Resolve<IObjectIdProvider>();
+                    var r = scopes.Peek().ComponentRegistry.Registrations;
+                    var keys = r.SelectMany(z => z.Metadata.Keys).Distinct();
+                    foreach (var k in keys)
+                    {
+                        foreach (var c in r.Where(r1 => r1.Metadata.ContainsKey(k)))
+                        {
+                            DebugUtils.WriteLine($"{c} - {k} - {c.Metadata[k]}]");
+
+                        }
+                    }
+
                     while (scopes.Any())
                     {
                         _list.Add(new LifetimeScopeNode()
-                            {LifetimeScope = scopes.Pop(), IdProvider = _objectIdprovider});
+                        { LifetimeScope = scopes.Pop(), IdProvider = _objectIdprovider });
                     }
 
                 }
@@ -177,9 +202,9 @@ namespace AnalysisControls
             _items.Clear();
             foreach (var reg in LifetimeScope.ComponentRegistry.Registrations)
             {
-                var node = new RegNode() {Registration = reg, LifetimeScope = LifetimeScope,IdProvider = IdProvider};
+                var node = new RegNode() { Registration = reg, LifetimeScope = LifetimeScope, IdProvider = IdProvider };
                 _items.Add(node);
-                
+
             }
 
             _isExpanded = true;
@@ -192,7 +217,7 @@ namespace AnalysisControls
     {
         public IComponentRegistration Registration { get; set; }
 
-        public override object NodeItem => Registration;    
+        public override object NodeItem => Registration;
 
         /// <inheritdoc />
         public override object Header => Registration.Activator.LimitType.FullName;
@@ -207,7 +232,9 @@ namespace AnalysisControls
                 {
                     _items.Add(new InstanceNode()
                     {
-                        LifetimeScope = LifetimeScope, IdProvider = IdProvider, Registration = Registration,
+                        LifetimeScope = LifetimeScope,
+                        IdProvider = IdProvider,
+                        Registration = Registration,
                         InstanceInfo = instanceInfo
                     });
                 }

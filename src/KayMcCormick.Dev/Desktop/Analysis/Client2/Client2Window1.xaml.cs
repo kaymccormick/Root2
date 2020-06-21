@@ -40,6 +40,21 @@ namespace Client2
         static Client2Window1()
         {
             Window.WindowStateProperty.OverrideMetadata(typeof(Client2Window1), new FrameworkPropertyMetadata((object) WindowState.Normal, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(_OnWindowStateChanged), new CoerceValueCallback(CoerceWindowState)));
+	                AttachedProperties.LifetimeScopeProperty.OverrideMetadata(typeof(Client2Window1), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits, null, CoerceLifetimeScope));
+        }
+
+
+        private static object CoerceLifetimeScope(DependencyObject d, object basevalue)
+        {
+            var vs = DependencyPropertyHelper.GetValueSource(d, AttachedProperties.LifetimeScopeProperty);
+            var lifetimeScope = (ILifetimeScope)basevalue;
+            if (lifetimeScope.Tag == "Client2Window1")
+            {
+                return lifetimeScope;
+            }
+            var win = (Client2Window1) d;
+            var coerceLifetimeScope = lifetimeScope.BeginLifetimeScope("Client2Window1");
+            return coerceLifetimeScope;
         }
 
         private static void _OnWindowStateChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

@@ -670,7 +670,7 @@ namespace AnalysisControls.ViewModel
             Compilation = compilation;
             var model = Compilation?
                 .GetSemanticModel(SyntaxTree);
-            CodeControl  = new FormattedTextControl()
+            CodeControl  = new FormattedTextControl3()
             {
                 SyntaxTree = syntaxTree,
                 Compilation = compilation,
@@ -686,7 +686,7 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public override object Content => CodeControl;
 
-        public FormattedTextControl CodeControl { get; set; }
+        public SyntaxNodeControl CodeControl { get; set; }
 
         public SyntaxTree SyntaxTree { get; set; }
         public Compilation Compilation { get; set; }

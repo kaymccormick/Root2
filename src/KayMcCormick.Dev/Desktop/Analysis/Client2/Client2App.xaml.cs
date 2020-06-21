@@ -115,7 +115,6 @@ namespace Client2
             Logger.Trace("{methodName}", nameof(OnStartup));
             var wins = Scope.Resolve<IEnumerable<Meta<Lazy<Window>>>>();
 
-
             Options = new ProjInterfaceOptions();
             var winChose = wins.Where(z => Options != null && (z.Metadata.ContainsKey("ShortKey") && (string)z.Metadata["ShortKey"] == Options.Window));
             var enumerable = winChose as Meta<Lazy<Window>>[] ?? winChose.ToArray();

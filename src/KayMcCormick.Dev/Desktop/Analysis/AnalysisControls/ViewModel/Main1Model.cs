@@ -347,7 +347,7 @@ namespace AnalysisControls.ViewModel
         private void AddInitialDocuments()
         {
             AddtraceConfigurationVoew();
-            AddTest1();
+            
             //            AddModelDoc();
             // AddRibbonModelViewDoc();
             // AddRibbonModelViewDoc1();
@@ -369,7 +369,7 @@ namespace AnalysisControls.ViewModel
             // Documents.Add(dm);
         }
 
-        private void AddTest1()
+        private void AddGenericInterface3Document()
         {
             GenericInterface3 gi = new GenericInterface3();
             gi.Instance = ClientViewModel?.PrimaryRibbon;
