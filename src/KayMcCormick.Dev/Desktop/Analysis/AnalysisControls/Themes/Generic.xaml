@@ -8295,59 +8295,69 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <kmDevWpfControls:CustomTreeView x:Name="TreeView" Grid.RowSpan="2"
                                                              ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Root}" />
                             <GroupBox Header="Selected" Grid.Column="1" TextElement.FontSize="14">
                                 <ScrollViewer>
                                     <StackPanel>
-                                        <ContentPresenter Content="{Binding ElementName=TreeView,Path=SelectedItem.NodeItem}" Grid.Column="1">
+                                        <ContentPresenter
+                                            Content="{Binding ElementName=TreeView,Path=SelectedItem.NodeItem}"
+                                            Grid.Column="1">
                                             <ContentPresenter.Resources>
                                                 <DataTemplate DataType="{x:Type lifetime:LifetimeScope}">
                                                     <StackPanel>
                                                         <GroupBox Header="Tag">
-                                                            <ContentPresenter Content="{Binding Path=Tag}"/>
+                                                            <ContentPresenter Content="{Binding Path=Tag}" />
                                                         </GroupBox>
                                                         <GroupBox Header="Parent" Margin="10,0,0,0">
-                                                            <ContentPresenter Content="{Binding Path=ParentLifetimeScope}"/>
+                                                            <ContentPresenter
+                                                                Content="{Binding Path=ParentLifetimeScope}" />
                                                         </GroupBox>
                                                     </StackPanel>
                                                 </DataTemplate>
 
                                                 <DataTemplate DataType="{x:Type dev:InstanceInfo}">
                                                     <StackPanel>
-                                                        <ContentPresenter Content="{Binding Instance}"/>
+                                                        <ContentPresenter Content="{Binding Instance}" />
                                                     </StackPanel>
                                                 </DataTemplate>
                                                 <DataTemplate DataType="{x:Type reg:ComponentRegistration}">
                                                     <StackPanel>
                                                         <WrapPanel>
-                                                            <Button Content="Resolve" Command="wpf:WpfAppCommands.ResolveComponent" CommandParameter="{Binding}" CommandTarget="{x:Reference Name=B1}"/>
+                                                            <Button Content="Resolve"
+                                                                    Command="wpf:WpfAppCommands.ResolveComponent"
+                                                                    CommandParameter="{Binding}"
+                                                                    CommandTarget="{x:Reference Name=B1}" />
                                                         </WrapPanel>
                                                         <Grid>
                                                             <Grid.RowDefinitions>
-                                                                <RowDefinition Height="Auto"/>
-                                                                <RowDefinition Height="Auto"/>
-                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto" />
+                                                                <RowDefinition Height="Auto" />
+                                                                <RowDefinition Height="Auto" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="2*"/>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="2*" />
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Text="Id"/>
-                                                            <ContentPresenter Content="{Binding Path=Id}" Grid.Column="1"/>
-                                                            <TextBlock Text="Activator" Grid.Row="1"/>
-                                                            <ContentPresenter Content="{Binding Path=Activator}" Grid.Column="1" Grid.Row="1"/>
-                                                            <GroupBox Header="Metadata" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                                                            <TextBlock Text="Id" />
+                                                            <ContentPresenter Content="{Binding Path=Id}"
+                                                                              Grid.Column="1" />
+                                                            <TextBlock Text="Activator" Grid.Row="1" />
+                                                            <ContentPresenter Content="{Binding Path=Activator}"
+                                                                              Grid.Column="1" Grid.Row="1" />
+                                                            <GroupBox Header="Metadata" Grid.Row="2" Grid.Column="0"
+                                                                      Grid.ColumnSpan="2">
                                                                 <GroupBox.Style>
                                                                     <Style TargetType="GroupBox">
                                                                         <Setter Property="HeaderTemplate">
                                                                             <Setter.Value>
-                                                                            <DataTemplate>
-                                                                                <TextBlock FontSize="18" Text="{Binding}"/>
-                                                                            </DataTemplate>
+                                                                                <DataTemplate>
+                                                                                    <TextBlock FontSize="18"
+                                                                                               Text="{Binding}" />
+                                                                                </DataTemplate>
                                                                             </Setter.Value>
                                                                         </Setter>
                                                                     </Style>
@@ -8356,8 +8366,9 @@
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <StackPanel Orientation="Horizontal">
-                                                                                <TextBlock Text="{Binding Key}"/>
-                                                                                <TextBlock Text="{Binding Value}" Margin="10,0,0,0"/>
+                                                                                <TextBlock Text="{Binding Key}" />
+                                                                                <TextBlock Text="{Binding Value}"
+                                                                                           Margin="10,0,0,0" />
                                                                             </StackPanel>
                                                                         </DataTemplate>
                                                                     </ItemsControl.ItemTemplate>
@@ -8366,13 +8377,37 @@
                                                         </Grid>
                                                     </StackPanel>
                                                 </DataTemplate>
+                                                <DataTemplate DataType="{x:Type dev:InstanceInfo}">
+                                                    <StackPanel>
+                                                        <ContentPresenter Content="{Binding Instance}" />
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                                <DataTemplate DataType="{x:Type reg:ComponentRegistration}">
+                                                    <StackPanel>
+                                                        <ContentPresenter Content="{Binding Path=Id}" />
+                                                        <ContentPresenter Content="{Binding Path=Activator}" />
+                                                        <GroupBox Header="Metadata">
+                                                            <ItemsControl ItemsSource="{Binding Metadata}">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <StackPanel Orientation="Horizontal">
+                                                                            <TextBlock Text="{Binding Key}" Margin="10" />
+                                                                            <TextBlock Margin="10"
+                                                                                       Text="{Binding Value}" />
+                                                                        </StackPanel>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </GroupBox>
+                                                    </StackPanel>
+                                                </DataTemplate>
 
                                             </ContentPresenter.Resources>
                                         </ContentPresenter>
                                     </StackPanel>
                                 </ScrollViewer>
                             </GroupBox>
-                            <Border Grid.Row="1" Grid.Column="1" x:Name="B1"></Border>
+                            <Border Grid.Row="1" Grid.Column="1" x:Name="B1" />
                         </Grid>
                     </Border>
                 </ControlTemplate>
@@ -8429,10 +8464,11 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type analysisControl:SubjectView2}">
                     <Border Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}">
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
                         <Border BorderBrush="Red" BorderThickness="5">
-                            <DataGrid ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Items}"/>
+                            <DataGrid
+                                ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Items}" />
                         </Border>
                     </Border>
                 </ControlTemplate>

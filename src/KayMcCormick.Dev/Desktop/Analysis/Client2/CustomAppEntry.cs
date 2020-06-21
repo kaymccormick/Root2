@@ -89,7 +89,7 @@ namespace Client2
             // Environment.SetEnvironmentVariable("DISABLE_LOGGING", "Yes");
                 var loggingConfiguration = AppLoggingConfiguration.Default ;
 //            loggingConfiguration.IsEnabledCacheTarget = true ;
-            loggingConfiguration.MinLogLevel          = LogLevel.Debug ;
+            loggingConfiguration.MinLogLevel          = LogLevel.Trace ;
             loggingConfiguration.IsEnabledDebuggerTarget = false;
 
             Main1Model.TrySelectVsInstance();

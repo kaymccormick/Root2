@@ -742,12 +742,13 @@ scope.ResolveOperationBeginning += OnResolveOperationBeginning;
         /// <param name="builder"></param>
         public override void DoLoad([NotNull] ContainerBuilder builder)
         {
+            ;
             builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
                 .AssignableTo<IViewModel>()
                 .AsSelf()
                 .AsImplementedInterfaces()
                 .WithAttributedMetadata()
-                .WithAttributeFiltering().WithCallerMetadata();
+                .WithAttributeFiltering().WithCallerMetadata().WithMetadata();
             if (AppLoggingConfigHelper.CacheTarget2 != null)
                 builder.RegisterInstance(AppLoggingConfigHelper.CacheTarget2)
                     .WithMetadata("Description", "Cache target")

@@ -183,6 +183,21 @@ namespace AnalysisControls
                         _list.Add(new LifetimeScopeNode()
                         { LifetimeScope = scopes.Pop(), IdProvider = _objectIdprovider });
                     }
+                    Dictionary<string,object> d = new Dictionary<string, object>();
+                    foreach (var reg in ((ILifetimeScope)_list[0]).ComponentRegistry.Registrations)
+                    {
+                        foreach (var metadataKey in reg.Metadata.Keys)
+                        {
+                            if (!d.ContainsKey(metadataKey))
+                            {
+                                d[metadataKey] = new object();
+                            }
+                        }
+                    }
+                    foreach (var keyValuePair in d)
+                    {
+                        DebugUtils.WriteLine(keyValuePair.Key);
+                    }
 
                 }
             }

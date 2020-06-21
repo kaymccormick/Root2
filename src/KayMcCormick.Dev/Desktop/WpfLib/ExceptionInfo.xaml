@@ -9,85 +9,87 @@
              mc:Ignorable="d"
              DataContextChanged="ExceptionInfo_OnDataContextChanged"
              d:DesignHeight="300.365" d:DesignWidth="500">
-  <UserControl.Resources>
-    <local:ExceptionContentTemplateSelector
-      x:Key="ExceptionContentTemplateSelector" />
-    <!-- ReSharper disable once Xaml.RedundantResource -->
-    <ObjectDataProvider
-      ObjectType="{x:Type system:Exception}"
-      x:Key="DesignData" />
-    <ObjectDataProvider
-      ObjectInstance="{x:Static local:ExceptionInfo.Ex}"
-      x:Key="DesignData2" />
-    <local:ExceptionConverter x:Key="ExceptionConverter" />
-    <DataTemplate
-      DataType="{x:Type system:AggregateException}">
-      <StackPanel Orientation="Vertical">
-        <ContentControl Content="{Binding Source}" />
-        <ContentControl Content="{Binding TargetSite}" />
-        <ListBox ItemsSource="{Binding InnerExceptions}"
-                 ItemTemplateSelector="{StaticResource ExceptionContentTemplateSelector}" />
-        <TextBlock FontWeight="Bold" FontStyle="Italic">Message</TextBlock>
-        <TextBlock Margin="15,5,0,0"
-                   Text="{Binding Message}" />
-        <TextBlock FontWeight="Bold">Details</TextBlock>
-        <TextBlock TextWrapping="WrapWithOverflow"
-                   Margin="15,5,0,0"
-                   Text="{Binding Converter={StaticResource ExceptionConverter}}" />
-        <TextBlock TextWrapping="WrapWithOverflow"
-                   Text="{Binding StackTrace}" />
-      </StackPanel>
-    </DataTemplate>
+    <UserControl.Resources>
+        <local:ExceptionContentTemplateSelector
+            x:Key="ExceptionContentTemplateSelector" />
+        <!-- ReSharper disable once Xaml.RedundantResource -->
+        <ObjectDataProvider
+            ObjectType="{x:Type system:Exception}"
+            x:Key="DesignData" />
+        <ObjectDataProvider
+            ObjectInstance="{x:Static local:ExceptionInfo.Ex}"
+            x:Key="DesignData2" />
+        <local:ExceptionConverter x:Key="ExceptionConverter" />
+        <DataTemplate
+            DataType="{x:Type system:AggregateException}">
+            <StackPanel Orientation="Vertical">
+                <ContentControl Content="{Binding Source}" />
+                <ContentControl Content="{Binding TargetSite}" />
+                <ListBox ItemsSource="{Binding InnerExceptions}"
+                         ItemTemplateSelector="{StaticResource ExceptionContentTemplateSelector}" />
+                <TextBlock FontWeight="Bold" FontStyle="Italic">Message</TextBlock>
+                <TextBlock Margin="15,5,0,0"
+                           Text="{Binding Message}" />
+                <TextBlock FontWeight="Bold">Details</TextBlock>
+                <TextBlock TextWrapping="WrapWithOverflow"
+                           Margin="15,5,0,0"
+                           Text="{Binding Converter={StaticResource ExceptionConverter}}" />
+                <TextBlock TextWrapping="WrapWithOverflow"
+                           Text="{Binding StackTrace}" />
+            </StackPanel>
+        </DataTemplate>
 
-    <DataTemplate DataType="{x:Type system:Exception}">
-      <StackPanel Orientation="Vertical">
-        <TextBlock FontWeight="Bold">Message</TextBlock>
-        <TextBlock Margin="15,5,0,0"
-                   Text="{Binding Message}" />
-        <TextBlock FontWeight="Bold">Details</TextBlock>
-        <TextBlock TextWrapping="WrapWithOverflow"
-                   Margin="15,5,0,0"
-                   Text="{Binding Converter={StaticResource ExceptionConverter}}" />
-        <TextBlock TextWrapping="WrapWithOverflow"
-                   Text="{Binding StackTrace}" />
-      </StackPanel>
-    </DataTemplate>
-  </UserControl.Resources>
-  <DockPanel d:DataContext="{StaticResource DesignData2}"
-             LastChildFill="True">
-    <TextBlock DockPanel.Dock="Top" FontWeight="Bold"
-               TextAlignment="Center" FontSize="24pt">
-      Application Error
-    </TextBlock>
-    <StackPanel Margin="20" DockPanel.Dock="Bottom"
-                Orientation="Horizontal"
-                HorizontalAlignment="Center">
-      <Button Padding="10,0,10,0"
-              Click="ButtonBase_OnClick">
-        OK
-      </Button>
-    </StackPanel>
-    <StackPanel Margin="20" Orientation="Vertical">
-      <ListView
-        ItemsSource="{Binding ElementName=UserControl,Path=Entries}">
-        <ListView.View>
-          <GridView>
-            <GridViewColumn Header="Type"
-                            DisplayMemberBinding="{Binding Type.Text}" />
-            <GridViewColumn Header="Method"
-                            DisplayMemberBinding="{Binding Method.Text}" />
-            <GridViewColumn Header="Parameters"
-                            DisplayMemberBinding="{Binding ParameterList.Text}" />
-            <GridViewColumn Header="File"
-                            DisplayMemberBinding="{Binding File.Text}" />
-            <GridViewColumn Header="Line"
-                            DisplayMemberBinding="{Binding Line.Text}" />
-          </GridView>
-        </ListView.View>
-      </ListView>
-      <ContentControl Content="{Binding}"
-                      ContentTemplateSelector="{StaticResource ExceptionContentTemplateSelector}" />
-    </StackPanel>
-  </DockPanel>
+        <DataTemplate DataType="{x:Type system:Exception}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock FontWeight="Bold">Message</TextBlock>
+                <TextBlock Margin="15,5,0,0"
+                           Text="{Binding Message}" />
+                <TextBlock FontWeight="Bold">Details</TextBlock>
+                <TextBlock TextWrapping="WrapWithOverflow"
+                           Margin="15,5,0,0"
+                           Text="{Binding Converter={StaticResource ExceptionConverter}}" />
+                <TextBlock TextWrapping="WrapWithOverflow"
+                           Text="{Binding StackTrace}" />
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+    <DockPanel d:DataContext="{StaticResource DesignData2}"
+               LastChildFill="True">
+        <TextBlock DockPanel.Dock="Top" FontWeight="Bold"
+                   TextAlignment="Center" FontSize="24pt">
+            Application Error
+        </TextBlock>
+        <StackPanel Margin="20" DockPanel.Dock="Bottom"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <Button Padding="10,0,10,0"
+                    Click="ButtonBase_OnClick">
+                OK
+            </Button>
+        </StackPanel>
+        <ScrollViewer>
+            <StackPanel Margin="20" Orientation="Vertical">
+                <ListView
+                    ItemsSource="{Binding ElementName=UserControl,Path=Entries}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Type"
+                                            DisplayMemberBinding="{Binding Type.Text}" />
+                            <GridViewColumn Header="Method"
+                                            DisplayMemberBinding="{Binding Method.Text}" />
+                            <GridViewColumn Header="Parameters"
+                                            DisplayMemberBinding="{Binding ParameterList.Text}" />
+                            <GridViewColumn Header="File"
+                                            DisplayMemberBinding="{Binding File.Text}" />
+                            <GridViewColumn Header="Line"
+                                            DisplayMemberBinding="{Binding Line.Text}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <ContentControl Content="{Binding}"
+                                ContentTemplateSelector="{StaticResource ExceptionContentTemplateSelector}" />
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
 
 </UserControl>
