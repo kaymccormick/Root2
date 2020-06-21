@@ -790,7 +790,7 @@ namespace AnalysisControls.ViewModel
                 BindingOperations.SetBinding(dm, DocModel.TitleProperty, new Binding ("Title") { Source = x});
             // }
             
-            dm.Content = new SubjectView(){Observable = x.ObjectSubject,ItemType = x.Type1};
+            dm.Content = new SubjectView2(){Observable = x.ObjectSubject,ItemType = x.Type1};
             // ObservableCollection<object> c=new ObservableCollection<object>();
             // if (x.ListView)
             // {
