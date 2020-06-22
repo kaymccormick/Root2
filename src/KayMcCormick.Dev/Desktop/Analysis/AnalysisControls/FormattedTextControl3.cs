@@ -19,6 +19,7 @@ using KayMcCormick.Lib.Wpf;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 
 namespace AnalysisControls
 {
@@ -26,7 +27,7 @@ namespace AnalysisControls
     /// 
     /// </summary>
 //    [TitleMetadata("Formatted Code Control")]
-    public class FormattedTextControl3 : SyntaxNodeControl
+    public class FormattedTextControl3 : SyntaxNodeControl, ILineDrawer
     {
         /// <summary>
         /// 
@@ -57,6 +58,7 @@ namespace AnalysisControls
 
         private static void OnSourceTextUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            return;
             var c = (FormattedTextControl3) d;
 
             var eNewValue = (string) e.NewValue;
@@ -294,13 +296,24 @@ namespace AnalysisControls
         /// <returns></returns>
         protected CustomTextSource4 CreateAndInitTextSource(double pixelsPerDip, ITypefaceManager typefaceManager)
         {
+            var st = SyntaxTree;
+            var node = Node;
+            var compilation = Compilation;
+            var errs = Errors;
+            if (st == null)
+            {
+                st = SyntaxFactory.ParseSyntaxTree("");
+                node = st.GetRoot();
+                compilation = null;
+                errs = null;
+            }
             var source = new CustomTextSource4(pixelsPerDip, typefaceManager)
             {
                 EmSize = EmSize,
-                Compilation = Compilation,
-                Tree = SyntaxTree,
-                Node = Node,
-                Errors = Errors
+                Compilation = compilation,
+                Tree = st,
+                Node = node,
+                Errors = errs
             };
             source.Init();
             return source;
@@ -398,6 +411,14 @@ namespace AnalysisControls
             }
         }
 
+        /// <inheritdoc />
+        protected override void OnSyntaxTreeUpdated(SyntaxTree newValue)
+        {
+            base.OnSyntaxTreeUpdated(newValue);
+            _text = newValue.GetText();
+            SourceText = _text.ToString();
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -471,7 +492,7 @@ namespace AnalysisControls
             UiLoaded = true;
 
             UpdateTextSource();
-            if (TextSource != null) UpdateFormattedText();
+            //if (TextSource != null) UpdateFormattedText();
         }
 
         /// <summary>
@@ -554,8 +575,7 @@ namespace AnalysisControls
         protected override void OnPreviewTextInput(TextCompositionEventArgs e)
         {
             base.OnPreviewTextInput(e);
-
-
+            
             var prev = SourceText.Substring(0, InsertionPoint);
             var next = SourceText.Substring(InsertionPoint);
             var code = prev + e.Text + next;
@@ -601,9 +621,10 @@ namespace AnalysisControls
                     TextStorePosition = InsertionLine?.Offset ?? 0
                 };
 
+
                 myTextLine.Draw(dc, lineCtx.LineOriginPoint, InvertAxes.None);
                 var regions = new List<RegionInfo>();
-                FormattingHelper.HandleTextLine(regions, ref lineCtx, out var lineI, null);
+                FormattingHelper.HandleTextLine(regions, ref lineCtx, out var lineI, this);
                 InsertionLine = lineI;
             }
 
@@ -1071,6 +1092,7 @@ namespace AnalysisControls
         private SyntaxNode _startNode;
         private SyntaxNode _endNode;
         private Rectangle geometryRectangle = new Rectangle();
+        private SourceText _text;
 
         /// <inheritdoc />
         protected override void OnMouseMove(MouseEventArgs e)
@@ -1418,5 +1440,25 @@ namespace AnalysisControls
 
         public List<Tuple<RectangleGeometry, RegionInfo>> GeoTuples { get; set; } =
             new List<Tuple<RectangleGeometry, RegionInfo>>();
+
+        /// <inheritdoc />
+        public void PrepareDrawLines(LineContext lineContext, bool clear)
+        {
+        }
+
+        /// <inheritdoc />
+        public void PrepareDrawLine(LineContext lineContext)
+        {
+        }
+
+        /// <inheritdoc />
+        public void DrawLine(LineContext lineContext)
+        {
+        }
+
+        /// <inheritdoc />
+        public void EndDrawLines(LineContext lineContext)
+        {
+        }
     }
 }

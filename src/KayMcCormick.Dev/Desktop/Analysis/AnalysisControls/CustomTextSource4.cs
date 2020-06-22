@@ -1,4 +1,10 @@
-﻿using System;
+﻿using AnalysisAppLib.Properties;
+using KayMcCormick.Dev;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.VisualBasic;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +13,6 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
-using AnalysisAppLib.Properties;
-using KayMcCormick.Dev;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using Microsoft.CodeAnalysis.VisualBasic;
 using CSharpExtensions = Microsoft.CodeAnalysis.CSharp.CSharpExtensions;
 using SyntaxFactory = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using SyntaxFacts = Microsoft.CodeAnalysis.CSharp.SyntaxFacts;
@@ -35,10 +35,9 @@ namespace AnalysisControls
             PixelsPerDip = pixelsPerDip;
             _typeface = typefaceManager.GetDefaultTypeface();
 
-            Rendering = typefaceManager.
-                GetRendering(EmSize, TextAlignment.Left, new TextDecorationCollection(),
-                    Brushes.Black,
-                    _typeface);
+            Rendering = typefaceManager.GetRendering(EmSize, TextAlignment.Left, new TextDecorationCollection(),
+                Brushes.Black,
+                _typeface);
             BaseProps = TextPropertiesManager.GetBasicTextRunProperties(
                 PixelsPerDip, Rendering);
         }
@@ -71,70 +70,71 @@ namespace AnalysisControls
                 this.token = this.token.HasValue
                     ? this.token.Value.GetNextToken(includeZeroWidth, includeSkipped, includeDirectives,
                         includeDocumentationComments)
-                    : Node.GetFirstToken(includeZeroWidth, includeSkipped, includeDirectives, includeDocumentationComments);
-                
-                _starts.Push(this.token.Value.Span);
+                    : Node?.GetFirstToken(includeZeroWidth, includeSkipped, includeDirectives,
+                        includeDocumentationComments);
+
+                if (this.token.HasValue)
+                    _starts.Push(Tuple.Create(this.token.Value.Span, this.token.Value));
             }
+
             if (textSourceCharacterIndex == 0)
             {
+                if (Length == 0)
+                {
+                    return new TextEndOfParagraph(2);
+                }
                 this.token = null;
                 _starts.Clear();
             }
+
             if (this.token.HasValue && CSharpExtensions.Kind(this.token.Value) == SyntaxKind.None)
-            {
                 return new TextEndOfParagraph(2);
-            }
             var token1 = this.token;
             // DebugUtils.WriteLine("Index = " + textSourceCharacterIndex);
-            if(!token1.HasValue) {
+            if (!token1.HasValue)
+            {
                 TakeToken();
-	    token1 = this.token;
-  }
+                if (!this.token.HasValue) return new TextEndOfParagraph(2);
+                token1 = this.token;
+            }
 
             var token = token1.Value;
-	    var k =  _starts.Peek();
+            var k = _starts.Peek().Item1;
 
-        if (textSourceCharacterIndex <k.Start)
+            if (textSourceCharacterIndex < k.Start)
             {
                 var len = k.Start - textSourceCharacterIndex;
-                char[] buf = new char[len];
+                var buf = new char[len];
                 _text.CopyTo(textSourceCharacterIndex, buf, 0, len);
                 // this.token = token.GetNextToken();
-		// _starts.Push(token.Span);
-        if(len == 2 && buf[0] == '\r' && buf[1] == '\n')
-                {
-                    return new CustomTextEndOfLine(2);
-                }
+                // _starts.Push(token.Span);
+                if (len == 2 && buf[0] == '\r' && buf[1] == '\n') return new CustomTextEndOfLine(2);
 
-        // DebugUtils.WriteLine($"returning {buf} len {len}");
-        var t = string.Join("", buf);
+                // DebugUtils.WriteLine($"returning {buf} len {len}");
+                var t = string.Join("", buf);
                 return new CustomTextCharacters(t, MakeProperties(SyntaxKind.None, t));
-            }  else if (textSourceCharacterIndex >= k.End)
-        {
-            TakeToken();
-            return GetTextRun(textSourceCharacterIndex);
-        }
+            }
+            else if (textSourceCharacterIndex >= k.End)
+            {
+                TakeToken();
+                return GetTextRun(textSourceCharacterIndex);
+            }
             else
             {
-                if (CSharpExtensions.Kind(token) == SyntaxKind.EndOfLineTrivia)
-                {
-                    return new CustomTextEndOfLine(2);
-
-                }
+                if (CSharpExtensions.Kind(token) == SyntaxKind.EndOfLineTrivia) return new CustomTextEndOfLine(2);
                 var len = k.Length;
                 if (len == 0)
                 {
                     TakeToken();
                     return GetTextRun(textSourceCharacterIndex);
                 }
+
                 TakeToken();
                 if (token.Text.Length != len)
                 {
-                    
                 }
+
                 return new CustomTextCharacters(token.Text, MakeProperties(token, token.Text));
-
-
             }
 
             DebugUtils.WriteLine($"{nameof(GetTextRun)}: {textSourceCharacterIndex}", DebugCategory.Status);
@@ -147,10 +147,8 @@ namespace AnalysisControls
             }
 
             if (textSourceCharacterIndex >= Length)
-            {
                 //DebugUtils.WriteLine(Resources.CustomTextSource3_GetTextRun_past_text_source_length, DebugCategory.TextFormatting);
                 return new TextEndOfParagraph(2);
-            }
 
 
             // Create TextCharacters using the current font rendering properties.
@@ -162,10 +160,8 @@ namespace AnalysisControls
                 {
                     var z = textSourceCharacterIndex - tc.Index;
                     if (z > 0)
-                    {
                         throw new InvalidOperationException("request not aligned on text run boundary:" +
                                                             textSourceCharacterIndex);
-                    }
                     var zz = tc.Length - z;
 
                     var tf = tc.Properties?.Typeface;
@@ -176,7 +172,7 @@ namespace AnalysisControls
                 }
 
                 DebugUtils.WriteLine($"returning {col[xx]}");
-            
+
                 return col[xx];
             }
 
@@ -273,6 +269,7 @@ namespace AnalysisControls
         /// </summary>
         public void GenerateText()
         {
+#if false
             if (Tree is VisualBasicSyntaxTree)
             {
                 var f1 = new SyntaxTalkVb(col, this, TakeTextRun, MakeProperties);
@@ -302,6 +299,7 @@ namespace AnalysisControls
                     //DebugUtils.WriteLine(gp.SyntaxToken.ToString(), DebugCategory.TextFormatting);
                 }
             }
+#endif
         }
 
         /// <summary>
@@ -313,27 +311,24 @@ namespace AnalysisControls
         public TextRunProperties MakeProperties(object arg, string text)
         {
             TextRunProperties textRunProperties = null;
-            if(arg == (object) SyntaxKind.None)
-            {
+            if (arg == (object) SyntaxKind.None)
                 textRunProperties = PropsFor(text);
-            } else             if (arg is SyntaxTrivia st)
+            else if (arg is SyntaxTrivia st)
                 textRunProperties = PropsFor(st, text);
-            else if (arg is SyntaxToken t) 
+            else if (arg is SyntaxToken t)
                 textRunProperties = PropsFor(t, text);
-            else 
-            textRunProperties = PropsFor(text);
+            else
+                textRunProperties = PropsFor(text);
             if (textRunProperties != null)
             {
                 if (textRunProperties is BasicTextRunProperties b)
-                {
                     if (!b.HasCustomization)
                     {
-
                         // b.SetBackgroundBrush(Brushes.LightBlue);
-                        string kind = "";
+                        var kind = "";
 
-                        string nodeKind ="";
-                        string tkind = "";
+                        var nodeKind = "";
+                        var tkind = "";
                         if (arg is SyntaxToken stk)
                         {
                             var syntaxKind = CSharpExtensions.Kind(stk.Parent);
@@ -344,14 +339,15 @@ namespace AnalysisControls
                                 var pt = stk.Parent.ParentTrivia;
                                 tkind = CSharpExtensions.Kind(pt).ToString();
                             }
-
                         }
-                        DebugUtils.WriteLine($"no customizations for {arg} - {text} {arg.GetType().Name} {kind} {nodeKind} [{tkind}]");
+
+                        DebugUtils.WriteLine(
+                            $"no customizations for {arg} - {text} {arg.GetType().Name} {kind} {nodeKind} [{tkind}]");
                     }
-                }
 
                 return textRunProperties;
             }
+
             return null;
         }
 
@@ -390,8 +386,11 @@ namespace AnalysisControls
             set
             {
                 _tree = value;
-                _text = _tree.GetText();
-                Length = _text.Length;
+                if (_tree != null)
+                {
+                    _text = _tree.GetText();
+                    Length = _text.Length;
+                }
             }
         }
 
@@ -411,16 +410,16 @@ namespace AnalysisControls
             if (token.Parent != null)
             {
                 var syntaxKind = CSharpExtensions.Kind(token.Parent);
-                string tkind = "";
+                var tkind = "";
                 var zz = token.Parent.FirstAncestorOrSelf<SyntaxNode>(
                     z => SyntaxFacts.IsTrivia(CSharpExtensions.Kind((SyntaxNode) z)), false);
 
                 if (zz != null)
                 {
-                    SyntaxTrivia pt = zz.ParentTrivia;
-                    SyntaxKind syntaxKind1 = CSharpExtensions.Kind(pt);
+                    var pt = zz.ParentTrivia;
+                    var syntaxKind1 = CSharpExtensions.Kind(pt);
                     tkind = syntaxKind1.ToString();
-                    
+
                     switch (syntaxKind1)
                     {
                         case SyntaxKind.EndOfLineTrivia:
@@ -500,34 +499,35 @@ namespace AnalysisControls
                 if (SyntaxFacts.IsPredefinedType(kind))
                 {
                     pp.SetForegroundBrush(Brushes.Gold);
-                } else
-                if (SyntaxFacts.IsKeywordKind(kind))
+                }
+                else if (SyntaxFacts.IsKeywordKind(kind))
                 {
                     pp.SetForegroundBrush(Brushes.CornflowerBlue);
                     return pp;
-                } else if (SyntaxFacts.IsLiteralExpression(kind))
+                }
+                else if (SyntaxFacts.IsLiteralExpression(kind))
                 {
                     pp.SetForegroundBrush(Brushes.Brown);
                     pp.SetFontStyle(FontStyles.Italic);
-                } 
+                }
+
                 DebugUtils.WriteLine(syntaxKind.ToString(), DebugCategory.TextFormatting);
                 // if (SyntaxFacts.IsName(syntaxKind))
-                    // pp.SetForegroundBrush(Brushes.Pink);
+                // pp.SetForegroundBrush(Brushes.Pink);
                 // if (SyntaxFacts.IsTypeSyntax(syntaxKind)) pp.SetForegroundBrush(Brushes.Crimson);
 
                 if (syntaxKind == SyntaxKind.MethodDeclaration)
                 {
                     if (SyntaxFacts.IsAccessibilityModifier(kind))
                         pp.SetForegroundBrush(Brushes.Aqua);
-                    else if(SyntaxFacts.IsKeywordKind(kind))
+                    else if (SyntaxFacts.IsKeywordKind(kind))
                         pp.SetFontStyle(FontStyles.Italic);
-
                 }
             }
 
             // pp.SyntaxToken = trivia;
             // pp.Text = text;
-            
+
             return pp;
         }
 
@@ -550,9 +550,9 @@ namespace AnalysisControls
             return pp;
         }
 
-        #endregion
+#endregion
 
-        #region Private Fields
+#region Private Fields
 
         private int lemgth;
         private Type _type;
@@ -591,7 +591,7 @@ namespace AnalysisControls
         private List<CompilationError> _errors1;
         private SyntaxTree _tree;
         private SourceText _text;
-        private Stack<TextSpan> _starts = new Stack<TextSpan>();
+        private Stack<Tuple<TextSpan, SyntaxToken>> _starts = new Stack<Tuple<TextSpan, SyntaxToken>>();
         private SyntaxToken? token;
         public int EolLength { get; } = 2;
 
@@ -600,7 +600,7 @@ namespace AnalysisControls
         /// </summary>
         private FontRendering Rendering { get; }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// 
@@ -617,38 +617,72 @@ namespace AnalysisControls
         /// <param name="text"></param>
         public override void TextInput(int InsertionPoint, string text)
         {
-            if (chars.Count > InsertionPoint)
+            
+            
+            var t = Node.GetFirstToken(true, true, true, true);
+            _starts.Push(new Tuple<TextSpan, SyntaxToken>(t.Span, t));
+            var q = _starts.Where(z => z.Item1.End >= InsertionPoint || z.Item1.Start >= InsertionPoint);
+            var syntaxToken = q.First().Item2;
+            var p = syntaxToken.Parent;
+            DebugUtils.WriteLine(p.ToString());
+            var syntaxToken1 = SyntaxFactory.ParseToken(text);
+            DebugUtils.WriteLine(syntaxToken1.ToString());
+            DebugUtils.WriteLine(CSharpExtensions.Kind(syntaxToken1).ToString());
+            var syntaxTokens = new[] {syntaxToken1};
+            try
             {
-                var xx = chars[InsertionPoint];
-                var x = col[xx];
-                if (x is CustomTextCharacters ch)
-                {
-                    var prev = ch.Text.Substring(0, InsertionPoint - ch.Index.Value);
-                    var next = ch.Text.Substring(ch.Index.Value + ch.Length - InsertionPoint);
-                    var t = prev + text + next;
-                    Length += text.Length;
-                    var customTextCharacters = new CustomTextCharacters(t, BaseProps, new TextSpan());
-                    if (ch.PrevTextRun is CustomTextCharacters cc0) cc0.NextTextRun = customTextCharacters;
-
-                    ch.PrevTextRun = null;
-                    ch.NextTextRun = null;
-                    ch.Invalid = true;
-                    customTextCharacters.PrevTextRun = ch.PrevTextRun;
-                    customTextCharacters.Index = ch.Index;
-                    col[xx] = customTextCharacters;
-
-                    UpdateCharMap();
-                }
+                var n = p.InsertTokensBefore(syntaxToken, syntaxTokens);
+                Node = Node.ReplaceNode(p, n);
             }
-            else
+            catch (Exception ex)
             {
-                var customTextCharacters =
-                    new CustomTextCharacters(text, BaseProps, new TextSpan()) {Index = InsertionPoint};
-                // customTextCharacters.PrevTextRun = ch.PrevTextRun;
-                col.Add(customTextCharacters);
-
-                UpdateCharMap();
+                var tr = SyntaxFactory.ParseSyntaxTree(syntaxToken1.Text);
+                Tree = tr;
+                Node = tr.GetRoot();
+                _starts.Clear();
             }
+            // var newNode = Node.ReplaceNode(p, n);
+            // Node = newNode;
+
+            var t2 = Node.GetFirstToken(true, true, true, true);
+
+            // DebugUtils.WriteLine($"{t2.Text} [{t2.Span}]");
+            _starts.Push(new Tuple<TextSpan, SyntaxToken>(t2.Span, t2));
+
+            //
+            // Node.Repl
+            // if (chars.Count > InsertionPoint)
+            // {
+            //     var xx = chars[InsertionPoint];
+            //     var x = col[xx];
+            //     if (x is CustomTextCharacters ch)
+            //     {
+            //         var prev = ch.Text.Substring(0, InsertionPoint - ch.Index.Value);
+            //         var next = ch.Text.Substring(ch.Index.Value + ch.Length - InsertionPoint);
+            //         var t = prev + text + next;
+            //         Length += text.Length;
+            //         var customTextCharacters = new CustomTextCharacters(t, BaseProps, new TextSpan());
+            //         if (ch.PrevTextRun is CustomTextCharacters cc0) cc0.NextTextRun = customTextCharacters;
+            //
+            //         ch.PrevTextRun = null;
+            //         ch.NextTextRun = null;
+            //         ch.Invalid = true;
+            //         customTextCharacters.PrevTextRun = ch.PrevTextRun;
+            //         customTextCharacters.Index = ch.Index;
+            //         col[xx] = customTextCharacters;
+            //
+            //         UpdateCharMap();
+            //     }
+            // }
+            // else
+            // {
+            //     var customTextCharacters =
+            //         new CustomTextCharacters(text, BaseProps, new TextSpan()) {Index = InsertionPoint};
+            //     // customTextCharacters.PrevTextRun = ch.PrevTextRun;
+            //     col.Add(customTextCharacters);
+            //
+            //     UpdateCharMap();
+            // }
         }
 
         /// <summary>
@@ -656,6 +690,7 @@ namespace AnalysisControls
         /// </summary>
         public void UpdateCharMap()
         {
+#if false
             var i = 0;
             chars.Clear();
             //var model =  Compilation?.GetSemanticModel(Tree);
@@ -670,6 +705,7 @@ namespace AnalysisControls
                     //DebugUtils.WriteLine(gp.SyntaxToken.ToString(), DebugCategory.TextFormatting);
                 }
             }
+#endif
         }
     }
 }
