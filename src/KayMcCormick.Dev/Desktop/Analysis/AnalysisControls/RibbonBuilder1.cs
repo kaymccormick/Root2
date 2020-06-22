@@ -6,7 +6,9 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AnalysisAppLib;
 using Autofac;
+using Autofac.Features.Metadata;
 using KayMcCormick.Lib.Wpf;
 using KayMcCormick.Lib.Wpf.Command;
 using RibbonLib.Model;
@@ -115,16 +117,9 @@ namespace AnalysisControls
                 SetValue(RibbonModelPropertyKey, r);
             }
 
-            // var r = new PrimaryRibbonModel
-            // {
-                // AppMenu = appMenu,
-                // HelpPaneContent = "help",
-                // QuickAccessToolBar =
-                // {
-                    // CustomizeMenuButton =
-                        // new RibbonModelItemMenuButton() {Command = WpfAppCommands.CustomizeQAT}
-                // }
-            //};
+            r.AppMenu = appMenu;
+            r.HelpPaneContent = "help";
+            r.QuickAccessToolBar.CustomizeMenuButton = new RibbonModelItemMenuButton() {Command = WpfAppCommands.CustomizeQAT};
             if (r.QuickAccessToolBar != null)
                 r.QuickAccessToolBar.Items.Add(new RibbonModelButton
                 {
@@ -154,11 +149,14 @@ namespace AnalysisControls
                 HomeTab.Header = "Home";
                 var Group1 = new RibbonModelGroup { Header = "Paste" };
                 if (_scope != null)
-                    foreach (var cmd in _scope.Resolve<IEnumerable<IDisplayableAppCommand>>())
+                    foreach (var metacmd in _scope.Resolve<IEnumerable<Meta<IDisplayableAppCommand>>>())
                     {
+                        var cmd = metacmd.Value;
+                        var props = MetaHelper.GetMetadataProps(metacmd.Metadata);
                         if (cmd is ICommand cmdz)
                         {
                             var button = new RibbonModelButton() {Label = cmd.DisplayName, Command = cmdz};
+                            
                             Group1.Items.Add(button);
                         }
                         else

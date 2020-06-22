@@ -30,6 +30,7 @@ namespace AnalysisAppLib
         private readonly IDictionary < string , ViewerLoggerInfo > _dict ;
         private          string                                    _displayName ;
 
+        public object InstanceObjectId { get; set; }
 
         /// <summary>
         /// 

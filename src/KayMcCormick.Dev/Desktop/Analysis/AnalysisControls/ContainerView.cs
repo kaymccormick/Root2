@@ -166,7 +166,9 @@ namespace AnalysisControls
 
                     var _list = new ObservableCollection<object>();
                     Root = _list;
+
                     _objectIdprovider = eNewValue.Resolve<IObjectIdProvider>();
+
                     var r = scopes.Peek().ComponentRegistry.Registrations;
                     var keys = r.SelectMany(z => z.Metadata.Keys).Distinct();
                     foreach (var k in keys)

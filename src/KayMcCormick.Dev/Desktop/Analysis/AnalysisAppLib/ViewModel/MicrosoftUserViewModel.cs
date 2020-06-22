@@ -32,6 +32,7 @@ namespace AnalysisAppLib.ViewModel
         private          GraphServiceClient                   _graphClient ;
         private readonly Func < string , GraphServiceClient > _graphFunc ;
         private readonly IPublicClientApplication             _publicClient ;
+        public object InstanceObjectId { get; set; }
 
         /// <summary>
         /// 

@@ -36,6 +36,8 @@ namespace AnalysisAppLib
             set { _logViewModels = value ; }
         }
 
+        public object InstanceObjectId { get; set; }
+
         #region Implementation of ISerializable
         /// <summary>
         /// 

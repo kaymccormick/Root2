@@ -27,6 +27,7 @@ namespace AnalysisAppLib.ViewModel
         private readonly Func < string , GraphServiceClient > _graphFunc ;
         // ReSharper disable once NotAccessedField.Local
         private readonly IPublicClientApplication             _publicClient ;
+        public object InstanceObjectId { get; set; }
 
         /// <summary>
         /// 

@@ -29,6 +29,7 @@ namespace AnalysisAppLib.ViewModel
         /// 
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged ;
+        public object InstanceObjectId { get; set; }
 
         #region Implementation of INotifyPropertyChanging
         /// <summary>

@@ -33,6 +33,7 @@ namespace KayMcCormick.Lib.Wpf.ViewModel
     public sealed class AllResourcesTreeViewModel : IViewModel , ISupportInitializeNotification, IAddRuntimeResource
     {
         private ModelResources _modelResources ;
+        public object InstanceObjectId { get; set; }
 
         private readonly ObservableCollection < ResourceNodeInfo > _allResourcesCollection =
             new ObservableCollection < ResourceNodeInfo > ( ) ;

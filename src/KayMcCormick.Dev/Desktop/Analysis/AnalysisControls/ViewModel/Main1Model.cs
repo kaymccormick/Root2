@@ -358,7 +358,7 @@ namespace AnalysisControls.ViewModel
             // AddTypeProvider();
 
             // AddPowerShell();
-            // AddPowerShell2();
+             AddPowerShell2();
             // ObservableCollection<CodeElementDocumentation> coll = new ObservableCollection<CodeElementDocumentation>();
             // DocModel dm = DocModel.CreateInstance();
             // dm.Content = new ScrollViewer

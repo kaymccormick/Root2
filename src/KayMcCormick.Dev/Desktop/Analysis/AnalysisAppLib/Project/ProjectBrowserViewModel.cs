@@ -24,6 +24,7 @@ namespace AnalysisAppLib.Project
     {
         private readonly IBrowserNodeCollection _rootCollection ;
         private List < ProjectInfo > _projects = new List < ProjectInfo > () ;
+        public object InstanceObjectId { get; set; }
 
         /// <summary>
         /// 

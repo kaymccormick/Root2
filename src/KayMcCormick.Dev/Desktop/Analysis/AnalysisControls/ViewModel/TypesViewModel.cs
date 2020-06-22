@@ -39,6 +39,7 @@ namespace AnalysisControls.ViewModel
         {
             this.InfosReplay = infos;
         }
+        public object InstanceObjectId { get; set; }
 
         private readonly List < AppTypeInfo > _typeInfos ;
         private const string PocoPrefix = "Poco" ;

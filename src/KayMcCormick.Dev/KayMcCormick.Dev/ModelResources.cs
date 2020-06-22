@@ -25,6 +25,7 @@ namespace KayMcCormick.Dev
     /// </summary>
     public sealed class ModelResources : ISupportInitializeNotification , IViewModel
     {
+        public object InstanceObjectId { get; set; }
 
         private const string Objects_Key    = "Objects" ;
         private const string Converters_Key = "Converters" ;

@@ -8413,25 +8413,35 @@
                                                                 <RowDefinition Height="Auto" />
                                                                 <RowDefinition Height="Auto" />
                                                                 <RowDefinition Height="Auto" />
+                                                                <RowDefinition Height="Auto" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="*" />
                                                                 <ColumnDefinition Width="2*" />
                                                             </Grid.ColumnDefinitions>
                                                             <TextBlock Text="Id" />
-                                                            <ContentPresenter Content="{Binding Path=Id}"
+                                                            <ContentPresenter  TextElement.FontFamily="B612"  TextElement.FontSize="20" TextElement.FontWeight="Bold"  Content="{Binding Path=Id}"
                                                                               Grid.Column="1" />
-                                                            <TextBlock Text="Activator" Grid.Row="1" />
+                                                            <TextBlock Text="Activator" Grid.Row="1" FontFamily="Bahnschrift SemiLight" />
                                                             <ContentPresenter Content="{Binding Path=Activator}"
                                                                               Grid.Column="1" Grid.Row="1" />
-                                                            <GroupBox Header="Metadata" Grid.Row="2" Grid.Column="0"
+                                                            <GroupBox Header="Services" Grid.Row="2" Grid.ColumnSpan="2" Padding="10,10,0,0">
+                                                                <ItemsControl ItemsSource="{Binding Services}">
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <TextBlock FontFamily="Consolas"  Text="{Binding ServiceType}"/>
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                            </GroupBox>
+                                                            <GroupBox Header="Metadata" Grid.Row="3" Grid.Column="0"
                                                                       Grid.ColumnSpan="2">
                                                                 <GroupBox.Style>
                                                                     <Style TargetType="GroupBox">
                                                                         <Setter Property="HeaderTemplate">
                                                                             <Setter.Value>
                                                                                 <DataTemplate>
-                                                                                    <TextBlock FontSize="18"
+                                                                                    <TextBlock FontSize="16" FontWeight="Bold"
                                                                                                Text="{Binding}" />
                                                                                 </DataTemplate>
                                                                             </Setter.Value>
@@ -8453,30 +8463,7 @@
                                                         </Grid>
                                                     </StackPanel>
                                                 </DataTemplate>
-                                                <DataTemplate DataType="{x:Type dev:InstanceInfo}">
-                                                    <StackPanel>
-                                                        <ContentPresenter Content="{Binding Instance}" />
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                                <DataTemplate DataType="{x:Type reg:ComponentRegistration}">
-                                                    <StackPanel>
-                                                        <ContentPresenter Content="{Binding Path=Id}" />
-                                                        <ContentPresenter Content="{Binding Path=Activator}" />
-                                                        <GroupBox Header="Metadata">
-                                                            <ItemsControl ItemsSource="{Binding Metadata}">
-                                                                <ItemsControl.ItemTemplate>
-                                                                    <DataTemplate>
-                                                                        <StackPanel Orientation="Horizontal">
-                                                                            <TextBlock Text="{Binding Key}" Margin="10" />
-                                                                            <TextBlock Margin="10"
-                                                                                       Text="{Binding Value}" />
-                                                                        </StackPanel>
-                                                                    </DataTemplate>
-                                                                </ItemsControl.ItemTemplate>
-                                                            </ItemsControl>
-                                                        </GroupBox>
-                                                    </StackPanel>
-                                                </DataTemplate>
+                                          
 
                                             </ContentPresenter.Resources>
                                         </ContentPresenter>

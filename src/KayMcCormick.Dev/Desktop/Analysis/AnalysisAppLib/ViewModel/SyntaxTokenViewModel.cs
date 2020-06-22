@@ -27,6 +27,7 @@ namespace AnalysisAppLib.ViewModel
     public sealed class SyntaxTokenViewModel : ISyntaxTokenViewModel
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
+        public object InstanceObjectId { get; set; }
 
         /// <summary>
         /// 

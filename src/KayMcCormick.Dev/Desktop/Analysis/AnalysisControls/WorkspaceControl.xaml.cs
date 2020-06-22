@@ -68,6 +68,8 @@ namespace AnalysisControls
     /// </summary>
     public sealed class WorkspaceViewModel : IViewModel , INotifyPropertyChanged
     {
+        public object InstanceObjectId { get; set; }
+
         private AdhocWorkspace _workspace ;
 
         /// <summary>
