@@ -50,7 +50,7 @@
             <Setter.Value>
                 <avalondock:DockingManager
 
-                    DocumentsSource="{Binding Path=Documents,Mode=TwoWay}"
+                    DocumentsSource="{Binding Path=Documents}"
                     x:Name="_DockingManager" AnchorablesSource="{Binding Anchorables}"
                     VerticalAlignment="Stretch"
                     ActiveContent="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.ActiveContent,Mode=TwoWay,NotifyOnTargetUpdated=True}">

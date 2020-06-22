@@ -21,6 +21,7 @@ using FindLogUsages ;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Container;
+using KayMcCormick.Dev.Interfaces;
 using KayMcCormick.Dev.Logging;
 using KmDevLib;
 using Microsoft.Graph;
@@ -84,30 +85,13 @@ namespace AnalysisAppLib
                     Instance = args.Instance,
                     Component = args.Component,
                     Parameters = args.Parameters,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                                    
                     Context = args.Context
                 };
-                
+                if (args.Instance is IHaveObjectId id1)
+                {
+                    x.InstanceObjectId = id1.InstanceObjectId;
+                }
+
                 _act2.Subject1.OnNext(x);
                 _activations.OnNext(x);
             };

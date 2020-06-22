@@ -60,6 +60,7 @@ namespace AnalysisControls.ViewModel
         IAnchorableHost,
         ISubjectWatcher
     {
+        private IDocumentHost _dochost;
 
         public static readonly DependencyProperty CatchphraseProperty = DependencyProperty.Register(
             "Catchphrase", typeof(string), typeof(Main1Model), new PropertyMetadata(default(string)));
@@ -92,6 +93,8 @@ namespace AnalysisControls.ViewModel
             if (eNewValue is DocModel d)
             {
                 d.IsActive = true;
+                if (ClientViewModel == null)
+                    return;
                 foreach (var primaryRibbonRibbonItem in ClientViewModel.PrimaryRibbon.RibbonItems)
                 foreach (var item in primaryRibbonRibbonItem.Items)
                     if (item is RibbonModelGroup g)
@@ -264,16 +267,7 @@ namespace AnalysisControls.ViewModel
             }
         }
 
-        public IEnumerable Documents
-        {
-            get { return _documents1; }
-            set
-            {
-                if (Equals(value, _documents1)) return;
-                _documents1 = value;
-                OnPropertyChanged();
-            }
-        }
+        public IEnumerable Documents => _dochost.Documents;
 
         /// <summary>
         /// 
@@ -285,7 +279,7 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         /// <param name="replay"></param>
-        public Main1Model(ReplaySubject<Workspace> replay, IActivationStream ss, MyReplaySubjectImpl2 impl2) :this()
+        public Main1Model(ReplaySubject<Workspace> replay, IActivationStream ss, MyReplaySubjectImpl2 impl2, IDocumentHost dochost) :this(dochost)
         {
             //JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
             _replay = replay;
@@ -303,8 +297,9 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public Main1Model()
+        public Main1Model(IDocumentHost dochost)
         {
+            _dochost = dochost;
 
             DocumentsCollection = new ObservableCollection<object>();
             Anchorables = new ObservableCollection<object>();
@@ -756,6 +751,8 @@ namespace AnalysisControls.ViewModel
 
         public void AddDocument(object doc)
         {
+            _dochost.AddDocument(doc);
+            return;
             if (Dispatcher == null || Dispatcher.CheckAccess())
             {
                 DocumentsCollection.Add(doc);
@@ -769,6 +766,8 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public void SetActiveDocument(object doc)
         {
+            _dochost.SetActiveDocument(doc);
+            return;
             ActiveContent = doc;
             View.DockingManager.ActiveContent = doc;
         }

@@ -3,20 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using AnalysisAppLib;
 using AnalysisControls;
 using AnalysisControlsCore;
 using Autofac;
 using Autofac.Core;
+using Autofac.Core.Lifetime;
 using Autofac.Features.Metadata;
 // using CommandLine;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Application;
+using KayMcCormick.Dev.Command;
 using KayMcCormick.Dev.Container;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
+using KayMcCormick.Lib.Wpf.Command;
 using NLog;
 using NLog.Targets;
 using static NLog.LogManager ;
@@ -41,7 +46,7 @@ namespace Client2
                 , disableLogging
                 , disableRuntimeConfiguration
                 , disableServiceHost
-                , new IModule[] { new Client2Module(),new Client2Module1 ( ) , new AnalysisControlsModule ( ), new TypeDescriptorsModule(),  }
+                , new IModule[] { new AnalysisControlsModule(),new Client2Module(),new Client2Module1 ( ) , new TypeDescriptorsModule(),  }
                 , ( ) => PopulateJsonConverters ( disableLogging )
                  )
 
@@ -220,9 +225,38 @@ namespace Client2
         protected override void Load(ContainerBuilder builder)
         {
              builder.Register((c) =>
-                    new Client2Window1(c.Resolve<ILifetimeScope>(), c.Resolve<ClientModel>(),
-                        c.ResolveOptional<MyCacheTarget2>()))
+                 {
+                     var lifetimeScope = c.Resolve<ILifetimeScope>();
+                     bool used = false;
+                     if (lifetimeScope is LifetimeScope l2)
+                     {
+                         while (l2 != null)
+                         {
+                             if(l2.Tag == "Client2Window1")
+                             {
+                                 used = true;
+                             }
+                             l2 = l2.ParentLifetimeScope as LifetimeScope;
+                         }
+                     }
+                     
+                     var ls = lifetimeScope.BeginLifetimeScope(used ? "Client2Window1_2" :  "Client2Window1");
+                     return new Client2Window1(ls, ls.Resolve<ClientModel>(),
+                         ls.ResolveOptional<MyCacheTarget2>());
+                 })
                                 .As<Window>().WithCallerMetadata();
+             builder.RegisterAdapter<Meta<Lazy<Window>>, IDisplayableAppCommand>((context, parameters, arg3) =>
+             {
+                 var props = MetaHelper.GetMetadataProps(arg3.Metadata);
+                 return new LambdaAppCommand(props.Title ?? props.TypeHint?.ToString() ?? "no title", (command, o) =>
+                 {
+                     var w = command.Argument as Lazy<Window>;
+                     
+                     var ww = w.Value;
+                     ww.Show();
+                     return Task.FromResult(AppCommandResult.Success);
+                 }, arg3.Value);
+             });
         }
     }
 }

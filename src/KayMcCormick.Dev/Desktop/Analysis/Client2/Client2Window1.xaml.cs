@@ -48,7 +48,7 @@ namespace Client2
         {
             var vs = DependencyPropertyHelper.GetValueSource(d, AttachedProperties.LifetimeScopeProperty);
             var lifetimeScope = (ILifetimeScope)basevalue;
-            if (lifetimeScope.Tag == "Client2Window1")
+            if (lifetimeScope.Tag.ToString().StartsWith("Client2Window1"))
             {
                 return lifetimeScope;
             }

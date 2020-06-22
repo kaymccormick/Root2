@@ -49,5 +49,7 @@ namespace KmDevLib
         /// </summary>
         [Browsable(false)]
         public IComponentContext Context { get; set; }
+
+        public object InstanceObjectId { get; set; }
     }
 }

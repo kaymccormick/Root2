@@ -121,6 +121,7 @@ namespace AnalysisControls
 
         private static object CoerceLifetimeScope(DependencyObject d, object basevalue)
         {
+            return basevalue;
             var vs = DependencyPropertyHelper.GetValueSource(d, AttachedProperties.LifetimeScopeProperty);
             var lifetimeScope = (ILifetimeScope)basevalue;
             if (lifetimeScope.Tag == "Main1")
@@ -139,7 +140,7 @@ namespace AnalysisControls
 
         private void ConfigAction(ContainerBuilder obj)
         {
-            obj.RegisterInstance(this).AsSelf();
+            //obj.RegisterInstance(this).AsSelf();
         }
 
 

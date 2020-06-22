@@ -52,10 +52,10 @@ namespace KmDevLib
                     // 
                     // return instance;
                     // });
-                    var reg = new ComponentRegistration(newGuid, delegateActivator, new RootScopeLifetime(),
+                    var reg = new ComponentRegistration(newGuid, delegateActivator, new CurrentScopeLifetime(), 
                         InstanceSharing.Shared, InstanceOwnership.OwnedByLifetimeScope,
                         new[] {service, new TypedService(typeof(IMySubject))},
-                        new Dictionary<string, object?>());
+                        new Dictionary<string, object>());
                     return new[]
                     {
                         reg

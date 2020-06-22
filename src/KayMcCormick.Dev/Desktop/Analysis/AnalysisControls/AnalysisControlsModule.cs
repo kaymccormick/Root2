@@ -98,8 +98,8 @@ namespace AnalysisControls
                     // .WithCallerMetadata();
                 var x = builder
                     .RegisterAdapter<Meta<Lazy<IControlView>>,
-                        IDisplayableAppCommand>(ControlViewCommandAdapter2)
-                    .As<IDisplayableAppCommand>().As<IBaseLibCommand>()
+                        Meta<IDisplayableAppCommand>>(ControlViewCommandAdapter3)
+                    .As<Meta<IDisplayableAppCommand>>()//.As<IBaseLibCommand>()
                     .WithMetadata("Category", Category.Management)
                     .WithMetadata("Group", "misc")
                     .WithCallerMetadata();
@@ -187,6 +187,7 @@ namespace AnalysisControls
             builder.RegisterType<AnalysisCustomTypeDescriptor>().AsSelf().AsImplementedInterfaces();
 
 
+
             builder.RegisterAdapter<IBaseLibCommand, IAppCommand>(
                     (
                         context
@@ -217,8 +218,9 @@ namespace AnalysisControls
                 .WithCallerMetadata();
             builder.RegisterType<UiElementTypeConverter>().AsSelf();
 
-            builder.RegisterType<Main1Model>().AsImplementedInterfaces().AsSelf().SingleInstance();
-            builder.RegisterType<Main1Mode2>().SingleInstance();
+            builder.RegisterType<Main1Model>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<DocumentHost>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<Main1Mode2>();
 
             builder.Register(
                     (context, parameters) =>
@@ -285,6 +287,12 @@ namespace AnalysisControls
                 .WithCallerMetadata();
         }
 
+        private Meta<IDisplayableAppCommand> ControlViewCommandAdapter3(IComponentContext arg1, IEnumerable<Parameter> arg2, Meta<Lazy<IControlView>> arg3)
+        {
+            var cmd = ControlViewCommandAdapter2(arg1, arg2, arg3);
+            IDictionary<string, object> d = new Dictionary<string, object>();
+            return new Meta<IDisplayableAppCommand>(cmd, d);
+        }
 
         private IDisplayableAppCommand ControlViewCommandAdapter2(IComponentContext arg1, IEnumerable<Parameter> arg2,
             Meta<Lazy<IControlView>> arg3)

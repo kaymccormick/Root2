@@ -134,14 +134,14 @@ namespace AnalysisControls
             builder.RegisterType<RibbonBuilder1>();
             builder.Register((c, o) => c.Resolve<RibbonBuilder1>().BuildRibbon());
             builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
-            builder.RegisterType<ClientModel>().AsSelf().SingleInstance().AsImplementedInterfaces()
+            builder.RegisterType<ClientModel>().AsSelf().AsImplementedInterfaces()
                 .WithCallerMetadata();
             builder.RegisterType<RibbonModelApplicationMenu>();
-            builder.RegisterType<FunTabProvider>().As<IRibbonModelProvider<RibbonModelTab>>().SingleInstance()
+            builder.RegisterType<FunTabProvider>().As<IRibbonModelProvider<RibbonModelTab>>()//.SingleInstance()
                 .WithAttributeFiltering();
-            builder.RegisterType<CodeTab1>().As<IRibbonModelProvider<RibbonModelTab>>().SingleInstance()
+            builder.RegisterType<CodeTab1>().As<IRibbonModelProvider<RibbonModelTab>>()//.SingleInstance()
                 .WithAttributeFiltering();
-            builder.RegisterType<CodeTab2>().As<IRibbonModelProvider<RibbonModelTab>>().SingleInstance()
+            builder.RegisterType<CodeTab2>().As<IRibbonModelProvider<RibbonModelTab>>()//.SingleInstance()
                 .WithAttributeFiltering();
             builder.RegisterType<NavigationTabProvider>().AsImplementedInterfaces()
                 .WithCallerMetadata();

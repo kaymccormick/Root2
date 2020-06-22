@@ -31,12 +31,21 @@ namespace KayMcCormick.Dev.Container
                 [CallerMemberName] string                                                                callerMemberName = ""
             )
         {
-            return builder.WithMetadata ( "CallerFilePath" , callerFilePath )
+            Type lt =  null;
+            switch (builder.ActivatorData)
+            {
+                case IConcreteActivatorData c1:
+                    lt = c1.Activator.LimitType;
+                    break;
+            }
+            var b =builder.WithMetadata ( "CallerFilePath" , callerFilePath )
                           .WithMetadata ( "CallerFilename" ,   Path.GetFileName ( callerFilePath ) )
                           .WithMetadata ( "CallerLineNumber" , callerLineNumber )
                           .WithMetadata ( "CallerMemberName" , callerMemberName )
                           .WithMetadata ( "RandomGuid" ,       Guid.NewGuid ( ) )
-                          .WithMetadata ( "GuidFrom" ,         typeof ( IocExt ) ) ;
+                          .WithMetadata ( "GuidFrom" ,         typeof ( IocExt ) );
+                return lt == null ? b : b
+                          .WithMetadata("TypeHint", lt);
         }
     }
 }

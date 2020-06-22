@@ -13,7 +13,7 @@ namespace AnalysisControls
         private readonly TextRunProperties _baseProps;
         private Brush _backgroundBrush;
         private Brush _foregroundBrush;
-        private FontStyle _fontStyle;
+        private FontStyle? _fontStyle;
         private Typeface _typeface;
 
         /// <summary>
@@ -25,6 +25,7 @@ namespace AnalysisControls
             _baseProps = baseProps;
         }
 
+        public bool HasCustomization => _backgroundBrush != null || _foregroundBrush != null || _fontStyle.HasValue || _typeface != null;
         /// <inheritdoc />
         public override Typeface Typeface
         {
@@ -85,7 +86,7 @@ namespace AnalysisControls
         {
             _fontStyle = fontStyle;
             var family = _baseProps.Typeface.FontFamily;
-            _typeface = new Typeface(family, _fontStyle, _baseProps.Typeface.Weight, _baseProps.Typeface.Stretch);
+            _typeface = new Typeface(family, _fontStyle.Value, _baseProps.Typeface.Weight, _baseProps.Typeface.Stretch);
 
         }
 

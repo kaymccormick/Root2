@@ -67,7 +67,8 @@ namespace AnalysisControls
             _emSize = newRender.FontSize;
             _emHintingSize = newRender.FontSize;
             _textDecorations = newRender.TextDecorations;
-            _foregroundBrush = newRender.TextColor;
+            _foregroundBrush = Brushes.Black;
+            ;// newRender.TextColor;
             _backgroundBrush = null;
             _baselineAlignment = BaselineAlignment.Baseline;
             _culture = CultureInfo.CurrentUICulture;

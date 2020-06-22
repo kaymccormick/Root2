@@ -9,6 +9,7 @@ using System.Windows.Input;
 using AnalysisAppLib;
 using Autofac;
 using Autofac.Features.Metadata;
+using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
 using KayMcCormick.Lib.Wpf.Command;
 using RibbonLib.Model;
@@ -155,8 +156,10 @@ namespace AnalysisControls
                         var props = MetaHelper.GetMetadataProps(metacmd.Metadata);
                         if (cmd is ICommand cmdz)
                         {
-                            var button = new RibbonModelButton() {Label = cmd.DisplayName, Command = cmdz};
+                            var th = props.TypeHint?.ToString() ?? "no typehint";
+                            var button = new RibbonModelButton() {Label = cmd.DisplayName, Command = cmdz, ToolTipDescription = th};
                             
+                            DebugUtils.WriteLine(th);
                             Group1.Items.Add(button);
                         }
                         else

@@ -35,7 +35,10 @@ namespace AnalysisAppLib
             {
                 props.Title = title.ToString();
             }
-
+            if(metaMetadata.TryGetValue("TypeHint", out var typehint))
+            {
+                props.TypeHint = (Type)typehint;
+            }
             if (metaMetadata.TryGetValue("Category", out var category))
             {
                 Category c = (Category) category;

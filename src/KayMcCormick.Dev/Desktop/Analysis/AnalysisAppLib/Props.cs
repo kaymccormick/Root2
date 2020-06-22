@@ -1,4 +1,6 @@
-﻿namespace AnalysisAppLib
+﻿using System;
+
+namespace AnalysisAppLib
 {
     /// <summary>
     /// 
@@ -18,6 +20,8 @@
         /// 
         /// </summary>
         public object TabHeader { get; set; }
+
+        public Type TypeHint { get; set; }
 
         /// <inheritdoc />
         public override string ToString()

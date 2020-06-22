@@ -62,33 +62,77 @@ namespace AnalysisControls
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public override TextRun GetTextRun(int textSourceCharacterIndex)
         {
+            void TakeToken()
+            {
+                var includeDocumentationComments = true;
+                var includeDirectives = true;
+                var includeSkipped = true;
+                var includeZeroWidth = false;
+                this.token = this.token.HasValue
+                    ? this.token.Value.GetNextToken(includeZeroWidth, includeSkipped, includeDirectives,
+                        includeDocumentationComments)
+                    : Node.GetFirstToken(includeZeroWidth, includeSkipped, includeDirectives, includeDocumentationComments);
+                
+                _starts.Push(this.token.Value.Span);
+            }
+            if (textSourceCharacterIndex == 0)
+            {
+                this.token = null;
+                _starts.Clear();
+            }
+            if (this.token.HasValue && CSharpExtensions.Kind(this.token.Value) == SyntaxKind.None)
+            {
+                return new TextEndOfParagraph(2);
+            }
             var token1 = this.token;
-
+            // DebugUtils.WriteLine("Index = " + textSourceCharacterIndex);
             if(!token1.HasValue) {
-                this.token = Node.GetFirstToken();
-            _starts.Push(this.token.Value.Span);
+                TakeToken();
 	    token1 = this.token;
   }
 
             var token = token1.Value;
 	    var k =  _starts.Peek();
-            if (textSourceCharacterIndex <k.Start)
+
+        if (textSourceCharacterIndex <k.Start)
             {
                 var len = k.Start - textSourceCharacterIndex;
                 char[] buf = new char[len];
                 _text.CopyTo(textSourceCharacterIndex, buf, 0, len);
-                this.token = token.GetNextToken();
-		_starts.Push(token.Span);
-                return new CustomTextCharacters(buf.ToString(), MakeProperties(token, buf.ToString()));
-            } else
+                // this.token = token.GetNextToken();
+		// _starts.Push(token.Span);
+        if(len == 2 && buf[0] == '\r' && buf[1] == '\n')
+                {
+                    return new CustomTextEndOfLine(2);
+                }
+
+        // DebugUtils.WriteLine($"returning {buf} len {len}");
+        var t = string.Join("", buf);
+                return new CustomTextCharacters(t, MakeProperties(SyntaxKind.None, t));
+            }  else if (textSourceCharacterIndex >= k.End)
+        {
+            TakeToken();
+            return GetTextRun(textSourceCharacterIndex);
+        }
+            else
             {
-                if (token.Kind() == Microsoft.CodeAnalysis.VisualBasic.SyntaxKind.EndOfLineTrivia)
+                if (CSharpExtensions.Kind(token) == SyntaxKind.EndOfLineTrivia)
                 {
                     return new CustomTextEndOfLine(2);
 
                 }
                 var len = k.Length;
-                return new CustomTextCharacters(token.ValueText, MakeProperties(token, token.ValueText));
+                if (len == 0)
+                {
+                    TakeToken();
+                    return GetTextRun(textSourceCharacterIndex);
+                }
+                TakeToken();
+                if (token.Text.Length != len)
+                {
+                    
+                }
+                return new CustomTextCharacters(token.Text, MakeProperties(token, token.Text));
 
 
             }
@@ -268,10 +312,46 @@ namespace AnalysisControls
         /// <returns></returns>
         public TextRunProperties MakeProperties(object arg, string text)
         {
-            if (arg is SyntaxTrivia st)
-                return PropsFor(st, text);
-            if (arg is SyntaxToken t) return PropsFor(t, text);
+            TextRunProperties textRunProperties = null;
+            if(arg == (object) SyntaxKind.None)
+            {
+                textRunProperties = PropsFor(text);
+            } else             if (arg is SyntaxTrivia st)
+                textRunProperties = PropsFor(st, text);
+            else if (arg is SyntaxToken t) 
+                textRunProperties = PropsFor(t, text);
+            else 
+            textRunProperties = PropsFor(text);
+            if (textRunProperties != null)
+            {
+                if (textRunProperties is BasicTextRunProperties b)
+                {
+                    if (!b.HasCustomization)
+                    {
 
+                        // b.SetBackgroundBrush(Brushes.LightBlue);
+                        string kind = "";
+
+                        string nodeKind ="";
+                        string tkind = "";
+                        if (arg is SyntaxToken stk)
+                        {
+                            var syntaxKind = CSharpExtensions.Kind(stk.Parent);
+                            nodeKind = syntaxKind.ToString();
+                            kind = CSharpExtensions.Kind(stk).ToString();
+                            if (SyntaxFacts.IsTrivia(syntaxKind))
+                            {
+                                var pt = stk.Parent.ParentTrivia;
+                                tkind = CSharpExtensions.Kind(pt).ToString();
+                            }
+
+                        }
+                        DebugUtils.WriteLine($"no customizations for {arg} - {text} {arg.GetType().Name} {kind} {nodeKind} [{tkind}]");
+                    }
+                }
+
+                return textRunProperties;
+            }
             return null;
         }
 
@@ -311,6 +391,7 @@ namespace AnalysisControls
             {
                 _tree = value;
                 _text = _tree.GetText();
+                Length = _text.Length;
             }
         }
 
@@ -330,19 +411,123 @@ namespace AnalysisControls
             if (token.Parent != null)
             {
                 var syntaxKind = CSharpExtensions.Kind(token.Parent);
+                string tkind = "";
+                var zz = token.Parent.FirstAncestorOrSelf<SyntaxNode>(
+                    z => SyntaxFacts.IsTrivia(CSharpExtensions.Kind((SyntaxNode) z)), false);
 
+                if (zz != null)
+                {
+                    SyntaxTrivia pt = zz.ParentTrivia;
+                    SyntaxKind syntaxKind1 = CSharpExtensions.Kind(pt);
+                    tkind = syntaxKind1.ToString();
+                    
+                    switch (syntaxKind1)
+                    {
+                        case SyntaxKind.EndOfLineTrivia:
+                            break;
+                        case SyntaxKind.WhitespaceTrivia:
+                            break;
+                        case SyntaxKind.SingleLineCommentTrivia:
+                            pp.SetForegroundBrush(Brushes.LightGray);
+                            break;
+                        case SyntaxKind.MultiLineCommentTrivia:
+                            pp.SetForegroundBrush(Brushes.LightGray);
+                            break;
+                        case SyntaxKind.DocumentationCommentExteriorTrivia:
+                            pp.SetBackgroundBrush(Brushes.Aqua);
+                            break;
+                        case SyntaxKind.SingleLineDocumentationCommentTrivia:
+                            pp.SetForegroundBrush(Brushes.LightGray);
+                            break;
+                        case SyntaxKind.MultiLineDocumentationCommentTrivia:
+                            pp.SetForegroundBrush(Brushes.LightGray);
+                            break;
+                        case SyntaxKind.DisabledTextTrivia:
+                            pp.SetForegroundBrush(Brushes.LightGray);
+                            break;
+                        case SyntaxKind.PreprocessingMessageTrivia:
+                            break;
+                        case SyntaxKind.IfDirectiveTrivia:
+                            pp.SetForegroundBrush(Brushes.BurlyWood);
+                            break;
+                        case SyntaxKind.ElifDirectiveTrivia:
+                            pp.SetForegroundBrush(Brushes.BurlyWood);
+                            break;
+                        case SyntaxKind.ElseDirectiveTrivia:
+                            pp.SetForegroundBrush(Brushes.BurlyWood);
+                            break;
+                        case SyntaxKind.EndIfDirectiveTrivia:
+                            pp.SetForegroundBrush(Brushes.BurlyWood);
+                            break;
+                        case SyntaxKind.RegionDirectiveTrivia:
+                            pp.SetForegroundBrush(Brushes.BurlyWood);
+                            break;
+                        case SyntaxKind.EndRegionDirectiveTrivia:
+                            pp.SetForegroundBrush(Brushes.BurlyWood);
+                            break;
+                        case SyntaxKind.DefineDirectiveTrivia:
+                            pp.SetForegroundBrush(Brushes.BurlyWood);
+                            break;
+                        case SyntaxKind.UndefDirectiveTrivia:
+                            pp.SetForegroundBrush(Brushes.BurlyWood);
+                            break;
+                        case SyntaxKind.ErrorDirectiveTrivia:
+                            pp.SetForegroundBrush(Brushes.BurlyWood);
+                            break;
+                        case SyntaxKind.WarningDirectiveTrivia:
+                            pp.SetForegroundBrush(Brushes.BurlyWood);
+                            break;
+                        case SyntaxKind.LineDirectiveTrivia:
+                            pp.SetForegroundBrush(Brushes.BurlyWood);
+                            break;
+                        case SyntaxKind.PragmaWarningDirectiveTrivia:
+                            break;
+                        case SyntaxKind.PragmaChecksumDirectiveTrivia:
+                            break;
+                        case SyntaxKind.ReferenceDirectiveTrivia:
+                            break;
+                        case SyntaxKind.BadDirectiveTrivia:
+                            break;
+                        case SyntaxKind.SkippedTokensTrivia:
+                            break;
+                        case SyntaxKind.ConflictMarkerTrivia:
+                            break;
+                        case SyntaxKind.NullableDirectiveTrivia:
+                            break;
+                    }
+                }
+
+                if (SyntaxFacts.IsPredefinedType(kind))
+                {
+                    pp.SetForegroundBrush(Brushes.Gold);
+                } else
+                if (SyntaxFacts.IsKeywordKind(kind))
+                {
+                    pp.SetForegroundBrush(Brushes.CornflowerBlue);
+                    return pp;
+                } else if (SyntaxFacts.IsLiteralExpression(kind))
+                {
+                    pp.SetForegroundBrush(Brushes.Brown);
+                    pp.SetFontStyle(FontStyles.Italic);
+                } 
                 DebugUtils.WriteLine(syntaxKind.ToString(), DebugCategory.TextFormatting);
-                if (SyntaxFacts.IsName(syntaxKind))
-                    pp.SetForegroundBrush(Brushes.Pink);
-                else if (SyntaxFacts.IsTypeSyntax(syntaxKind)) pp.SetForegroundBrush(Brushes.Crimson);
+                // if (SyntaxFacts.IsName(syntaxKind))
+                    // pp.SetForegroundBrush(Brushes.Pink);
+                // if (SyntaxFacts.IsTypeSyntax(syntaxKind)) pp.SetForegroundBrush(Brushes.Crimson);
 
                 if (syntaxKind == SyntaxKind.MethodDeclaration)
+                {
                     if (SyntaxFacts.IsAccessibilityModifier(kind))
                         pp.SetForegroundBrush(Brushes.Aqua);
+                    else if(SyntaxFacts.IsKeywordKind(kind))
+                        pp.SetFontStyle(FontStyles.Italic);
+
+                }
             }
 
             // pp.SyntaxToken = trivia;
             // pp.Text = text;
+            
             return pp;
         }
 
@@ -357,6 +542,11 @@ namespace AnalysisControls
         private TextRunProperties PropsFor(string text)
         {
             var pp = BasicProps();
+
+            if (text.Trim().Length == 0)
+                return pp;
+            pp.SetForegroundBrush(Brushes.Fuchsia);
+            pp.SetBackgroundBrush(Brushes.Black);
             return pp;
         }
 
@@ -401,7 +591,7 @@ namespace AnalysisControls
         private List<CompilationError> _errors1;
         private SyntaxTree _tree;
         private SourceText _text;
-        private Stack<TextSpan> _starts;
+        private Stack<TextSpan> _starts = new Stack<TextSpan>();
         private SyntaxToken? token;
         public int EolLength { get; } = 2;
 
@@ -417,7 +607,7 @@ namespace AnalysisControls
         /// </summary>
         public override void Init()
         {
-            GenerateText();
+            //GenerateText();
         }
 
         /// <summary>
