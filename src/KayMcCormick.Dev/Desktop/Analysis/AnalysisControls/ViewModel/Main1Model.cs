@@ -6,11 +6,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
-using System.Management.Automation.Runspaces;
-
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-
 using System.Reactive.Subjects;
 using System.Reflection;
 using System.Resources;
@@ -28,15 +23,10 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xaml;
-using AnalysisAppLib;
 using AnalysisControl;
-using AnalysisControls;
 using AnalysisControls.TypeDescriptors;
-using AnalysisControlsCore;
-
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
-using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
 using KmDevLib;
 using KmDevWpfControls;
@@ -44,7 +34,6 @@ using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using NLog;
-using PowerShellShared;
 using RibbonLib.Model;
 using WpfApp4;
 using TypeControl = KayMcCormick.Lib.Wpf.TypeControl;
@@ -64,6 +53,10 @@ namespace AnalysisControls.ViewModel
 
         public static readonly DependencyProperty CatchphraseProperty = DependencyProperty.Register(
             "Catchphrase", typeof(string), typeof(Main1Model), new PropertyMetadata(default(string)));
+
+        public Main1Model()
+        {
+        }
 
         public string Catchphrase
         {

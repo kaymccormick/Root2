@@ -13,6 +13,7 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
+using Microsoft.CodeAnalysis.CSharp;
 using CSharpExtensions = Microsoft.CodeAnalysis.CSharp.CSharpExtensions;
 using SyntaxFactory = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using SyntaxFacts = Microsoft.CodeAnalysis.CSharp.SyntaxFacts;
@@ -66,7 +67,7 @@ namespace AnalysisControls
                 var includeDocumentationComments = true;
                 var includeDirectives = true;
                 var includeSkipped = true;
-                var includeZeroWidth = false;
+                var includeZeroWidth = true;
                 this.token = this.token.HasValue
                     ? this.token.Value.GetNextToken(includeZeroWidth, includeSkipped, includeDirectives,
                         includeDocumentationComments)
@@ -85,6 +86,32 @@ namespace AnalysisControls
                 }
                 this.token = null;
                 _starts.Clear();
+            }
+
+            var childInPos = Node.ChildThatContainsPosition(textSourceCharacterIndex);
+            if (childInPos.IsNode)
+            {
+                var n = childInPos.AsNode();
+                if (textSourceCharacterIndex < n.SpanStart)
+                {
+                    foreach (var syntaxTrivia in n.GetLeadingTrivia())
+                    {
+                        if (textSourceCharacterIndex >= syntaxTrivia.SpanStart &&
+                            textSourceCharacterIndex <= syntaxTrivia.Span.End)
+                        {
+                            DebugUtils.WriteLine("In trivia " + syntaxTrivia);
+                            if (textSourceCharacterIndex > syntaxTrivia.SpanStart)
+                            {
+                                DebugUtils.WriteLine("In middle of trivia");
+                            }
+
+                            var characterString = syntaxTrivia.ToFullString();
+                            return new SyntaxTriviaTextCharacters(characterString,
+                                PropsFor(syntaxTrivia, characterString), syntaxTrivia.FullSpan, syntaxTrivia);
+                        }
+                    }
+                }
+                
             }
 
             if (this.token.HasValue && CSharpExtensions.Kind(this.token.Value) == SyntaxKind.None)
@@ -106,11 +133,8 @@ namespace AnalysisControls
                 var len = k.Start - textSourceCharacterIndex;
                 var buf = new char[len];
                 _text.CopyTo(textSourceCharacterIndex, buf, 0, len);
-                // this.token = token.GetNextToken();
-                // _starts.Push(token.Span);
                 if (len == 2 && buf[0] == '\r' && buf[1] == '\n') return new CustomTextEndOfLine(2);
 
-                // DebugUtils.WriteLine($"returning {buf} len {len}");
                 var t = string.Join("", buf);
                 return new CustomTextCharacters(t, MakeProperties(SyntaxKind.None, t));
             }
@@ -407,8 +431,20 @@ namespace AnalysisControls
             var pp = BasicProps();
             var kind = CSharpExtensions.Kind(token);
 
+            if (token.ContainsDiagnostics)
+            {
+                var sevB = new System.Windows.Media.Brush[4] {null, Brushes.LightBlue, Brushes.BlueViolet, Brushes.Red};
+                var s = token.GetDiagnostics().Max(diagnostic => diagnostic.Severity);
+                pp.SetBackgroundBrush(sevB[(int) s]);
+            }
             if (token.Parent != null)
             {
+                if (token.Parent.ContainsDiagnostics)
+                {
+                    var sevB = new System.Windows.Media.Brush[4] { null, Brushes.LightBlue, Brushes.BlueViolet, Brushes.Red };
+                    var s = token.Parent.GetDiagnostics().Max(diagnostic => diagnostic.Severity);
+                    pp.SetBackgroundBrush(sevB[(int)s]);
+                }
                 var syntaxKind = CSharpExtensions.Kind(token.Parent);
                 var tkind = "";
                 var zz = token.Parent.FirstAncestorOrSelf<SyntaxNode>(
@@ -544,7 +580,10 @@ namespace AnalysisControls
             var pp = BasicProps();
 
             if (text.Trim().Length == 0)
+            {
                 return pp;
+            }
+
             pp.SetForegroundBrush(Brushes.Fuchsia);
             pp.SetBackgroundBrush(Brushes.Black);
             return pp;
@@ -554,20 +593,14 @@ namespace AnalysisControls
 
 #region Private Fields
 
-        private int lemgth;
-        private Type _type;
-        private static double _pixelsPerDip;
-        private readonly List<int> chars = new List<int>();
+private Type _type;
+private readonly List<int> chars = new List<int>();
         private readonly List<TextRun> col = new List<TextRun>();
 
         public FontFamily Family { get; set; } = new FontFamily("GlobalMonospace.CompositeFont");
 
-        private readonly FontWeight _fontWeight = FontWeights.Medium;
-        private readonly FontStyle _fontStyle = FontStyles.Normal;
-        private readonly FontStretch _fontStretch = FontStretches.Normal;
         public double EmSize { get; set; } = 24;
         private IList colx = new ArrayList();
-        private List<int> chars2 = new List<int>();
         private SyntaxNode _node;
         private readonly Typeface _typeface;
         public override GenericTextRunProperties BaseProps { get; }
@@ -613,15 +646,40 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="InsertionPoint"></param>
+        /// <param name="insertionPoint"></param>
         /// <param name="text"></param>
-        public override void TextInput(int InsertionPoint, string text)
+        public override void TextInput(int insertionPoint, string text)
         {
+            DebugUtils.WriteLine($"Insertion point is {insertionPoint}.");
+            DebugUtils.WriteLine($"Input text is \"{text}\"");
+            TextChange change = new TextChange(new TextSpan(insertionPoint, 0), text);
+            var newText = _text.WithChanges(change);
+            if(newText.Length != _text.Length + text.Length)
+            {
+                DebugUtils.WriteLine($"Unexpected length");
+            }
+            var newTree = Tree.WithChangedText(newText);
+            Compilation = CSharpCompilation.Create("edit", new[]{newTree}, new[]{MetadataReference.CreateFromFile(typeof(object).Assembly.Location)});
+            foreach (var diagnostic in Compilation.GetParseDiagnostics())
+            {
+                DebugUtils.WriteLine(diagnostic.ToString());
+            }
+
+            Model = Compilation.GetSemanticModel(newTree);
+            var chL = newTree.GetChangedSpans(Tree);
+            foreach (var textSpan in chL)
+            {
+                DebugUtils.WriteLine("Changed region " + textSpan);
+            }
+            Tree = newTree;
+            Node = newTree.GetRoot();
             
-            
+            return;
+
+
             var t = Node.GetFirstToken(true, true, true, true);
             _starts.Push(new Tuple<TextSpan, SyntaxToken>(t.Span, t));
-            var q = _starts.Where(z => z.Item1.End >= InsertionPoint || z.Item1.Start >= InsertionPoint);
+            var q = _starts.Where(z => z.Item1.End >= insertionPoint || z.Item1.Start >= insertionPoint);
             var syntaxToken = q.First().Item2;
             var p = syntaxToken.Parent;
             DebugUtils.WriteLine(p.ToString());
@@ -631,7 +689,17 @@ namespace AnalysisControls
             var syntaxTokens = new[] {syntaxToken1};
             try
             {
-                var n = p.InsertTokensBefore(syntaxToken, syntaxTokens);
+                SyntaxNode? n;
+                if (syntaxToken.Span.End <= insertionPoint)
+                {
+                    n = p.InsertTokensAfter(syntaxToken, syntaxTokens);
+                }
+                else
+                {
+                    n = p.InsertTokensBefore(syntaxToken, syntaxTokens);
+                }
+
+
                 Node = Node.ReplaceNode(p, n);
             }
             catch (Exception ex)
@@ -685,6 +753,8 @@ namespace AnalysisControls
             // }
         }
 
+        public SemanticModel Model { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -706,6 +776,12 @@ namespace AnalysisControls
                 }
             }
 #endif
+        }
+
+        public int EnterLineBreak(int insertionPoint)
+        {
+            TextInput(insertionPoint, "\r\n");
+            return insertionPoint + 2;
         }
     }
 }

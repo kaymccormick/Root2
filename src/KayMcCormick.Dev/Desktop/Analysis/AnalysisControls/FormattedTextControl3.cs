@@ -56,9 +56,29 @@ namespace AnalysisControls
             DebugUtils.WriteLine($"Insertion Point Updated to {e.NewValue}", DebugCategory.TextFormatting);
         }
 
+        
         private static void OnSourceTextUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+            var f = (FormattedTextControl3)d;
+            var newValue = (string?) e.NewValue;
+            if (!string.IsNullOrEmpty(newValue))
+            {
+                f._updatingSourceText = true;
+                f.Compilation = CSharpCompilation.Create(
+                    "test", 
+                    new[] { SyntaxFactory.ParseSyntaxTree(
+                        newValue) }, new[] { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) });
+                f.SyntaxTree = f.Compilation.SyntaxTrees.First();
+                f.Node = f.SyntaxTree.GetRoot();
+                f.Model = f.Compilation?.GetSemanticModel(f.SyntaxTree);
+                f._updatingSourceText = false;
+                f.UpdateTextSource();
+                return;
+            }
+
+            DebugUtils.WriteLine(e.NewValue.ToString());
             return;
+
             var c = (FormattedTextControl3) d;
 
             var eNewValue = (string) e.NewValue;
@@ -397,7 +417,26 @@ namespace AnalysisControls
         {
             PixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
             CommandBindings.Add(new CommandBinding(WpfAppCommands.SerializeContents, Executed));
+            CommandBindings.Add(new CommandBinding(EditingCommands.EnterLineBreak, OnEnterLineBreak,
+                CanEnterLineBreak));
+
+            ;
+            InputBindings.Add(new KeyBinding(EditingCommands.EnterLineBreak, Key.Enter, ModifierKeys.None));
             TypefaceManager = new DefaultTypefaceManager();
+        }
+
+        
+        private void OnEnterLineBreak(object sender, ExecutedRoutedEventArgs e)
+        {
+            DebugUtils.WriteLine("Enter line break");
+            InsertionPoint = TextSource.EnterLineBreak(InsertionPoint);
+        }
+
+        private void CanEnterLineBreak(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
+            e.Handled = true;
+
         }
 
         private async void Executed(object sender, ExecutedRoutedEventArgs e)
@@ -416,6 +455,7 @@ namespace AnalysisControls
         {
             base.OnSyntaxTreeUpdated(newValue);
             _text = newValue.GetText();
+            if(!_updatingSourceText)
             SourceText = _text.ToString();
         }
 
@@ -446,7 +486,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public double PixelsPerDip { get; }
+        private double PixelsPerDip { get; }
 
         private GeometryDrawing _geometryDrawing;
         private Rect _rect;
@@ -454,7 +494,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public double EmSize { get; set; }
+        private double EmSize { get; set; }
 
         /// <inheritdoc />
         public override void OnApplyTemplate()
@@ -545,7 +585,7 @@ namespace AnalysisControls
                 {
                     DebugUtils.WriteLine("incrementing insertion point", DebugCategory.TextFormatting);
                     e.Handled = true;
-                    if (InsertionCharacter.NextCell == null)
+                    if (InsertionCharacter != null && InsertionCharacter.NextCell == null)
                         break;
                     var ip = ++InsertionPoint;
                     DebugUtils.WriteLine($"{ip}", DebugCategory.TextFormatting);
@@ -647,6 +687,10 @@ namespace AnalysisControls
             InvalidateVisual();
 
             InsertionPoint = InsertionPoint + e.Text.Length;
+            if (InsertionLine.Offset + InsertionLine.Length <= InsertionPoint)
+            {
+                InsertionLine = null;
+            }
             if (e.Text.Length == 1)
             {
                 //_textCaret.SetValue(Canvas.LeftProperty, 0);
@@ -1093,6 +1137,7 @@ namespace AnalysisControls
         private SyntaxNode _endNode;
         private Rectangle geometryRectangle = new Rectangle();
         private SourceText _text;
+        private bool _updatingSourceText;
 
         /// <inheritdoc />
         protected override void OnMouseMove(MouseEventArgs e)
@@ -1429,11 +1474,11 @@ namespace AnalysisControls
         protected override void OnNodeUpdated()
         {
             base.OnNodeUpdated();
-            if (!ChangingText)
+            if (!ChangingText || _updatingSourceText)
             {
                 DebugUtils.WriteLine("Node updated", DebugCategory.TextFormatting);
                 UpdateTextSource();
-                UpdateFormattedText();
+                //UpdateFormattedText();
             }
         }
 

@@ -30,7 +30,13 @@
             <analysisControls:RibbonBuilder1 x:Key="RibbonBuilder1">
                 <analysisControls:RibbonBuilder1.Tabs>
                     <analysisControls:RibbonModelTabCollection>
-                        <model:RibbonModelTab Header="Hello"/>
+                        <model:RibbonModelTab Header="Hello">
+                            <model:RibbonModelTab.ItemsCollection>
+                                <model:RibbonModelGroup Label="Fatality">
+                                    
+                                </model:RibbonModelGroup>
+                            </model:RibbonModelTab.ItemsCollection>
+                            </model:RibbonModelTab>
                     </analysisControls:RibbonModelTabCollection>
                 </analysisControls:RibbonBuilder1.Tabs>
                 <analysisControls:RibbonBuilder1.RibbonModelTabProviders>
@@ -50,7 +56,7 @@
         <Grid.RowDefinitions><RowDefinition MinHeight="180"/><RowDefinition Height="*"/></Grid.RowDefinitions>
             <Ribbon Grid.Row="0" DataContext="{Binding Source={StaticResource RibbonBuilder1},Path=RibbonModel}"/>
             <Border Grid.Row="1" VerticalAlignment="Stretch">
-                <analysisControls:Main1UserControl VerticalAlignment="Stretch"/>
+                <analysisControls:Main1 VerticalAlignment="Stretch"/>
             </Border>
 </Grid>
     </Border>
