@@ -615,7 +615,7 @@ namespace AnalysisControls
         protected override void OnPreviewTextInput(TextCompositionEventArgs e)
         {
             base.OnPreviewTextInput(e);
-            
+            DebugUtils.WriteLine(e.Text);
             var prev = SourceText.Substring(0, InsertionPoint);
             var next = SourceText.Substring(InsertionPoint);
             var code = prev + e.Text + next;
@@ -1038,6 +1038,7 @@ namespace AnalysisControls
 
         private void UpdateCaretPosition()
         {
+            return;
             var insertionPoint = InsertionPoint;
             var l0 = LineInfos.FirstOrDefault(l => l.Offset + l.Length >= insertionPoint);
             if (l0 != null)

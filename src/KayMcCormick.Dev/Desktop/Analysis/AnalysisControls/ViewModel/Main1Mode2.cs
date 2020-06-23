@@ -664,6 +664,16 @@ namespace AnalysisControls.ViewModel
     internal class CodeDocument : DocModel
     {
         /// <inheritdoc />
+        public CodeDocument()
+        {
+            CodeControl = new FormattedTextControl3()
+            {
+                SourceText = ""
+            };
+
+        }
+
+        /// <inheritdoc />
         public CodeDocument(SyntaxTree syntaxTree, Compilation compilation)
         {
             SyntaxTree = syntaxTree;

@@ -33,6 +33,7 @@ using System.Windows.Threading;
 using AnalysisAppLib;
 using AnalysisAppLib.Syntax;
 using AnalysisAppLib.ViewModel;
+using AnalysisControls.Commands;
 using AnalysisControls.TypeDescriptors;
 using AnalysisControls.ViewModel;
 using AnalysisControls.Views;
@@ -40,6 +41,7 @@ using Autofac;
 using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
+using Autofac.Extras.AttributeMetadata;
 using Autofac.Features.AttributeFilters;
 using Autofac.Features.Metadata;
 using AvalonDock.Layout;
@@ -71,7 +73,9 @@ namespace AnalysisControls
         // ReSharper disable once AnnotateNotNullParameter
         protected override void Load(ContainerBuilder builder)
         {
-
+            builder.RegisterAssemblyTypes(typeof(AnalysisControlsModule).Assembly)
+                .Where(type => typeof(IDisplayableAppCommand).IsAssignableFrom(type) && !type.IsAbstract && type != typeof(OpenFileCommand2)).As<IDisplayableAppCommand>()
+                .WithCallerMetadata().WithAttributedMetadata();
             builder.RegisterType<SyntaxNodeProperties>().AsImplementedInterfaces();
             builder.RegisterType<MiscInstanceInfoProvider>()
                 .AsSelf()

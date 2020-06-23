@@ -334,6 +334,7 @@ namespace AnalysisControls.ViewModel
 
         private void AddInitialDocuments()
         {
+            return;
             AddtraceConfigurationVoew();
             
             //            AddModelDoc();

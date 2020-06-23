@@ -88,33 +88,40 @@ namespace AnalysisControls
                 _starts.Clear();
             }
 
-            var childInPos = Node.ChildThatContainsPosition(textSourceCharacterIndex);
-            if (childInPos.IsNode)
+            try
             {
-                var n = childInPos.AsNode();
-                if (textSourceCharacterIndex < n.SpanStart)
+                var childInPos = Node.ChildThatContainsPosition(textSourceCharacterIndex);
+                if (childInPos.IsNode)
                 {
-                    foreach (var syntaxTrivia in n.GetLeadingTrivia())
+                    var n = childInPos.AsNode();
+                    if (textSourceCharacterIndex < n.SpanStart)
                     {
-                        if (textSourceCharacterIndex >= syntaxTrivia.SpanStart &&
-                            textSourceCharacterIndex <= syntaxTrivia.Span.End)
+                        foreach (var syntaxTrivia in n.GetLeadingTrivia())
                         {
-                            DebugUtils.WriteLine("In trivia " + syntaxTrivia);
-                            if (textSourceCharacterIndex > syntaxTrivia.SpanStart)
+                            if (textSourceCharacterIndex >= syntaxTrivia.SpanStart &&
+                                textSourceCharacterIndex < syntaxTrivia.Span.End)
                             {
-                                DebugUtils.WriteLine("In middle of trivia");
-                            }
+                                DebugUtils.WriteLine("In trivia " + syntaxTrivia);
+                                if (textSourceCharacterIndex > syntaxTrivia.SpanStart)
+                                {
+                                    DebugUtils.WriteLine("In middle of trivia");
+                                }
 
-                            var characterString = syntaxTrivia.ToFullString();
-                            return new SyntaxTriviaTextCharacters(characterString,
-                                PropsFor(syntaxTrivia, characterString), syntaxTrivia.FullSpan, syntaxTrivia);
+                                var characterString = syntaxTrivia.ToFullString();
+                                return new SyntaxTriviaTextCharacters(characterString,
+                                    PropsFor(syntaxTrivia, characterString), syntaxTrivia.FullSpan, syntaxTrivia);
+                            }
                         }
                     }
+
                 }
-                
+            }
+            catch (Exception ex)
+            {
+
             }
 
-            if (this.token.HasValue && CSharpExtensions.Kind(this.token.Value) == SyntaxKind.None)
+            if (this.token.HasValue && CSharpExtensions.Kind(this.token.Value) == SyntaxKind.None || CSharpExtensions.Kind(this.token.Value) == SyntaxKind.EndOfFileToken)
                 return new TextEndOfParagraph(2);
             var token1 = this.token;
             // DebugUtils.WriteLine("Index = " + textSourceCharacterIndex);
