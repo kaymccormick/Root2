@@ -31,5 +31,8 @@ namespace AnalysisControls
 
             return tab;
         }
+
+        /// <inheritdoc />
+        public object InstanceObjectId { get; set; }
     }
 }

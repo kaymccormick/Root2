@@ -12,6 +12,8 @@ namespace AnalysisControls
         /// <inheritdoc />
         public abstract RibbonModelGroup ProvideModelItem();
 
+        /// <inheritdoc />
+        public object InstanceObjectId { get; set; }
     }
 
     /// <summary>
@@ -21,6 +23,9 @@ namespace AnalysisControls
     {
         /// <inheritdoc />
         public abstract RibbonModelContextualTabGroup ProvideModelItem();
+
+        /// <inheritdoc />
+        public object InstanceObjectId { get; set; }
     }
 
     /// <summary>

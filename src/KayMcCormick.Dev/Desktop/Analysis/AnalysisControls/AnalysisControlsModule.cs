@@ -44,7 +44,6 @@ using Autofac.Core.Resolving;
 using Autofac.Extras.AttributeMetadata;
 using Autofac.Features.AttributeFilters;
 using Autofac.Features.Metadata;
-using AvalonDock.Layout;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Command;
@@ -391,66 +390,7 @@ namespace AnalysisControls
             return listView;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="c"></param>
-        /// <param name="p"></param>
-        /// <param name="metaFunc"></param>
-        /// <returns></returns>
-        [NotNull]
-        public static Func<LayoutDocumentPane, IDisplayableAppCommand> ControlViewCommandAdapter(
-            [NotNull] IComponentContext c
-            , IEnumerable<Parameter> p
-            , [NotNull] Meta<Func<LayoutDocumentPane, IControlView>> metaFunc
-        )
-        {
-            metaFunc.Metadata.TryGetValue("Title", out var titleo);
-            metaFunc.Metadata.TryGetValue("ImageSource", out var imageSource);
-            // object res = r.ResolveResource ( imageSource ) ;
-            // var im = res as ImageSource ;
-
-            var title = (string) titleo ?? "no title";
-
-            return pane => (IDisplayableAppCommand) new LambdaAppCommand(
-                title
-                , CommandFuncAsync
-                , Tuple.Create(
-                    metaFunc
-                        .Value
-                    , pane
-                )
-            )
-            {
-                LargeImageSourceKey = imageSource
-            };
-        }
 #pragma warning disable 1998
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="command"></param>
-        /// <returns></returns>
-        public static async Task<IAppCommandResult> CommandFuncAsync(
-#pragma warning restore 1998
-#pragma warning restore 1998
-            [NotNull] LambdaAppCommand command
-        )
-        {
-            var (viewFunc1, pane1) =
-                (Tuple<Func<LayoutDocumentPane, IControlView>, LayoutDocumentPane>)
-                command.Argument;
-
-            DebugUtils.WriteLine($"Calling view func ({command})");
-            var n = DateTime.Now;
-            var view = viewFunc1(pane1);
-            DebugUtils.WriteLine((DateTime.Now - n).ToString());
-            var doc = new LayoutDocument {Content = view};
-            pane1.Children.Add(doc);
-            pane1.SelectedContentIndex = pane1.Children.IndexOf(doc);
-            DebugUtils.WriteLine("returning success");
-            return AppCommandResult.Success;
-        }
 
         /// <summary>
         /// 

@@ -23,6 +23,7 @@ using KayMcCormick.Dev.Container;
 using KayMcCormick.Dev.Interfaces;
 using KayMcCormick.Dev.Logging;
 using KmDevLib;
+using Microsoft.Extensions.Options;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using NLog;
@@ -45,15 +46,10 @@ namespace AnalysisAppLib
         private ActivationInfoReplaySubject _activationInfoReplaySubject;
         private readonly RegInfoReplaySubject _regInfoReplaySubject = new RegInfoReplaySubject() {ListView = true};
 
-        /// <summary>
-        ///     Parameter-less constructor.
-        /// </summary>
-        public AnalysisAppLibModule()
-        {
-            DebugUtils.WriteLine("here");
-        }
+      
 
-        /// <summary>
+
+    /// <summary>
         ///     Boolean indicating whether or not to register the "File explorer" types.
         /// </summary>
         // ReSharper disable once UnusedMember.Global
@@ -64,6 +60,7 @@ namespace AnalysisAppLib
         }
 
         /// <summary>
+    
         /// </summary>
         /// <param name="componentRegistry"></param>
         /// <param name="registration"></param>

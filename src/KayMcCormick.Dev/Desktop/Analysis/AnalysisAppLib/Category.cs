@@ -5,6 +5,7 @@
     /// </summary>
     public enum Category
     {
+        None,
         /// <summary>
         /// 
         /// </summary>
@@ -16,10 +17,6 @@
         /// <summary>
         /// 
         /// </summary>
-        Management,
-        /// <summary>
-        /// 
-        /// </summary>
-        None
+        Management
     }
 }

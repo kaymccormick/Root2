@@ -115,5 +115,8 @@ namespace AnalysisControls.TypeDescriptors
             return Types.Contains ( type ) ;
         }
         #endregion
+
+        /// <inheritdoc />
+        public object InstanceObjectId { get; set; }
     }
 }

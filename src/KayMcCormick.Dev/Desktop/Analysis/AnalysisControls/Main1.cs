@@ -307,7 +307,10 @@ namespace AnalysisControls
             // CommandManager.AddPreviewCanExecuteHandler(this, PreviewCanExecute);
             CommandManager.AddPreviewExecutedHandler(this, PreviewExecuted);
             _dockingManager = (DockingManager) GetTemplateChild("DockingManager");
-            if (_dockingManager != null) _dockingManager.ActiveContentChanged += DockingManagerOnActiveContentChanged;
+            if (_dockingManager != null)
+            {
+                DockingManager = _dockingManager;//.ActiveContentChanged += DockingManagerOnActiveContentChanged;
+            }
             
             AllowDrop = true;
             DragOver += OnDragOver;

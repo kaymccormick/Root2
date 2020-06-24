@@ -334,8 +334,8 @@ namespace AnalysisControls.ViewModel
 
         private void AddInitialDocuments()
         {
-            return;
-            AddtraceConfigurationVoew();
+            
+            //AddtraceConfigurationVoew();
             
             //            AddModelDoc();
             // AddRibbonModelViewDoc();
@@ -343,7 +343,7 @@ namespace AnalysisControls.ViewModel
             // AddAssembliesDoc();
             //            AddPropertiesGridDoc();
             //AddVisualTreeViewDoc();
-            AddConrainerView();
+            AddContainerView();
             // AddTypeProvider();
 
             // AddPowerShell();
@@ -408,7 +408,7 @@ namespace AnalysisControls.ViewModel
             // Documents.Add(doc);
         // }
 
-        private void AddConrainerView()
+        private void AddContainerView()
         {
             var c = new ContainerView();
             var doc = DocModel.CreateInstance();

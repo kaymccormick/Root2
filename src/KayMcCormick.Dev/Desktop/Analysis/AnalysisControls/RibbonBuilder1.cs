@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text.Json;
 using System.Windows;
@@ -10,21 +9,17 @@ using AnalysisAppLib;
 using Autofac;
 using Autofac.Features.Metadata;
 using KayMcCormick.Dev;
+using KayMcCormick.Dev.Interfaces;
 using KayMcCormick.Lib.Wpf;
 using KayMcCormick.Lib.Wpf.Command;
 using RibbonLib.Model;
 
 namespace AnalysisControls
 {
-
-    public class RibbonModelTanProviderCollection : ObservableCollection<IRibbonModelProvider<RibbonModelTab>>
-    {
-    }
-
     /// <summary>
     /// 
     /// </summary>
-    public class RibbonBuilder1 : FrameworkElement
+    public class RibbonBuilder1 : FrameworkElement, IHaveObjectId
     {
         public static readonly DependencyProperty RibbonModelTabProvidersProperty = DependencyProperty.Register(
             "RibbonModelTabProviders", typeof(IEnumerable<IRibbonModelProvider<RibbonModelTab>>), typeof(RibbonBuilder1), new PropertyMetadata(default(IEnumerable<IRibbonModelProvider<RibbonModelTab>>)));
@@ -150,10 +145,10 @@ namespace AnalysisControls
                 HomeTab.Header = "Home";
                 var Group1 = new RibbonModelGroup { Header = "Paste" };
                 if (_scope != null)
-                    foreach (var metacmd in _scope.Resolve<IEnumerable<Meta<IDisplayableAppCommand>>>())
+                    foreach (var metaCmd in _scope.Resolve<IEnumerable<Meta<IDisplayableAppCommand>>>())
                     {
-                        var cmd = metacmd.Value;
-                        var props = MetaHelper.GetMetadataProps(metacmd.Metadata);
+                        var cmd = metaCmd.Value;
+                        var props = MetaHelper.GetMetadataProps(metaCmd.Metadata);
                         if (cmd is ICommand cmdz)
                         {
                             var th = props.TypeHint?.ToString() ?? "no typehint";
@@ -209,6 +204,9 @@ namespace AnalysisControls
 
             return r;
         }
+
+        /// <inheritdoc />
+        public object InstanceObjectId { get; set; }
     }
 
     public class RibbonModelControl : RibbonModelItem
