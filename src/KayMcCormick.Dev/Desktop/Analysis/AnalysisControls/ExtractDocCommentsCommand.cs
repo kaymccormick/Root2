@@ -29,67 +29,65 @@ namespace AnalysisControls
     /// </summary>
     public class ExtractDocCommentsCommand
     {
-    private MyReplaySubject<CodeElementDocumentation> _replay;
-    private readonly MyReplaySubject<Document> _docs;
+        private MyReplaySubject<CodeElementDocumentation> _replay;
+        private readonly MyReplaySubject<Document> _docs;
 
-    public ExtractDocCommentsCommand(MyReplaySubject<CodeElementDocumentation> replay, MyReplaySubject<Document> docs)
-    {
-        replay.ListView = false;
-        replay.Title = "Doc Comments";
-        docs.ListView = false;
-        _replay = replay;
-        _docs = docs;
+        public ExtractDocCommentsCommand(MyReplaySubject<CodeElementDocumentation> replay,
+            MyReplaySubject<Document> docs)
+        {
+            replay.ListView = false;
+            replay.Title = "Doc Comments";
+            docs.ListView = false;
+            _replay = replay;
+            _docs = docs;
             _docs.Title = "Roslyn Docs";
-    }
+        }
 
-    /// <summary>
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="command"></param>
         /// <param name="SolutionFilePath"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        [ TitleMetadata ( "Process solution" ) ]
+        [TitleMetadata("Process solution")]
         [RequiredParameterMetadata("Solution file")]
-        [ UsedImplicitly ]
+        [UsedImplicitly]
         // ReSharper disable once FunctionComplexityOverflow
         public async Task<IAppCommandResult> ProcessSolutionAsync(IBaseLibCommand command, string SolutionFilePath)
         {
             //options.WriteIndented = true ;
-            var workspace = MSBuildWorkspace.Create ( ) ;
-            var optionsSolutionFile = SolutionFilePath;//context.Options?.SolutionFile ?? SolutionFilePath ;
-            if ( String.IsNullOrEmpty ( optionsSolutionFile ) )
-            {
-                throw new AppInvalidOperationException ( "No solution file" ) ;
-            }
+            var workspace = MSBuildWorkspace.Create();
+            var optionsSolutionFile = SolutionFilePath; //context.Options?.SolutionFile ?? SolutionFilePath ;
+            if (string.IsNullOrEmpty(optionsSolutionFile)) throw new AppInvalidOperationException("No solution file");
 
             var solution = await workspace.OpenSolutionAsync(optionsSolutionFile);
-                // new ProgressWithCompletion<ProjectLoadProgress>(progress => { }), CancellationToken.None);
-            var documentsOut = new List < CodeElementDocumentation > ( ) ;
-            var solutionProjects = solution.Projects ;
+            // new ProgressWithCompletion<ProjectLoadProgress>(progress => { }), CancellationToken.None);
+            var documentsOut = new List<CodeElementDocumentation>();
+            var solutionProjects = solution.Projects;
 
-            foreach ( var project in Enumerable.Where<Project>(solutionProjects, proj => proj.Name != "Explorer"
-                                                                                         && proj.CompilationOptions
-                                                                                             ?.OutputKind
-                                                                                         == OutputKind
-                                                                                             .DynamicallyLinkedLibrary
-                                                                                         || proj.CompilationOptions
-                                                                                             ?.OutputKind
-                                                                                         == OutputKind
-                                                                                             .WindowsApplication
-            ) )
+            foreach (var project in Enumerable.Where<Project>(solutionProjects, proj => proj.Name != "Explorer"
+                                                                                        && proj.CompilationOptions
+                                                                                            ?.OutputKind
+                                                                                        == OutputKind
+                                                                                            .DynamicallyLinkedLibrary
+                                                                                        || proj.CompilationOptions
+                                                                                            ?.OutputKind
+                                                                                        == OutputKind
+                                                                                            .WindowsApplication
+            ))
             {
-                var callers = new List < CallerInfo > ( ) ;
+                var callers = new List<CallerInfo>();
 
-                DebugUtils.WriteLine ( $"{project} {project.CompilationOptions.OutputKind}" ) ;
+                DebugUtils.WriteLine($"{project} {project.CompilationOptions.OutputKind}");
                 // ReSharper disable once UnusedVariable
                 var compilation = await project.GetCompilationAsync().ConfigureAwait(false);
 
-                var compilationAssembly = compilation.Assembly ;
+                var compilationAssembly = compilation.Assembly;
                 // foreach ( var tn in compilationAssembly.TypeNames )
                 // {
-                    // DebugUtils.WriteLine ( compilationAssembly.Name ) ;
-                    // DebugUtils.WriteLine ( tn ) ;
+                // DebugUtils.WriteLine ( compilationAssembly.Name ) ;
+                // DebugUtils.WriteLine ( tn ) ;
                 // }
 
 #if false
@@ -192,9 +190,9 @@ namespace AnalysisControls
 
                 // }
                 // }
-                foreach ( var doc in project.Documents )
+                foreach (var doc in project.Documents)
                 {
-                    _docs.Subject1.OnNext(doc);
+                    _docs.Subject.OnNext(doc);
                     // var textAsync = await doc.GetTextAsync() ;
                     // var classified = await Microsoft.CodeAnalysis.Classification.Classifier.GetClassifiedSpansAsync (
                     // doc
@@ -212,88 +210,73 @@ namespace AnalysisControls
                     // }
 
                     // ReSharper disable once UnusedVariable
-                    var model = await doc.GetSemanticModelAsync ( ) ;
+                    var model = await doc.GetSemanticModelAsync();
 
-                    Console.WriteLine ( doc.Name ) ;
+                    Console.WriteLine(doc.Name);
                     // ReSharper disable once UnusedVariable
-                    var tree = await doc.GetSyntaxRootAsync ( ) ;
+                    var tree = await doc.GetSyntaxRootAsync();
 
-                    var visitor = new SyntaxWalker2 ( model ) ;
-                    visitor.Visit ( tree ) ;
-                    foreach ( var node in tree
-                        .DescendantNodesAndSelf ( )
-                        .OfType < MemberDeclarationSyntax > ( ) )
+                    var visitor = new SyntaxWalker2(model);
+                    visitor.Visit(tree);
+                    foreach (var node in tree
+                        .DescendantNodesAndSelf()
+                        .OfType<MemberDeclarationSyntax>())
                     {
-                        var declared = model.GetDeclaredSymbol ( node ) ;
-                        if ( declared == null )
-                        {
-                            continue ;
-                        }
+                        var declared = model.GetDeclaredSymbol(node);
+                        if (declared == null) continue;
 
-                        var xml1 = declared.GetDocumentationCommentXml ( ) ;
-                        if ( declared.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Public
-                             || !SupportsDocumentationComments ( node ) )
+                        var xml1 = declared.GetDocumentationCommentXml();
+                        if (declared.DeclaredAccessibility != Microsoft.CodeAnalysis.Accessibility.Public
+                            || !SupportsDocumentationComments(node))
                         {
                             // DebugUtils.WriteLine (
-                                // $"Documentation accessibility is {declared.DeclaredAccessibility}"
+                            // $"Documentation accessibility is {declared.DeclaredAccessibility}"
                             // ) ;
                         }
                         else
                         {
-                            var docId = declared.GetDocumentationCommentId ( ) ;
+                            var docId = declared.GetDocumentationCommentId();
 
                             // ReSharper disable once UnusedVariable
                             var o = new
                             {
                                 // ReSharper disable once RedundantAnonymousTypePropertyName
-                                docId    = docId
-                                , xml      = xml1
-                                , declared = declared.ToDisplayString ( )
-                            } ;
+                                docId = docId, xml = xml1, declared = declared.ToDisplayString()
+                            };
 
                             try
                             {
-                                XDocument doc1 = null ;
-                                if ( ! String.IsNullOrWhiteSpace ( xml1 ) )
-                                {
-                                            doc1 = XDocument.Parse ( xml1 ) ;
-                                }
+                                XDocument doc1 = null;
+                                if (!string.IsNullOrWhiteSpace(xml1)) doc1 = XDocument.Parse(xml1);
 
-                                CodeElementDocumentation o1 ;
-                                if ( doc1 != null )
-                                {
-                                    o1 = XmlDocElements.HandleDocElementNode (
+                                CodeElementDocumentation o1;
+                                if (doc1 != null)
+                                    o1 = XmlDocElements.HandleDocElementNode(
                                              doc1
                                              , docId
                                              , node
                                              , declared
                                          )
-                                         ?? throw new AppInvalidOperationException (
+                                         ?? throw new AppInvalidOperationException(
                                              "Null from HandleDocElementNode"
-                                         ) ;
-                                }
+                                         );
                                 else
-                                {
-                                    o1 = XmlDocElements.CreateCodeDocumentationElementType (
+                                    o1 = XmlDocElements.CreateCodeDocumentationElementType(
                                              node
                                              , docId
                                          )
-                                         ?? throw new AppInvalidOperationException (
+                                         ?? throw new AppInvalidOperationException(
                                              "Null from CreateCodeDocumentationElementType"
-                                         ) ;
-                                }
+                                         );
 
-                                if ( String.IsNullOrWhiteSpace ( xml1 ) )
-                                {
-                                    o1.NeedsAttention = true ;
-                                }
+                                if (string.IsNullOrWhiteSpace(xml1)) o1.NeedsAttention = true;
 
-                                _replay.Subject1.OnNext(o1);
-                                documentsOut.Add ( o1 ) ;
+                                _replay.Subject.OnNext(o1);
+                                documentsOut.Add(o1);
                             }
-                            catch ( Exception ex )
+                            catch (Exception ex)
                             {
-                                DebugUtils.WriteLine ( ex.ToString ( ) ) ;
+                                DebugUtils.WriteLine(ex.ToString());
                             }
 
                             // DebugUtils.WriteLine ( JsonSerializer.Serialize ( o ) ) ;
@@ -322,32 +305,28 @@ namespace AnalysisControls
                     // DebugUtils.WriteLine ( JsonSerializer.Serialize ( gen , options ) ) ;
                 }
 
-                var jsonOut = JsonSerializer.Serialize (
+                var jsonOut = JsonSerializer.Serialize(
                     callers
                     , new JsonSerializerOptions
                     {
                         WriteIndented = true
                     }
-                ) ;
-                File.WriteAllText ( @"C:\temp\" + project.Name + ".json" , jsonOut ) ;
+                );
+                File.WriteAllText(@"C:\temp\" + project.Name + ".json", jsonOut);
             }
 
-            var li = new ArrayList ( ) ;
-            foreach ( var codeElementDocumentation in documentsOut )
-            {
-                if ( codeElementDocumentation != null )
-                {
-                    li.Add ( codeElementDocumentation ) ;
-                }
-            }
+            var li = new ArrayList();
+            foreach (var codeElementDocumentation in documentsOut)
+                if (codeElementDocumentation != null)
+                    li.Add(codeElementDocumentation);
 
 
-            var xmlWriter = XmlWriter.Create (
+            var xmlWriter = XmlWriter.Create(
                 @"C:\temp\docs.xaml"
-                , new XmlWriterSettings { Indent = true }
-            ) ;
-            XamlWriter.Save ( li , xmlWriter ) ;
-            xmlWriter.Close ( ) ;
+                , new XmlWriterSettings {Indent = true}
+            );
+            XamlWriter.Save(li, xmlWriter);
+            xmlWriter.Close();
             return AppCommandResult.Success;
         }
 
@@ -355,10 +334,7 @@ namespace AnalysisControls
             [CanBeNull] MemberDeclarationSyntax member
         )
         {
-            if (member == null)
-            {
-                return false;
-            }
+            if (member == null) return false;
 
             switch (member.Kind())
             {

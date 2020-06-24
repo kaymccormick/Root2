@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Autofac;
+using KayMcCormick.Dev.Interfaces;
 
 namespace AnalysisControls.TypeDescriptors
 {
     /// <summary>
     /// 
     /// </summary>
-    public class CustomTypes
+    public class CustomTypes  : IHaveObjectId
     {
         private readonly List<Type> _kayTypes;
 
@@ -29,5 +30,7 @@ namespace AnalysisControls.TypeDescriptors
         /// 
         /// </summary>
         public IComponentContext ComponentContext { get; set; }
+
+        public object InstanceObjectId { get; set; }
     }
 }

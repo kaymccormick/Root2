@@ -44,7 +44,7 @@ namespace KayMcCormick.Dev.Logging
         {
             _my1 = my1;
 
-            _cacheSubject = my1.Subject1;
+            _cacheSubject = my1.Subject;
         }
 
 

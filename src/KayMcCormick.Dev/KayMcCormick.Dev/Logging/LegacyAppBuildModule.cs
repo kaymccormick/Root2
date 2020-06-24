@@ -137,7 +137,6 @@ namespace KayMcCormick.Dev.Logging
                 builder.RegisterInstance(LogManager.GetLogger("")).As<ILogger>();
             }
 
-
             #endregion
 
             #region Callbacks
@@ -173,7 +172,7 @@ namespace KayMcCormick.Dev.Logging
                                   reg.Activator.LimitType == typeof(LifetimeScope);
             if (!withoutMetadata && !hasMetadata)
             {
-                // throw new AppInvalidOperationException ( "Need metadata for " + reg ) ;
+                throw new AppInvalidOperationException ( "Need metadata for " + reg ) ;
             }
 
             var activatorLimitType = reg.Activator.LimitType;
@@ -401,7 +400,7 @@ namespace KayMcCormick.Dev.Logging
 
         /// <summary>
         /// </summary>
-        public sealed class IdGeneratorModule : Module
+        private sealed class IdGeneratorModule : Module
         {
             /// <summary>Gets or sets the default object.</summary>
             /// <value>The default object.</value>
@@ -409,7 +408,7 @@ namespace KayMcCormick.Dev.Logging
 
             /// <summary>Gets or sets the generator.</summary>
             /// <value>The generator.</value>
-            public ObjectIDGenerator Generator { get; set; }
+            private ObjectIDGenerator Generator { get; set; }
 
             /// <summary>Override to add registrations to the container.</summary>
             /// <remarks>
@@ -428,7 +427,7 @@ namespace KayMcCormick.Dev.Logging
                 //DefaultObject = new DefaultObjectIdProvider(Generator);
                 builder.RegisterType<DefaultObjectIdProvider>()
                     .As<IObjectIdProvider>().SingleInstance();
-                    //.InstancePerLifetimeScope().WithCallerMetadata();
+                //.InstancePerLifetimeScope().WithCallerMetadata();
             }
 
 
@@ -461,7 +460,7 @@ namespace KayMcCormick.Dev.Logging
                 var inst = e.Instance;
                 // if (inst is ObjectIDGenerator)
                 // {
-                    // return;
+                // return;
                 // }
                 Logger.Trace(
                     $"{nameof(RegistrationOnActivating)} {e.Component.DebugFormat()}"
@@ -476,14 +475,15 @@ namespace KayMcCormick.Dev.Logging
                         var typedServiceServiceType =
                             typedService.ServiceType;
                         return typedServiceServiceType
-                               == typeof(ObjectIDGenerator) || typedServiceServiceType
-                               == typeof(IObjectIdProvider);
+                            == typeof(ObjectIDGenerator) || typedServiceServiceType
+                            == typeof(IObjectIdProvider);
                     }
                 ))
                 {
                     Logger.Debug($"Departing {nameof(RegistrationOnActivating)} early.");
                     return;
                 }
+
                 var o = e.Context.Resolve<IObjectIdProvider>();
 
                 try
@@ -496,6 +496,8 @@ namespace KayMcCormick.Dev.Logging
                         );
 
                     if (inst is IHaveObjectId x) x.InstanceObjectId = provideObjectInstanceIdentifier;
+                    else
+                        Logger.Info("noinstance object id on " + inst.GetType().FullName);
                 }
                 catch (Exception eX)
                 {

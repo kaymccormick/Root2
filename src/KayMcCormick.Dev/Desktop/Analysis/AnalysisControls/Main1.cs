@@ -409,7 +409,7 @@ namespace AnalysisControls
 
         private void OnCreateWorkSpaceExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            r.Subject1.OnNext("create");
+            r.Subject.OnNext("create");
             DebugUtils.WriteLine(nameof(OnCreateProjectExecuted));
             ViewModel2.CreateWorkspace();
         }

@@ -49,7 +49,7 @@ namespace AnalysisControls.ViewModel
         IAnchorableHost,
         ISubjectWatcher
     {
-        private IDocumentHost _dochost;
+        private readonly IDocumentHost _docHost;
 
         public static readonly DependencyProperty CatchphraseProperty = DependencyProperty.Register(
             "Catchphrase", typeof(string), typeof(Main1Model), new PropertyMetadata(default(string)));
@@ -178,7 +178,7 @@ namespace AnalysisControls.ViewModel
 
         private readonly ReplaySubject<Workspace> _replay;
         private readonly IActivationStream _ss;
-        private readonly MyReplaySubjectImpl2 _impl2;
+        private readonly MySubjectReplaySubject _impl2;
         private readonly IEnumerable<IMySubject> _subs;
         private Workspace _workspace;
         private Main1 _view;
@@ -260,7 +260,7 @@ namespace AnalysisControls.ViewModel
             }
         }
 
-        public IEnumerable Documents => _dochost.Documents;
+        public IEnumerable Documents => _docHost.Documents;
 
         /// <summary>
         /// 
@@ -272,13 +272,13 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         /// <param name="replay"></param>
-        public Main1Model(ReplaySubject<Workspace> replay, IActivationStream ss, MyReplaySubjectImpl2 impl2, IDocumentHost dochost) :this(dochost)
+        public Main1Model(ReplaySubject<Workspace> replay, IActivationStream ss, MySubjectReplaySubject impl2, IDocumentHost dochost) :this(dochost)
         {
             //JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
             _replay = replay;
             _ss = ss;
             _impl2 = impl2;
-            _impl2.Subject1.Subscribe(subject =>
+            _impl2.Subject.Subscribe(subject =>
             {
                 Subject(subject);
             });
@@ -290,9 +290,9 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public Main1Model(IDocumentHost dochost)
+        public Main1Model(IDocumentHost docHost)
         {
-            _dochost = dochost;
+            _docHost = docHost;
 
             DocumentsCollection = new ObservableCollection<object>();
             Anchorables = new ObservableCollection<object>();
@@ -745,7 +745,7 @@ namespace AnalysisControls.ViewModel
 
         public void AddDocument(object doc)
         {
-            _dochost.AddDocument(doc);
+            _docHost.AddDocument(doc);
             return;
             if (Dispatcher == null || Dispatcher.CheckAccess())
             {
@@ -760,7 +760,7 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public void SetActiveDocument(object doc)
         {
-            _dochost.SetActiveDocument(doc);
+            _docHost.SetActiveDocument(doc);
             return;
             ActiveContent = doc;
             View.DockingManager.ActiveContent = doc;
@@ -783,17 +783,17 @@ namespace AnalysisControls.ViewModel
                 BindingOperations.SetBinding(dm, DocModel.TitleProperty, new Binding ("Title") { Source = x});
             // }
             
-            dm.Content = new SubjectView2(){Observable = x.ObjectSubject,ItemType = x.Type1};
+            dm.Content = new SubjectView2(){Observable = x.ObjectSubject,ItemType = x.Type};
             // ObservableCollection<object> c=new ObservableCollection<object>();
             // if (x.ListView)
             // {
                 // dm.Content = AnalysisControlsModule.ReplayListView<object>(c, x.ObjectSubject,
-                    // ControlsResources("templates.baml"), x.Type1);
+                    // ControlsResources("templates.baml"), x.Type);
             // }
             // else
             // {
                 // dm.Content = AnalysisControlsModule.ReplayItemsControl<object>(c, x.ObjectSubject,
-                    // ControlsResources("templates.baml"), x.Type1);
+                    // ControlsResources("templates.baml"), x.Type);
 
             // }
 
@@ -801,6 +801,8 @@ namespace AnalysisControls.ViewModel
 
             AddDocument(dm);
         }
+
+        public object InstanceObjectId { get; set; }
     }
 
     internal class CustomDriveInfo : PSDriveInfo

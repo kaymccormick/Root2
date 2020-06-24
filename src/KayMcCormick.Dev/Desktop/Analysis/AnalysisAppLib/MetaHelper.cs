@@ -50,6 +50,16 @@ namespace AnalysisAppLib
                 props.TabHeader = tabHeader;
             }
 
+            if (metaMetadata.TryGetValue("CommandId", out var commandId))
+            {
+                props.CommandId = (Guid)commandId;
+            }
+            if (metaMetadata.TryGetValue("Group", out var group))
+            {
+                props.Group = group;
+                
+            }
+
             return props;
         }
 

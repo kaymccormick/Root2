@@ -1,4 +1,5 @@
 #region header
+
 // Kay McCormick (mccor)
 // 
 // KayMcCormick.Dev
@@ -8,22 +9,24 @@
 // 2020-03-22-7:14 AM
 // 
 // ---
+
 #endregion
-using System ;
+
+using System;
 using System.ComponentModel;
-using System.Threading.Tasks ;
-using System.Windows.Input ;
-using JetBrains.Annotations ;
-using KayMcCormick.Dev.Command ;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using JetBrains.Annotations;
+using KayMcCormick.Dev.Command;
 
 namespace KayMcCormick.Lib.Wpf.Command
 {
     /// <summary>
     /// </summary>
-    public sealed class WrappedAppCommand : IAppCommand , ICommand
+    public sealed class WrappedAppCommand : IAppCommand, ICommand
     {
-        private readonly IHandleException _handleException ;
-        private readonly IAppCommand      _wrappedCommand ;
+        private readonly IHandleException _handleException;
+        private readonly IAppCommand _wrappedCommand;
 
         /// <summary>
         /// 
@@ -31,23 +34,23 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// <param name="wrappedCommand"></param>
         /// <param name="handleException"></param>
         /// <param name="argument"></param>
-        public WrappedAppCommand ( IAppCommand wrappedCommand , IHandleException handleException , object argument=null )
+        public WrappedAppCommand(IAppCommand wrappedCommand, IHandleException handleException, object argument = null)
         {
-            _wrappedCommand  = wrappedCommand ;
-            _handleException = handleException ;
-            Argument = argument ;
+            _wrappedCommand = wrappedCommand;
+            _handleException = handleException;
+            Argument = argument;
         }
 
         /// <inheritdoc />
-        public object Argument { get ; set ; }
+        public object Argument { get; set; }
 
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        [ ItemCanBeNull ]
-        public  Task < IAppCommandResult > ExecuteAsync (object parameter)
+        [ItemCanBeNull]
+        public Task<IAppCommandResult> ExecuteAsync(object parameter)
         {
-            return _wrappedCommand.ExecuteAsync ( parameter) ;
+            return _wrappedCommand.ExecuteAsync(parameter);
 #if false
             DebugUtils.WriteLine ( "Executing command" ) ;
             // IAppCommandResult r = null ;
@@ -77,34 +80,45 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// <summary>
         /// </summary>
         [Browsable(false)]
-        [ NotNull ] public ICommand Command { get { return this ; } }
+        [NotNull]
+        public ICommand Command
+        {
+            get { return this; }
+        }
 
         /// <summary>
         /// </summary>
         /// <param name="exception"></param>
-        public void OnFault ( AggregateException exception )
+        public void OnFault(AggregateException exception)
         {
-            _handleException?.HandleException ( exception ) ;
+            _handleException?.HandleException(exception);
         }
 
-#region Implementation of ICommand
+        #region Implementation of ICommand
+
         /// <summary>
         /// </summary>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        public bool CanExecute ( object parameter )
+        public bool CanExecute(object parameter)
         {
-            return _wrappedCommand.Command.CanExecute ( parameter ) ;
+            return _wrappedCommand.Command.CanExecute(parameter);
         }
 
         /// <summary>
         /// </summary>
         /// <param name="parameter"></param>
-        public void Execute ( object parameter ) { ExecuteAsync ( parameter).Wait() ; }
+        public void Execute(object parameter)
+        {
+            ExecuteAsync(parameter).Wait();
+        }
 
         /// <summary>
         /// </summary>
-        public event EventHandler CanExecuteChanged ;
-#endregion
+        public event EventHandler CanExecuteChanged;
+
+        #endregion
+
+        public object InstanceObjectId { get; set; }
     }
 }

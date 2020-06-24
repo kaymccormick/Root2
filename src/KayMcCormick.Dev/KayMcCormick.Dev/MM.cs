@@ -13,11 +13,13 @@ namespace KmDevLib
 {
     public class MM : IRegistrationSource
     {
-        private readonly MyReplaySubjectImpl2 _impl2;
+        private readonly MySubjectReplaySubject _impl2;
+        private IComponentLifetime _current;
 
-        public MM(MyReplaySubjectImpl2 impl2)
+        public MM(MySubjectReplaySubject impl2, IComponentLifetime current  = null)
         {
             _impl2 = impl2;
+            _current = current ?? new CurrentScopeLifetime();
         }
 
         /// <inheritdoc />
@@ -46,13 +48,14 @@ namespace KmDevLib
 
                             var instance = Activator.CreateInstance(ss.ServiceType);
                             // w.Subject((IMySubject)instance);
-                            _impl2.Subject1.OnNext((IMySubject) instance);
+                            _impl2.Subject.OnNext((IMySubject) instance);
                             return instance;
                         });
                     // 
                     // return instance;
                     // });
-                    var reg = new ComponentRegistration(newGuid, delegateActivator, new CurrentScopeLifetime(), 
+                    var reg = new ComponentRegistration(newGuid, delegateActivator, 
+                        _current, 
                         InstanceSharing.Shared, InstanceOwnership.OwnedByLifetimeScope,
                         new[] {service, new TypedService(typeof(IMySubject))},
                         new Dictionary<string, object>());

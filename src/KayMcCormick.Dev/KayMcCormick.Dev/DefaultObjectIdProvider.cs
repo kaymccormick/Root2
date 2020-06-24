@@ -213,5 +213,7 @@ namespace KayMcCormick.Dev
                 throw new UnableToRegisterObjectIdException ( ) ;
             }
         }
+
+        public object InstanceObjectId { get; set; }
     }
 }

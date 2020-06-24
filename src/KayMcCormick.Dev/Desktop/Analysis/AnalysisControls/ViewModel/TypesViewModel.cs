@@ -381,7 +381,7 @@ var mapCount = Map.Count ;
             }
             foreach (var appTypeInfo in GetAppTypeInfos())
             {
-                InfosReplay.Subject1.OnNext(appTypeInfo);
+                InfosReplay.Subject.OnNext(appTypeInfo);
             }
             DetailFields ( ) ;
 

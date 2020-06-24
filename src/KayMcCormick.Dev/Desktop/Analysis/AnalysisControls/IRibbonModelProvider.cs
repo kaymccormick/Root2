@@ -89,15 +89,28 @@ namespace AnalysisControls
                 return AppCommandResult.Success;
             }, eNewItem);
             b.Command = lambdaAppCommand.Command;
-            IRibbonModelGroup g = _group;
+            IRibbonModelGroup ourGroup = _group;
             if (eNewItem is DocModel dm)
             {
                 var h = dm.GroupHeader;
-                g = _tab.ItemsCollection.Where(g => g.Label == dm.GroupHeader).FirstOrDefault();
-                if(g == null)
+                
+                foreach (var tabItem in _tab.Items)
                 {
-                    g = new RibbonModelGroup(){Label=h};
-                    _tab.ItemsCollection.Add(g);
+                    if(tabItem is RibbonModelGroup rmg)
+                    {
+                        
+                        if (rmg.Label == dm.GroupHeader)
+                        {
+                            ourGroup = rmg;
+                            break;
+                        }
+                    }
+                }
+
+                if (ourGroup == null)
+                {
+                    ourGroup = new RibbonModelGroup(){Label=h};
+                    _tab.ItemsCollection.Add(ourGroup);
                 }
                 
                 b.LargeImageSource = dm.LargeImageSource;
@@ -125,7 +138,7 @@ namespace AnalysisControls
             }
 
             
-            g.Items.Add(b);
+            ourGroup.Items.Add(b);
         }
     }
 }

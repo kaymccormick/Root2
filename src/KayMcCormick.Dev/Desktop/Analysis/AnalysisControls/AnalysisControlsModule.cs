@@ -65,7 +65,7 @@ namespace AnalysisControls
     /// </summary>
     public sealed class AnalysisControlsModule : Module
     {
-        private MyReplaySubject<LogEventInstance> _logr;
+        private MyReplaySubject<LogEventInstance> _logEventInstanceReplaySubject;
 
         /// <summary>
         /// </summary>
@@ -115,7 +115,7 @@ namespace AnalysisControls
             //     .SingleInstance()
             //     .WithCallerMetadata();
             //
-
+#if false
             var kayTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(
                     a => a
@@ -125,21 +125,23 @@ namespace AnalysisControls
                 )
                 .SelectMany(az => az.GetTypes())
                 .ToList();
+#if false
             // foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             // {
 
-                // if (assembly.IsDynamic)
-                    // continue;
-                // foreach (var exportedType in assembly.GetExportedTypes())
-                // {
-                    // if (typeof(IDictionary).IsAssignableFrom(exportedType) ||
-                        // typeof(IEnumerable).IsAssignableFrom(exportedType))
-                    // {
-                        // kayTypes.Add(exportedType);
-                        // DebugUtils.WriteLine(exportedType.FullName);
-                    // }
-                // }
+            // if (assembly.IsDynamic)
+            // continue;
+            // foreach (var exportedType in assembly.GetExportedTypes())
+            // {
+            // if (typeof(IDictionary).IsAssignableFrom(exportedType) ||
+            // typeof(IEnumerable).IsAssignableFrom(exportedType))
+            // {
+            // kayTypes.Add(exportedType);
+            // DebugUtils.WriteLine(exportedType.FullName);
             // }
+            // }
+            // }
+#endif
             kayTypes.Add(typeof(IInstanceLookup));
             kayTypes.Add(typeof(ActivationInfo));
             kayTypes.Add(typeof(Container));
@@ -158,15 +160,19 @@ namespace AnalysisControls
             }
 
 		kayTypes.Clear();
-            _logr = new MyReplaySubject<LogEventInstance>();
-            builder.RegisterInstance(_logr).AsSelf().AsImplementedInterfaces();
-            builder.RegisterInstance(_logr.Subject1).AsSelf().AsImplementedInterfaces();
-            //kayTypes.Clear();
             var xx = new CustomTypes(kayTypes);
+
             builder.RegisterInstance(xx).OnActivating(args =>
             {
                 args.Instance.ComponentContext = args.Context;
             });
+
+#endif
+            _logEventInstanceReplaySubject = new MyReplaySubject<LogEventInstance>();
+            builder.RegisterInstance(_logEventInstanceReplaySubject).AsSelf().AsImplementedInterfaces();
+            builder.RegisterInstance(_logEventInstanceReplaySubject.Subject).AsSelf().AsImplementedInterfaces();
+            //kayTypes.Clear();
+
             builder.RegisterType<UiElementTypeConverter>().SingleInstance().WithCallerMetadata();
             // builder.Register((c, p) =>
             // {
@@ -182,13 +188,13 @@ namespace AnalysisControls
             // .WithMetadata ( "Custom" , true )
             // .AsImplementedInterfaces ( )
             // .AsSelf ( ) ;
-            builder.RegisterType<ControlsProvider>().WithAttributeFiltering().InstancePerLifetimeScope().As<IControlsProvider>()
-                .AsSelf();
-            // .WithParameter (
-            // new NamedParameter ( "types" , types )
-            // ) .AsSelf (  ) ;
-//		builder.RegisterGeneric(typeof(AnalysisCustomTypeDescriptor<>)).AsSelf().AsImplementedInterfaces().SingleInstance();
-            builder.RegisterType<AnalysisCustomTypeDescriptor>().AsSelf().AsImplementedInterfaces();
+
+
+            // builder.RegisterType<ControlsProvider>().WithAttributeFiltering().InstancePerLifetimeScope().As<IControlsProvider>()
+                // .AsSelf();
+
+
+            // builder.RegisterType<AnalysisCustomTypeDescriptor>().AsSelf().AsImplementedInterfaces();
 
 
 
@@ -220,7 +226,7 @@ namespace AnalysisControls
                 )
                 .WithMetadata("PrimaryRibbon", true)
                 .WithCallerMetadata();
-            builder.RegisterType<UiElementTypeConverter>().AsSelf();
+            // builder.RegisterType<UiElementTypeConverter>().AsSelf();
 
             builder.RegisterType<Main1Model>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<DocumentHost>().AsImplementedInterfaces().InstancePerLifetimeScope();

@@ -1267,6 +1267,8 @@ public class PocoSyntaxTokenList : IList, IEnumerable, ICollection
         {
             throw new NotImplementedException();
         }
+
+        public object InstanceObjectId { get; set; }
     }
 
     /// <summary>

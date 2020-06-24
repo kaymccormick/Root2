@@ -41,11 +41,6 @@ namespace KayMcCormick.Dev.Application
         /// </summary>
         // ReSharper disable once EventNeverSubscribedTo.Global
         public virtual event EventHandler < AppStartupEventArgs > AppStartup ;
-
-        /// <summary>
-        /// </summary>
-        public virtual void Initialize ( ) { }
-
         /// <summary>
         /// </summary>
         /// <param name="appModule"></param>
@@ -98,5 +93,10 @@ namespace KayMcCormick.Dev.Application
         /// <summary>
         /// </summary>
         public abstract void Dispose ( ) ;
+
+        public virtual void Initialize()
+        {
+            
+        }
     }
 }

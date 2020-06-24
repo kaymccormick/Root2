@@ -22,6 +22,8 @@ namespace AnalysisAppLib
         public object TabHeader { get; set; }
 
         public Type TypeHint { get; set; }
+        public Guid CommandId { get; set; }
+        public object Group { get; set; }
 
         /// <inheritdoc />
         public override string ToString()

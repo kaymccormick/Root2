@@ -15,10 +15,10 @@ namespace KmDevLib
 
         public MyReplaySubject()
         {
-            Type1 = typeof(T);
-            Title = "Replay subject for type " + Type1.FullName;
-            ObservableExtensions.Subscribe<T>(Subject1, OnNext);
-                }
+            Type = typeof(T);
+            Title = Type.FullName;
+            ObservableExtensions.Subscribe<T>(Subject, OnNext);
+        }
 
         private void OnNext(T obj)
         {
@@ -36,9 +36,9 @@ namespace KmDevLib
             }
         }
 
-        public Type Type1 { get; set; }
+        public Type Type { get; set; }
 
-        public ReplaySubject<T> Subject1
+        public ReplaySubject<T> Subject
         {
             get { return subject; }
             set { subject = value; }
@@ -57,9 +57,7 @@ namespace KmDevLib
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
 
-    public class MyReplaySubjectImpl2 : MyReplaySubject<IMySubject>
-    {
+        public object InstanceObjectId { get; set; }
     }
 }

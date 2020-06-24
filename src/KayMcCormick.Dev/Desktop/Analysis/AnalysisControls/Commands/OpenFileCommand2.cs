@@ -28,7 +28,7 @@ namespace AnalysisControls.Commands
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="analyzeCommand"></param>
+        /// <param name="command"></param>
         public OpenFileCommand2(AppCommand command) : base("Open File")
         {
             _command = command;
@@ -76,8 +76,6 @@ namespace AnalysisControls.Commands
             {
                 return AppCommandResult.Cancelled;
             }
-
-            
 
             // Open document
             var filename = dlg.FileName;

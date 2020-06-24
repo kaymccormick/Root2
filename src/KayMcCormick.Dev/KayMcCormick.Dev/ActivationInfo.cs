@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Autofac;
 using Autofac.Core;
+using JetBrains.Annotations;
 
 namespace KmDevLib
 {
     /// <summary>
     /// Activation informatio 
     /// </summary>
-    public class ActivationInfo
+    public class ActivationInfo : INotifyPropertyChanged
     {
         /// <summary>
         /// 
@@ -51,5 +53,14 @@ namespace KmDevLib
         public IComponentContext Context { get; set; }
 
         public object InstanceObjectId { get; set; }
+        public RegInfo RegInfo { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

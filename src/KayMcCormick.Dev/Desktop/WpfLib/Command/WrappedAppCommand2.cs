@@ -94,5 +94,7 @@ namespace KayMcCormick.Lib.Wpf.Command
         /// </summary>
         public event EventHandler CanExecuteChanged ;
         #endregion
+
+        public object InstanceObjectId { get; set; }
     }
 }

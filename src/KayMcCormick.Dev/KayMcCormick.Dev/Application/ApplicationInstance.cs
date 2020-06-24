@@ -4,20 +4,16 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
-using System.Reactive.Subjects;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading;
 using Autofac;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
 using Autofac.Extras.AttributeMetadata;
-using Autofac.Features.AttributeFilters;
 using Autofac.Integration.Mef;
 using JetBrains.Annotations;
 using KayMcCormick.Dev.Attributes;
@@ -25,7 +21,7 @@ using KayMcCormick.Dev.Configuration;
 using KayMcCormick.Dev.Container;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Dev.Serialization;
-using KayMcCormick.Dev.StackTrace;
+using KmDevLib;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using IContainer = Autofac.IContainer;
@@ -79,13 +75,14 @@ namespace KayMcCormick.Dev.Application
 #pragma warning disable 169
         private readonly bool _disableLogging;
 #pragma warning restore 169
+
         private readonly bool _disableServiceHost;
         private readonly List<IModule> _modules = new List<IModule>();
         private IContainer _container;
         private ApplicationInstanceHost _host;
         protected ILifetimeScope LifetimeScope { get; private set; }
-        private readonly ReplaySubject<AppLogMessage> _subject;
         private ILogger _logger;
+        private MyReplaySubject<AppLogMessage> _subject1;
 
         /// <summary>
         /// 
@@ -222,17 +219,12 @@ namespace KayMcCormick.Dev.Application
         )
         {
             AppDomain.CurrentDomain.FirstChanceException += CurrentDomain_FirstChanceException;
-
-            _subject = new ReplaySubject<AppLogMessage>();
-            var msg = new AppLogMessage("Hello");
-            Subject1.OnNext(msg);
-
-            // ReSharper disable once ConvertToLocalFunction
             Action<string> log = s =>
             {
-                Subject1.OnNext(new AppLogMessage(s));
+                //WSubject1.OnNext(new AppLogMessage(s));
                 applicationInstanceConfiguration.LogMethod(s);
             };
+
 
             _disableServiceHost = applicationInstanceConfiguration.DisableServiceHost;
 
@@ -300,26 +292,19 @@ namespace KayMcCormick.Dev.Application
             set
             {
                 _logger = value;
-                Subject1.Subscribe(message => _logger.Info($"XX: {message}"));
+                //Subject.Subscribe(message => _logger.Info($"XX: {message}"));
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public IContainer Container1
+        public IContainer Container
         {
             get { return _container; }
             set { _container = value; }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public ReplaySubject<AppLogMessage> Subject1
-        {
-            get { return _subject; }
-        }
 
         /// <summary>
         /// </summary>
@@ -327,8 +312,7 @@ namespace KayMcCormick.Dev.Application
         {
             _host?.Dispose();
             LifetimeScope?.Dispose();
-            Container1?.Dispose();
-            _subject?.Dispose();
+            Container?.Dispose();
         }
 
         private static void CurrentDomain_FirstChanceException(
@@ -346,9 +330,9 @@ namespace KayMcCormick.Dev.Application
         public override void Initialize()
         {
             base.Initialize();
-            Container1 = BuildContainer();
-            // Container1.ChildLifetimeScopeBeginning += OnChildLifetimeScopeBeginning;
-            // Container1.CurrentScopeEnding += OnCurrentScopeEnding;
+            Container = BuildContainer();
+            // Container.ChildLifetimeScopeBeginning += OnChildLifetimeScopeBeginning;
+            // Container.CurrentScopeEnding += OnCurrentScopeEnding;
         }
 
         private void OnChildLifetimeScopeBeginning(object sender, LifetimeScopeBeginningEventArgs e)
@@ -391,9 +375,9 @@ namespace KayMcCormick.Dev.Application
         {
             if (LifetimeScope != null) return LifetimeScope;
 
-            if (Container1 == null) Container1 = BuildContainer();
+            if (Container == null) Container = BuildContainer();
 
-            LifetimeScope = Container1.BeginLifetimeScope("Primary");
+            LifetimeScope = Container.BeginLifetimeScope("Primary");
             return LifetimeScope;
         }
 
@@ -413,9 +397,9 @@ namespace KayMcCormick.Dev.Application
                 // }
                 return LifetimeScope;
 
-            if (Container1 == null) Container1 = BuildContainer();
+            Container ??= BuildContainer();
 
-            LifetimeScope = Container1.BeginLifetimeScope("initial scope", action);
+            LifetimeScope = Container.BeginLifetimeScope("initial scope", action);
             return LifetimeScope;
         }
 
@@ -428,6 +412,7 @@ namespace KayMcCormick.Dev.Application
             var builder = new ContainerBuilder();
             builder.RegisterModule<AttributedMetadataModule>();
             builder.RegisterMetadataRegistrationSources();
+            builder.RegisterModule<LegacyAppBuildModule>();
             builder.RegisterModule<NouveauAppModule>();
 
             // foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -435,13 +420,12 @@ namespace KayMcCormick.Dev.Application
             // DebugUtils.WriteLine(assembly.GetName().ToString());
             // }
 
-            Assembly loaded = null;
             var entryAssembly = Assembly.GetEntryAssembly();
             if (entryAssembly != null)
                 foreach (var assembly in entryAssembly.GetReferencedAssemblies())
                     //DebugUtils.WriteLine("ref:" + assembly.Name);
                     if (assembly.Name == "AnalysisAppLib")
-                        loaded = Assembly.Load(assembly);
+                        Assembly.Load(assembly);
 
             var yy = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(
@@ -490,7 +474,7 @@ namespace KayMcCormick.Dev.Application
                 scope.ChildLifetimeScopeBeginning +=
                     OnChildLifetimeScopeBeginning;
                 scope.CurrentScopeEnding += OnCurrentScopeEnding;
-scope.ResolveOperationBeginning += OnResolveOperationBeginning;
+                scope.ResolveOperationBeginning += OnResolveOperationBeginning;
             });
 
             // scope => scope.ChildLifetimeScopeBeginning += (sender, args) =>
@@ -517,25 +501,23 @@ scope.ResolveOperationBeginning += OnResolveOperationBeginning;
         }
 
         private void OnResolveOperationBeginning(object sender, ResolveOperationBeginningEventArgs e)
-        {           
+        {
             e.ResolveOperation.InstanceLookupBeginning += ResolveOperationOnInstanceLookupBeginning;
         }
 
         private void ResolveOperationOnInstanceLookupBeginning(object sender, InstanceLookupBeginningEventArgs e)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             foreach (var keyValuePair in e.InstanceLookup.ComponentRegistration.Metadata)
-            {
                 sb.Append($"{keyValuePair.Key}={keyValuePair.Value}; ");
-            }
-            
+
             DebugUtils.WriteLine(sb.ToString());
             DebugUtils.WriteLine(e.InstanceLookup.ActivationScope.Tag);
         }
 
         private void LogDebug(string message)
         {
-            Subject1.OnNext(new AppLogMessage(message));
+            //Subject.OnNext(new AppLogMessage(message));
         }
 
         /// <summary>
@@ -544,7 +526,7 @@ scope.ResolveOperationBeginning += OnResolveOperationBeginning;
         {
             if (!_disableServiceHost)
             {
-                _host = new ApplicationInstanceHost(Container1);
+                _host = new ApplicationInstanceHost(Container);
                 _host.HostOpen();
             }
 
@@ -643,179 +625,5 @@ scope.ResolveOperationBeginning += OnResolveOperationBeginning;
         #region IDisposable
 
         #endregion
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public sealed class AppLogMessage
-    {
-        private readonly string _message;
-        private readonly int _threadId;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Message
-        {
-            get { return _message; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="message"></param>
-        public AppLogMessage(string message)
-        {
-            _message = message;
-            _threadId = Thread.CurrentThread.ManagedThreadId;
-        }
-
-        #region Overrides of Object
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public override string ToString()
-        {
-            return $"{nameof(AppLogMessage)}[{_threadId}]: {Message}";
-        }
-
-        #endregion
-    }
-
-    /// <summary>
-    ///     Fatal error building container. Wraps any autofac exceptions.
-    /// </summary>
-    [Serializable]
-    public class ContainerBuildException : Exception
-    {
-        /// <summary>
-        ///     Parameterless constructor.
-        /// </summary>
-        public ContainerBuildException()
-        {
-        }
-
-        /// <summary>
-        ///     Constructor
-        /// </summary>
-        /// <param name="message"></param>
-        public ContainerBuildException(string message) : base(message)
-        {
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="innerException"></param>
-        public ContainerBuildException(string message, Exception innerException) : base(
-            message
-            , innerException
-        )
-        {
-        }
-
-        /// <summary>
-        ///     Constructor
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        protected ContainerBuildException(
-            [NotNull] SerializationInfo info
-            , StreamingContext context
-        ) : base(info, context)
-        {
-        }
-    }
-
-    /// <summary>
-    ///     New app module to replace crusty old app module. Work in progress.
-    /// </summary>
-    internal sealed class NouveauAppModule : IocModule
-    {
-        /// <summary>
-        ///     Our fun custom load method that is public.
-        /// </summary>
-        /// <param name="builder"></param>
-        public override void DoLoad([NotNull] ContainerBuilder builder)
-        {
-            ;
-            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
-                .AssignableTo<IViewModel>()
-                .AsSelf()
-                .AsImplementedInterfaces()
-                .WithAttributedMetadata()
-                .WithAttributeFiltering().WithCallerMetadata();
-            if (AppLoggingConfigHelper.CacheTarget2 != null)
-                builder.RegisterInstance(AppLoggingConfigHelper.CacheTarget2)
-                    .WithMetadata("Description", "Cache target")
-                    .SingleInstance().WithCallerMetadata();
-        }
-    }
-
-    /// <summary>
-    /// </summary>
-    public sealed class ParsedExceptions
-    {
-        private List<ParsedStackInfo> _parsedList = new List<ParsedStackInfo>();
-
-        /// <summary>
-        /// </summary>
-        public List<ParsedStackInfo> ParsedList
-        {
-            get { return _parsedList; }
-            set { _parsedList = value; }
-        }
-    }
-
-    /// <summary>
-    /// </summary>
-    public sealed class ParsedStackInfo
-    {
-        // ReSharper disable once NotAccessedField.Local
-        private readonly string _exMessage;
-
-        private readonly string _typeName;
-        private List<StackTraceEntry> _stackTraceEntries;
-
-        /// <summary>
-        /// </summary>
-        public ParsedStackInfo()
-        {
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <param name="parsed"></param>
-        /// <param name="typeName"></param>
-        /// <param name="exMessage"></param>
-        public ParsedStackInfo(
-            [NotNull] IEnumerable<StackTraceEntry> parsed
-            , string typeName
-            , string exMessage
-        )
-        {
-            _typeName = typeName;
-            _exMessage = exMessage;
-            StackTraceEntries = parsed.ToList();
-        }
-
-        /// <summary>
-        /// </summary>
-        public List<StackTraceEntry> StackTraceEntries
-        {
-            get { return _stackTraceEntries; }
-            set { _stackTraceEntries = value; }
-        }
-
-        /// <summary>
-        /// </summary>
-        public string TypeName
-        {
-            get { return _typeName; }
-        }
     }
 }

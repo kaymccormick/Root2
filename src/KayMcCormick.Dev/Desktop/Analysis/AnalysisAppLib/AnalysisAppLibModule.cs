@@ -14,7 +14,6 @@ using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Extras.AttributeMetadata;
 using Autofac.Features.AttributeFilters;
-using Autofac.Integration.Mef;
 #if FINDLOGUSAGES
 using FindLogUsages ;
 #endif
@@ -33,15 +32,15 @@ using Document = Microsoft.CodeAnalysis.Document;
 namespace AnalysisAppLib
 {
     /// <summary>
-    ///     Autofac moule for the base Analysis App Lib.
+    ///     Autofac module for the base Analysis App Lib.
     /// </summary>
     public sealed class AnalysisAppLibModule : IocModule
     {
         // ReSharper disable once RedundantDefaultMemberInitializer
         private bool _registerExplorerTypes = false;
         private readonly ReplaySubject<ActivationInfo> _activations = new ReplaySubject<ActivationInfo>();
-        private MyReplaySubjectImpl _act2;
-        private MyReplaySubjectImpl3 _impl3 = new MyReplaySubjectImpl3(){ListView = true};
+        private ActivationInfoReplaySubject _activationInfoReplaySubject;
+        private readonly RegInfoReplaySubject _regInfoReplaySubject = new RegInfoReplaySubject() {ListView = true};
 
         /// <summary>
         ///     Parameter-less constructor.
@@ -63,7 +62,7 @@ namespace AnalysisAppLib
 
         /// <summary>
         /// </summary>
-        /// <param nam="componentRegistry"></param>
+        /// <param name="componentRegistry"></param>
         /// <param name="registration"></param>
         protected override void AttachToComponentRegistration(
             IComponentRegistryBuilder componentRegistry
@@ -71,33 +70,29 @@ namespace AnalysisAppLib
             , IComponentRegistration registration
         )
         {
-            _impl3.Subject1.OnNext(new RegInfo(registration.Metadata,registration));
+            var regInfo = new RegInfo(registration);
+            _regInfoReplaySubject.Subject.OnNext(regInfo);
             // ReSharper disable once UnusedVariable
             var svc = string.Join("; ", registration.Services.Select(s => s.ToString()));
             // DebugUtils.WriteLine (
             // $"{nameof ( AttachToComponentRegistration )}: {registration.Id} {registration.Lifetime} {svc}"
             // ) ;
 
-            registration.Activated += (sender, args) =>
+            registration.Activated += (o, args) =>
             {
                 var x = new ActivationInfo()
                 {
-                    Instance = args.Instance,
-                    Component = args.Component,
-                    Parameters = args.Parameters,
-                    Context = args.Context
+                    Instance = args.Instance, Component = args.Component, Parameters = args.Parameters,
+                    Context = args.Context, RegInfo = regInfo  
                 };
-                if (args.Instance is IHaveObjectId id1)
-                {
-                    x.InstanceObjectId = id1.InstanceObjectId;
-                }
+                if (args.Instance is IHaveObjectId id1) x.InstanceObjectId = id1.InstanceObjectId;
 
-                _act2.Subject1.OnNext(x);
-                _activations.OnNext(x);
+                _activationInfoReplaySubject.Subject.OnNext(x);
             };
             registration.Activating += (sender, args) =>
             {
                 var inst = args.Instance;
+
                 // DebugUtils.WriteLine ( $"activating {inst} {registration.Lifetime}" ) ;
                 if (!(inst is IViewModel)) return;
 
@@ -123,21 +118,33 @@ namespace AnalysisAppLib
             };
         }
 
+        private void OnRegistrationOnActivated(object sender, ActivatedEventArgs<object> args)
+        {
+            var x = new ActivationInfo()
+            {
+                Instance = args.Instance, Component = args.Component, Parameters = args.Parameters,
+                Context = args.Context
+            };
+            if (args.Instance is IHaveObjectId id1) x.InstanceObjectId = id1.InstanceObjectId;
+
+            _activationInfoReplaySubject.Subject.OnNext(x);
+        }
+
         /// <summary>
         /// </summary>
         /// <param name="builder"></param>
         public override void DoLoad([NotNull] ContainerBuilder builder)
         {
-            MyReplaySubjectImpl2 impl2 = new MyReplaySubjectImpl2();
-            builder.RegisterInstance(impl2).AsSelf();
-            builder.RegisterInstance(_impl3).AsSelf();
-            impl2.Subject1.Subscribe(subject => { });
-    impl2.Subject1.OnNext(_impl3);            
-            builder.RegisterSource(new MM(impl2));
+            var mySubjectReplaySubject = new MySubjectReplaySubject();
+            builder.RegisterInstance(mySubjectReplaySubject).AsSelf();
+            builder.RegisterInstance(_regInfoReplaySubject).AsSelf();
+
+            mySubjectReplaySubject.Subject.OnNext(_regInfoReplaySubject);
+            builder.RegisterSource(new MM(mySubjectReplaySubject));
             builder.RegisterType<AppDbContext>().As<IAppDbContext1>().AsSelf().WithCallerMetadata().SingleInstance();
-            _act2 = new MyReplaySubjectImpl();
-            impl2.Subject1.OnNext(_act2);
-            builder.RegisterInstance(_act2).AsSelf().As<IActivationStream>();
+            _activationInfoReplaySubject = new ActivationInfoReplaySubject();
+            mySubjectReplaySubject.Subject.OnNext(_activationInfoReplaySubject);
+            builder.RegisterInstance(_activationInfoReplaySubject).AsSelf().As<IActivationStream>();
             //builder.RegisterType<ResourceNodeInfo>().As<IHierarchicalNode>();
 
             // builder.Register((c, p) =>
@@ -147,7 +154,7 @@ namespace AnalysisAppLib
             // var r = new ReplaySubject<object>();
             // }).OnActivating(args => args.)
             // ).
-           // builder.RegisterGeneric(typeof(MyReplaySubject<>)).AsSelf().AsImplementedInterfaces().SingleInstance();
+            // builder.RegisterGeneric(typeof(MyReplaySubject<>)).AsSelf().AsImplementedInterfaces().SingleInstance();
 
             builder.RegisterGeneric(typeof(ReplaySubject<>)).SingleInstance();
             builder.RegisterType<SyntaxTypesService>()
@@ -156,7 +163,7 @@ namespace AnalysisAppLib
             builder.RegisterType<DocInterface>()
                 .As<IDocInterface>()
                 .WithCallerMetadata();
-            builder.RegisterModule<LegacyAppBuildModule>();
+            //builder.RegisterModule<LegacyAppBuildModule>();
             if (RegisterModelResources) builder.RegisterType<ModelResources>().WithCallerMetadata().SingleInstance();
 
             builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
@@ -243,18 +250,19 @@ namespace AnalysisAppLib
 
             #region MS LOGIN
 
-            // builder.Register ( MakePublicClientApplication )
-            // .As < IPublicClientApplication > ( )
-            // .WithCallerMetadata ( ) ;
+            builder.Register(MakePublicClientApplication)
+                .As<IPublicClientApplication>()
+                .WithCallerMetadata();
 
-            // builder.Register (
-            // ( ctx , p ) => {
-            // var bearerToken = p.TypedAs < string > ( ) ;
-            // return MakeGraphServiceClient ( bearerToken ) ;
-            // }
-            // )
-            // .AsSelf ( )
-            // .WithCallerMetadata ( ) ;
+            builder.Register(
+                    (ctx, p) =>
+                    {
+                        var bearerToken = p.TypedAs<string>();
+                        return MakeGraphServiceClient(bearerToken);
+                    }
+                )
+                .AsSelf()
+                .WithCallerMetadata();
 
             #endregion
         }
@@ -266,7 +274,7 @@ namespace AnalysisAppLib
         public bool RegisterConcreteBlockProviders { get; set; }
 
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
-        private bool RegisterModelResources { get; set; }
+        private bool RegisterModelResources { get; set; } = false;
 
         [NotNull]
         // ReSharper disable once UnusedMember.Local
@@ -377,28 +385,6 @@ namespace AnalysisAppLib
                     new AuthenticationHeaderValue("Bearer", parameter);
                 return Task.FromResult(0);
             };
-        }
-    }
-
-    internal class MyReplaySubjectImpl3 : MyReplaySubject<RegInfo>
-    {
-        public MyReplaySubjectImpl3()
-        {
-            ListView = false;
-            Title = "IOC Registrations";
-        }
-
-    }
-
-    public class RegInfo
-    {
-        public IDictionary<string, object> RegistrationMetadata { get; }
-        public IComponentRegistration Registration { get; }
-
-        public RegInfo(IDictionary<string, object> registrationMetadata, IComponentRegistration registration)
-        {
-            RegistrationMetadata = registrationMetadata;
-            Registration = registration;
         }
     }
 }

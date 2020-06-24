@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.ObjectModel;
+using KayMcCormick.Dev.Interfaces;
 
 namespace AnalysisControls.ViewModel
 {
-    public interface IDocumentHost
+    public interface IDocumentHost : IHaveObjectId
     {
         void AddDocument(object doc);
         void SetActiveDocument(object doc);
@@ -33,5 +34,7 @@ namespace AnalysisControls.ViewModel
 
         /// <inheritdoc />
         public IEnumerable Documents { get; }
+
+        public object InstanceObjectId { get; set; }
     }
 }

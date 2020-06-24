@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using KayMcCormick.Dev.Interfaces;
 
 namespace KayMcCormick.Dev.Command
 {
@@ -8,7 +9,7 @@ namespace KayMcCormick.Dev.Command
     /// Base command provided by low-level class lib
     /// </summary>
     [TypeConverter(typeof(BaseLibTypeConverter))]
-    public interface IBaseLibCommand
+    public interface IBaseLibCommand : IHaveObjectId
     {
         /// <summary>
         /// </summary>

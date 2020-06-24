@@ -1224,15 +1224,19 @@ namespace KayMcCormick.Dev.Logging
             }
 
 
-            LogManager.Configuration.AddTarget ( target.GetType().Name, target ) ;
-
-            if ( ! addRules )
+            if (LogManager.Configuration != null)
             {
-                return ;
+                LogManager.Configuration.AddTarget(target.GetType().Name, target);
+
+                if (!addRules)
+                {
+                    return;
+                }
+
+                LogManager.Configuration.AddRule(minLevel, LogLevel.Fatal, target);
             }
 
-            LogManager.Configuration.AddRule ( minLevel , LogLevel.Fatal , target ) ;
-            LogManager.LogFactory.ReconfigExistingLoggers ( ) ;
+            if (LogManager.LogFactory != null) LogManager.LogFactory.ReconfigExistingLoggers();
         }
 
         /// <summary>Removes a target by name from the current NLog configuration.</summary>

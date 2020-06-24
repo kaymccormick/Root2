@@ -10,9 +10,7 @@
 // ---
 #endregion
 using System ;
-using System.ServiceModel ;
 using Autofac ;
-using JetBrains.Annotations ;
 using KayMcCormick.Dev.Interfaces ;
 using KayMcCormick.Dev.Service ;
 
