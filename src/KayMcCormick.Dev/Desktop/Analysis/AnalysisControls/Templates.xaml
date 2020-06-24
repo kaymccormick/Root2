@@ -13,12 +13,14 @@
   xmlns:wpf="clr-namespace:KayMcCormick.Lib.Wpf;assembly=WpfLibCore"
   xmlns:io="clr-namespace:System.IO;assembly=System.IO.FileSystem"
   xmlns:system="clr-namespace:System;assembly=System.Runtime"
-  xmlns:kmDevLib="clr-namespace:KmDevLib;assembly=KmDevLib">
+  xmlns:kmDevLib="clr-namespace:KmDevLib;assembly=KmDevLib"
+  xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=KmDevLib"
+  xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KmDevLib">
   <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter"/>
   <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
   <analysisControls:UiConverter x:Key="UiConverter" />
-    <DataTemplate DataType="{x:Type analysisAppLib:RegInfo}" x:Key="RegInfo.RegistrationMetadata">
-        <ContentControl Content="{Binding RegistrationMetadata,Converter={StaticResource UiConverter}}"/>
+    <DataTemplate DataType="{x:Type dev:RegInfo}" x:Key="RegInfo.RegistrationMetadata">
+        <ContentControl Content="{Binding RegistratMetadataionMetadata,Converter={StaticResource UiConverter}}"/>
     </DataTemplate>
     <ControlTemplate x:Key="ListView1" TargetType="ListView">
         <Grid/>

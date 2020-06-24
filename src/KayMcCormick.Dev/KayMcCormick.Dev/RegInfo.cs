@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
 
-namespace AnalysisAppLib
+namespace KayMcCormick.Dev
 {
     public class RegInfo
     {
@@ -37,7 +37,7 @@ namespace AnalysisAppLib
         /// <summary>
         /// Gets the services provided by the component.
         /// </summary>
-        IEnumerable<Service> Services { get; }
+        IEnumerable<Autofac.Core.Service> Services { get; }
 
         /// <summary>
         /// Gets additional data associated with the component.
