@@ -39,6 +39,11 @@ namespace KmDevLib
 
 
                     var xyz = registrationAccessor.Invoke(service);
+                    if (xyz.Any())
+
+                    {
+
+                    }
                     var newGuid = Guid.NewGuid();
                     var delegateActivator = new DelegateActivator(ss.ServiceType,
                         (c, p) =>
@@ -54,11 +59,13 @@ namespace KmDevLib
                     // 
                     // return instance;
                     // });
+                    var dictionary = new Dictionary<string, object>();
+                    dictionary["CallerFilePath"] = "MM";
                     var reg = new ComponentRegistration(newGuid, delegateActivator, 
                         _current, 
                         InstanceSharing.Shared, InstanceOwnership.OwnedByLifetimeScope,
                         new[] {service, new TypedService(typeof(IMySubject))},
-                        new Dictionary<string, object>());
+                        dictionary);
                     return new[]
                     {
                         reg

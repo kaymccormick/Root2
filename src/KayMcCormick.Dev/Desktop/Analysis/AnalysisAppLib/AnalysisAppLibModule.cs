@@ -25,7 +25,9 @@ using KayMcCormick.Dev.Logging;
 using KmDevLib;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
+using NLog;
 using Document = Microsoft.CodeAnalysis.Document;
+
 
 // ReSharper disable UnusedParameter.Local
 
@@ -36,6 +38,7 @@ namespace AnalysisAppLib
     /// </summary>
     public sealed class AnalysisAppLibModule : IocModule
     {
+        private static ILogger Logger = LogManager.GetCurrentClassLogger();
         // ReSharper disable once RedundantDefaultMemberInitializer
         private bool _registerExplorerTypes = false;
         private readonly ReplaySubject<ActivationInfo> _activations = new ReplaySubject<ActivationInfo>();
@@ -86,6 +89,8 @@ namespace AnalysisAppLib
                     Context = args.Context, RegInfo = regInfo  
                 };
                 if (args.Instance is IHaveObjectId id1) x.InstanceObjectId = id1.InstanceObjectId;
+                else
+                    Logger.Info("{type}", args.Instance.GetType());
 
                 _activationInfoReplaySubject.Subject.OnNext(x);
             };
@@ -136,15 +141,15 @@ namespace AnalysisAppLib
         public override void DoLoad([NotNull] ContainerBuilder builder)
         {
             var mySubjectReplaySubject = new MySubjectReplaySubject();
-            builder.RegisterInstance(mySubjectReplaySubject).AsSelf();
-            builder.RegisterInstance(_regInfoReplaySubject).AsSelf();
+            builder.RegisterInstance(mySubjectReplaySubject).AsSelf().WithCallerMetadata();
+            builder.RegisterInstance(_regInfoReplaySubject).AsSelf().WithCallerMetadata();
 
             mySubjectReplaySubject.Subject.OnNext(_regInfoReplaySubject);
             builder.RegisterSource(new MM(mySubjectReplaySubject));
             builder.RegisterType<AppDbContext>().As<IAppDbContext1>().AsSelf().WithCallerMetadata().SingleInstance();
             _activationInfoReplaySubject = new ActivationInfoReplaySubject();
             mySubjectReplaySubject.Subject.OnNext(_activationInfoReplaySubject);
-            builder.RegisterInstance(_activationInfoReplaySubject).AsSelf().As<IActivationStream>();
+            builder.RegisterInstance(_activationInfoReplaySubject).AsSelf().As<IActivationStream>().WithCallerMetadata();
             //builder.RegisterType<ResourceNodeInfo>().As<IHierarchicalNode>();
 
             // builder.Register((c, p) =>
@@ -156,7 +161,7 @@ namespace AnalysisAppLib
             // ).
             // builder.RegisterGeneric(typeof(MyReplaySubject<>)).AsSelf().AsImplementedInterfaces().SingleInstance();
 
-            builder.RegisterGeneric(typeof(ReplaySubject<>)).SingleInstance();
+            builder.RegisterGeneric(typeof(ReplaySubject<>)).SingleInstance().WithCallerMetadata();
             builder.RegisterType<SyntaxTypesService>()
                 .As<ISyntaxTypesService>()
                 .WithCallerMetadata();

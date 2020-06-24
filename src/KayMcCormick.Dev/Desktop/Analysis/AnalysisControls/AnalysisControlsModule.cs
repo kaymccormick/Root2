@@ -76,7 +76,7 @@ namespace AnalysisControls
             builder.RegisterAssemblyTypes(typeof(AnalysisControlsModule).Assembly)
                 .Where(type => typeof(IDisplayableAppCommand).IsAssignableFrom(type) && !type.IsAbstract && type != typeof(OpenFileCommand2)).As<IDisplayableAppCommand>()
                 .WithCallerMetadata().WithAttributedMetadata();
-            builder.RegisterType<SyntaxNodeProperties>().AsImplementedInterfaces();
+//            builder.RegisterType<SyntaxNodeProperties>().AsImplementedInterfaces();
             builder.RegisterType<MiscInstanceInfoProvider>()
                 .AsSelf()
                 .As<TypeDescriptionProvider>()
@@ -169,8 +169,8 @@ namespace AnalysisControls
 
 #endif
             _logEventInstanceReplaySubject = new MyReplaySubject<LogEventInstance>();
-            builder.RegisterInstance(_logEventInstanceReplaySubject).AsSelf().AsImplementedInterfaces();
-            builder.RegisterInstance(_logEventInstanceReplaySubject.Subject).AsSelf().AsImplementedInterfaces();
+            builder.RegisterInstance(_logEventInstanceReplaySubject).AsSelf().AsImplementedInterfaces().WithCallerMetadata();
+            builder.RegisterInstance(_logEventInstanceReplaySubject.Subject).AsSelf().AsImplementedInterfaces().WithCallerMetadata();
             //kayTypes.Clear();
 
             builder.RegisterType<UiElementTypeConverter>().SingleInstance().WithCallerMetadata();
@@ -228,9 +228,9 @@ namespace AnalysisControls
                 .WithCallerMetadata();
             // builder.RegisterType<UiElementTypeConverter>().AsSelf();
 
-            builder.RegisterType<Main1Model>().AsSelf().InstancePerLifetimeScope();
-            builder.RegisterType<DocumentHost>().AsImplementedInterfaces().InstancePerLifetimeScope();
-            builder.RegisterType<Main1Mode2>();
+            builder.RegisterType<Main1Model>().AsSelf().InstancePerLifetimeScope().WithCallerMetadata();
+            builder.RegisterType<DocumentHost>().AsImplementedInterfaces().InstancePerLifetimeScope().WithCallerMetadata();
+            builder.RegisterType<Main1Mode2>().WithCallerMetadata();
 
             builder.Register(
                     (context, parameters) =>
@@ -301,6 +301,7 @@ namespace AnalysisControls
         {
             var cmd = ControlViewCommandAdapter2(arg1, arg2, arg3);
             IDictionary<string, object> d = new Dictionary<string, object>();
+            d["CallerFilePath"] = "AnalysisControlsModule";
             return new Meta<IDisplayableAppCommand>(cmd, d);
         }
 

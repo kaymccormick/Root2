@@ -134,7 +134,7 @@ namespace KayMcCormick.Dev.Logging
             }
             else
             {
-                builder.RegisterInstance(LogManager.GetLogger("")).As<ILogger>();
+                builder.RegisterInstance(LogManager.GetLogger("")).As<ILogger>().WithCallerMetadata();
             }
 
             #endregion
@@ -169,9 +169,13 @@ namespace KayMcCormick.Dev.Logging
             var withoutMetadata = typeof(MulticastDelegate).IsAssignableFrom(reg.Activator.LimitType.BaseType) ||
                                   typeof(IEnumerable).IsAssignableFrom(reg.Activator.LimitType) ||
                                   reg.Activator.LimitType == typeof(ILifetimeScope) ||
-                                  reg.Activator.LimitType == typeof(LifetimeScope);
-            if (!withoutMetadata && !hasMetadata)
+                                  reg.Activator.LimitType == typeof(LifetimeScope) ||
+                                  reg.Activator.LimitType.FullName == "Autofac.Builder.BuildCallbackService";
+            var maybe1 = reg.IsAdapterForIndividualComponent && reg.Target.Metadata.ContainsKey("CallerFilePath");
+                                  
+            if (!withoutMetadata && !hasMetadata && !maybe1)
             {
+
                 throw new AppInvalidOperationException ( "Need metadata for " + reg ) ;
             }
 
@@ -191,6 +195,33 @@ namespace KayMcCormick.Dev.Logging
             {
                 var instanceDesc = eventArgs.Instance;
                 var type = eventArgs.Instance.GetType();
+                if (type.IsArray
+                    && typeof(Delegate).IsAssignableFrom(type.GetElementType()))
+                {
+                    instanceDesc = eventArgs.Instance.ToString();
+                }
+                else if (type.IsGenericType
+                         && type.GetGenericTypeDefinition() == typeof(Meta<>))
+                {
+                    var x = type.GetGenericArguments()[0];
+                    if (typeof(Delegate).IsAssignableFrom(x)) instanceDesc = eventArgs.Instance.ToString();
+                }
+                else if (eventArgs.Instance.GetType().Name == "BuildCallbackService")
+                {
+                    instanceDesc = eventArgs.Instance.ToString();
+                }
+                else if (eventArgs.Instance is Delegate)
+                {
+                    instanceDesc = eventArgs.Instance.ToString();
+                }
+
+                Logger.Trace(
+                    "Activated {desc} (sender={sender}, instance={instance})"
+                    , DescribeComponent(eventArgs.Component)
+                    , o.ToString()
+                    , instanceDesc.ToString()
+                );
+
                 if (type.IsArray
                     && typeof(Delegate).IsAssignableFrom(type.GetElementType()))
                 {
@@ -423,10 +454,10 @@ namespace KayMcCormick.Dev.Logging
             {
                 Logger.Trace($"Load {nameof(IdGeneratorModule)}");
                 Generator = new ObjectIDGenerator();
-                builder.RegisterInstance(Generator).AsSelf();
+                builder.RegisterInstance(Generator).AsSelf().WithCallerMetadata();
                 //DefaultObject = new DefaultObjectIdProvider(Generator);
                 builder.RegisterType<DefaultObjectIdProvider>()
-                    .As<IObjectIdProvider>().SingleInstance();
+                    .As<IObjectIdProvider>().SingleInstance().WithCallerMetadata();
                 //.InstancePerLifetimeScope().WithCallerMetadata();
             }
 

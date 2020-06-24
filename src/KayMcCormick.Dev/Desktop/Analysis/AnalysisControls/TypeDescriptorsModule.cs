@@ -30,7 +30,7 @@ namespace AnalysisControls
         protected override void Load(ContainerBuilder builder)
         {
 
-            builder.RegisterType<SyntaxNodeProperties>().AsImplementedInterfaces();
+            // builder.RegisterType<SyntaxNodeProperties>().AsImplementedInterfaces();
             builder.RegisterType<MiscInstanceInfoProvider>()
                 .AsSelf()
                 .As<TypeDescriptionProvider>()
@@ -91,13 +91,13 @@ namespace AnalysisControls
 
             //kayTypes.Clear();
             var xx = new CustomTypes(kayTypes);
-            builder.RegisterInstance(xx).OnActivating(args => { args.Instance.ComponentContext = args.Context; });
+            builder.RegisterInstance(xx).WithCallerMetadata().SingleInstance();
             builder.RegisterType<UiElementTypeConverter>().SingleInstance().WithCallerMetadata();
 
             builder.RegisterType<ControlsProvider>().WithAttributeFiltering().InstancePerLifetimeScope()
                 .As<IControlsProvider>()
-                .AsSelf();
-            builder.RegisterType<AnalysisCustomTypeDescriptor>().AsSelf().AsImplementedInterfaces();
+                .AsSelf().WithCallerMetadata();
+            builder.RegisterType<AnalysisCustomTypeDescriptor>().AsSelf().AsImplementedInterfaces().WithCallerMetadata();
         }
     }
 }

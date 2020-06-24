@@ -62,6 +62,7 @@ namespace AnalysisControls
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public override TextRun GetTextRun(int textSourceCharacterIndex)
         {
+            DebugUtils.WriteLine($"index: {textSourceCharacterIndex}");
             void TakeToken()
             {
                 var includeDocumentationComments = true;

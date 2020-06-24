@@ -49,7 +49,6 @@
         <Setter Property="DockingManager">
             <Setter.Value>
                 <avalondock:DockingManager
-
                     DocumentsSource="{Binding Path=Documents}"
                     x:Name="_DockingManager" AnchorablesSource="{Binding Anchorables}"
                     VerticalAlignment="Stretch"
@@ -8530,7 +8529,7 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
                         <Border BorderBrush="Red" BorderThickness="5">
-                            <DataGrid
+                            <DataGrid IsReadOnly="True"
                                 ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Items}" />
                         </Border>
                     </Border>

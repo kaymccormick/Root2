@@ -97,9 +97,9 @@ namespace AnalysisControls
                 .WithAttributedMetadata().AsSelf()
                 .AsImplementedInterfaces().WithCallerMetadata();
 
-            builder.RegisterInstance<Subject<IComponentRegistration>>(_regSubject)
+            builder.RegisterInstance(_regSubject)
                 .AsSelf()
-                .As<IObservable<IComponentRegistration>>();
+                .As<IObservable<IComponentRegistration>>().WithCallerMetadata();
 
             Logger.Trace(
                 $"Loading module {typeof(Client2Module1).AssemblyQualifiedName}"
@@ -130,28 +130,28 @@ namespace AnalysisControls
             }
 #endif
             builder.RegisterModule<AnalysisAppLibModule>();
-            builder.RegisterType<RibbonModelTab>().AsSelf().AsImplementedInterfaces();
-            builder.RegisterType<RibbonBuilder1>();
-            builder.Register((c, o) => c.Resolve<RibbonBuilder1>().BuildRibbon());
-            builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces();
+            builder.RegisterType<RibbonModelTab>().AsSelf().AsImplementedInterfaces().WithCallerMetadata();
+            builder.RegisterType<RibbonBuilder1>().WithCallerMetadata();
+            builder.Register((c, o) => c.Resolve<RibbonBuilder1>().BuildRibbon()).WithCallerMetadata();
+            builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces().WithCallerMetadata();
             builder.RegisterType<ClientModel>().AsSelf().AsImplementedInterfaces()
                 .WithCallerMetadata();
-            builder.RegisterType<RibbonModelApplicationMenu>();
-            builder.RegisterType<FunTabProvider>().As<IRibbonModelProvider<RibbonModelTab>>()//.SingleInstance()
+            builder.RegisterType<RibbonModelApplicationMenu>().WithCallerMetadata();
+            builder.RegisterType<FunTabProvider>().As<IRibbonModelProvider<RibbonModelTab>>().WithCallerMetadata()//.SingleInstance()
                 .WithAttributeFiltering();
-            builder.RegisterType<CodeTab1>().As<IRibbonModelProvider<RibbonModelTab>>()//.SingleInstance()
+            builder.RegisterType<CodeTab1>().As<IRibbonModelProvider<RibbonModelTab>>().WithCallerMetadata()//.SingleInstance()
                 .WithAttributeFiltering();
-            builder.RegisterType<CodeTab2>().As<IRibbonModelProvider<RibbonModelTab>>()//.SingleInstance()
+            builder.RegisterType<CodeTab2>().As<IRibbonModelProvider<RibbonModelTab>>().WithCallerMetadata()//.SingleInstance()
                 .WithAttributeFiltering();
             builder.RegisterType<NavigationTabProvider>().AsImplementedInterfaces()
                 .WithCallerMetadata();
 
             builder.RegisterType<CodeAnalysisContextualTabGroupProvider>().AsImplementedInterfaces()
                 .WithCallerMetadata();
-            builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering();
-            builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering();
+            builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering().WithCallerMetadata();
+            builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering().WithCallerMetadata();
 #if true
-            builder.RegisterType<ExtractDocCommentsCommand>();
+            builder.RegisterType<ExtractDocCommentsCommand>().WithCallerMetadata();
             builder.Register((c) =>
             {
                 var zz = c.Resolve<ExtractDocCommentsCommand>();
@@ -159,11 +159,11 @@ namespace AnalysisControls
                     async (l, arg) => await zz.ProcessSolutionAsync(l, (string) arg).ConfigureAwait(false),
                     null));
 
-            }).AsSelf().AsImplementedInterfaces().WithMetadata("Title", "Extract docs");
+            }).AsSelf().AsImplementedInterfaces().WithMetadata("Title", "Extract docs").WithCallerMetadata();
             // builder.RegisterType<OpenFileCommand>().AsImplementedInterfaces().WithAttributeFiltering();
 #endif
-            builder.RegisterType<AppCommandTypeConverter>().AsSelf();
-            builder.RegisterType<ObjectStringTypeConverter>().AsSelf();
+            builder.RegisterType<AppCommandTypeConverter>().AsSelf().WithCallerMetadata();
+            builder.RegisterType<ObjectStringTypeConverter>().AsSelf().WithCallerMetadata();
         }
 
         public bool RegisterPython { get; set; }

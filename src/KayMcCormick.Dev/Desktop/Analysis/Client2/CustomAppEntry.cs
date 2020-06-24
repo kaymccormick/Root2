@@ -38,15 +38,15 @@ namespace Client2
                 catch (Exception ex)
                 {
                     DebugUtils.WriteLine(ex.ToString());
-                    ExceptionInfo i = new ExceptionInfo(){DataContext=ex};
-                    Window w = new Window(){Content=i};
-                    w.WindowState = WindowState.Maximized;
+                    // ExceptionInfo i = new ExceptionInfo(){DataContext=ex};
+                    // Window w = new Window(){Content=i};
+                    // w.WindowState = WindowState.Maximized;
                     
-                    w.Topmost = true;
-                    w.Loaded += (sender, args) => { w.CaptureMouse();
-                        w.Activate();
-                    };
-                    w.ShowDialog();
+                    // w.Topmost = true;
+                    // w.Loaded += (sender, args) => { w.CaptureMouse();
+                        // w.Activate();
+                    // };
+                    // w.ShowDialog();
                 }
             }
 
