@@ -433,6 +433,8 @@ namespace KayMcCormick.Dev.Logging
         /// </summary>
         private sealed class IdGeneratorModule : Module
         {
+            private DefaultObjectIdProvider _idProvider;
+
             /// <summary>Gets or sets the default object.</summary>
             /// <value>The default object.</value>
             private IObjectIdProvider DefaultObject { get; set; }
@@ -456,9 +458,8 @@ namespace KayMcCormick.Dev.Logging
                 Generator = new ObjectIDGenerator();
                 builder.RegisterInstance(Generator).AsSelf().WithCallerMetadata();
                 //DefaultObject = new DefaultObjectIdProvider(Generator);
-                builder.RegisterType<DefaultObjectIdProvider>()
-                    .As<IObjectIdProvider>().SingleInstance().WithCallerMetadata();
-                //.InstancePerLifetimeScope().WithCallerMetadata();
+                _idProvider = new DefaultObjectIdProvider(Generator);
+                builder.RegisterInstance(_idProvider).As<IObjectIdProvider>().SingleInstance().WithCallerMetadata();
             }
 
 
@@ -515,12 +516,11 @@ namespace KayMcCormick.Dev.Logging
                     return;
                 }
 
-                var o = e.Context.Resolve<IObjectIdProvider>();
-
+               
                 try
                 {
                     var provideObjectInstanceIdentifier =
-                        o.ProvideObjectInstanceIdentifier(
+                        _idProvider.ProvideObjectInstanceIdentifier(
                             inst
                             , e.Component
                             , e.Parameters

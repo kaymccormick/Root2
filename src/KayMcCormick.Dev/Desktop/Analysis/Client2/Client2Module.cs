@@ -22,6 +22,7 @@ namespace Client2
             builder.Register((c) =>
                 {
                     var lifetimeScope = c.Resolve<ILifetimeScope>();
+                    lifetimeScope = ((LifetimeScope) lifetimeScope).ParentLifetimeScope;
                     bool used = false;
                     if (lifetimeScope is LifetimeScope l2)
                     {
@@ -35,7 +36,7 @@ namespace Client2
                         }
                     }
                      
-                    var ls = lifetimeScope.BeginLifetimeScope(used ? "Client2Window1_2" :  "Client2Window1");
+                    var ls = lifetimeScope.BeginLifetimeScope(used ? "Client2Window1_2" :  "Client2Window1_");
                     return new Client2Window1(ls, ls.Resolve<ClientModel>(),
                         ls.ResolveOptional<MyCacheTarget2>());
                 })

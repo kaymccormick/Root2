@@ -7269,7 +7269,6 @@
     </Style>
 
     <Style TargetType="{x:Type local:DocumentView}">
-        <Setter Property="TextElement.FontSize" Value="24.0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:DocumentView}">
@@ -8404,7 +8403,7 @@
                             </Grid.RowDefinitions>
                             <kmDevWpfControls:CustomTreeView x:Name="TreeView" Grid.RowSpan="2"
                                                              ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Root}" />
-                            <GroupBox Header="Selected" Grid.Column="1" TextElement.FontSize="14">
+                            <GroupBox Header="Selected" Grid.Column="1" TextElement.FontSize="14" DataContext="{Binding ElementName=TreeView,Path=SelectedItem}">
                                 <ScrollViewer>
                                     <StackPanel>
                                         <ContentPresenter
@@ -8442,6 +8441,7 @@
                                                                 <RowDefinition Height="Auto" />
                                                                 <RowDefinition Height="Auto" />
                                                                 <RowDefinition Height="Auto" />
+                                                                <RowDefinition Height="Auto" />
                                                             </Grid.RowDefinitions>
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="*" />
@@ -8453,23 +8453,25 @@
                                                                               TextElement.FontWeight="Bold"
                                                                               Content="{Binding Path=Id}"
                                                                               Grid.Column="1" />
-                                                            <TextBlock Text="Activator" Grid.Row="1"
+                                                            <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=GroupBox},Path=DataContext.Items.Count}" Grid.Row="1"
                                                                        FontFamily="Bahnschrift SemiLight" />
                                                             <ContentPresenter Content="{Binding Path=Activator}"
                                                                               Grid.Column="1" Grid.Row="1" >
+                                                                <ContentPresenter.ContentTemplate>
                                                                 <DataTemplate DataType="{x:Type reflection1:ReflectionActivator}">
                                                                     <kmDevWpfControls:TablePanel>
                                                                         <TextBlock Text="Limit Type"/>
                                                                         <TextBlock Text="{Binding Path=LimitType }"/>
                                                                     </kmDevWpfControls:TablePanel>
                                                                 </DataTemplate>
+                                                                </ContentPresenter.ContentTemplate>
                                                             </ContentPresenter>
                                                             <GroupBox Header="Services" Grid.Row="2"
                                                                       Grid.ColumnSpan="2" Margin="10" Padding="10,10,0,0">
                                                                 <ItemsControl ItemsSource="{Binding Services}">
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
-                                                                            <TextBlock Margin="10,5,0,0"  Width="140"  FontFamily="Consolas"
+                                                                            <TextBlock Margin="10,5,0,0"    FontFamily="Consolas"
                                                                                        Text="{Binding ServiceType}" />
                                                                         </DataTemplate>
                                                                     </ItemsControl.ItemTemplate>
@@ -8494,6 +8496,7 @@
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <StackPanel Orientation="Horizontal">
+
                                                                                 <TextBlock Text="{Binding Key}" Width="140" />
                                                                                 <TextBlock Text="{Binding Value}"
                                                                                            Margin="10,0,0,0" />
@@ -8502,11 +8505,17 @@
                                                                     </ItemsControl.ItemTemplate>
                                                                 </ItemsControl>
                                                             </GroupBox>
+                                                            <GroupBox Grid.Row="4">
+                                                                <ItemsControl ItemsSource="{Binding Source={RelativeSource FindAncestor,AncestorType=StackPanel},Path=DataContext.Items}"
+                                                                           FontFamily="Bahnschrift SemiLight">
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate><ContentPresenter Content="{Binding}"/></DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+                                                                </ItemsControl>
+                                                            </GroupBox>
                                                         </Grid>
                                                     </StackPanel>
                                                 </DataTemplate>
-
-
                                             </ContentPresenter.Resources>
                                         </ContentPresenter>
                                     </StackPanel>

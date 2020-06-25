@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Autofac.Core.Registration;
 
 namespace AnalysisControls
 {
@@ -19,6 +20,7 @@ namespace AnalysisControls
             foreach (var reg in LifetimeScope.ComponentRegistry.Registrations)
             {
                 var node = new RegNode() { Registration = reg, LifetimeScope = LifetimeScope, IdProvider = IdProvider };
+                
                 _items.Add(node);
 
             }

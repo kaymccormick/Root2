@@ -107,6 +107,8 @@ namespace AnalysisControls.TypeDescriptors
             if (enumerable != null)
                 foreach (PropertyDescriptor o in enumerable)
                 {
+                    if (!o.IsBrowsable)
+                        continue;
                     var editor = o.GetEditor(typeof(UITypeEditor));
 
                     InstanceProperty p = new InstanceProperty() {Instance = o1, PropertyDescriptor = o};

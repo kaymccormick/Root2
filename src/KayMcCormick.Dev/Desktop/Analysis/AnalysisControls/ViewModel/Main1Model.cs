@@ -149,12 +149,12 @@ namespace AnalysisControls.ViewModel
             }
         }
 
-
+        [Browsable(false)]
         public object ActiveContent
         {
             get { return (object) GetValue(ActiveContentProperty); }
             set { SetValue(ActiveContentProperty, value); }
-        }   
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -164,6 +164,7 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
+        [Browsable(false)]
         public ObservableCollection<object> ContextualTabGroups
         {
             get { return _contextualTabGroups; }
@@ -247,6 +248,7 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
+        [Browsable(false)]
         public ObservableCollection<object> DocumentsCollection
         {
             get { return _documents; }
@@ -260,12 +262,14 @@ namespace AnalysisControls.ViewModel
             }
         }
 
+        [Browsable(false)]
         public IEnumerable Documents => _docHost.Documents;
 
         /// <summary>
         /// 
         /// </summary>
         [UsedImplicitly]
+        [Browsable(false)]
         public ObservableCollection<object> Anchorables { get; } = new ObservableCollection<object>();
 
         /// <summary>
@@ -335,7 +339,7 @@ namespace AnalysisControls.ViewModel
         private void AddInitialDocuments()
         {
             
-            //AddtraceConfigurationVoew();
+            AddtraceConfigurationVoew();
             
             //            AddModelDoc();
             // AddRibbonModelViewDoc();
@@ -613,6 +617,7 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
+        [Browsable(false)]
         public Main1 View
         {
             get { return _view; }
@@ -646,6 +651,8 @@ namespace AnalysisControls.ViewModel
         }
 
         /// </summary>
+        [Browsable(false)]
+        
         public CurrentOperation CurrentOperation
         {
             get { return _currentOperation; }
@@ -661,6 +668,7 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
+        [Browsable(false)]
         public IClientModel ClientViewModel
         {
             get { return _clientViewModel; }
@@ -671,8 +679,9 @@ namespace AnalysisControls.ViewModel
                 new UserControl1().propertyGrid1.SelectedObject = _clientViewModel.PrimaryRibbon;
             }
         }
-
+        [Browsable(false)]
         public JsonSerializerOptions JsonSerializerOptions { get; set; }
+        [Browsable(false)]
         public Dispatcher Dispatcher { get; set; }
 
         /// </summary>

@@ -64,9 +64,9 @@ namespace AnalysisControls.TypeDescriptors
 
         static PropItems()
         {
-            FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(DataGridCellsPresenter), (PropertyMetadata)new FrameworkPropertyMetadata((object)typeof(PropItems)));
-            ItemsControl.ItemsPanelProperty.OverrideMetadata(typeof(DataGridCellsPresenter), (PropertyMetadata)new FrameworkPropertyMetadata((object)new ItemsPanelTemplate(new FrameworkElementFactory(typeof(PropItemsPanel)))));
-            UIElement.FocusableProperty.OverrideMetadata(typeof(DataGridCellsPresenter), (PropertyMetadata)new FrameworkPropertyMetadata((object)false));
+            FrameworkElement.DefaultStyleKeyProperty.OverrideMetadata(typeof(PropItems), (PropertyMetadata)new FrameworkPropertyMetadata((object)typeof(PropItems)));
+            ItemsControl.ItemsPanelProperty.OverrideMetadata(typeof(PropItems), (PropertyMetadata)new FrameworkPropertyMetadata((object)new ItemsPanelTemplate(new FrameworkElementFactory(typeof(PropItemsPanel)))));
+            UIElement.FocusableProperty.OverrideMetadata(typeof(PropItems), (PropertyMetadata)new FrameworkPropertyMetadata((object)false));
 
         }
     }

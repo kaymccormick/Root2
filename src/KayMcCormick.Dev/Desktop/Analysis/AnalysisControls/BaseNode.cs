@@ -60,7 +60,7 @@ namespace AnalysisControls
             }
         }
 
-        public IObjectIdProvider IdProvider { get; set; }
+        public virtual IObjectIdProvider IdProvider { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

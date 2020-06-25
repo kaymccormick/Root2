@@ -151,6 +151,7 @@ namespace AnalysisControls
 
         protected virtual void OnLifetimeScopeChanged(ILifetimeScope eOldValue, ILifetimeScope eNewValue)
         {
+            
             if (eNewValue != null)
             {
                 if (eNewValue is LifetimeScope s)

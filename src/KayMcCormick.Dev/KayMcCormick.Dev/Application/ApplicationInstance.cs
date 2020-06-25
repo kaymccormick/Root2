@@ -12,6 +12,7 @@ using System.Text.Json.Serialization;
 using Autofac;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
+using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
 using Autofac.Extras.AttributeMetadata;
 using Autofac.Integration.Mef;
@@ -83,6 +84,7 @@ namespace KayMcCormick.Dev.Application
         protected ILifetimeScope LifetimeScope { get; private set; }
         private ILogger _logger;
         private MyReplaySubject<AppLogMessage> _subject1;
+        private ILifetimeScope _root;
 
         /// <summary>
         /// 
@@ -377,7 +379,7 @@ namespace KayMcCormick.Dev.Application
 
             if (Container == null) Container = BuildContainer();
 
-            LifetimeScope = Container.BeginLifetimeScope("Primary");
+            LifetimeScope = _root.BeginLifetimeScope("Primary");
             return LifetimeScope;
         }
 
@@ -403,13 +405,23 @@ namespace KayMcCormick.Dev.Application
             return LifetimeScope;
         }
 
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        [NotNull]
+        /// <inheritdoc />
         protected override IContainer BuildContainer()
         {
             var builder = new ContainerBuilder();
+            var b = builder.Build();
+            _root = b.BeginLifetimeScope(BuildContainer2);
+            
+            return b;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <param name="lifetimeScope"></param>
+        /// <returns></returns>
+        [NotNull]
+        protected void BuildContainer2(ContainerBuilder builder)
+        {
             builder.RegisterModule<AttributedMetadataModule>();
             builder.RegisterMetadataRegistrationSources();
             builder.RegisterModule<LegacyAppBuildModule>();
@@ -487,17 +499,7 @@ namespace KayMcCormick.Dev.Application
 
             // });
 
-            try
-            {
-                return builder.Build();
-            }
-            catch (ArgumentException argExp)
-            {
-                throw new ContainerBuildException(
-                    "Unable to build container: " + argExp.Message
-                    , argExp
-                );
-            }
+         
         }
 
         private void OnResolveOperationBeginning(object sender, ResolveOperationBeginningEventArgs e)
