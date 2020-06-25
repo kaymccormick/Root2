@@ -8,6 +8,13 @@
         mc:Ignorable="d"
         Title="CodeWindow" Height="450" Width="600">
     <Grid>
-        <analysisControls:FormattedTextControl3 x:Name="Code" SourceText="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=Window},Path=SourceText}"/>
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/>
+        <RowDefinition Height="*"/></Grid.RowDefinitions>
+<StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=Code}">
+    <TextBlock Text="{Binding HoverColumn}"/>
+    <TextBlock Text=" "/>
+            <TextBlock Text="{Binding HoverRow}"/>
+        </StackPanel>
+        <analysisControls:CodeDiagnostics x:Name="Code"  Grid.Row="1"/>
     </Grid>
 </Window>

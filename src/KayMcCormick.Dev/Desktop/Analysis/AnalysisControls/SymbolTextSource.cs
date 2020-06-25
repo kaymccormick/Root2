@@ -165,13 +165,16 @@ namespace AnalysisControls
 
         private void GenerateText()
         {
-            var parts = Symbol.ToDisplayParts(SymbolDisplayFormat);
-            foreach (var symbolDisplayPart in parts)
+            if (Symbol != null)
             {
-                SymbolTextCharacters c = new SymbolTextCharacters(symbolDisplayPart.ToString(), 0, symbolDisplayPart.ToString().Length, PropsFor(symbolDisplayPart, Symbol), new TextSpan(), Symbol , symbolDisplayPart);
-                col.Add(c);
+                var parts = Symbol.ToDisplayParts(SymbolDisplayFormat);
+                foreach (var symbolDisplayPart in parts)
+                {
+                    SymbolTextCharacters c = new SymbolTextCharacters(symbolDisplayPart.ToString(), 0, symbolDisplayPart.ToString().Length, PropsFor(symbolDisplayPart, Symbol), new TextSpan(), Symbol , symbolDisplayPart);
+                    col.Add(c);
+                }
             }
-            
+
             var i = 0;
             chars.Clear();
             foreach (var textRun in col)

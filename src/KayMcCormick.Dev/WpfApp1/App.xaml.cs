@@ -19,7 +19,7 @@ namespace WpfApp1
         protected override void OnStartup(StartupEventArgs e)
         {
             
-            CustomConsole.ConsoleHandler(600);
+            // CustomConsole.ConsoleHandler(600);
             if (e.Args.Any())
             {
                 LoadFilename = e.Args[0];

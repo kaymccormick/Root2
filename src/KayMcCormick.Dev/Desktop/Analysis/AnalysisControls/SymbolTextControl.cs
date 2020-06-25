@@ -18,7 +18,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class SymbolTextControl : Control
+    public class SymbolTextControl : Control, ILineDrawer
     {
 
 
@@ -194,7 +194,7 @@ namespace AnalysisControls
             double pixelsPerDip = PixelsPerDip;
             FormattingHelper.UpdateFormattedText(OutputWidth, ref currentRendering, EmSize, Typeface, _textDest,
                 Store,
-                pixelsPerDip, LineInfos, Infos, ref maxX, out var maxY, null, new GenericTextParagraphProperties(currentRendering, pixelsPerDip), null);
+                pixelsPerDip, LineInfos, Infos, ref maxX, out var maxY, null, new GenericTextParagraphProperties(currentRendering, pixelsPerDip), this);
             MaxX = maxX;
             MaxY = maxY;
             _rectangle.Width = maxX;
@@ -242,5 +242,24 @@ namespace AnalysisControls
         // ReSharper disable once NotAccessedField.Local
 
         // ReSharper disable once NotAccessedField.Local
+        /// <inheritdoc />
+        public void PrepareDrawLines(LineContext lineContext, bool clear)
+        {
+        }
+
+        /// <inheritdoc />
+        public void PrepareDrawLine(LineContext lineContext)
+        {
+        }
+
+        /// <inheritdoc />
+        public void DrawLine(LineContext lineContext)
+        {
+        }
+
+        /// <inheritdoc />
+        public void EndDrawLines(LineContext lineContext)
+        {
+        }
     }
 }

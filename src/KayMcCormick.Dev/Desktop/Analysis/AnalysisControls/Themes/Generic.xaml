@@ -5445,11 +5445,9 @@
                                 <local:RectConverter x:Key="RectConverter" />
                             </TabControl.Resources>
                             <TabItem Header="Code">
-                                <local:FormattedTextControl
+                                <local:FormattedTextControl3
                                     x:Name="code"
-                                    SyntaxTree="{TemplateBinding SyntaxTree}"
-                                    Compilation="{TemplateBinding Compilation}"
-                                    Model="{TemplateBinding Model}" />
+ />
                             </TabItem>
                             <TabItem Header="Diag">
                                 <Grid>
@@ -5562,9 +5560,7 @@
                                     SelectedValue="{Binding ElementName=Rectangle,Path=(TextElement.FontSize),Mode=TwoWay,FallbackValue=12}"
                                     FontSize="20" />
                             </StackPanel>
-                            <local:FormattedTextControl Grid.Row="1" Grid.Column="0"
-                                                        SyntaxTree="{TemplateBinding SyntaxTree}"
-                                                        Compilation="{TemplateBinding Compilation}"
+                            <local:FormattedTextControl3 Grid.Row="1" Grid.Column="0"
                                                         x:Name="CodeControl" />
                             <StackPanel Margin="10" Grid.Row="2" Grid.Column="0" Orientation="Horizontal"
                                         TextElement.FontSize="16">
