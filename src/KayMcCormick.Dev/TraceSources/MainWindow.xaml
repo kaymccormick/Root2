@@ -1,0 +1,25 @@
+﻿<Window x:Class="TraceSources.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TraceSources"
+        xmlns:kmDevWpfControls="clr-namespace:KmDevWpfControls;assembly=KmDevWpfControlsCore"
+        xmlns:diagnostics="clr-namespace:System.Diagnostics;assembly=System.Diagnostics.TextWriterTraceListener"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
+        xmlns:diagnostics1="clr-namespace:System.Diagnostics;assembly=System.Diagnostics.EventLog"
+        xmlns:diagnostics2="clr-namespace:System.Diagnostics;assembly=System.Diagnostics.TraceSource"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+<kmDevWpfControls:TraceView><kmDevWpfControls:TraceView.ListenerTypes>
+                <x:Array Type="system:Type">
+    <x:Type Type="diagnostics:XmlWriterTraceListener"/>
+    <x:Type Type="diagnostics:ConsoleTraceListener"></x:Type>
+    <x:Type Type="diagnostics:TextWriterTraceListener"></x:Type>
+    <x:Type Type="diagnostics1:EventLogTraceListener"></x:Type>
+    <x:Type Type="diagnostics2:DefaultTraceListener"></x:Type>
+                </x:Array>
+            </kmDevWpfControls:TraceView.ListenerTypes></kmDevWpfControls:TraceView>
+    </Grid>
+</Window>

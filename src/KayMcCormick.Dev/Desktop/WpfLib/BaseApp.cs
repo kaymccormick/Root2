@@ -230,6 +230,8 @@ namespace KayMcCormick.Lib.Wpf
             // routedEventSource.Switch.Level = SourceLevels.All ;
             var db
                 = PresentationTraceSources.DataBindingSource;
+            var resourceListener = new GenericListener();
+            PresentationTraceSources.ResourceDictionarySource.Listeners.Add(resourceListener);
             var breakTraceListener = new BreakTraceListener();
             breakTraceListener.DoBreak = false;
             breakTraceListener.Filter = new BreakFilter();
@@ -347,6 +349,19 @@ protected abstract void OnArgumentParseError ( IEnumerable < object > obj ) ;
         /// </summary>
         public virtual void Dispose ( ) { _applicationInstance?.Dispose ( ) ; }
 #endregion
+    }
+
+    public class GenericListener : TraceListener
+    {
+        /// <inheritdoc />
+        public override void Write(string message)
+        {
+        }
+
+        /// <inheritdoc />
+        public override void WriteLine(string message)
+        {
+        }
     }
 
     public class BreakFilter : TraceFilter

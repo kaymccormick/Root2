@@ -59,7 +59,7 @@ namespace AnalysisControls
         {
             if (value == null)
             {
-                return sb.Append("null/converted");
+                return sb.Append("null");
             }
 
             switch (value)
@@ -71,7 +71,9 @@ namespace AnalysisControls
                 case Type tt:
                     sb.Append("Type{");
                     ConversionUtils.TypeToText(tt, sb);
-                    return sb.Append('}');
+                    sb.Append('}');
+                    DebugUtils.WriteLLine($"{sb}");
+                    return sb;
                 case string ss:
                     return sb.Append(ss);
             }
@@ -149,7 +151,7 @@ namespace AnalysisControls
 
                     if (val == null)
                     {
-                        convval = "null/converted";
+                        convval = "null";
                     }
                     else
                     {

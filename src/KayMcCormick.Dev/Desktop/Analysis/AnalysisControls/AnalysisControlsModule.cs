@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Mail;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -73,7 +74,7 @@ namespace AnalysisControls
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterAssemblyTypes(typeof(AnalysisControlsModule).Assembly)
-                .Where(type => typeof(IDisplayableAppCommand).IsAssignableFrom(type) && !type.IsAbstract && type != typeof(OpenFileCommand2)).As<IDisplayableAppCommand>()
+                .Where(type => (typeof(IDisplayableAppCommand).IsAssignableFrom(type) && !type.IsAbstract && type != typeof(OpenFileCommand2))).As<IDisplayableAppCommand>()
                 .WithCallerMetadata().WithAttributedMetadata();
 //            builder.RegisterType<SyntaxNodeProperties>().AsImplementedInterfaces();
             builder.RegisterType<MiscInstanceInfoProvider>()

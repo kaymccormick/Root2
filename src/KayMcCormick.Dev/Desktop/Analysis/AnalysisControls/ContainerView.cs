@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -204,78 +203,53 @@ namespace AnalysisControls
                 }
             }
         }
-    }
-
-    public class LifetimeScopeNode : BaseNode
-    {
-        public override object NodeItem => LifetimeScope;
 
         /// <inheritdoc />
-        public override object Header => $"LifetimeScopoe {LifetimeScope.Tag}";
-
-        /// <inheritdoc />
-        public override Task ExpandAsync()
+        protected override Size ArrangeOverride(Size arrangeBounds)
         {
-            _items.Clear();
-            foreach (var reg in LifetimeScope.ComponentRegistry.Registrations)
-            {
-                var node = new RegNode() { Registration = reg, LifetimeScope = LifetimeScope, IdProvider = IdProvider };
-                _items.Add(node);
-
-            }
-
-            _isExpanded = true;
-            OnPropertyChanged(nameof(IsExpanded));
-            return Task.CompletedTask;
+            return base.ArrangeOverride(arrangeBounds);
         }
-    }
-
-    public class RegNode : BaseNode
-    {
-        public IComponentRegistration Registration { get; set; }
-
-        public override object NodeItem => Registration;
 
         /// <inheritdoc />
-        public override object Header => Registration.Activator.LimitType.FullName;
-
-        /// <inheritdoc />
-        public override Task ExpandAsync()
+        protected override Size MeasureOverride(Size constraint)
         {
-            _items.Clear();
-            var i = IdProvider.GetComponentInfo(Registration.Id);
-            if (i != null)
-                foreach (var instanceInfo in i.Instances)
-                {
-                    _items.Add(new InstanceNode()
-                    {
-                        LifetimeScope = LifetimeScope,
-                        IdProvider = IdProvider,
-                        Registration = Registration,
-                        InstanceInfo = instanceInfo
-                    });
-                }
-
-            _isExpanded = true;
-            OnPropertyChanged(nameof(IsExpanded));
-            return Task.CompletedTask;
+            return base.MeasureOverride(constraint);
         }
-    }
-
-    public class InstanceNode : BaseNode
-    {
-        public override object NodeItem => InstanceInfo;
 
         /// <inheritdoc />
-        public override object Header => InstanceInfo.Instance.GetType().FullName;
-
-        public IComponentRegistration Registration { get; set; }
-        public InstanceInfo InstanceInfo { get; set; }
-
-        /// <inheritdoc />
-        public override Task ExpandAsync()
+        protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
         {
-            return Task.CompletedTask;
+            base.OnTemplateChanged(oldTemplate, newTemplate);
+        }
+
+        /// <inheritdoc />
+        public override void BeginInit()
+        {
+            base.BeginInit();
+        }
+
+        /// <inheritdoc />
+        public override void EndInit()
+        {
+            base.EndInit();
+        }
+
+        /// <inheritdoc />
+        protected override void OnInitialized(EventArgs e)
+        {
+            base.OnInitialized(e);
+        }
+
+        /// <inheritdoc />
+        protected override void OnVisualParentChanged(DependencyObject oldParent)
+        {
+            base.OnVisualParentChanged(oldParent);
+        }
+
+        /// <inheritdoc />
+        protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
+        {
+            base.OnVisualChildrenChanged(visualAdded, visualRemoved);
         }
     }
 }

@@ -78,5 +78,9 @@ namespace KayMcCormick.Dev
         {
             WriteLine ( obj?.ToString ( ) ?? "<null>" ) ;
         }
+
+        public static void WriteLLine(string s)
+        {
+        }
     }
 }

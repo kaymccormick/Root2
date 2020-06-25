@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
@@ -10,13 +11,13 @@ using RibbonLib.Model;
 
 namespace AnalysisControls
 {
-    internal class NavigationTabProvider : RibbonModelTabProbider1
+    internal class NavigationTabProvider : RibbonModelTabProvider1
     {
         private IDocumentHost docHost;
         private RibbonModelGroup _group;
         private RibbonModelTab _tab;
 
-        public NavigationTabProvider(IDocumentHost docHost)
+        public NavigationTabProvider(IDocumentHost docHost, Func<RibbonModelTab> factory) : base(factory)
         {
             this.docHost = docHost;
         }

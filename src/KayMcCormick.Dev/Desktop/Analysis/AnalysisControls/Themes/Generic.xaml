@@ -8492,12 +8492,12 @@
                                                                 </GroupBox.Style>
                                                                 <ItemsControl ItemsSource="{Binding Metadata}">
                                                                     <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate Width="140" Width="10" e
-                                                                            <StackPane Orientation="Horizontal">
-                                                                                <TextBlock WText="{Binding Key}" />
+                                                                        <DataTemplate>
+                                                                            <StackPanel Orientation="Horizontal">
+                                                                                <TextBlock Text="{Binding Key}" Width="140" />
                                                                                 <TextBlock Text="{Binding Value}"
                                                                                            Margin="10,0,0,0" />
-                                                                            </StackPane>
+                                                                            </StackPanel>
                                                                         </DataTemplate>
                                                                     </ItemsControl.ItemTemplate>
                                                                 </ItemsControl>
