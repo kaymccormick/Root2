@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AnalysisAppLib;
+using AnalysisControls.ViewModel;
 using Autofac;
 using Autofac.Features.Metadata;
 using KayMcCormick.Dev;
@@ -13,6 +15,7 @@ using KayMcCormick.Dev.Interfaces;
 using KayMcCormick.Lib.Wpf;
 using KayMcCormick.Lib.Wpf.Command;
 using RibbonLib.Model;
+
 
 namespace AnalysisControls
 {
@@ -60,6 +63,7 @@ namespace AnalysisControls
             Tabs = new RibbonModelTabCollection();
 //            SetValue(TabsPropertyKey, new RibbonModelTabCollection());
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -68,14 +72,24 @@ namespace AnalysisControls
         /// <param name="grpProviders"></param>
         /// <param name="_options"></param>
         /// <param name="ribbonTabFactory"></param>
+        /// <param name="scope"></param>
         /// <returns></returns>
         public RibbonBuilder1(RibbonModelApplicationMenu appMenu,
             IEnumerable<IRibbonModelProvider<RibbonModelTab>> tabProviders,
             IEnumerable<IRibbonModelProvider<RibbonModelContextualTabGroup>> grpProviders,
             JsonSerializerOptions _options, Func<RibbonModelTab> ribbonTabFactory, 
+            IEnumerable<ICommandProvider> cmdProviders,
             ILifetimeScope scope)
         {
             _appMenu = appMenu;
+            foreach (var commandProvider in cmdProviders)
+            {
+                var cmds = commandProvider.GetCommands();
+                foreach (var cmd in cmds)
+                {
+                    
+                }
+            }
             RibbonModelTabProviders = tabProviders;
             _grpProviders = grpProviders;
             this._options = _options;
@@ -151,8 +165,15 @@ namespace AnalysisControls
                         var props = MetaHelper.GetMetadataProps(metaCmd.Metadata);
                         if (cmd is ICommand cmdz)
                         {
+                            StringBuilder b = new StringBuilder();
+                            foreach (var keyValuePair in metaCmd.Metadata)
+                            {
+                                if(keyValuePair.Key != "CallerFilePath" && keyValuePair.Key != "CallerFilename" && keyValuePair.Key != "CallerLineNumber" &&
+                                   keyValuePair.Key != "CallerMemberName" && keyValuePair.Key != "RandomGuid" && keyValuePair.Key != "GuidFrom" && keyValuePair.Key.StartsWith("_") == false && keyValuePair.Key != "RegisteredDatetime" && keyValuePair.Key != "SeenTimes")
+                                b.Append($"{keyValuePair.Key} = {keyValuePair.Value};\r\n");
+                            }
                             var th = props.TypeHint?.ToString() ?? "no typehint";
-                            var button = new RibbonModelButton() {Label = cmd.DisplayName, Command = cmdz, ToolTipDescription = th};
+                            var button = new RibbonModelButton() {Label = cmd.DisplayName, Command = cmdz, ToolTipDescription = b.ToString()};
                             
                             DebugUtils.WriteLine(th);
                             Group1.Items.Add(button);
@@ -207,14 +228,6 @@ namespace AnalysisControls
 
         /// <inheritdoc />
         public object InstanceObjectId { get; set; }
-    }
-
-    public class RibbonModelControl : RibbonModelItem
-    {
-        /// <inheritdoc />
-        public override ControlKind Kind { get; }=ControlKind.RibbonContentPresenter;
-
-        public object Content { get; set; }
     }
 
     // public class DirMenuList : IRibbonMenuButton

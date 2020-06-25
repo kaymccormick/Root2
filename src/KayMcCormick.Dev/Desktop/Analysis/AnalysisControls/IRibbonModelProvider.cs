@@ -7,12 +7,16 @@ namespace AnalysisControls
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IRibbonModelProvider<T> : IHaveObjectId
+    public interface IRibbonModelProvider<T> : IModelProvider, IHaveObjectId
     {
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
         T ProvideModelItem();
+    }
+
+    public interface IModelProvider
+    {
     }
 }

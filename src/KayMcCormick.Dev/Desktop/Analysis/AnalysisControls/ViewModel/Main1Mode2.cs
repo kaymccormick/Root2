@@ -83,12 +83,20 @@ namespace AnalysisControls.ViewModel
                 if (Equals(value, _workspace)) return;
                 _workspace = value;
                 _workspaceView = new WorkspaceView() {Solutions = HierarchyRoot};
-                _anchHost.AddAnchorable(new AnchorableModel()
+                if (_anchHost != null)
+                    _anchHost.AddAnchorable(new AnchorableModel()
+                    {
+                        Content =
+                            _workspaceView,
+                        Title = "Workspace"
+                    });
+                else
                 {
-                    Content =
-                        _workspaceView,
-                    Title = "Workspace"
-                });
+                    var dm = DocModel.CreateInstance("Workspace");
+                    dm.Content = _workspaceView;
+                    _docHost.AddDocument(dm);
+                }
+
                 _workspace.WorkspaceChanged += (sender, args) =>
                 {
                     Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() => WorkspaceOnWorkspaceChanged(sender, args)));

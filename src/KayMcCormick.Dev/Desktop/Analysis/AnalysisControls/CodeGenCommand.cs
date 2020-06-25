@@ -21,6 +21,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using NLog;
+using RibbonLib.Model;
 using ProjectInfo = Microsoft.CodeAnalysis.ProjectInfo;
 
 namespace AnalysisControls
@@ -31,6 +32,7 @@ namespace AnalysisControls
     [TitleMetadata("Code Gen")]
     [CategoryMetadata(Category.Infrastructure)]
     [GroupMetadata("Tasks")]
+    [RibbonTabHeader("Home")]
     [CommandIdMetadata("{50AD944E-B85F-4877-951B-FD3CCEC2C2ED}")]
     public sealed class CodeGenCommand : IBaseLibCommand
     {

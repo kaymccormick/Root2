@@ -144,7 +144,7 @@ namespace KayMcCormick.Lib.Wpf
                 // {
                 // DebugUtils.WriteLine(providerType.ToString());
                 // }
-                DebugUtils.WriteLine(providerType.ToString());
+                // DebugUtils.WriteLine(providerType.ToString());
                 TypeDescriptor.AddProvider(provider.Provider, providerType);
                 
             }

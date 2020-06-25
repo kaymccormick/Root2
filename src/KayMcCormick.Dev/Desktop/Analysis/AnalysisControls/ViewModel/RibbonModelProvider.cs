@@ -188,12 +188,6 @@ namespace AnalysisControls.ViewModel
         }
 
         /// <inheritdoc />
-        public override char AltItemSeparator { get; }
-
-        /// <inheritdoc />
-        public override char ItemSeparator { get; }
-
-        /// <inheritdoc />
         public override bool Equals(object? obj)
         {
             return base.Equals(obj);

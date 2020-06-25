@@ -35,7 +35,6 @@ namespace AnalysisControls
             , IRegistrationSource registrationSource
         )
         {
-            DebugUtils.WriteLine($"!! {componentRegistry}:{registrationSource}");
         }
 
         
@@ -61,12 +60,6 @@ namespace AnalysisControls
                 registration.Metadata["GuidFrom"] = guidFrom;
             }
 
-            registration.Preparing += (sender, args) =>
-            {
-                // DebugUtils.WriteLine($"{args.Component.Activator.LimitType}");
-            };
-            registration.Activating += (sender, args) => { };
-            registration.Activated += (sender, args) => { };
             var registrationActivator = registration.Activator;
             var limitType = registrationActivator.LimitType;
             // DebugUtils.WriteLine($"LimitType = {limitType}");
@@ -131,23 +124,23 @@ namespace AnalysisControls
 #endif
             builder.RegisterModule<AnalysisAppLibModule>();
             builder.RegisterType<RibbonModelTab>().AsSelf().AsImplementedInterfaces().WithCallerMetadata();
-            builder.RegisterType<RibbonBuilder1>().WithCallerMetadata();
+            builder.RegisterType<RibbonBuilder1>().WithAttributeFiltering().WithCallerMetadata();
             builder.Register((c, o) => c.Resolve<RibbonBuilder1>().BuildRibbon()).WithCallerMetadata();
             builder.RegisterType<DummyResourceAdder>().AsImplementedInterfaces().WithCallerMetadata();
             builder.RegisterType<ClientModel>().AsSelf().AsImplementedInterfaces()
                 .WithCallerMetadata();
             builder.RegisterType<RibbonModelApplicationMenu>().WithCallerMetadata();
-            builder.RegisterType<FunTabProvider>().As<IRibbonModelProvider<RibbonModelTab>>().WithCallerMetadata()//.SingleInstance()
-                .WithAttributeFiltering();
-            builder.RegisterType<CodeTab1>().As<IRibbonModelProvider<RibbonModelTab>>().WithCallerMetadata()//.SingleInstance()
-                .WithAttributeFiltering();
-            builder.RegisterType<CodeTab2>().As<IRibbonModelProvider<RibbonModelTab>>().WithCallerMetadata()//.SingleInstance()
-                .WithAttributeFiltering();
-            builder.RegisterType<NavigationTabProvider>().AsImplementedInterfaces()
-                .WithCallerMetadata();
+            // builder.RegisterType<FunTabProvider>().As<IRibbonModelProvider<RibbonModelTab>>().WithCallerMetadata()//.SingleInstance()
+                // .WithAttributeFiltering();
+            // builder.RegisterType<CodeTab1>().As<IRibbonModelProvider<RibbonModelTab>>().WithCallerMetadata()//.SingleInstance()
+                // .WithAttributeFiltering();
+            // builder.RegisterType<CodeTab2>().As<IRibbonModelProvider<RibbonModelTab>>().WithCallerMetadata()//.SingleInstance()
+                // .WithAttributeFiltering();
+            // builder.RegisterType<NavigationTabProvider>().AsImplementedInterfaces()
+                // .WithCallerMetadata();
 
-            builder.RegisterType<CodeAnalysisContextualTabGroupProvider>().AsImplementedInterfaces()
-                .WithCallerMetadata();
+            // builder.RegisterType<CodeAnalysisContextualTabGroupProvider>().AsImplementedInterfaces()
+                // .WithCallerMetadata();
             builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering().WithCallerMetadata();
             builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering().WithCallerMetadata();
 #if true

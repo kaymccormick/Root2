@@ -27,7 +27,9 @@ using AnalysisControl;
 using AnalysisControls.TypeDescriptors;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
+using KayMcCormick.Dev.Command;
 using KayMcCormick.Lib.Wpf;
+using KayMcCormick.Lib.Wpf.Command;
 using KmDevLib;
 using KmDevWpfControls;
 using Microsoft.Build.Locator;
@@ -45,8 +47,9 @@ namespace AnalysisControls.ViewModel
     /// 
     /// </summary>
     public sealed class Main1Model : DependencyObject, INotifyPropertyChanged,
-        IDocumentHost,
-        IAnchorableHost,
+        // IDocumentHost,
+        // IAnchorableHost,
+        ICommandProvider,
         ISubjectWatcher
     {
         private readonly IDocumentHost _docHost;
@@ -812,6 +815,17 @@ namespace AnalysisControls.ViewModel
         }
 
         public object InstanceObjectId { get; set; }
+
+        /// <inheritdoc />
+        public IEnumerable GetCommands()
+        {
+            return new[] {new LambdaAppCommand("Test", (command, o) => Task.FromResult(AppCommandResult.Success), null).Command};
+        }
+    }
+
+    public interface ICommandProvider
+    {
+        IEnumerable GetCommands();
     }
 
     internal class CustomDriveInfo : PSDriveInfo

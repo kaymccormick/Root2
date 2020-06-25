@@ -430,6 +430,7 @@ namespace AnalysisControls
         {
             DebugUtils.WriteLine("Enter line break");
             InsertionPoint = TextSource.EnterLineBreak(InsertionPoint);
+            SourceText += "\r\n";
         }
 
         private void CanEnterLineBreak(object sender, CanExecuteRoutedEventArgs e)
@@ -565,14 +566,18 @@ namespace AnalysisControls
                     if (ip < 0) ip = 0;
                     DebugUtils.WriteLine($"{ip}");
 
-                    var newc = InsertionCharacter.PreviousCell;
-                    if (newc?.Region != InsertionRegion)
+                    if (InsertionCharacter != null)
                     {
-                        InsertionRegion = newc.Region;
-                        if (newc.Region.Line != InsertionLine) InsertionLine = newc.Region.Line;
+                        var newc = InsertionCharacter.PreviousCell;
+                        if (newc?.Region != InsertionRegion)
+                        {
+                            InsertionRegion = newc.Region;
+                            if (newc.Region.Line != InsertionLine) InsertionLine = newc.Region.Line;
+                        }
+
+                        InsertionCharacter = newc;
                     }
 
-                    InsertionCharacter = newc;
                     var top = InsertionLine.Origin.Y;
                     DebugUtils.WriteLine("Setting top to " + top, DebugCategory.TextFormatting);
 
@@ -621,6 +626,7 @@ namespace AnalysisControls
             var code = prev + e.Text + next;
             if (InsertionLine != null)
             {
+#if false
                 var l = InsertionLine.Text.Substring(0, InsertionPoint - InsertionLine.Offset) + e.Text;
                 var end = InsertionLine.Offset + InsertionLine.Length;
                 if (end - InsertionPoint > 0)
@@ -631,6 +637,7 @@ namespace AnalysisControls
                         length = length - (start + length - InsertionLine.Text.Length);
                     l += InsertionLine.Text.Substring(start, length);
                 }
+#endif
             }
 
             ChangingText = true;

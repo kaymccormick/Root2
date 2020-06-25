@@ -122,7 +122,7 @@ namespace AnalysisControls
 
             }
 
-            if (this.token.HasValue && CSharpExtensions.Kind(this.token.Value) == SyntaxKind.None || CSharpExtensions.Kind(this.token.Value) == SyntaxKind.EndOfFileToken)
+            if (this.token.HasValue && (CSharpExtensions.Kind(this.token.Value) == SyntaxKind.None || CSharpExtensions.Kind(this.token.Value) == SyntaxKind.EndOfFileToken))
                 return new TextEndOfParagraph(2);
             var token1 = this.token;
             // DebugUtils.WriteLine("Index = " + textSourceCharacterIndex);
@@ -667,13 +667,13 @@ private readonly List<int> chars = new List<int>();
                 DebugUtils.WriteLine($"Unexpected length");
             }
             var newTree = Tree.WithChangedText(newText);
-            Compilation = CSharpCompilation.Create("edit", new[]{newTree}, new[]{MetadataReference.CreateFromFile(typeof(object).Assembly.Location)});
-            foreach (var diagnostic in Compilation.GetParseDiagnostics())
-            {
-                DebugUtils.WriteLine(diagnostic.ToString());
-            }
+            // Compilation = CSharpCompilation.Create("edit", new[]{newTree}, new[]{MetadataReference.CreateFromFile(typeof(object).Assembly.Location)});
+            // foreach (var diagnostic in Compilation.GetParseDiagnostics())
+            // {
+                // DebugUtils.WriteLine(diagnostic.ToString());
+            // }
 
-            Model = Compilation.GetSemanticModel(newTree);
+            // Model = Compilation.GetSemanticModel(newTree);
             var chL = newTree.GetChangedSpans(Tree);
             foreach (var textSpan in chL)
             {

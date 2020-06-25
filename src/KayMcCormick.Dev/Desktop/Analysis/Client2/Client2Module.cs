@@ -22,7 +22,7 @@ namespace Client2
             builder.Register((c) =>
                 {
                     var lifetimeScope = c.Resolve<ILifetimeScope>();
-                    lifetimeScope = ((LifetimeScope) lifetimeScope).ParentLifetimeScope;
+                    // lifetimeScope = ((LifetimeScope) lifetimeScope).ParentLifetimeScope;
                     bool used = false;
                     if (lifetimeScope is LifetimeScope l2)
                     {

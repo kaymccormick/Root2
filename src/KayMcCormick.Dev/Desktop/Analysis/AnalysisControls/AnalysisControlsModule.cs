@@ -109,12 +109,7 @@ namespace AnalysisControls
                     .WithCallerMetadata();
             }
 
-            // builder.RegisterType<AllResourcesTreeViewModel>()
-            //     .AsSelf()
-            //     .As<IAddRuntimeResource>()
-            //     .SingleInstance()
-            //     .WithCallerMetadata();
-            //
+            
 #if false
             var kayTypes = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(
@@ -228,7 +223,8 @@ namespace AnalysisControls
                 .WithCallerMetadata();
             // builder.RegisterType<UiElementTypeConverter>().AsSelf();
 
-            builder.RegisterType<Main1Model>().AsSelf().InstancePerLifetimeScope().WithCallerMetadata();
+            builder.RegisterAssemblyTypes(typeof(AnalysisControlsModule).Assembly).AssignableTo<IModelProvider>().AsImplementedInterfaces().WithAttributeFiltering().WithCallerMetadata();
+            builder.RegisterType<Main1Model>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope().WithCallerMetadata();
             builder.RegisterType<DocumentHost>().AsImplementedInterfaces().InstancePerLifetimeScope().WithCallerMetadata();
             builder.RegisterType<Main1Mode2>().WithCallerMetadata();
 

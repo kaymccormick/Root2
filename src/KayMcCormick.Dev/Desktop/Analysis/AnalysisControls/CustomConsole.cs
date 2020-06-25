@@ -35,11 +35,11 @@ namespace AnalysisControls
             consoleTerm.Background = bg;
             
             Window consoleWindow = new Window();
-            consoleWindow.AllowsTransparency = true;
+            //consoleWindow.AllowsTransparency = true;
             consoleWindow.Background = Brushes.Transparent;
             
             consoleWindow.Left = i.Item1;
-            consoleWindow.Topmost = true;
+            // consoleWindow.Topmost = true;
             consoleWindow.ShowActivated = false;
             var grid = new Grid();
             grid.Children.Add(consoleTerm);
