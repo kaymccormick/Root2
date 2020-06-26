@@ -75,6 +75,34 @@ namespace AnalysisControls
             
         }
 
+        /// <inheritdoc />
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            CodeControl = (FormattedTextControl3) GetTemplateChild("CodeControl");
+        }
+
+        public static readonly DependencyProperty CodeControlProperty = DependencyProperty.Register(
+            "CodeControl", typeof(FormattedTextControl3), typeof(EnhancedCodeControl), new PropertyMetadata(default(FormattedTextControl3), OnCodeControlChanged));
+
+        public FormattedTextControl3 CodeControl
+        {
+            get { return (FormattedTextControl3) GetValue(CodeControlProperty); }
+            set { SetValue(CodeControlProperty, value); }
+        }
+
+        private static void OnCodeControlChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((EnhancedCodeControl) d).OnCodeControlChanged((FormattedTextControl3) e.OldValue, (FormattedTextControl3) e.NewValue);
+        }
+
+
+
+        protected virtual void OnCodeControlChanged(FormattedTextControl3 oldValue, FormattedTextControl3 newValue)
+        {
+        }
+
+     
         public static double[] CommonFontSizes => new double[] {
             3.0d, 4.0d, 5.0d, 6.0d, 6.5d, 7.0d, 7.5d, 8.0d, 8.5d, 9.0d,
             9.5d, 10.0d, 10.5d, 11.0d, 11.5d, 12.0d, 12.5d, 13.0d, 13.5d, 14.0d,

@@ -7,13 +7,16 @@ using KayMcCormick.Lib.Wpf.Command;
 
 namespace AnalysisControlsCore
 {
-    public class CSharpEditorControl : AppCommand
+    internal class CSharpEditorControl : AppCommand
     {
         private IDocumentHost _host;
+        private readonly IContentSelector _contentSelector;
+
         /// <inheritdoc />
-        public CSharpEditorControl(IDocumentHost host) : base("Code")
+        public CSharpEditorControl(IDocumentHost host, IContentSelector contentSelector) : base("Code")
         {
             _host = host;
+            _contentSelector = contentSelector;
         }
 
         /// <inheritdoc />
@@ -24,11 +27,9 @@ namespace AnalysisControlsCore
         {
             var doc = new CodeDocument();
             doc.Title = "Code";
-            doc.CodeControl = new FormattedTextControl3()
-
-                ;
+            // doc.CodeControl = new FormattedTextControl3()
             _host.AddDocument(doc);
-
+            _contentSelector.SetActiveContent(doc);
             return Task.FromResult(AppCommandResult.Success);
         }
 

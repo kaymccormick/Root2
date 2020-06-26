@@ -168,7 +168,7 @@ namespace AnalysisControls
                             StringBuilder b = new StringBuilder();
                             foreach (var keyValuePair in metaCmd.Metadata)
                             {
-                                if(keyValuePair.Key != "CallerFilePath" && keyValuePair.Key != "CallerFilename" && keyValuePair.Key != "CallerLineNumber" &&
+                                if(/*keyValuePair.Key != "CallerFilePath" && */keyValuePair.Key != "CallerFilename" && keyValuePair.Key != "CallerLineNumber" &&
                                    keyValuePair.Key != "CallerMemberName" && keyValuePair.Key != "RandomGuid" && keyValuePair.Key != "GuidFrom" && keyValuePair.Key.StartsWith("_") == false && keyValuePair.Key != "RegisteredDatetime" && keyValuePair.Key != "SeenTimes")
                                 b.Append($"{keyValuePair.Key} = {keyValuePair.Value};\r\n");
                             }

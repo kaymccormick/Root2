@@ -14,12 +14,14 @@ namespace AnalysisControls
     internal class NavigationTabProvider : RibbonModelTabProvider1
     {
         private IDocumentHost docHost;
+        private readonly IContentSelector _contentSelector;
         private RibbonModelGroup _group;
         private RibbonModelTab _tab;
 
-        public NavigationTabProvider(IDocumentHost docHost, Func<RibbonModelTab> factory) : base(factory)
+        public NavigationTabProvider(IDocumentHost docHost, IContentSelector contentSelector, Func<RibbonModelTab> factory) : base(factory)
         {
             this.docHost = docHost;
+            _contentSelector = contentSelector;
         }
 
         public override RibbonModelTab ProvideModelItem()
@@ -70,7 +72,7 @@ namespace AnalysisControls
             RibbonModelButton b = new RibbonModelButton() { ModelInstance = eNewItem };
             var lambdaAppCommand = new LambdaAppCommand("", async (command, o) =>
             {
-                docHost.SetActiveDocument(eNewItem);
+                _contentSelector.SetActiveContent(eNewItem);
                 return AppCommandResult.Success;
             }, eNewItem);
             b.Command = lambdaAppCommand.Command;

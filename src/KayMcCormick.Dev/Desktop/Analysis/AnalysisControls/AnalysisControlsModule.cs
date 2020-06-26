@@ -226,6 +226,7 @@ namespace AnalysisControls
             builder.RegisterAssemblyTypes(typeof(AnalysisControlsModule).Assembly).AssignableTo<IModelProvider>().AsImplementedInterfaces().WithAttributeFiltering().WithCallerMetadata();
             builder.RegisterType<Main1Model>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope().WithCallerMetadata();
             builder.RegisterType<DocumentHost>().AsImplementedInterfaces().InstancePerLifetimeScope().WithCallerMetadata();
+            builder.RegisterType<ContentSelector>().AsImplementedInterfaces().InstancePerLifetimeScope().WithCallerMetadata();
             builder.RegisterType<Main1Mode2>().WithCallerMetadata();
 
             builder.Register(

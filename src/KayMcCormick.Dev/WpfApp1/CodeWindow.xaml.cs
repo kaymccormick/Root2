@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using JetBrains.Annotations;
+using KayMcCormick.Dev;
 
 namespace WpfApp1
 {
@@ -29,6 +30,28 @@ namespace WpfApp1
             if (f != null) SourceText = File.ReadAllText(f);
             InitializeComponent();
             Code.Focus();
+            Action<string> d = s => DebugUtils.WriteLine(s);
+            Loaded += (sender, args) =>
+            {
+                var c = Code.CodeControl.CodeControl;
+                string[] lines = new string[] {"/* foo */", "public "};
+                bool first = true;
+                foreach (var line in lines)
+                {
+                    if(!first)
+                        c.DoInput("\r\n");
+                    first = false;
+                    foreach (var ch in line)
+                    {
+                        DebugUtils.WriteLine("Input is char '" + ch + "'");
+                        c.DoInput(ch.ToString());
+                        if (c.InsertionLine != null) d(c.InsertionLine.Length.ToString());
+                    }
+                    
+                }
+                c.DoInput("c");
+                
+            };
         }
 
         public string SourceText

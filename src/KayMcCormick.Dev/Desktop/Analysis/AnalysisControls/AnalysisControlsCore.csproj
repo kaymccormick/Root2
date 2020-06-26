@@ -6,6 +6,10 @@
 	  <RootNamespace>AnalysisControls</RootNamespace>  
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Program-Parse.cs" />
     <Compile Remove="PythonControl.xaml.cs" />

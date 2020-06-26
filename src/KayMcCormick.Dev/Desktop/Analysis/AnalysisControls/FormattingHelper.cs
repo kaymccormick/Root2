@@ -203,11 +203,13 @@ namespace AnalysisControls
 
             lineInfo = new LineInfo
             {
+                LineNumber = lineContext.LineNumber,
                 Offset = lineContext.TextStorePosition,
                 Length = lineContext.MyTextLine.Length,
                 Size = new Size(lineContext.MyTextLine.WidthIncludingTrailingWhitespace,
                     lineContext.MyTextLine.Height),
-                Origin = new Point(lineContext.LineOriginPoint.X, lineContext.LineOriginPoint.Y)
+                Origin = new Point(lineContext.LineOriginPoint.X, lineContext.LineOriginPoint.Y),
+                Height = lineContext.MyTextLine.Height
             };
             DebugUtils.WriteLine($"{lineInfo}", DebugCategory.TextFormatting);
 

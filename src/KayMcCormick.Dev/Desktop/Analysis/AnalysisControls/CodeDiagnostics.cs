@@ -58,14 +58,18 @@ namespace AnalysisControls
             _lines = (ListView)GetTemplateChild("lines");
             _dgroup = (DrawingGroup) GetTemplateChild("dgroup");
             _rect = (Rectangle) GetTemplateChild("rect");
+            CodeControl = (EnhancedCodeControl) GetTemplateChild("code");
             _lines.SelectionChanged += LinesOnSelectionChanged;
         }
+
+        public EnhancedCodeControl CodeControl { get; set; }
 
         private void LinesOnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             LineInfo line = (LineInfo)_lines.SelectedItem;
             _dgroup.Children.Clear();
-            
+            if (line == null)
+                return;
             _dgroup.Children.Add(new GeometryDrawing(null, new Pen(Brushes.Black, 1), new RectangleGeometry(new Rect(line.Origin.X, line.Origin.Y, line.Size.Width, line.Size.Height))));
             _rect.InvalidateVisual();
         }
@@ -92,7 +96,7 @@ namespace AnalysisControls
                         c.Bounds.Height))));
             }
 
-            SaveImage(r);
+           // SaveImage(r);
 
             _rect.InvalidateVisual();
             

@@ -7,12 +7,15 @@ using Microsoft.CodeAnalysis.VisualBasic;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
+using JetBrains.Annotations;
 using Microsoft.CodeAnalysis.CSharp;
 using CSharpExtensions = Microsoft.CodeAnalysis.CSharp.CSharpExtensions;
 using SyntaxFactory = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -24,7 +27,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class CustomTextSource4 : AppTextSource, ICustomTextSource
+    public class CustomTextSource4 : AppTextSource, ICustomTextSource,INotifyPropertyChanged
     {
         /// <summary>
         /// 
@@ -63,7 +66,7 @@ namespace AnalysisControls
         public override TextRun GetTextRun(int textSourceCharacterIndex)
         {
             DebugUtils.WriteLine($"index: {textSourceCharacterIndex}");
-            void TakeToken()
+            TextSpan? TakeToken()
             {
                 var includeDocumentationComments = true;
                 var includeDirectives = true;
@@ -74,19 +77,44 @@ namespace AnalysisControls
                         includeDocumentationComments)
                     : Node?.GetFirstToken(includeZeroWidth, includeSkipped, includeDirectives,
                         includeDocumentationComments);
-
+                    
                 if (this.token.HasValue)
-                    _starts.Push(Tuple.Create(this.token.Value.Span, this.token.Value));
+                {
+                    if (!_starts.Any() && this.token.Value.SpanStart != 0)
+                    {
+
+                    }
+
+                    StartInfo tuple = new StartInfo(this.token.Value.Span, this.token.Value);
+                    _starts.Add(tuple);
+                    DumpStarts();
+                    return this.token.Value.Span;
+                    
+                }
+
+                return null;
             }
 
+            TextSpan? span = null;
             if (textSourceCharacterIndex == 0)
             {
                 if (Length == 0)
                 {
                     return new TextEndOfParagraph(2);
                 }
-                this.token = null;
-                _starts.Clear();
+
+                _curStart = 0;
+
+                if (_starts.Any())
+                {
+                    this.token = _starts.FirstOrDefault()?.Token;
+                    span = _starts.First().TextSpan;
+                    CheckToken(this.token);
+                }
+
+                // _starts.Clear();
+                DumpStarts();
+                
             }
 
             try
@@ -122,37 +150,43 @@ namespace AnalysisControls
 
             }
 
-            if (this.token.HasValue && (CSharpExtensions.Kind(this.token.Value) == SyntaxKind.None || CSharpExtensions.Kind(this.token.Value) == SyntaxKind.EndOfFileToken))
-                return new TextEndOfParagraph(2);
+            
             var token1 = this.token;
             // DebugUtils.WriteLine("Index = " + textSourceCharacterIndex);
             if (!token1.HasValue)
             {
-                TakeToken();
+                span = TakeToken();
                 if (!this.token.HasValue) return new TextEndOfParagraph(2);
                 token1 = this.token;
+
             }
 
             var token = token1.Value;
-            var k = _starts.Peek().Item1;
+            if (!span.HasValue)
+            {
+
+            }
+            var k = span.Value;
 
             if (textSourceCharacterIndex < k.Start)
             {
                 var len = k.Start - textSourceCharacterIndex;
                 var buf = new char[len];
-                _text.CopyTo(textSourceCharacterIndex, buf, 0, len);
+                Text.CopyTo(textSourceCharacterIndex, buf, 0, len);
                 if (len == 2 && buf[0] == '\r' && buf[1] == '\n') return new CustomTextEndOfLine(2);
 
                 var t = string.Join("", buf);
                 return new CustomTextCharacters(t, MakeProperties(SyntaxKind.None, t));
             }
-            else if (textSourceCharacterIndex >= k.End)
+            else if (textSourceCharacterIndex >= k.End && k.Length != 0)
             {
                 TakeToken();
                 return GetTextRun(textSourceCharacterIndex);
             }
             else
             {
+                if (this.token.HasValue && (CSharpExtensions.Kind(this.token.Value) == SyntaxKind.EndOfFileToken))
+                    return new TextEndOfParagraph(2);
                 if (CSharpExtensions.Kind(token) == SyntaxKind.EndOfLineTrivia) return new CustomTextEndOfLine(2);
                 var len = k.Length;
                 if (len == 0)
@@ -210,6 +244,14 @@ namespace AnalysisControls
 
             // Return an end-of-paragraph if no more text source.
             return new TextEndOfParagraph(1);
+        }
+
+        private void CheckToken(SyntaxToken? syntaxToken)
+        {
+            if (!syntaxToken.HasValue || syntaxToken.Value.SyntaxTree != Tree)
+            {
+                throw new InvalidOperationException();
+            }
         }
 
         /// <summary>
@@ -272,8 +314,9 @@ namespace AnalysisControls
         private TextRunProperties PropsFor(in SyntaxTrivia trivia, string text)
         {
             var r = BasicProps();
-            DebugUtils.WriteLine($"{CSharpExtensions.Kind(trivia)}", DebugCategory.TextFormatting);
-            if (CSharpExtensions.Kind(trivia) == SyntaxKind.SingleLineCommentTrivia)
+            var syntaxKind = CSharpExtensions.Kind(trivia);
+            DebugUtils.WriteLine($"{syntaxKind}", DebugCategory.TextFormatting);
+            if (syntaxKind == SyntaxKind.SingleLineCommentTrivia || syntaxKind == SyntaxKind.MultiLineCommentTrivia)
                 r.SetForegroundBrush(Brushes.YellowGreen);
             // r.SyntaxTrivia = trivia;
             // r.Text = text;
@@ -373,8 +416,8 @@ namespace AnalysisControls
                             }
                         }
 
-                        DebugUtils.WriteLine(
-                            $"no customizations for {arg} - {text} {arg.GetType().Name} {kind} {nodeKind} [{tkind}]");
+                        // DebugUtils.WriteLine(
+                            // $"no customizations for {arg} - {text} {arg.GetType().Name} {kind} {nodeKind} [{tkind}]");
                     }
 
                 return textRunProperties;
@@ -420,8 +463,8 @@ namespace AnalysisControls
                 _tree = value;
                 if (_tree != null)
                 {
-                    _text = _tree.GetText();
-                    Length = _text.Length;
+                    Text = _tree.GetText();
+                    Length = Text.Length;
                 }
             }
         }
@@ -632,8 +675,10 @@ private readonly List<int> chars = new List<int>();
         private List<CompilationError> _errors1;
         private SyntaxTree _tree;
         private SourceText _text;
-        private Stack<Tuple<TextSpan, SyntaxToken>> _starts = new Stack<Tuple<TextSpan, SyntaxToken>>();
+        private List<StartInfo> _starts = new List<StartInfo>();
         private SyntaxToken? token;
+        private int _curStart;
+        private SyntaxTree _newTree;
         public int EolLength { get; } = 2;
 
         /// <summary>
@@ -661,12 +706,13 @@ private readonly List<int> chars = new List<int>();
             DebugUtils.WriteLine($"Insertion point is {insertionPoint}.");
             DebugUtils.WriteLine($"Input text is \"{text}\"");
             TextChange change = new TextChange(new TextSpan(insertionPoint, 0), text);
-            var newText = _text.WithChanges(change);
-            if(newText.Length != _text.Length + text.Length)
+            var newText = Text.WithChanges(change);
+            if(newText.Length != Text.Length + text.Length)
             {
                 DebugUtils.WriteLine($"Unexpected length");
             }
             var newTree = Tree.WithChangedText(newText);
+            _newTree = newTree;
             // Compilation = CSharpCompilation.Create("edit", new[]{newTree}, new[]{MetadataReference.CreateFromFile(typeof(object).Assembly.Location)});
             // foreach (var diagnostic in Compilation.GetParseDiagnostics())
             // {
@@ -674,16 +720,122 @@ private readonly List<int> chars = new List<int>();
             // }
 
             // Model = Compilation.GetSemanticModel(newTree);
+
             var chL = newTree.GetChangedSpans(Tree);
+            var syntaxNode = newTree.GetRoot();
             foreach (var textSpan in chL)
             {
+                var sn = syntaxNode.ChildThatContainsPosition(textSpan.Start);
+                var istoken = sn.IsToken;
+                SyntaxToken? token00 = istoken ?sn.AsToken():(SyntaxToken?) null;
+                var fs = sn.FullSpan;
+                if (sn.HasLeadingTrivia)
+                {
+                    var lt = sn.GetLeadingTrivia();
+                    foreach (var syntaxTrivia in lt)
+                    {
+                        var syntaxTriviaSpan = syntaxTrivia.Span;
+                        if (syntaxTriviaSpan.IntersectsWith(textSpan))
+                        {
+                            var ii = _starts.FindIndex(z => z.TextSpan.OverlapsWith(syntaxTriviaSpan));
+                            
+                            var startInfo = new StartInfo(syntaxTrivia);
+                            if (ii == -1)
+                            {
+                                if (!_starts.Any())
+                                {
+                                    _starts.Add(startInfo);
+
+                                    _curStart = 0;
+                                }
+                                else
+                                {
+                                    throw new InvalidOperationException();
+                                }
+                            }
+                            else
+                            {
+                                _curStart = ii;
+                                _starts[_curStart] = startInfo;
+                            }
+
+                            DebugUtils.WriteLine($"[{_curStart}]: {_starts[_curStart]}");
+                            
+                            break;
+                            // foreach (var (textSpan1, syntaxToken) in _starts)
+                            // {
+                                // if (textSpan1.Value.OverlapsWith(syntaxTriviaSpan))
+                                // {
+
+                                // }
+                            // }
+                        }
+                    }
+                    var lastLt1 = lt.Last();
+                    var lastlt = lastLt1.FullSpan;
+                    if (lastLt1.Span.IntersectsWith(textSpan))
+                    {
+                        var (i0, span0, token0) = SearchStarts(textSpan);
+                        if (i0 != -1)
+                        {
+                            _starts[i0] = new StartInfo(lastLt1.Token.Span, lastLt1.Token);
+                            _curStart = i0;
+                            break;
+
+                        }
+                    }
+
+                    var k = CSharpExtensions.Kind(lastLt1);
+                    if (k != SyntaxKind.EndOfLineTrivia)
+                    {
+
+                    }
+                }
+
+                var (i1, span, token1) = SearchStarts(textSpan);
+
+                SyntaxNodeOrToken sn2=null;
+                if (span != null)
+                {
+                    sn2 = sn.Parent.ChildThatContainsPosition(span.Value.Start);
+                }
+
+                var syntaxKind = CSharpExtensions.Kind(sn2);
+                if (SyntaxFacts.IsTrivia(syntaxKind))
+                {
+
+                }
+
+                if (syntaxKind == SyntaxKind.EndOfFileToken)
+                {
+
+                }
+                var xx = _starts.TakeWhile((tuple, i) => tuple.TextSpan.Start < textSpan.Start && tuple.TextSpan.End < textSpan.Start);
+                var c = xx.Count();
+                _starts = xx.ToList();
+                if (_starts.Any())
+                {
+                    this.token = _starts[_starts.Count - 1].Token;
+                    if (CSharpExtensions.Kind(this.token.Value) == SyntaxKind.EndOfFileToken)
+                    {
+
+                    }
+                }
+                else
+                {
+                    this.token = null;
+                }
+                DumpStarts();
+                // this.token = sn.IsNode ? sn.AsNode().GetFirstToken(true, true, true, true) : sn.AsToken();
+                // this.token = this.token.Value.GetPreviousToken(true, true, true, true);
                 DebugUtils.WriteLine("Changed region " + textSpan);
             }
             Tree = newTree;
-            Node = newTree.GetRoot();
+            _newTree = null;
+            Node = syntaxNode;
             
             return;
-
+#if false
 
             var t = Node.GetFirstToken(true, true, true, true);
             _starts.Push(new Tuple<TextSpan, SyntaxToken>(t.Span, t));
@@ -759,9 +911,45 @@ private readonly List<int> chars = new List<int>();
             //
             //     UpdateCharMap();
             // }
+#endif
+        }
+
+        public (int i, TextSpan? span, SyntaxToken? token1) SearchStarts(TextSpan textSpan)
+        {
+            if (!_starts.Any())
+                return (-1, null, null);
+            var i = 0;
+            TextSpan? span = null;
+            SyntaxToken? token1 = null;
+            for (; i < _starts.Count; i++)
+            {
+                (span, token1) = _starts[i];
+                if (span.Value.IntersectsWith(textSpan))
+                {
+                    break;
+                }
+            }
+
+            return (i, span, token1);
+        }
+
+        private void DumpStarts()
+        {
+            DebugUtils.WriteLine($"Starts: {string.Join(", ", _starts.Select(z => $"{z.TextSpan} {z.Token}"))}");
         }
 
         public SemanticModel Model { get; set; }
+
+        public SourceText Text
+        {
+            get { return _text; }
+            set
+            {
+                if (Equals(value, _text)) return;
+                _text = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 
@@ -790,6 +978,46 @@ private readonly List<int> chars = new List<int>();
         {
             TextInput(insertionPoint, "\r\n");
             return insertionPoint + 2;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    internal class StartInfo
+    {
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"[{nameof(SyntaxTrivia)}: {SyntaxTrivia}, {nameof(Token)}: {Token}, {nameof(TextSpan)}: {TextSpan}]";
+        }
+
+        public SyntaxTrivia SyntaxTrivia { get; }
+
+        public StartInfo(TextSpan textSpan, SyntaxToken? token = null)
+        {
+            Token = token;
+            TextSpan = textSpan;
+        }
+
+        public StartInfo(in SyntaxTrivia syntaxTrivia)
+        {
+            SyntaxTrivia = syntaxTrivia;
+            TextSpan = syntaxTrivia.Span;
+        }
+
+        public SyntaxToken? Token { get; set; }
+        public TextSpan TextSpan { get; set; }
+
+        public void Deconstruct(out TextSpan? span, out SyntaxToken? token1)
+        {
+            span = TextSpan;
+            token1 = Token;
         }
     }
 }

@@ -72,7 +72,7 @@ namespace AnalysisControls
                     sb.Append("Type{");
                     ConversionUtils.TypeToText(tt, sb);
                     sb.Append('}');
-                    DebugUtils.WriteLLine($"{sb}");
+                    DebugUtils.WriteLine($"{sb}");
                     return sb;
                 case string ss:
                     return sb.Append(ss);

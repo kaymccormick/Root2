@@ -32,6 +32,7 @@ namespace AnalysisControls.ViewModel
     {
         private readonly ReplaySubject<Workspace> _replay;
         private readonly IDocumentHost _docHost;
+        private readonly IContentSelector _contentSelector;
         private readonly IAnchorableHost _anchHost;
         private Workspace _workspace;
         private Main1 _view;
@@ -44,11 +45,12 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         /// <param name="replay"></param>
-        public Main1Mode2(ReplaySubject<Workspace> replay, JsonSerializerOptions jsonSerializerOptions = null, IDocumentHost docHost = null, IAnchorableHost anchHost=null) : this()
+        public Main1Mode2(ReplaySubject<Workspace> replay, IDocumentHost docHost, IContentSelector contentSelector, JsonSerializerOptions jsonSerializerOptions = null,  IAnchorableHost anchHost = null) : this()
         {
             JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
             _replay = replay;
             _docHost = docHost;
+            _contentSelector = contentSelector;
             _anchHost = anchHost;
         }
 
@@ -645,7 +647,7 @@ namespace AnalysisControls.ViewModel
                 Title = Path.GetFileNameWithoutExtension(file)
             };
                 _docHost.AddDocument(doc);
-            _docHost.SetActiveDocument(doc);
+            _contentSelector.SetActiveContent(doc);
 
             return doc;
         }
@@ -674,9 +676,9 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public CodeDocument()
         {
-            CodeControl = new FormattedTextControl3()
+            CodeControl = new CodeDiagnostics()
             {
-                SourceText = ""
+                // SourceText = ""
             };
 
         }
@@ -688,13 +690,31 @@ namespace AnalysisControls.ViewModel
             Compilation = compilation;
             var model = Compilation?
                 .GetSemanticModel(SyntaxTree);
-            CodeControl  = new FormattedTextControl3()
-            {
-                SyntaxTree = syntaxTree,
-                Compilation = compilation,
-                Model = model
-            };
+            CreateCodeControl(null, syntaxTree, compilation, model);
             
+        }
+
+        private void CreateCodeControl(string sourceCode = null, SyntaxTree syntaxTree=null , Compilation compilation=null, SemanticModel model=null)
+        {
+            var c = DoCodeDiagnostics ? CreateCodeDiagnostics() : CreateFormattedTextControl();
+            if (sourceCode != null) c.SourceText = sourceCode;
+            if (syntaxTree != null) c.SyntaxTree = syntaxTree;
+            if (compilation != null) c.Compilation = compilation;
+            if (model != null) c.Model = model;
+            CodeControl = c;
+        }
+
+        public bool DoCodeDiagnostics { get; set; } = true;
+
+        private SyntaxNodeControl CreateCodeDiagnostics()
+        {
+            return new CodeDiagnostics();
+        }
+
+        private static FormattedTextControl3 CreateFormattedTextControl()
+        {
+            var c = new FormattedTextControl3();
+            return c;
         }
 
         /// <inheritdoc />

@@ -39,6 +39,7 @@ namespace AnalysisControls
 
         public LineInfo NextLine { get; set; }
         public LineInfo PrevLine { get; set; }
+        public double Height { get; set; }
 
         public override string ToString()
         {

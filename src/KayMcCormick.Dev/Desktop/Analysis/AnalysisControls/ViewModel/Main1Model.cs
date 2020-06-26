@@ -25,6 +25,7 @@ using System.Windows.Threading;
 using System.Xaml;
 using AnalysisControl;
 using AnalysisControls.TypeDescriptors;
+using AnalysisControlsCore;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Command;
@@ -52,22 +53,37 @@ namespace AnalysisControls.ViewModel
         ICommandProvider,
         ISubjectWatcher
     {
-        private readonly IDocumentHost _docHost;
+        public IDocumentHost DocHost
+        {
+            get { return _docHost; }
+            set
+            {
+                if (Equals(value, _docHost)) return;
+                _docHost = value;
+                // if (_docHost != null)
+                // {
+                    // var x = new CSharpEditorControl(_docHost);
+                    // x.ExecuteAsync(null);
+                // }
+
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(Documents));
+            }
+        }
 
         public static readonly DependencyProperty CatchphraseProperty = DependencyProperty.Register(
             "Catchphrase", typeof(string), typeof(Main1Model), new PropertyMetadata(default(string)));
 
-        public Main1Model()
-        {
-        }
 
         public string Catchphrase
         {
             get { return (string) GetValue(CatchphraseProperty); }
             set { SetValue(CatchphraseProperty, value); }
         }
+
         public static readonly DependencyProperty ActiveContentProperty = DependencyProperty.Register(
-            "ActiveContent", typeof(object), typeof(Main1Model), new PropertyMetadata(default(object), PropertyChangedCallback));
+            "ActiveContent", typeof(object), typeof(Main1Model),
+            new PropertyMetadata(default(object), PropertyChangedCallback));
 
         private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -77,14 +93,15 @@ namespace AnalysisControls.ViewModel
         private void OnActiveContentChanged(object eOldValue, object eNewValue)
         {
             DebugUtils.WriteLine("new active document is " + eNewValue);
+            if (eNewValue is DocModel dm00)
+                if (dm00.Content is Control cc)
+                    cc.Focus();
+
             if (ClientViewModel != null)
                 if (ClientViewModel.PrimaryRibbon != null)
                     ClientViewModel.PrimaryRibbon.ActiveContent = _activeContent;
 
-            if (eOldValue is DocModel dd0)
-            {
-                dd0.IsActive = false;
-            }
+            if (eOldValue is DocModel dd0) dd0.IsActive = false;
 
             if (eNewValue is DocModel d)
             {
@@ -144,11 +161,7 @@ namespace AnalysisControls.ViewModel
                                     new ContextualTabGroupActivatedHandlerArgs(d));
                             }
                     }
-
-
-
                 }
-
             }
         }
 
@@ -158,12 +171,12 @@ namespace AnalysisControls.ViewModel
             get { return (object) GetValue(ActiveContentProperty); }
             set { SetValue(ActiveContentProperty, value); }
         }
+
         /// <summary>
         /// 
         /// </summary>
         ///
         /// 
-
         /// <summary>
         /// 
         /// </summary>
@@ -183,6 +196,18 @@ namespace AnalysisControls.ViewModel
         private readonly ReplaySubject<Workspace> _replay;
         private readonly IActivationStream _ss;
         private readonly MySubjectReplaySubject _impl2;
+
+        public IContentSelector ContentSelector
+        {
+            get { return _contentSelector; }
+            set
+            {
+                if (Equals(value, _contentSelector)) return;
+                _contentSelector = value;
+                OnPropertyChanged();
+            }
+        }
+
         private readonly IEnumerable<IMySubject> _subs;
         private Workspace _workspace;
         private Main1 _view;
@@ -215,8 +240,8 @@ namespace AnalysisControls.ViewModel
                 .QueryVisualStudioInstances(
                     // new VisualStudioInstanceQueryOptions
                     // {
-                        // DiscoveryTypes =
-                            // DiscoveryType.VisualStudioSetup
+                    // DiscoveryTypes =
+                    // DiscoveryType.VisualStudioSetup
                     // }
                 );
 
@@ -266,7 +291,10 @@ namespace AnalysisControls.ViewModel
         }
 
         [Browsable(false)]
-        public IEnumerable Documents => _docHost.Documents;
+        public IEnumerable Documents
+        {
+            get { return DocHost.Documents; }
+        }
 
         /// <summary>
         /// 
@@ -279,16 +307,17 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         /// <param name="replay"></param>
-        public Main1Model(ReplaySubject<Workspace> replay, IActivationStream ss, MySubjectReplaySubject impl2, IDocumentHost dochost) :this(dochost)
+        public Main1Model(ReplaySubject<Workspace> replay, IActivationStream ss, MySubjectReplaySubject impl2,
+            IDocumentHost dochost, IContentSelector contentSelector) : this()
         {
+            DocHost = dochost;
+
             //JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
             _replay = replay;
             _ss = ss;
             _impl2 = impl2;
-            _impl2.Subject.Subscribe(subject =>
-            {
-                Subject(subject);
-            });
+            ContentSelector = contentSelector;
+            _impl2.Subject.Subscribe(subject => { Subject(subject); });
             //_subs = subs;
             Subject(ss);
             // Subject(s1);
@@ -297,9 +326,9 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public Main1Model(IDocumentHost docHost)
+        public Main1Model()
         {
-            _docHost = docHost;
+            
 
             DocumentsCollection = new ObservableCollection<object>();
             Anchorables = new ObservableCollection<object>();
@@ -333,17 +362,16 @@ namespace AnalysisControls.ViewModel
             // });
 
             if (DocumentsCollection != null)
-                    DocumentsCollection.CollectionChanged += (sender, args) =>
-                    {
-                        //foreach (var argsNewItem in args.NewItems) DebugUtils.WriteLine(argsNewItem);
-                    };
+                DocumentsCollection.CollectionChanged += (sender, args) =>
+                {
+                    //foreach (var argsNewItem in args.NewItems) DebugUtils.WriteLine(argsNewItem);
+                };
         }
 
         private void AddInitialDocuments()
         {
-            
             AddtraceConfigurationVoew();
-            
+
             //            AddModelDoc();
             // AddRibbonModelViewDoc();
             // AddRibbonModelViewDoc1();
@@ -354,7 +382,7 @@ namespace AnalysisControls.ViewModel
             // AddTypeProvider();
 
             // AddPowerShell();
-             AddPowerShell2();
+            AddPowerShell2();
             // ObservableCollection<CodeElementDocumentation> coll = new ObservableCollection<CodeElementDocumentation>();
             // DocModel dm = DocModel.CreateInstance();
             // dm.Content = new ScrollViewer
@@ -367,7 +395,7 @@ namespace AnalysisControls.ViewModel
 
         private void AddGenericInterface3Document()
         {
-            GenericInterface3 gi = new GenericInterface3();
+            var gi = new GenericInterface3();
             gi.Instance = ClientViewModel?.PrimaryRibbon;
             var doc = DocModel.CreateInstance("Generic");
             doc.Content = gi;
@@ -383,23 +411,20 @@ namespace AnalysisControls.ViewModel
             );
 
             var y = x.GetStream(filename);
-            if (y == null)
-            {
-                throw new AppInvalidOperationException("Unable to get resource stream for " + filename);
-            }
+            if (y == null) throw new AppInvalidOperationException("Unable to get resource stream for " + filename);
             // ReSharper disable once AssignNullToNotNullAttribute
             var b = new Baml2006Reader(y, new XamlReaderSettings());
 
-            var oo = (ResourceDictionary)XamlReader.Load(b);
+            var oo = (ResourceDictionary) XamlReader.Load(b);
             return oo;
         }
 
         private void AddPowerShell2()
         {
-            TerminalUserControl0 terminal0  = new TerminalUserControl0();
+            var terminal0 = new TerminalUserControl0();
             terminal0.Shell.Host.SetPrivateData(new PSObject(this));
-            
-            
+
+
             var doc = DocModel.CreateInstance();
             doc.Title = "PowerShell 0";
             doc.Content = terminal0;
@@ -408,11 +433,11 @@ namespace AnalysisControls.ViewModel
 
         // private void AddVisualTreeViewDoc()
         // {
-            // var c = new VisualTreeView();
-            // var doc = DocModel.CreateInstance();
-            // doc.Title = "Visual Tree View";
-            // doc.Content = c;
-            // Documents.Add(doc);
+        // var c = new VisualTreeView();
+        // var doc = DocModel.CreateInstance();
+        // doc.Title = "Visual Tree View";
+        // doc.Content = c;
+        // Documents.Add(doc);
         // }
 
         private void AddContainerView()
@@ -580,7 +605,7 @@ namespace AnalysisControls.ViewModel
             };
             t1.Children.Add(uiElement);
 
-            //b.SetBinding(TextBlock.TextProperty, new Binding("ActiveDocument.Content") {Source = this});
+            //b.SetBinding(TextBlock.TextProperty, new Binding("ActiveContent.Content") {Source = this});
 
             var item = DocModel.CreateInstance();
             item.Title = "Model";
@@ -616,6 +641,10 @@ namespace AnalysisControls.ViewModel
         private ReplaySubject<CodeElementDocumentation> _r;
         private ReplaySubject<ActivationInfo> _aReplaySubject;
         private IEnumerable _documents1;
+        private IDocumentHost _docHost;
+        private IContentSelector _contentSelector;
+
+        public bool AllDocs { get; set; }
 
         /// <summary>
         /// 
@@ -628,13 +657,15 @@ namespace AnalysisControls.ViewModel
             {
                 if (Equals(value, _view)) return;
                 _view = value;
-                AddInitialDocuments();
+
+//                AddInitialDocuments();
 
                 AddInitialAnchorables();
 
                 OnPropertyChanged();
             }
         }
+
 
         /// <summary>
         /// 
@@ -655,7 +686,6 @@ namespace AnalysisControls.ViewModel
 
         /// </summary>
         [Browsable(false)]
-        
         public CurrentOperation CurrentOperation
         {
             get { return _currentOperation; }
@@ -682,10 +712,9 @@ namespace AnalysisControls.ViewModel
                 new UserControl1().propertyGrid1.SelectedObject = _clientViewModel.PrimaryRibbon;
             }
         }
-        [Browsable(false)]
-        public JsonSerializerOptions JsonSerializerOptions { get; set; }
-        [Browsable(false)]
-        public Dispatcher Dispatcher { get; set; }
+
+        [Browsable(false)] public JsonSerializerOptions JsonSerializerOptions { get; set; }
+        [Browsable(false)] public Dispatcher Dispatcher { get; set; }
 
         /// </summary>
         /// <param name="parameter"></param>
@@ -757,25 +786,12 @@ namespace AnalysisControls.ViewModel
 
         public void AddDocument(object doc)
         {
-            _docHost.AddDocument(doc);
+            DocHost.AddDocument(doc);
             return;
             if (Dispatcher == null || Dispatcher.CheckAccess())
-            {
                 DocumentsCollection.Add(doc);
-            }
             else
-            {
                 throw new InvalidOperationException("wrong thread");
-            }
-        }
-
-        /// <inheritdoc />
-        public void SetActiveDocument(object doc)
-        {
-            _docHost.SetActiveDocument(doc);
-            return;
-            ActiveContent = doc;
-            View.DockingManager.ActiveContent = doc;
         }
 
         public void AddAnchorable(object anchorable)
@@ -787,25 +803,27 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public void Subject(IMySubject x)
         {
-            DocModel dm = DocModel.CreateInstance(x.Title);
+            if (!AllDocs)
+                return;
+            var dm = DocModel.CreateInstance(x.Title);
             dm.GroupHeader = "Incoming";
             if (View != null) dm.LargeImageSource = View.TryFindResource("BlueArrowDrawingImage");
             // if(x.GetType().IsGenericType && x.GetType().GetGenericTypeDefinition() == typeof(MyReplaySubject<>))
             // {
-                BindingOperations.SetBinding(dm, DocModel.TitleProperty, new Binding ("Title") { Source = x});
+            BindingOperations.SetBinding(dm, DocModel.TitleProperty, new Binding("Title") {Source = x});
             // }
-            
-            dm.Content = new SubjectView2(){Observable = x.ObjectSubject,ItemType = x.Type};
+
+            dm.Content = new SubjectView2() {Observable = x.ObjectSubject, ItemType = x.Type};
             // ObservableCollection<object> c=new ObservableCollection<object>();
             // if (x.ListView)
             // {
-                // dm.Content = AnalysisControlsModule.ReplayListView<object>(c, x.ObjectSubject,
-                    // ControlsResources("templates.baml"), x.Type);
+            // dm.Content = AnalysisControlsModule.ReplayListView<object>(c, x.ObjectSubject,
+            // ControlsResources("templates.baml"), x.Type);
             // }
             // else
             // {
-                // dm.Content = AnalysisControlsModule.ReplayItemsControl<object>(c, x.ObjectSubject,
-                    // ControlsResources("templates.baml"), x.Type);
+            // dm.Content = AnalysisControlsModule.ReplayItemsControl<object>(c, x.ObjectSubject,
+            // ControlsResources("templates.baml"), x.Type);
 
             // }
 
@@ -819,7 +837,8 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public IEnumerable GetCommands()
         {
-            return new[] {new LambdaAppCommand("Test", (command, o) => Task.FromResult(AppCommandResult.Success), null).Command};
+            return new[]
+                {new LambdaAppCommand("Test", (command, o) => Task.FromResult(AppCommandResult.Success), null).Command};
         }
     }
 
@@ -834,9 +853,5 @@ namespace AnalysisControls.ViewModel
         public CustomDriveInfo(PSDriveInfo driveInfo, PSObject data) : base(driveInfo)
         {
         }
-
     }
-
-
-
 }

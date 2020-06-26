@@ -45,112 +45,11 @@ namespace AnalysisControls
             set { SetValue(InsertionPointProperty, value); }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public static readonly DependencyProperty SourceTextProperty = DependencyProperty.Register(
-            "SourceText", typeof(string), typeof(FormattedTextControl3), new PropertyMetadata("", OnSourceTextUpdated));
-
         private static void OnInsertionPointUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             DebugUtils.WriteLine($"Insertion Point Updated to {e.NewValue}", DebugCategory.TextFormatting);
         }
 
-        
-        private static void OnSourceTextUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var f = (FormattedTextControl3)d;
-            var newValue = (string?) e.NewValue;
-            if (!string.IsNullOrEmpty(newValue))
-            {
-                f._updatingSourceText = true;
-                f.Compilation = CSharpCompilation.Create(
-                    "test", 
-                    new[] { SyntaxFactory.ParseSyntaxTree(
-                        newValue) }, new[] { MetadataReference.CreateFromFile(typeof(object).Assembly.Location) });
-                f.SyntaxTree = f.Compilation.SyntaxTrees.First();
-                f.Node = f.SyntaxTree.GetRoot();
-                f.Model = f.Compilation?.GetSemanticModel(f.SyntaxTree);
-                f._updatingSourceText = false;
-                f.UpdateTextSource();
-                return;
-            }
-
-            DebugUtils.WriteLine(e.NewValue.ToString());
-            return;
-
-            var c = (FormattedTextControl3) d;
-
-            var eNewValue = (string) e.NewValue;
-            if (e.OldValue == null || c.SyntaxTree == null)
-            {
-                //    var tree = CSharpSyntaxTree.ParseText(eNewValue, new CSharpParseOptions(LanguageVersion.CSharp7_3));
-                //    c.SyntaxTree = tree;
-            }
-            else
-            {
-                var newTree = c.SyntaxTree.WithChangedText(Microsoft.CodeAnalysis.Text.SourceText.From(eNewValue));
-                c.SyntaxTree = newTree;
-#if false
-                foreach (var textChange in newTree.GetChanges(c.SyntaxTree))
-                {
-		DebugUtils.WriteLine($"{textChange.Span}", DebugCategory.TextFormatting);
-                    var i = textChange.Span.Start;
-                    LineInfo theLine = null;
-                    for (var line = c.LineInfos.FirstOrDefault(); line != null; line = line.NextLine)
-                    {
-                        
-                        if (line.Offset + line.Length >= i)
-                        {
-                            theLine = line;
-                            break;
-                        }
-                    }
-
-                    if (theLine != null)
-                    {
-                        var region = theLine.Regions[0];
-                        while (region != null)
-                        {
-                            if (region.Offset + region.Length >= i)
-                            {
-                                break;
-                            }
-                            region = region.NextRegion;
-                        }
-
-                        if (region != null)
-                        {
-                            var chi = i - region.Offset;
-
-                        }
-                    }
-                    
-                }
-#endif
-                foreach (var changedSpan in c.SyntaxTree.GetChangedSpans(newTree))
-                {
-                }
-            }
-
-
-            if (!string.IsNullOrWhiteSpace(eNewValue))
-            {
-                var ctx = AnalysisService.Parse(eNewValue, "x");
-                c.SyntaxTree = ctx.SyntaxTree;
-                c.Model = ctx.CurrentModel;
-                c.Compilation = ctx.Compilation;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string SourceText
-        {
-            get { return (string) GetValue(SourceTextProperty); }
-            set { SetValue(SourceTextProperty, value); }
-        }
 
         /// <summary>
         /// 
@@ -335,8 +234,37 @@ namespace AnalysisControls
                 Node = node,
                 Errors = errs
             };
+            source.PropertyChanged += SourceOnPropertyChanged;
             source.Init();
             return source;
+        }
+
+        private void SourceOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "Text")
+            {
+                TextSourceText = _store.Text.ToString();
+            }
+        }
+
+        public static readonly DependencyProperty TextSourceTextProperty = DependencyProperty.Register(
+            "TextSourceText", typeof(string), typeof(FormattedTextControl3), new PropertyMetadata(default(string), OnTextSourceTextChanged));
+
+        public string TextSourceText
+        {
+            get { return (string) GetValue(TextSourceTextProperty); }
+            set { SetValue(TextSourceTextProperty, value); }
+        }
+
+        private static void OnTextSourceTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((FormattedTextControl3) d).OnTextSourceTextChanged((string) e.OldValue, (string) e.NewValue);
+        }
+
+
+
+        protected virtual void OnTextSourceTextChanged(string oldValue, string newValue)
+        {
         }
 
         private DrawingBrush _myDrawingBrush = new DrawingBrush();
@@ -425,12 +353,21 @@ namespace AnalysisControls
             TypefaceManager = new DefaultTypefaceManager();
         }
 
+        // public static RoutedEvent ErrorEvent = EventManager.RegisterRoutedEvent(typeof(FormattedTextControl3))
         
         private void OnEnterLineBreak(object sender, ExecutedRoutedEventArgs e)
         {
-            DebugUtils.WriteLine("Enter line break");
-            InsertionPoint = TextSource.EnterLineBreak(InsertionPoint);
-            SourceText += "\r\n";
+            if (!DoInput("\r\n"))
+            {
+                DebugUtils.WriteLine("Newline failed");
+
+            }
+            // ChangingText = true;
+            // DebugUtils.WriteLine("Enter line break");
+            // InsertionPoint = TextSource.EnterLineBreak(InsertionPoint);
+
+            // SourceText += "\r\n";
+            // ChangingText = false;
         }
 
         private void CanEnterLineBreak(object sender, CanExecuteRoutedEventArgs e)
@@ -456,8 +393,18 @@ namespace AnalysisControls
         {
             base.OnSyntaxTreeUpdated(newValue);
             _text = newValue.GetText();
-            if(!_updatingSourceText)
+            if(UpdatingSourceText)
             SourceText = _text.ToString();
+        }
+
+        /// <inheritdoc />
+        protected override void OnSourceTextChanged1(string newValue, string eOldValue)
+        {
+            base.OnSourceTextChanged1(newValue, eOldValue);
+            if (newValue != null)
+            {
+                UpdateTextSource();
+            }
         }
 
         /// <summary>
@@ -620,12 +567,36 @@ namespace AnalysisControls
         protected override void OnPreviewTextInput(TextCompositionEventArgs e)
         {
             base.OnPreviewTextInput(e);
-            DebugUtils.WriteLine(e.Text);
-            var prev = SourceText.Substring(0, InsertionPoint);
-            var next = SourceText.Substring(InsertionPoint);
-            var code = prev + e.Text + next;
-            if (InsertionLine != null)
+            var eText = e.Text;
+            try
             {
+                DoInput(eText);
+            }
+            catch (Exception ex)
+            {
+                DebugUtils.WriteLine(ex.ToString());
+                
+            }
+
+            e.Handled = true;
+
+        }
+
+        public bool DoInput(string eText)
+        {
+            try
+            {
+                DebugUtils.WriteLine(eText);
+                if (_textDest.Children.Count == 0)
+                {
+                    _textDest.Children.Add(new DrawingGroup());
+                }
+
+                var prev = SourceText.Substring(0, InsertionPoint);
+                var next = SourceText.Substring(InsertionPoint);
+                var code = prev + eText + next;
+                if (InsertionLine != null)
+                {
 #if false
                 var l = InsertionLine.Text.Substring(0, InsertionPoint - InsertionLine.Offset) + e.Text;
                 var end = InsertionLine.Offset + InsertionLine.Length;
@@ -638,46 +609,106 @@ namespace AnalysisControls
                     l += InsertionLine.Text.Substring(start, length);
                 }
 #endif
+                }
+
+                if (InsertionLine != null && InsertionLine.LineNumber == 1)
+                {
+
+                }
+
+                ChangingText = true;
+                TextSource.TextInput(InsertionPoint, eText);
+                var lineInfo = RedrawLine(InsertionLine?.LineNumber ?? 0, InsertionLine?.Offset ?? 0,
+                    InsertionLine?.Origin.Y ?? 0, InsertionLine?.Origin.X ?? 0, InsertionLine);
+                InsertionLine = lineInfo;
+
+                InsertionPoint = InsertionPoint + eText.Length;
+                if (InsertionLine.Offset + InsertionLine.Length <= InsertionPoint)
+                {
+                    if (InsertionLine.NextLine != null)
+                        InsertionLine = InsertionLine.NextLine;
+                    else
+                    {
+                        InsertionLine.NextLine = new LineInfo()
+                        {
+                            LineNumber = InsertionLine.LineNumber + 1, PrevLine = InsertionLine,
+                            Origin = new Point(0, InsertionLine.Origin.Y + InsertionLine.Height),
+                            Offset = InsertionLine.Offset + InsertionLine.Length
+                        };
+                        InsertionLine = InsertionLine.NextLine;
+                    }
+                }
+
+                if (eText.Length == 1)
+                {
+                    //_textCaret.SetValue(Canvas.LeftProperty, 0);
+                }
+
+                //AdvanceInsertionPoint(e.Text.Length);
+
+                DebugUtils.WriteLine("About to update source text", DebugCategory.TextFormatting);
+                SourceText = code;
+                DebugUtils.WriteLine("Done updating source text", DebugCategory.TextFormatting);
+                ChangingText = false;
+                return true;
             }
+            catch (Exception ex)
+            {
+                DebugUtils.WriteLine(ex.ToString());
+                return false;
+            }
+        }
 
-            ChangingText = true;
-            TextSource.TextInput(InsertionPoint, e.Text);
+        private LineInfo RedrawLine(int lineNo, int offset, double y, double x, LineInfo lineInfo)
+        {
             var d = new DrawingGroup();
-
             var dc = d.Open();
-            var lineNo = InsertionLine?.LineNumber ?? 0;
+            if (LineInfos.Count == 0)
+                LineInfos.Add(null);
             LineContext lineCtx;
+            LineInfo outLineInfo;
             using (var myTextLine = Formatter.FormatLine(
                 TextSource,
-                InsertionLine?.Offset ?? 0,
+                offset,
                 OutputWidth,
                 new GenericTextParagraphProperties(CurrentRendering, PixelsPerDip), null))
             {
-                var y = InsertionLine?.Origin.Y ?? 0;
-                var x = InsertionLine?.Origin.X ?? 0;
-
                 lineCtx = new LineContext()
                 {
                     LineNumber = lineNo,
                     CurCellRow = lineNo,
-                    LineInfo = InsertionLine,
+                    LineInfo = lineInfo,
                     LineOriginPoint = new Point(x, y),
                     MyTextLine = myTextLine,
                     MaxX = MaxX,
                     MaxY = MaxY,
-                    TextStorePosition = InsertionLine?.Offset ?? 0
+                    TextStorePosition = offset
                 };
-
 
                 myTextLine.Draw(dc, lineCtx.LineOriginPoint, InvertAxes.None);
                 var regions = new List<RegionInfo>();
                 FormattingHelper.HandleTextLine(regions, ref lineCtx, out var lineI, this);
-                InsertionLine = lineI;
+                if (LineInfos.Count <= lineNo)
+                {
+                    LineInfos.Add(lineI);
+                }
+                else
+                {
+                    LineInfos[lineNo] = lineI;
+                }
+
+                outLineInfo = lineI;
             }
 
             dc.Close();
             DebugUtils.WriteLine($"{_rect.Width}x{_rect.Height}", DebugCategory.TextFormatting);
-            _textDest.Children.Add(d);
+
+            if (_textDest.Children.Count <= lineNo)
+            {
+                _textDest.Children.Add(d);
+            } else
+            _textDest.Children[lineNo] = d;
+
             // if (_textDest.Children.Count < lineNo + 1)
             // {
             // _textDest.Children.Add(d.Children[0]);
@@ -686,41 +717,20 @@ namespace AnalysisControls
             // {
             // _textDest.Children[lineNo] = d.Children[0];
             // }
-
+            MaxX = lineCtx.MaxX;
+            MaxY = lineCtx.MaxY;
             _rectangle.Width = lineCtx.MaxX;
             _rectangle.Height = lineCtx.MaxY;
             _rect2.Width = lineCtx.MaxX;
             _rect2.Height = lineCtx.MaxY;
-            InvalidateVisual();
-
-            InsertionPoint = InsertionPoint + e.Text.Length;
-            if (InsertionLine.Offset + InsertionLine.Length <= InsertionPoint)
-            {
-                InsertionLine = null;
-            }
-            if (e.Text.Length == 1)
-            {
-                //_textCaret.SetValue(Canvas.LeftProperty, 0);
-            }
-
-            //AdvanceInsertionPoint(e.Text.Length);
-
-            DebugUtils.WriteLine("About to update source text", DebugCategory.TextFormatting);
-            SourceText = code;
-            DebugUtils.WriteLine("Done updating source text", DebugCategory.TextFormatting);
-            ChangingText = false;
-            e.Handled = true;
+            //InvalidateVisual();
+            return outLineInfo;
         }
 
         private void AdvanceInsertionPoint(int textLength)
         {
             InsertionPoint += textLength;
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool ChangingText { get; set; }
 
         private void Handler2(object sender, EventArgs e)
         {
@@ -1145,7 +1155,6 @@ namespace AnalysisControls
         private SyntaxNode _endNode;
         private Rectangle geometryRectangle = new Rectangle();
         private SourceText _text;
-        private bool _updatingSourceText;
 
         /// <inheritdoc />
         protected override void OnMouseMove(MouseEventArgs e)
@@ -1153,7 +1162,7 @@ namespace AnalysisControls
             // if (SelectionEnabled && e.LeftButton == MouseButtonState.Pressed)
             // {
             var point = e.GetPosition(_rectangle);
-            var zz = Infos.Where(x => x.BoundingRect.Contains(point)).ToList();
+            var zz = LineInfos.SelectMany(z=>z.Regions).Where(x => x.BoundingRect.Contains(point)).ToList();
             if (zz.Count > 1)
                 DebugUtils.WriteLine("Multiple regions matched", DebugCategory.TextFormatting);
             //    throw new AppInvalidOperationException();
@@ -1304,23 +1313,23 @@ namespace AnalysisControls
                     var item2 = first.Point;
 
                     var item2Y = (int) item2.Y;
-                    if (item2Y >= _chars.Count)
-                    {
-                        DebugUtils.WriteLine("out of bounds", DebugCategory.TextFormatting);
-                    }
-                    else
-                    {
-                        var chars = _chars[item2Y];
-                        DebugUtils.WriteLine("y is " + item2Y, DebugCategory.MouseEvents);
-                        var item2X = (int) item2.X;
-                        if (item2X >= chars.Count)
-                        {
+                    // if (item2Y >= _chars.Count)
+                    // {
+                        // DebugUtils.WriteLine("out of bounds", DebugCategory.TextFormatting);
+                    // }
+                    // else
+                    // {
+                        // var chars = _chars[item2Y];
+                        // DebugUtils.WriteLine("y is " + item2Y, DebugCategory.MouseEvents);
+                        // var item2X = (int) item2.X;
+                        // if (item2X >= chars.Count)
+                        // {
                             //DebugUtils.WriteLine("out of bounds", DebugCategory.TextFormatting);
-                        }
-                        else
-                        {
-                            var ch = chars[item2X];
-                            DebugUtils.WriteLine("Cell is " + item2 + " " + ch, DebugCategory.MouseEvents);
+                        // }
+                        // else
+                        // {
+                            // var ch = chars[item2X];
+                            // DebugUtils.WriteLine("Cell is " + item2 + " " + ch, DebugCategory.MouseEvents);
                             var newOffset = tuple.Offset + cellIndex;
                             HoverOffset = newOffset;
                             HoverColumn = (int) item2.X;
@@ -1389,8 +1398,6 @@ namespace AnalysisControls
                                 _selectionEnd = newOffset;
                                 InvalidateVisual();
                             }
-                        }
-                    }
                 }
 
                 var textRunProperties = tuple.TextRun.Properties;
@@ -1482,7 +1489,7 @@ namespace AnalysisControls
         protected override void OnNodeUpdated()
         {
             base.OnNodeUpdated();
-            if (!ChangingText || _updatingSourceText)
+            if (!(ChangingText || UpdatingSourceText))
             {
                 DebugUtils.WriteLine("Node updated", DebugCategory.TextFormatting);
                 UpdateTextSource();

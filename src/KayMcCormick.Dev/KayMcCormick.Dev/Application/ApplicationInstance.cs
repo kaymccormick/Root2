@@ -67,6 +67,12 @@ namespace KayMcCormick.Dev.Application
         public static Guid BasicWinForms { get; } = new Guid("c9c74fca-0769-4990-9967-2ac8c06b4630");
 
         public static Guid ProjTests { get; set; } = new Guid("{EEC2E4DC-A0BE-4472-A936-50CA7419B530}");
+
+        public static Guid Client2 { get ; } =
+            new Guid ( "9919c0fb-916c-4804-81de-f272a1b585f7" ) ;
+
+        public static Dictionary<Guid, string> GuidMap { get; } =
+            new Dictionary<Guid, string>() {[ProjTests] = "ProjTests", [Client2] = "Client2" };
     }
 
     /// <summary>

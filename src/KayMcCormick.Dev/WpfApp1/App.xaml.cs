@@ -25,6 +25,7 @@ namespace WpfApp1
                 LoadFilename = e.Args[0];
             }
             base.OnStartup(e);
+            
         }
 
         public string LoadFilename { get; set; }

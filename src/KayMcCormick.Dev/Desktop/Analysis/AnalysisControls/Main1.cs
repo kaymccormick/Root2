@@ -11,6 +11,7 @@ using NLog.Fluent;
 using System;
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -53,6 +54,7 @@ namespace AnalysisControls
             // DebugUtils.WriteLine($"Arrange input {arrangeBounds} out {outv}");
             return outv;
         }
+
         public override void EndInit()
         {
             base.EndInit();
@@ -62,7 +64,7 @@ namespace AnalysisControls
         {
             base.OnPropertyChanged(e);
             // if (e.Property.Name == "ActualWidth" || e.Property.Name == "ActualHeight")
-                // DebugUtils.WriteLine($"Property update {e.Property.Name} from {e.OldValue} to {e.NewValue}");
+            // DebugUtils.WriteLine($"Property update {e.Property.Name} from {e.OldValue} to {e.NewValue}");
         }
 
         /// <summary>
@@ -115,7 +117,9 @@ namespace AnalysisControls
         static Main1()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(Main1), new FrameworkPropertyMetadata(typeof(Main1)));
-            AttachedProperties.LifetimeScopeProperty.OverrideMetadata(typeof(Main1), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits, null, CoerceLifetimeScope));
+            AttachedProperties.LifetimeScopeProperty.OverrideMetadata(typeof(Main1),
+                new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits, null,
+                    CoerceLifetimeScope));
 
         }
 
@@ -123,11 +127,12 @@ namespace AnalysisControls
         {
             return basevalue;
             var vs = DependencyPropertyHelper.GetValueSource(d, AttachedProperties.LifetimeScopeProperty);
-            var lifetimeScope = (ILifetimeScope)basevalue;
+            var lifetimeScope = (ILifetimeScope) basevalue;
             if (lifetimeScope.Tag == "Main1")
             {
                 return lifetimeScope;
             }
+
             var main1 = (Main1) d;
             var coerceLifetimeScope = lifetimeScope.BeginLifetimeScope($"Main1", main1.ConfigAction);
             if (main1.r == null)
@@ -149,7 +154,7 @@ namespace AnalysisControls
         /// </summary>
         public Main1()
         {
-            
+
             Anchorables = _anchorables;
             SetBinding(DocumentsProperty, new Binding("ViewModel.Documents") {Source = this});
             SetBinding(AnchorablesProperty, new Binding("ViewModel.Anchorables") {Source = this});
@@ -159,15 +164,17 @@ namespace AnalysisControls
                 CanExecute));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateSolution, OnCreateSolutionExecuted));
 
-            CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateDocument, OnCreateDocumentExecuted));            CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateDocument, OnCreateDocumentExecuted));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateDocument, OnCreateDocumentExecuted));
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateDocument, OnCreateDocumentExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateClass, OnCreateClass));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateProject, OnCreateProjectExecuted));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.OpenSolutionItem, OnSolutionItemExecutedAsync));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.LoadSolution, LoadSolutionExecutedAsync));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.BrowseSymbols, OnBrowseSymbolsExecutedAsync));
-            
+
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ViewResources, OnViewResourcesExecuted));
-            CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, (sender, e) => OnOpenExecuted(ViewModel, ViewModel2, sender, e) , OnOpenCanExecute));
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.Open,
+                (sender, e) => OnOpenExecuted(ViewModel, ViewModel2, sender, e), OnOpenCanExecute));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ConvertToJson, OnConvertToJsonExecuted));
 
             //Documents.Add(new DocInfo { Description = "test", Content = Properties.Resources.Program_Parse});
@@ -175,7 +182,7 @@ namespace AnalysisControls
 
         private void OnCreateClass(object sender, ExecutedRoutedEventArgs e)
         {
-            
+
             ViewModel2.CreateClass();
         }
 
@@ -205,14 +212,15 @@ namespace AnalysisControls
                 {
                     try
                     {
-                        var json = JsonSerializer.Serialize(t1.Item2,ViewModel.JsonSerializerOptions);
+                        var json = JsonSerializer.Serialize(t1.Item2, ViewModel.JsonSerializerOptions);
                         var d = DocModel.CreateInstance();
                         d.Title = "json";
                         var dp = new DockPanel();
                         dp.Children.Add(new TextBox {Text = json});
                         d.Content = dp;
                         ViewModel.AddDocument(d);
-                    } catch(Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         DebugUtils.WriteLine(ex.ToString());
                     }
@@ -221,18 +229,19 @@ namespace AnalysisControls
             }
         }
 
-        private static async void OnOpenExecuted(Main1Model main1Model, Main1Mode2 main1Mode2, object sender, ExecutedRoutedEventArgs e)
+        private static async void OnOpenExecuted(Main1Model main1Model, Main1Mode2 main1Mode2, object sender,
+            ExecutedRoutedEventArgs e)
         {
             switch (e.Parameter)
             {
                 case null:
                 {
-                    var  x = new OpenFileDialog();
+                    var x = new OpenFileDialog();
                     if (!x.ShowDialog().GetValueOrDefault()) return;
                     var file = x.FileName;
                     if (file.ToLowerInvariant().EndsWith(".cs") || file.EndsWith(".vb"))
                     {
-		        Compilation compilation = null;
+                        Compilation compilation = null;
                         SyntaxTree tree;
                         if (file.ToLowerInvariant().EndsWith(".vb"))
                         {
@@ -242,7 +251,7 @@ namespace AnalysisControls
                                 new VisualBasicParseOptions(),
                                 file);
 
-                            compilation = VisualBasicCompilation.Create("x", new[] { tree });
+                            compilation = VisualBasicCompilation.Create("x", new[] {tree});
                         }
                         else
                         {
@@ -254,7 +263,7 @@ namespace AnalysisControls
                             tree = context.SyntaxTree;
                         }
 
-                        await  Main1Mode2.CodeDocAsync(main1Mode2, tree, compilation, file);
+                        await Main1Mode2.CodeDocAsync(main1Mode2, tree, compilation, file);
                     }
                     else if (file.ToLowerInvariant().EndsWith(".sln"))
                     {
@@ -291,12 +300,12 @@ namespace AnalysisControls
 
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
-            var sourceName = (e.Source is IAppControl iap ? iap.ControlId.ToString( ): e.Source.ToString());
+            var sourceName = (e.Source is IAppControl iap ? iap.ControlId.ToString() : e.Source.ToString());
             //new LogBuilder(Logger).Message(nameof(OnPreviewMouseDown) + " " + e.ClickCount + sourceName).Write();
             base.OnPreviewMouseDown(e);
         }
 
-   
+
         /// <summary>
         /// 
         /// </summary>
@@ -306,12 +315,12 @@ namespace AnalysisControls
             DockingManagerLayoutRoot = (LayoutRoot) GetTemplateChild("LayoutRoot");
             // CommandManager.AddPreviewCanExecuteHandler(this, PreviewCanExecute);
             CommandManager.AddPreviewExecutedHandler(this, PreviewExecuted);
-            _dockingManager = (DockingManager) GetTemplateChild("DockingManager");
+            _dockingManager = (DockingManager) GetTemplateChild("_DockingManager");
             if (_dockingManager != null)
             {
-                DockingManager = _dockingManager;//.ActiveContentChanged += DockingManagerOnActiveContentChanged;
+                DockingManager = _dockingManager; //.ActiveContentChanged += DockingManagerOnActiveContentChanged;
             }
-            
+
             AllowDrop = true;
             DragOver += OnDragOver;
 
@@ -328,7 +337,7 @@ namespace AnalysisControls
             }
             else
             {
-                
+
             }
         }
 
@@ -373,7 +382,7 @@ namespace AnalysisControls
         private void DockingManagerOnActiveContentChanged(object sender, EventArgs e)
         {
             if (DockingManager.ActiveContent != null) DebugUtils.WriteLine(DockingManager.ActiveContent.ToString());
-            ViewModel.ActiveContent = DockingManager.ActiveContent;
+            // ViewModel.ActiveContent = DockingManager.ActiveContent;
         }
 
         private async void OnSolutionItemExecutedAsync(object sender, ExecutedRoutedEventArgs e)
@@ -412,7 +421,6 @@ namespace AnalysisControls
 
         private void OnCreateWorkSpaceExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            r.Subject.OnNext("create");
             DebugUtils.WriteLine(nameof(OnCreateProjectExecuted));
             ViewModel2.CreateWorkspace();
         }
@@ -423,7 +431,7 @@ namespace AnalysisControls
             {
                 e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.All : DragDropEffects.None;
             }
-            
+
         }
 
         /// <summary>
@@ -438,11 +446,12 @@ namespace AnalysisControls
         }
 
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
-            "ViewModel", typeof(Main1Model), typeof(Main1), new PropertyMetadata(default(Main1Model), PropertyChangedCallback));
+            "ViewModel", typeof(Main1Model), typeof(Main1),
+            new PropertyMetadata(default(Main1Model), PropertyChangedCallback));
 
         private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((Main1)d).OnViewModelChanged((Main1Model) e.OldValue, (Main1Model) e.NewValue);
+            ((Main1) d).OnViewModelChanged((Main1Model) e.OldValue, (Main1Model) e.NewValue);
         }
 
         private void OnViewModelChanged(Main1Model oldValue, Main1Model newValue)
@@ -459,14 +468,26 @@ namespace AnalysisControls
         }
 
         public static readonly DependencyProperty DockingManagerProperty = DependencyProperty.Register(
-            "DockingManager", typeof(DockingManager), typeof(Main1), new PropertyMetadata(default(DockingManager), PropertyChangedCallback2));
+            "DockingManager", typeof(DockingManager), typeof(Main1),
+            new PropertyMetadata(default(DockingManager), PropertyChangedCallback2));
+
 
         private static void PropertyChangedCallback2(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var dockingManager = (DockingManager)e.NewValue;
+            var dockingManager = (DockingManager) e.NewValue;
             var main1 = (Main1) d;
-            dockingManager.DocumentClosed += main1.HandleDocumentClosed;
-            dockingManager.ActiveContentChanged += main1.DockingManagerOnActiveContentChanged;
+            if (dockingManager != null)
+            {
+                dockingManager.DocumentClosed += main1.HandleDocumentClosed;
+                dockingManager.ActiveContentChanged += main1.DockingManagerOnActiveContentChanged;
+
+                // var multiBinding = new MultiBinding();
+                // multiBinding.Bindings.Add(new Binding("ViewModel.DocHost.ActiveContent")
+                    // {Source = main1, NotifyOnTargetUpdated = true});
+                // multiBinding.Bindings.Add(new Binding("ViewModel.AnchorableHost.ActiveAnchorable")
+                    // {Source = main1, NotifyOnTargetUpdated = true});
+                // dockingManager.SetBinding(DockingManager.ActiveContentProperty, multiBinding);
+            }
         }
 
         private void HandleDocumentClosed(object sender, DocumentClosedEventArgs e)
@@ -479,6 +500,22 @@ namespace AnalysisControls
         {
             get { return (DockingManager) GetValue(DockingManagerProperty); }
             set { SetValue(DockingManagerProperty, value); }
+        }
+    }
+
+
+    class DocConverter : IMultiValueConverter
+    {
+        /// <inheritdoc />
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            return new object[] { };
         }
     }
 }

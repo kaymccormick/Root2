@@ -90,7 +90,7 @@
                                     DocumentsSource="{Binding Path=Documents}"
                                     x:Name="_DockingManager" AnchorablesSource="{Binding Anchorables}"
                                     VerticalAlignment="Stretch"
-                                    ActiveContent="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.ActiveContent,Mode=TwoWay,NotifyOnTargetUpdated=True}">
+                                    ActiveContent="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.ContentSelector.ActiveContent,Mode=TwoWay,NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True}">
                                     <avalondock:DockingManager.DocumentPaneMenuItemHeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Title}" />
@@ -5445,9 +5445,13 @@
                                 <local:RectConverter x:Key="RectConverter" />
                             </TabControl.Resources>
                             <TabItem Header="Code">
-                                <local:FormattedTextControl3
+                                <local:EnhancedCodeControl
                                     x:Name="code"
  />
+                            </TabItem>
+
+                            <TabItem Header="Source">
+                                <TextBlock Text="{Binding ElementName=code,Path=CodeControl.TextSourceText}"/>
                             </TabItem>
                             <TabItem Header="Diag">
                                 <Grid>
@@ -5461,7 +5465,7 @@
                                         <RowDefinition Height="80" />
                                     </Grid.RowDefinitions>
                                     <ListView x:Name="lines" Grid.ColumnSpan="2" Grid.Row="0" Grid.Column="0"
-                                              ItemsSource="{Binding ElementName=code,Path=LineInfos}">
+                                              ItemsSource="{Binding ElementName=code,Path=CodeControl.LineInfos}">
                                         <ListView.View>
                                             <GridView>
                                                 <GridViewColumn Header="Line no."
