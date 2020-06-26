@@ -5434,7 +5434,7 @@
     </Style>
 
     <local:DiagnosticConverter x:Key="DiagnosticConverter" />
-    <local:SizeConverter1 x:Key="SizeConverter" />
+    <local:SizeConverter x:Key="SizeConverter" />
     <Style TargetType="{x:Type local:CodeDiagnostics}">
         <Setter Property="Template">
             <Setter.Value>
