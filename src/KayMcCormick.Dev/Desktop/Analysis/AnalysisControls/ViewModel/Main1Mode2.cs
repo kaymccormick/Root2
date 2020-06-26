@@ -572,6 +572,10 @@ namespace AnalysisControls.ViewModel
                 SemanticModel model = null;
 
                 var docDocument = doc.Document;
+                var doc1 = new CodeDocument(docDocument) { Title = doc.Name };
+                _docHost.AddDocument(doc1);
+                return;
+
                 if (doc.Project.Project.SupportsCompilation)
                 {
                     compilation = await doc.Project.Project.GetCompilationAsync();
@@ -679,11 +683,7 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public CodeDocument()
         {
-            CodeControl = new CodeDiagnostics()
-            {
-                // SourceText = ""
-            };
-
+            CreateCodeControl();
         }
 
         /// <inheritdoc />
@@ -695,6 +695,18 @@ namespace AnalysisControls.ViewModel
                 .GetSemanticModel(SyntaxTree);
             CreateCodeControl(null, syntaxTree, compilation, model);
             
+        }
+
+        public CodeDocument(Document docDocument)
+        {
+            CreateCodeControl(docDocument);
+        }
+
+        private void CreateCodeControl(Document docDocument)
+        {
+            var c = DoCodeDiagnostics ? CreateCodeDiagnostics() : CreateFormattedTextControl();
+            c.Document = docDocument;
+            CodeControl = c;
         }
 
         private void CreateCodeControl(string sourceCode = null, SyntaxTree syntaxTree=null , Compilation compilation=null, SemanticModel model=null)

@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using JetBrains.Annotations;
 using KayMcCormick.Dev.Attributes;
+using Microsoft.CodeAnalysis;
 
 namespace AnalysisControls
 {
@@ -44,6 +45,30 @@ namespace AnalysisControls
     [TitleMetadata("Code Diagnostics Control")]
     public class CodeDiagnostics : SyntaxNodeControl, INotifyPropertyChanged
     {
+        /// <inheritdoc />
+        protected override void OnDocumentChanged(Document oldValue, Document newValue)
+        {
+            
+        }
+
+        /// <inheritdoc />
+        protected override void OnNodeUpdated()
+        {
+            
+        }
+
+        /// <inheritdoc />
+        protected override void OnSyntaxTreeUpdated(SyntaxTree newValue)
+        {
+            
+        }
+
+        /// <inheritdoc />
+        protected override void OnSourceTextChanged1(string newValue, string eOldValue)
+        {
+            
+        }
+
         private ListView _regions;
         private ListView _lines;
         private DrawingGroup _dgroup;

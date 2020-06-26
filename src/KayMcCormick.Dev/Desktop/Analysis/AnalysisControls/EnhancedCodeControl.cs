@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using KayMcCormick.Dev.Attributes;
+using Microsoft.CodeAnalysis;
 
 namespace AnalysisControls
 {
@@ -48,6 +49,30 @@ namespace AnalysisControls
     [TitleMetadata("Enhanced Code Control")]
     public class EnhancedCodeControl : SyntaxNodeControl
     {
+        /// <inheritdoc />
+        protected override void OnDocumentChanged(Document oldValue, Document newValue)
+        {
+
+        }
+
+        /// <inheritdoc />
+        protected override void OnNodeUpdated()
+        {
+
+        }
+
+        /// <inheritdoc />
+        protected override void OnSyntaxTreeUpdated(SyntaxTree newValue)
+        {
+
+        }
+
+        /// <inheritdoc />
+        protected override void OnSourceTextChanged1(string newValue, string eOldValue)
+        {
+
+        }
+
         /// <inheritdoc />
         protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
         {

@@ -1,4 +1,6 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using KayMcCormick.Dev;
@@ -51,13 +53,14 @@ namespace AnalysisControls
                 if (cc != null)
                 {
                     DebugUtils.WriteLine("Updating compilation to " + cc);
-                    c.DeclarationDiagnostics = cc.GetDeclarationDiagnostics();
+                    c.DeclarationDiagnostics = cc.GetDeclarationDiagnostics().ToList();
+                    c.Diagnostics = cc.GetDiagnostics().ToList();
                 }
             }
 
-            public ImmutableArray<Diagnostic> DeclarationDiagnostics { get; set; }
-
-            /// <summary>
+            public IEnumerable<Diagnostic> DeclarationDiagnostics { get; set; }
+            public IEnumerable<Diagnostic> Diagnostics { get; set; }
+        /// <summary>
         /// 
         /// </summary>
         public Compilation Compilation

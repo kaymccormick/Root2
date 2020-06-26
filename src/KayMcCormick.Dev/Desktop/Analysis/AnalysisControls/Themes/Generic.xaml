@@ -5444,6 +5444,35 @@
                         <converters:SyntaxTokenConverter x:Key="SyntaxTokenConverter" />
                         <converters:SyntaxTriviaConverter x:Key="SyntaxTriviaConverter" />
                         <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
+
+                        <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
+                        <DataTemplate DataType="{x:Type local:CodeToolTipContent}">
+                            <StackPanel Orientation="Vertical">
+                                <ItemsControl ItemsSource="{Binding Nodes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type local:SyntaxNodeDepth}">
+                                            <TextBlock Margin="{Binding Margin}" Text="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Vertical"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                                <ContentControl Content="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"></ContentControl>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Symbol: "/>
+                                    <ContentControl Content="{Binding Symbol}"></ContentControl>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Operation: "/>
+                                    <ContentControl Content="{Binding Operation}" ContentTemplateSelector="{StaticResource OperationTemplateSelector}">
+                                    </ContentControl>
+                                </StackPanel>
+
+                            </StackPanel>
+                        </DataTemplate> 
                     </ControlTemplate.Resources>
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
@@ -5454,23 +5483,54 @@
                             </TabControl.Resources>
                             <TabItem Header="Code">
                                 <local:EnhancedCodeControl
-                                    SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText}"
-                                                           SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree}"
-                                                           Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation}"
-                                                           Node="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Node}"
+                                    SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText,Mode=TwoWay}"
+                                    Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document,Mode=TwoWay}"
+                                                           SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree,Mode=TwoWay}"
+                                                           Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation,Mode=TwoWay}"
+                                                           Node="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Node,Mode=TwoWay}"
               
                                     x:Name="code"
  />
                             </TabItem>
+                            <TabItem Header="Document" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document}">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Path=FilePath}"/>
+                                    <TextBlock Text="{Binding Path=Project.Name}"/>
+                                    
+                                </StackPanel>
+                            </TabItem>
+                            <TabItem Header="Model" DataContext="{Binding ElementName=code,Path=CodeControl.Model}">
+			    <StackPanel>
+                                <TextBlock Text="{Binding Path=Language}"/>
+				</StackPanel>
+				
+                            </TabItem>
 
-                            <TabItem DataContext="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CSharpCompilation}">
-                                <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=DeclarationDiagnostics}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type codeAnalysis:Diagnostic}">
-                                            <StackPanel Orientation="Horizontal"><TextBlock Text="{Binding Converter={StaticResource DiagnosticConverter}}"/></StackPanel>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+<TabItem Header="Compilation" DataContext="{Binding ElementName=code,Path=CodeControl.Compilation}">
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Compile" Command="wpf:WpfAppCommands.Compile" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CodeControl.CodeControl}"/></StackPanel>
+                                    <TextBlock Text="{Binding Path=Language}"/>
+                                    <TextBlock Text="{Binding Path=Assembly}"/>
+                                    <TextBlock Text="{Binding Path=AssemblyName}"/>
+                                    <TextBlock Text="{Binding Path=Options.OutputKind}"/>
+                                    <ListView ItemsSource="{Binding ElementName=code,Path=CodeControl.Diagnostics}">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn  Header="Severity" DisplayMemberBinding="{Binding Path=Severity}"/>
+                                            <GridViewColumn Header="Message">
+                                                <GridViewColumn.CellTemplate>
+                                                    <DataTemplate DataType="{x:Type codeAnalysis:Diagnostic}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding Converter={StaticResource DiagnosticConverter}}"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </GridViewColumn.CellTemplate>
+                                            </GridViewColumn>
+                                            </GridView>
+                                    </ListView.View>
+                                </ListView>
+                                </StackPanel>
                             </TabItem>
 
                             <TabItem Header="Source">
@@ -5609,6 +5669,7 @@
                                     FontSize="20" />
                             </StackPanel>
                             <local:FormattedTextControl3 Grid.Row="1" Grid.Column="0"
+                                                         Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document}"
                                                          SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText}"
                                                          SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree}"
                                                          Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation}"
@@ -5636,12 +5697,12 @@
                                     <local:SymbolTextControl DisplaySymbol="{Binding HoverSymbol}" />
                                 </StackPanel>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" TextElement.FontSize="14">
+                            <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" TextElement.FontSize="16">
                                 <TextBlock Margin="10"
                                            Text="{Binding HoverRegionInfo.Trivia,Converter={StaticResource SyntaxTriviaConverter}}" />
                                 <TextBlock Margin="10" Text="{Binding HoverRegionInfo.TriviaValue.HasStructure}" />
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" TextElement.FontSize="14">
+                            <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" TextElement.FontSize="16">
                                 <StackPanel.Resources>
                                     <DataTemplate DataType="{x:Type local:SyntaxTokenTextCharacters}">
                                         <StackPanel Orientation="Horizontal" Background="Khaki">

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using AnalysisAppLib;
 using Microsoft.CodeAnalysis;
@@ -15,6 +16,38 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
+        /// 
+        public static readonly DependencyProperty DocumentProperty = DependencyProperty.Register(
+            "Document", typeof(Document), typeof(SyntaxNodeControl),
+            new PropertyMetadata(default(Document), OnDocumentChanged));
+
+        public Document Document
+        {
+            get { return (Document) GetValue(DocumentProperty); }
+            set { SetValue(DocumentProperty, value); }
+        }
+
+        private static void OnDocumentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((SyntaxNodeControl) d).OnDocumentChanged((Document) e.OldValue, (Document) e.NewValue);
+        }
+
+
+        protected virtual async void OnDocumentChanged(Document oldValue, Document newValue)
+        {
+            if (newValue != null && newValue.SupportsSyntaxTree)
+            {
+                var t = await newValue.GetSyntaxTreeAsync().ConfigureAwait(true);
+                SyntaxTree = t;
+            }
+
+            if (newValue != null && newValue.SupportsSemanticModel)
+            {
+                var model = await newValue.GetSemanticModelAsync().ConfigureAwait(true);
+                Model = model;
+            }
+        }
+
         public static readonly DependencyProperty IsSelectingProperty = DependencyProperty.Register(
             "IsSelecting", typeof(bool), typeof(SyntaxNodeControl), new PropertyMetadata(default(bool)));
 
@@ -26,6 +59,7 @@ namespace AnalysisControls
             get { return (bool) GetValue(IsSelectingProperty); }
             set { SetValue(IsSelectingProperty, value); }
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -40,21 +74,22 @@ namespace AnalysisControls
             get { return (bool) GetValue(SelectionEnabledProperty); }
             set { SetValue(SelectionEnabledProperty, value); }
         }
+
         /// <summary>
         /// 
         /// </summary>
         public static readonly DependencyProperty NodeProperty = DependencyProperty.Register(
-            "Node", typeof(SyntaxNode), typeof(SyntaxNodeControl), new PropertyMetadata(default(SyntaxNode), OnNodeUpdated));
+            "Node", typeof(SyntaxNode), typeof(SyntaxNodeControl),
+            new PropertyMetadata(default(SyntaxNode), OnNodeUpdated));
 
         private static void OnNodeUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            SyntaxNodeControl ss = (SyntaxNodeControl)d;
+            var ss = (SyntaxNodeControl) d;
             ss.OnNodeUpdated();
         }
 
         protected virtual void OnNodeUpdated()
         {
-
         }
 
         /// <summary>
@@ -71,7 +106,9 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public static readonly DependencyProperty SyntaxTreeProperty = DependencyProperty.Register(
-            "SyntaxTree", typeof(SyntaxTree), typeof(SyntaxNodeControl), new FrameworkPropertyMetadata(default(SyntaxTree),FrameworkPropertyMetadataOptions.Inherits, SyntaxTreeUpdated, CoerceValueCallback));
+            "SyntaxTree", typeof(SyntaxTree), typeof(SyntaxNodeControl),
+            new FrameworkPropertyMetadata(default(SyntaxTree), FrameworkPropertyMetadataOptions.Inherits,
+                SyntaxTreeUpdated, CoerceValueCallback));
 
         private static object CoerceValueCallback(DependencyObject d, object basevalue)
         {
@@ -80,17 +117,17 @@ namespace AnalysisControls
 
         private static void SyntaxTreeUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            SyntaxNodeControl ss = (SyntaxNodeControl)d;
-            ss.OnSyntaxTreeUpdated((SyntaxTree)e.NewValue);
+            var ss = (SyntaxNodeControl) d;
+            ss.OnSyntaxTreeUpdated((SyntaxTree) e.NewValue);
         }
 
         protected virtual void OnSyntaxTreeUpdated(SyntaxTree newValue)
         {
-	    DebugUtils.WriteLine("Syntax tree updated");
-	DebugUtils.WriteLine("Resetting model and compilation to null");
+            DebugUtils.WriteLine("Syntax tree updated");
+            DebugUtils.WriteLine("Resetting model and compilation to null");
             Model = null;
             Compilation = null;
-	DebugUtils.WriteLine("setting node to syntax root");
+            DebugUtils.WriteLine("setting node to syntax root");
             Node = newValue?.GetRoot();
         }
 
@@ -103,11 +140,6 @@ namespace AnalysisControls
             set { SetValue(SyntaxTreeProperty, value); }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(
-            "Model", typeof(SemanticModel), typeof(SyntaxNodeControl), new PropertyMetadata(default(SemanticModel)));
 
         /// <summary>
         /// 
@@ -115,13 +147,25 @@ namespace AnalysisControls
         public static readonly DependencyProperty SourceTextProperty = DependencyProperty.Register(
             "SourceText", typeof(string), typeof(SyntaxNodeControl), new PropertyMetadata("", OnSourceTextUpdated));
 
-        /// <summary>
-        /// 
-        /// </summary>
+        public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(
+            "Model", typeof(SemanticModel), typeof(SyntaxNodeControl), new PropertyMetadata(default(SemanticModel), OnModelChanged));
+
         public SemanticModel Model
         {
             get { return (SemanticModel) GetValue(ModelProperty); }
             set { SetValue(ModelProperty, value); }
+        }
+
+        private static void OnModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((SyntaxNodeControl) d).OnModelChanged((SemanticModel) e.OldValue, (SemanticModel) e.NewValue);
+        }
+
+
+
+        protected virtual void OnModelChanged(SemanticModel oldValue, SemanticModel newValue)
+        {
+		            
         }
 
         /// <summary>
@@ -142,10 +186,9 @@ namespace AnalysisControls
 
         private static void OnSourceTextUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            
-            var f = (SyntaxNodeControl)d;
+            var f = (SyntaxNodeControl) d;
 
-            f.OnSourceTextChanged1((string) e.NewValue, (string)e.OldValue);
+            f.OnSourceTextChanged1((string) e.NewValue, (string) e.OldValue);
 
             return;
 
@@ -217,7 +260,7 @@ namespace AnalysisControls
         {
             if (ChangingText)
                 return;
-            if (newValue  != null)
+            if (newValue != null)
             {
                 UpdatingSourceText = true;
                 Compilation = CSharpCompilation.Create(
@@ -226,16 +269,13 @@ namespace AnalysisControls
                     {
                         SyntaxFactory.ParseSyntaxTree(
                             newValue)
-                    }, new[] {MetadataReference.CreateFromFile(typeof(object).Assembly.Location)}, CSharpCompilationOptions);
+                    }, new[] {MetadataReference.CreateFromFile(typeof(object).Assembly.Location)},
+                    CSharpCompilationOptions);
                 SyntaxTree = Compilation.SyntaxTrees.First();
                 Node = SyntaxTree.GetRoot();
                 Model = Compilation?.GetSemanticModel(SyntaxTree);
                 UpdatingSourceText = false;
-                
-                
             }
-
-            
         }
     }
 }
