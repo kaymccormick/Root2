@@ -107,14 +107,24 @@ namespace AnalysisControls
 
                 if (_starts.Any())
                 {
-                    this.token = _starts.FirstOrDefault()?.Token;
-                    span = _starts.First().TextSpan;
-                    CheckToken(this.token);
+                    var startInfo = _starts.First();
+                    this.token = startInfo.Token;
+                    this.trivia = startInfo.SyntaxTrivia;
+                    span = startInfo.TextSpan;
+                    if(this.token.HasValue) CheckToken(this.token);
                 }
 
                 // _starts.Clear();
                 DumpStarts();
                 
+            }
+            else
+            {
+                var startInfo = _starts[_curStart];
+                this.token = startInfo.Token;
+                this.trivia = startInfo.SyntaxTrivia;
+                span = startInfo.TextSpan;
+                if (this.token.HasValue) CheckToken(this.token);
             }
 
             try
@@ -153,15 +163,15 @@ namespace AnalysisControls
             
             var token1 = this.token;
             // DebugUtils.WriteLine("Index = " + textSourceCharacterIndex);
-            if (!token1.HasValue)
-            {
-                span = TakeToken();
-                if (!this.token.HasValue) return new TextEndOfParagraph(2);
-                token1 = this.token;
+            // if (!token1.HasValue)
+            // {
+                // span = TakeToken();
+                // if (!this.token.HasValue) return new TextEndOfParagraph(2);
+                // token1 = this.token;
 
-            }
+            // }
 
-            var token = token1.Value;
+//            var token = token1.Value;
             if (!span.HasValue)
             {
 		throw new InvalidOperationException();
@@ -185,9 +195,68 @@ namespace AnalysisControls
             }
             else
             {
-                if (this.token.HasValue && (CSharpExtensions.Kind(this.token.Value) == SyntaxKind.EndOfFileToken))
+
+                if (this.trivia.HasValue)
+                {
+                    var syntaxTrivia1 = this.trivia.Value;
+                    var q = syntaxTrivia1.Token.LeadingTrivia
+                        .SkipWhile(syntaxTrivia => syntaxTrivia != syntaxTrivia1)
+                        .Skip(1);
+                    if (q.Any())
+                    {
+                        _curStart++;
+                        var startInfo = new StartInfo(q.First());
+                        if (_starts.Count <= _curStart)
+                        {
+                            
+                            _starts.Add(startInfo);
+                        }
+                        else
+                        {
+                            _starts[_curStart] = startInfo;
+                        }
+                    }
+                    else
+                    {
+                        var t2 = syntaxTrivia1.Token.GetNextToken(true, true, true, true);
+                        if (t2.HasLeadingTrivia)
+                        {
+                            var st = new StartInfo(t2.LeadingTrivia.First());
+                            _curStart++;
+                            if (_starts.Count <= _curStart)
+                            {
+
+                                _starts.Add(st);
+                            }
+                            else
+                            {
+                                _starts[_curStart] = st;
+                            }
+
+                        }
+                        else if(CSharpExtensions.Kind(t2) != SyntaxKind.None)
+                        {
+                            var st = new StartInfo(t2.Span, t2);
+                            _curStart++;
+                            if (_starts.Count <= _curStart)
+                            {
+
+                                _starts.Add(st);
+                            }
+                            else
+                            {
+                                _starts[_curStart] = st;
+                            }
+
+                        }
+                    }
+                    var t=syntaxTrivia1.ToFullString();
+                    return new SyntaxTriviaTextCharacters(t,PropsFor(trivia.Value,t),span.Value,syntaxTrivia1);
+                }
+                if (this.token.HasValue && (CSharpExtensions.Kind(this.token.Value) == SyntaxKind.None || CSharpExtensions.Kind(this.token.Value) == SyntaxKind.EndOfFileToken))
                     return new TextEndOfParagraph(2);
-                if (CSharpExtensions.Kind(token) == SyntaxKind.EndOfLineTrivia) return new CustomTextEndOfLine(2);
+                var token0 = this.token.Value;
+                if (CSharpExtensions.Kind(token0) == SyntaxKind.EndOfLineTrivia) return new CustomTextEndOfLine(2);
                 var len = k.Length;
                 if (len == 0)
                 {
@@ -196,61 +265,21 @@ namespace AnalysisControls
                 }
 
                 TakeToken();
-                if (token.Text.Length != len)
+                if (token0.Text.Length != len)
                 {
                 }
 
-                return new CustomTextCharacters(token.Text, MakeProperties(token, token.Text));
+                return new CustomTextCharacters(token0.Text, MakeProperties(token, token0.Text));
             }
 
-            DebugUtils.WriteLine($"{nameof(GetTextRun)}: {textSourceCharacterIndex}", DebugCategory.Status);
-            // Make sure text source index is in bounds.
-            if (textSourceCharacterIndex < 0)
-            {
-                DebugUtils.WriteLine("out of bounds", DebugCategory.TextFormatting);
-                throw new ArgumentOutOfRangeException(nameof(textSourceCharacterIndex),
-                    Resources.CustomTextSource3_GetTextRun_Value_must_be_greater_than_0_);
-            }
-
-            if (textSourceCharacterIndex >= Length)
-                //DebugUtils.WriteLine(Resources.CustomTextSource3_GetTextRun_past_text_source_length, DebugCategory.TextFormatting);
-                return new TextEndOfParagraph(2);
-
-
-            // Create TextCharacters using the current font rendering properties.
-            if (textSourceCharacterIndex < Length)
-            {
-                var xx = chars[textSourceCharacterIndex];
-                // var xx2 = chars2[textSourceCharacterIndex];
-                if (col[xx] is CustomTextCharacters tc)
-                {
-                    var z = textSourceCharacterIndex - tc.Index;
-                    if (z > 0)
-                        throw new InvalidOperationException("request not aligned on text run boundary:" +
-                                                            textSourceCharacterIndex);
-                    var zz = tc.Length - z;
-
-                    var tf = tc.Properties?.Typeface;
-                    var name = tf?.FaceNames[XmlLanguage.GetLanguage("en-US")];
-//                    DebugUtils.WriteLine($"Typeface: {name}", DebugCategory.TextFormatting);
-//                    DebugUtils.WriteLine("Typeface FontFamily: " + tf?.FontFamily, DebugCategory.TextFormatting);
-                    return tc;
-                }
-
-                DebugUtils.WriteLine($"returning {col[xx]}");
-
-                return col[xx];
-            }
-
-            // Return an end-of-paragraph if no more text source.
-            return new TextEndOfParagraph(1);
+        
         }
 
         private void CheckToken(SyntaxToken? syntaxToken)
         {
             if (!syntaxToken.HasValue || syntaxToken.Value.SyntaxTree != Tree)
             {
-                throw new InvalidOperationException();
+                // throw new InvalidOperationException();
             }
         }
 
@@ -679,6 +708,7 @@ private readonly List<int> chars = new List<int>();
         private SyntaxToken? token;
         private int _curStart;
         private SyntaxTree _newTree;
+        private SyntaxTrivia? trivia;
         public int EolLength { get; } = 2;
 
         /// <summary>
@@ -729,14 +759,16 @@ private readonly List<int> chars = new List<int>();
                 var istoken = sn.IsToken;
                 SyntaxToken? token00 = istoken ?sn.AsToken():(SyntaxToken?) null;
                 var fs = sn.FullSpan;
+                bool finished=false;
                 if (sn.HasLeadingTrivia)
                 {
                     var lt = sn.GetLeadingTrivia();
                     foreach (var syntaxTrivia in lt)
                     {
-                        var syntaxTriviaSpan = syntaxTrivia.Span;
+                        var syntaxTriviaSpan = syntaxTrivia.FullSpan;
                         if (syntaxTriviaSpan.IntersectsWith(textSpan))
                         {
+                               
                             var ii = _starts.FindIndex(z => z.TextSpan.OverlapsWith(syntaxTriviaSpan));
                             
                             var startInfo = new StartInfo(syntaxTrivia);
@@ -760,7 +792,7 @@ private readonly List<int> chars = new List<int>();
                             }
 
                             DebugUtils.WriteLine($"[{_curStart}]: {_starts[_curStart]}");
-                            
+                            finished = true;
                             break;
                             // foreach (var (textSpan1, syntaxToken) in _starts)
                             // {
@@ -771,6 +803,9 @@ private readonly List<int> chars = new List<int>();
                             // }
                         }
                     }
+
+                    if (finished)
+                        break;
                     var lastLt1 = lt.Last();
                     var lastlt = lastLt1.FullSpan;
                     if (lastLt1.Span.IntersectsWith(textSpan))
@@ -997,7 +1032,7 @@ private readonly List<int> chars = new List<int>();
             return $"[{nameof(SyntaxTrivia)}: {SyntaxTrivia}, {nameof(Token)}: {Token}, {nameof(TextSpan)}: {TextSpan}]";
         }
 
-        public SyntaxTrivia SyntaxTrivia { get; }
+        public SyntaxTrivia? SyntaxTrivia { get; }
 
         public StartInfo(TextSpan textSpan, SyntaxToken? token = null)
         {
@@ -1008,7 +1043,7 @@ private readonly List<int> chars = new List<int>();
         public StartInfo(in SyntaxTrivia syntaxTrivia)
         {
             SyntaxTrivia = syntaxTrivia;
-            TextSpan = syntaxTrivia.Span;
+            TextSpan = syntaxTrivia.FullSpan;
         }
 
         public SyntaxToken? Token { get; set; }

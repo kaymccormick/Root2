@@ -54,7 +54,7 @@
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
-      <Ribbon
+      <Ribbon FontSize="18"
         DataContext="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=RibbonWindow,AncestorLevel=1},Path=ViewModel.PrimaryRibbon}" d:IsHidden="True" />
       <analysisControls:Main1 HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"

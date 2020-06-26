@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjTestsCore", "Tests\Proj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfApp1", "WpfApp1\WpfApp1.csproj", "{730CE047-8794-489A-A72F-3F2298C0F174}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TraceSources", "TraceSources\TraceSources.csproj", "{42F8D760-EC7B-47A6-AE43-E442E866925C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TraceSources", "TraceSources\TraceSources.csproj", "{42F8D760-EC7B-47A6-AE43-E442E866925C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

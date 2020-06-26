@@ -26,7 +26,7 @@
     <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
     <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
     <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
-    <system:Double x:Key="ą">20.0</system:Double>
+    <system:Double x:Key="ą">30.0</system:Double>
     <SolidColorBrush x:Key="Ĉ" Color="#90B1BBC6" />
     <Geometry x:Key="ï">
         M 0,5.1 L 1.7,5.2 L 3.4,7.1 L 8,0.4 L 9.2,0 L 3.3,10.8 Z
@@ -8589,6 +8589,225 @@
             </Setter.Value>
         </Setter>
     </Style>
+  <Style TargetType="{x:Type RibbonTextBox}" x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:RibbonBuilder1}}">
+    <Setter Property="Control.Background" Value="{StaticResource ĉ}"/>
+    <Setter Property="Control.BorderBrush"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.BorderBrush}"/>
+    <Setter Property="Control.BorderThickness" Value="1"/>
+    <Setter Property="UIElement.AllowDrop" Value="true"/>
+    <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}"/>
+    <Setter Property="RibbonTextBox.TextBoxWidth" Value="200"/>
+    <Setter Property="RibbonTextBox.MouseOverBorderBrush"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.BorderBrush}"/>
+    <Setter Property="RibbonTextBox.MouseOverBackground" Value="White"/>
+    <Setter Property="RibbonTextBox.FocusedBorderBrush"
+                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.BorderBrush}"/>
+    <Setter Property="RibbonTextBox.FocusedBackground" Value="White"/>
+    <Setter Property="ToolTipService.InitialShowDelay" Value="{StaticResource Í}"/>
+    <Setter Property="ToolTipService.ShowDuration" Value="{StaticResource Î}"/>
+    <Setter Property="ToolTipService.BetweenShowDelay" Value="{StaticResource Ï}"/>
+    <Setter Property="RibbonTextBox.QuickAccessToolBarControlSizeDefinition">
+      <Setter.Value>
+        <RibbonControlSizeDefinition ImageSize="Collapsed" IsLabelVisible="true"/>
+      </Setter.Value>
+    </Setter>
+    <Setter Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type RibbonTextBox}">
+          <Border x:Name="MainBorder" Margin="1">
+            <Grid Margin="1,0,1,0" SnapsToDevicePixels="true">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition x:Name="OuterTextColumn" Width="Auto"/>
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+              </Grid.RowDefinitions>
+              <Image x:Name="Image" Source="{TemplateBinding RibbonTextBox.LargeImageSource}"
+                     RenderOptions.BitmapScalingMode="NearestNeighbor" VerticalAlignment="Center"
+                     HorizontalAlignment="Center" Grid.Row="0" Grid.Column="1" Margin="1" Width="32" Height="32"/>
+              <Grid x:Name="Grid" Row="1" Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid Name="InnerGrid" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="1">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition x:Name="TextColumn" Width="Auto"/>
+                  </Grid.ColumnDefinitions>
+                  <Grid x:Name="TwoLineTextPanel" Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <RibbonTwoLineText x:Name="TwoLineText" Text="{TemplateBinding RibbonTextBox.Label}"
+                                              TextAlignment="Center" LineHeight="13px" LineStackingStrategy="BlockLineHeight" Margin="2,0,2,0"/>
+                    <Rectangle x:Name="FocusVisual" Margin="1" StrokeThickness="1" Stroke="Black" StrokeDashArray="1 2"
+                               Visibility="Collapsed"/>
+                  </Grid>
+                  <Border x:Name="Border" Grid.Column="1" BorderThickness="{TemplateBinding Control.BorderThickness}"
+                          BorderBrush="{TemplateBinding Control.BorderBrush}"
+                          Background="{TemplateBinding Control.Background}" Height="{StaticResource ą}"
+                          HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,2,0">
+                    <ScrollViewer x:Name="PART_ContentHost" Margin="0,1,0,1"
+                                  Width="{TemplateBinding RibbonTextBox.TextBoxWidth}" VerticalAlignment="Center"/>
+                  </Border>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Border>
+          <ControlTemplate.Triggers>
+            <DataTrigger Value="True"
+                                 Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.Width.IsStar}">
+              <Setter TargetName="TextColumn" Property="ColumnDefinition.Width" Value="*"/>
+              <Setter TargetName="OuterTextColumn" Property="ColumnDefinition.Width" Value="*"/>
+              <Setter TargetName="PART_ContentHost" Property="FrameworkElement.Width" Value="Auto"/>
+              <Setter TargetName="Border" Property="FrameworkElement.HorizontalAlignment" Value="Stretch"/>
+              <Setter TargetName="Grid" Property="FrameworkElement.HorizontalAlignment" Value="Stretch"/>
+              <Setter TargetName="InnerGrid" Property="FrameworkElement.HorizontalAlignment" Value="Stretch"/>
+            </DataTrigger>
+            <DataTrigger Value="Large"
+                                 Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.ImageSize}">
+              <Setter Property="FrameworkElement.MinWidth" Value="44"/>
+              <Setter Property="FrameworkElement.Height" Value="66"/>
+              <Setter TargetName="Image" Property="FrameworkElement.Height" Value="32"/>
+              <Setter TargetName="Image" Property="FrameworkElement.Width" Value="32"/>
+              <Setter TargetName="Grid" Property="FrameworkElement.MinHeight" Value="26"/>
+              <Setter TargetName="TwoLineText" Property="RibbonTwoLineText.HasTwoLines" Value="true"/>
+            </DataTrigger>
+            <DataTrigger Value="Small"
+                                 Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.ImageSize}">
+              <Setter Value="{StaticResource Ć}" Property="FrameworkElement.Height"/>
+              <Setter TargetName="Image"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SmallImageSource}"
+                              Property="Image.Source"/>
+              <Setter TargetName="Image" Property="FrameworkElement.Height" Value="16"/>
+              <Setter TargetName="Image" Property="FrameworkElement.Width" Value="16"/>
+              <Setter TargetName="Image" Property="FrameworkElement.HorizontalAlignment" Value="Left"/>
+              <Setter TargetName="Image" Property="FrameworkElement.Margin" Value="2,0,1,0"/>
+              <Setter TargetName="TwoLineText" Property="FrameworkElement.Margin" Value="2,0,1,0"/>
+              <Setter TargetName="TwoLineText" Property="RibbonTwoLineText.HasTwoLines" Value="false"/>
+              <Setter TargetName="Image" Property="Grid.Column" Value="0"/>
+              <Setter TargetName="Image" Property="Grid.Row" Value="1"/>
+              <Setter TargetName="InnerGrid" Property="FrameworkElement.Margin" Value="0"/>
+            </DataTrigger>
+            <DataTrigger Value="Collapsed"
+                                 Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.ImageSize}">
+              <Setter TargetName="Image" Property="UIElement.Visibility" Value="Collapsed"/>
+            </DataTrigger>
+            <DataTrigger Value="False"
+                                 Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.IsLabelVisible}">
+              <Setter TargetName="TwoLineTextPanel" Property="UIElement.Visibility" Value="Collapsed"/>
+            </DataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="Border"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBackground}"
+                              Property="Border.Background"/>
+              <Setter TargetName="Border"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBorderBrush}"
+                              Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="Border"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBackground}"
+                              Property="Border.Background"/>
+              <Setter TargetName="Border"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBorderBrush}"
+                              Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <Trigger Property="RibbonTextBox.ShowKeyboardCues" Value="true">
+              <Setter TargetName="FocusVisual" Property="UIElement.Visibility" Value="Visible"/>
+            </Trigger>
+            <Trigger Property="UIElement.IsEnabled" Value="false">
+              <Setter TargetName="Image" Property="UIElement.Opacity" Value="0.5"/>
+              <Setter TargetName="Border" Value="{StaticResource ć}" Property="Border.Background"/>
+              <Setter TargetName="Border" Value="{StaticResource Ĉ}" Property="Border.BorderBrush"/>
+              <Setter TargetName="MainBorder" Value="{StaticResource Ë}" Property="TextElement.Foreground"/>
+            </Trigger>
+            <Trigger Property="RibbonTextBox.IsInControlGroup" Value="true">
+              <Setter TargetName="MainBorder"
+                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Ribbon.BorderBrush}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="MainBorder" Property="Border.BorderThickness" Value="0,0,1,0"/>
+            </Trigger>
+            <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
+              <Setter Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                              Property="Control.Background"/>
+              <Setter TargetName="Border"
+                              Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+                              Property="Border.BorderBrush"/>
+              <Setter TargetName="Border" Property="Border.Background" Value="Transparent"/>
+              <Setter TargetName="FocusVisual"
+                              Value="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}"
+                              Property="Shape.Stroke"/>
+              <Setter TargetName="MainBorder"
+                              Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
+                              Property="TextElement.Foreground"/>
+            </DataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsInControlGroup}" Value="True"/>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="MainBorder"
+                              Value="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}"
+                              Property="Border.BorderBrush"/>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="False"/>
+                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="MainBorder"
+                              Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                              Property="TextElement.Foreground"/>
+            </MultiDataTrigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Resources>
+      <Style TargetType="{x:Type ScrollViewer}">
+        <Setter Property="ContentControl.ContentTemplate">
+          <Setter.Value>
+            <DataTemplate>
+              <Grid RenderOptions.ClearTypeHint="Enabled">
+                <Canvas x:Name="BackgroundCanvas" Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                  <Rectangle x:Name="OpaqueRect" Height="{Binding ElementName=PART_ContentHost, Path=ActualHeight}"
+                             Width="{Binding ElementName=PART_ContentHost, Path=ActualWidth}"
+                             Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type Ribbon}}, Path=Background}"/>
+                  <Rectangle x:Name="OverlayRect" Height="{Binding ElementName=PART_ContentHost, Path=ActualHeight}"
+                             Width="{Binding ElementName=PART_ContentHost, Path=ActualWidth}"
+                             Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RibbonTextBox}}, Path=Background}"/>
+                </Canvas>
+                <ContentPresenter Content="{Binding}"/>
+              </Grid>
+              <DataTemplate.Triggers>
+                <DataTrigger Value="false"
+                                     Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}, Path=(ScrollViewer.CanContentScroll)}">
+                  <Setter TargetName="OpaqueRect" Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=VerticalOffset}"
+                                  Property="Canvas.Top"/>
+                  <Setter TargetName="OpaqueRect"
+                                  Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=HorizontalOffset}"
+                                  Property="Canvas.Left"/>
+                  <Setter TargetName="OverlayRect"
+                                  Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=VerticalOffset}" Property="Canvas.Top"/>
+                  <Setter TargetName="OverlayRect"
+                                  Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=HorizontalOffset}"
+                                  Property="Canvas.Left"/>
+                </DataTrigger>
+                <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
+                  <Setter TargetName="BackgroundCanvas" Property="UIElement.Visibility" Value="Collapsed"/>
+                </DataTrigger>
+              </DataTemplate.Triggers>
+            </DataTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+    </Style.Resources>
+  </Style>
 
 
 </ResourceDictionary>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -21,7 +22,7 @@ namespace AnalysisControls
         private RibbonModelGroup _group;
         private RibbonModelTab _tab;
         private RibbonModelGroup _focusGroup;
-        private Dictionary<DependencyObject, RibbonModelItemTextBox> scopes = new Dictionary<DependencyObject, RibbonModelItemTextBox>();
+        private Dictionary<DependencyObject, RibbonModelControl> scopes = new Dictionary<DependencyObject, RibbonModelControl>();
 
         public NavigationTabProvider(IDocumentHost docHost, IContentSelector contentSelector, Func<RibbonModelTab> factory) : base(factory)
         {
@@ -64,15 +65,18 @@ namespace AnalysisControls
             DebugUtils.WriteLine($"Got Scope - {e.OriginalSource}");
             var x = (DependencyObject) e.OriginalSource;
             var scope = FocusManager.GetFocusScope(x);
+            var modelItemValue = x.ToString();//.ToString();
+            var textBlock = new TextBlock { Text = modelItemValue };
             if (!scopes.TryGetValue(scope, out var modelItem))
             {
-                modelItem = new RibbonModelItemTextBox(){Value = x.ToString(), Label = scope.ToString()};
+             
+                modelItem = new RibbonModelControl(){Content = textBlock, Label = scope.ToString()};
                 _focusGroup.Items.Add(modelItem);
                 scopes[scope] = modelItem;
             }
             else
             {
-                modelItem.Value= x.ToString();
+                modelItem.Content= textBlock;
             }
 
             e.Handled = true;

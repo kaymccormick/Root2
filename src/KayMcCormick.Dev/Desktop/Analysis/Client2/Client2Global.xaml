@@ -2,9 +2,15 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Client2"
                     xmlns:codeAnalysis="clr-namespace:Microsoft.CodeAnalysis;assembly=Microsoft.CodeAnalysis"
-                    >
+                    xmlns:model="clr-namespace:RibbonLib.Model;assembly=RibbonLibCore"
+                    xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControlsCore">
+    <DataTemplate DataType="{x:Type model:RibbonModelItemTextBox}">
+        <RibbonTextBox Label="{Binding Label}" Text="{Binding Path=Value}" Style="{DynamicResource {ComponentResourceKey TypeInTargetAssembly={x:Type analysisControls:RibbonBuilder1}}}"
+        />
+        <!-- {Binding Path=(TextElement.FontFamily).LineSpacing,Converter={StaticResource EmConverter},ConverterParameter={Binding Path=(TextElement.FontSize)}}" /> -->
+    </DataTemplate>
 
-  <DataTemplate x:Key="Diagnostic" DataType="{x:Type codeAnalysis:Diagnostic}">
+<DataTemplate x:Key="Diagnostic" DataType="{x:Type codeAnalysis:Diagnostic}">
     <DataTemplate.Resources>
     </DataTemplate.Resources>
     <RibbonMenuItem>
