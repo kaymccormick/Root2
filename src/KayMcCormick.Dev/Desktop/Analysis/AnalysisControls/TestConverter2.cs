@@ -21,7 +21,9 @@ namespace AnalysisControls
         /// <inheritdoc />
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            DebugUtils.WriteLine($"{parameter} - {value} - {targetType.FullName}");
+            return value;
+
         }
     }
 }

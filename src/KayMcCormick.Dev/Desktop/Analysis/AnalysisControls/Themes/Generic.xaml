@@ -51,7 +51,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Main1}">
                     <ControlTemplate.Resources>
-                        <DataTemplate DataType="{x:Type local:DocModel}">
+                                <local:TestConverter2 x:Key="TestConverter" />                        <DataTemplate DataType="{x:Type local:DocModel}">
                             <local:DocumentView Document="{Binding}" />
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type local:AnchorableModel}">
@@ -90,7 +90,7 @@
                                     DocumentsSource="{Binding Path=Documents}"
                                     x:Name="_DockingManager" AnchorablesSource="{Binding Anchorables}"
                                     VerticalAlignment="Stretch"
-                                    ActiveContent="{Binding RelativeSource={RelativeSource TemplatedParent},Path=ViewModel.ContentSelector.ActiveContent,Mode=TwoWay,NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True}">
+                                    ActiveContent="{Binding Path=ContentSelector.ActiveContent,Mode=TwoWay,NotifyOnTargetUpdated=True,NotifyOnSourceUpdated=True,Converter={StaticResource TestConverter},ConverterParameter=ACTIVECONTENT}">
                                     <avalondock:DockingManager.DocumentPaneMenuItemHeaderTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Title}" />
@@ -5160,7 +5160,7 @@
                             </Grid.ColumnDefinitions>
                             <ScrollViewer VerticalAlignment="Stretch" x:Name="ScrollViewer"
                                           HorizontalContentAlignment="Left"
-                                          VerticalContentAlignment="Top">
+                                          VerticalContentAlignment="Top" Focusable="False">
 
                                 <Grid x:Name="InnerGrid">
                                     <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left"

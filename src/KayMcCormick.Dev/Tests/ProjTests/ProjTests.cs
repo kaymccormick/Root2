@@ -1933,7 +1933,7 @@ namespace ProjTests
         {
             var c = new WorkspaceView();
             var replay = new ReplaySubject<Workspace>();
-            var model = new Main1Mode2(replay);
+            var model = new Main1Mode2();
             model.CreateWorkspace();
             c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierarchyRoot") {Source = model});
             model.CreateProject();
@@ -1951,7 +1951,7 @@ namespace ProjTests
                 (sender, args) => DebugUtils.WriteLine(args.LoadedAssembly.FullName);
             var c = new WorkspaceView();
             var replay = new ReplaySubject<Workspace>();
-            var model = new Main1Mode2(replay);
+            var model = new Main1Mode2();
             model.LoadSolutionAsync(
                 solutionPath);
             c.SetBinding(WorkspaceView.SolutionsProperty, new Binding("HierarchyRoot") {Source = model});
@@ -1963,7 +1963,7 @@ namespace ProjTests
         public void TestWorkspaceModel()
         {
             var replay = new ReplaySubject<Workspace>();
-            var model = new Main1Mode2(replay);
+            var model = new Main1Mode2();
             model.LoadSolutionAsync(
                 solutionPath).ContinueWith(
                 task =>
@@ -1994,17 +1994,12 @@ namespace ProjTests
             m.RibbonItems.Add(t);
             //var x = new RibbonViewGroupProviderBaseImpl();
             //t.ItemsCollection.Add(x.ProvideModelItem());
-            var window = new TemplateWindow();
-            window.Content = new Ribbon {ItemsSource = m.RibbonItems};
+            var window = new TemplateWindow {Content = new Ribbon {ItemsSource = m.RibbonItems}};
             window.Show();
         }
 
 
-        private void Documents_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-        }
-
-      //  [WpfFact]
+        //  [WpfFact]
         public void TestCodeEntry()
         {
             var c = new FormattedTextControl();

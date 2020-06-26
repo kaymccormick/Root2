@@ -235,6 +235,7 @@ namespace KayMcCormick.Dev.Application
 
 
             _disableServiceHost = applicationInstanceConfiguration.DisableServiceHost;
+//applicationInstanceConfiguration.AppGuid
 
             var serviceCollection = new ServiceCollection();
 

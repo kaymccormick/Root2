@@ -48,6 +48,13 @@ namespace AnalysisControls
     [TitleMetadata("Enhanced Code Control")]
     public class EnhancedCodeControl : SyntaxNodeControl
     {
+        /// <inheritdoc />
+        protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
+        {
+            base.OnGotKeyboardFocus(e);
+            // if (CodeControl != null) Keyboard.Focus(CodeControl);
+        }
+
         protected override Size MeasureOverride(Size constraint)
         {   
             return base.MeasureOverride(constraint);

@@ -164,7 +164,7 @@ namespace AnalysisControls
             var token = token1.Value;
             if (!span.HasValue)
             {
-
+		throw new InvalidOperationException();
             }
             var k = span.Value;
 

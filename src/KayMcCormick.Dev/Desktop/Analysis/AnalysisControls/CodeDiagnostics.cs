@@ -1,9 +1,13 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using JetBrains.Annotations;
 using KayMcCormick.Dev.Attributes;
 
 namespace AnalysisControls
@@ -38,12 +42,13 @@ namespace AnalysisControls
     ///
     /// </summary>
     [TitleMetadata("Code Diagnostics Control")]
-    public class CodeDiagnostics : SyntaxNodeControl
+    public class CodeDiagnostics : SyntaxNodeControl, INotifyPropertyChanged
     {
         private ListView _regions;
         private ListView _lines;
         private DrawingGroup _dgroup;
         private Rectangle _rect;
+        private EnhancedCodeControl _codeControl;
 
         static CodeDiagnostics()
         {
@@ -62,7 +67,35 @@ namespace AnalysisControls
             _lines.SelectionChanged += LinesOnSelectionChanged;
         }
 
-        public EnhancedCodeControl CodeControl { get; set; }
+        /// <inheritdoc />
+        protected override void OnGotFocus(RoutedEventArgs e)
+        {
+            base.OnGotFocus(e);
+            // if (CodeControl != null) Keyboard.Focus(CodeControl);
+            // else Keyboard.Focus(this);
+        }
+
+        /// <inheritdoc />
+        protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
+        {
+            base.OnGotKeyboardFocus(e);
+            // if (CodeControl != null) Keyboard.Focus(CodeControl);
+        }
+
+        public EnhancedCodeControl CodeControl
+        {
+            get { return _codeControl; }
+            set
+            {
+                if (Equals(value, _codeControl)) return;
+                _codeControl = value;
+                if (HasEffectiveKeyboardFocus)
+                {
+                    Keyboard.Focus(_codeControl);
+                }
+                OnPropertyChanged();
+            }
+        }
 
         private void LinesOnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -119,6 +152,14 @@ namespace AnalysisControls
             {
                 png.Save(s);
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

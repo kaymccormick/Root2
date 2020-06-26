@@ -86,7 +86,7 @@ namespace AnalysisControls
 
         public virtual IEnumerable RibbonItems { get;  } = new ObservableCollection<object>();
 
-        public bool IsActive
+        public virtual bool IsActive
         {
             get { return _isActive; }
             set

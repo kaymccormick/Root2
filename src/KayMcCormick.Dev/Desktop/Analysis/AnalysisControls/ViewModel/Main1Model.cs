@@ -329,7 +329,7 @@ namespace AnalysisControls.ViewModel
         public Main1Model()
         {
             
-
+	    BindingOperations.SetBinding(this, Main1Model.ActiveContentProperty, new Binding("ContentSelector.ActiveContent") { Source = this });
             DocumentsCollection = new ObservableCollection<object>();
             Anchorables = new ObservableCollection<object>();
             //_r = r;

@@ -9,6 +9,7 @@ using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Threading;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
@@ -673,6 +674,8 @@ namespace AnalysisControls.ViewModel
 
     internal class CodeDocument : DocModel
     {
+        private bool _isActive;
+
         /// <inheritdoc />
         public CodeDocument()
         {
@@ -720,6 +723,22 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public override IEnumerable ContextualTabGroupHeaders =>
             new[] {"Code Analysis"};
+
+        /// <inheritdoc />
+        public override bool IsActive
+        {
+            get { return _isActive; }
+            set
+            {
+                if (value == _isActive) return;
+                _isActive = value;
+                if (_isActive)
+                {
+                    if (CodeControl != null) Keyboard.Focus(CodeControl);
+                }
+                OnPropertyChanged();
+            }
+        }
 
         /// <inheritdoc />
         public override object Content => CodeControl;
