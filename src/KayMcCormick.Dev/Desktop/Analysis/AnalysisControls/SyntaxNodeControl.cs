@@ -258,7 +258,7 @@ namespace AnalysisControls
 
         protected virtual void OnSourceTextChanged1(string newValue, string eOldValue)
         {
-            if (ChangingText)
+            if (ChangingText || UpdatingSourceText)
                 return;
             if (newValue != null)
             {

@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -34,17 +35,19 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <param name="pixelsPerDip"></param>
+        /// <param name="fontRendering"></param>
+        /// <param name="genericTextRunProperties"></param>
+        /// <param name="synchContext"></param>
         /// <param name="typefaceManager"></param>
-        public CustomTextSource4(double pixelsPerDip, ITypefaceManager typefaceManager)
+        public CustomTextSource4(double pixelsPerDip, FontRendering fontRendering,
+            GenericTextRunProperties genericTextRunProperties, SynchronizationContext synchContext)
         {
             PixelsPerDip = pixelsPerDip;
-            _typeface = typefaceManager.GetDefaultTypeface();
+            //_typeface = typefaceManager.GetDefaultTypeface();
 
-            Rendering = typefaceManager.GetRendering(EmSize, TextAlignment.Left, new TextDecorationCollection(),
-                Brushes.Black,
-                _typeface);
-            BaseProps = TextPropertiesManager.GetBasicTextRunProperties(
-                PixelsPerDip, Rendering);
+            Rendering = fontRendering;
+            SynchContext = synchContext;
+            _baseProps = genericTextRunProperties;
             _prev = null;
         }
 
@@ -74,7 +77,6 @@ namespace AnalysisControls
                 yield return new SyntaxInfo(token1);
                 if (token1.HasTrailingTrivia)
                     foreach (var syntaxTrivia in token1.TrailingTrivia)
-                    {
                         if (false && syntaxTrivia.IsPartOfStructuredTrivia())
                         {
                             var syntaxNode = syntaxTrivia.GetStructure();
@@ -94,12 +96,14 @@ namespace AnalysisControls
                             {
                                 if (token2.HasLeadingTrivia)
                                     foreach (var syntaxTrivia2 in token2.LeadingTrivia)
-                                        yield return new SyntaxInfo(syntaxTrivia2, token2, TriviaPosition.Leading){StructuredTrivia = syntaxNode};
+                                        yield return new SyntaxInfo(syntaxTrivia2, token2, TriviaPosition.Leading)
+                                            {StructuredTrivia = syntaxNode};
 
-                                yield return new SyntaxInfo(token2){StructuredTrivia = syntaxNode};
+                                yield return new SyntaxInfo(token2) {StructuredTrivia = syntaxNode};
                                 if (token2.HasTrailingTrivia)
                                     foreach (var syntaxTrivia2 in token2.TrailingTrivia)
-                                        yield return new SyntaxInfo(syntaxTrivia2, token2, TriviaPosition.Trailing) { StructuredTrivia = syntaxNode };
+                                        yield return new SyntaxInfo(syntaxTrivia2, token2, TriviaPosition.Trailing)
+                                            {StructuredTrivia = syntaxNode};
 
                                 token2 = token2.GetNextToken(true, true, true, true);
                             }
@@ -108,7 +112,6 @@ namespace AnalysisControls
                         {
                             yield return new SyntaxInfo(syntaxTrivia, token1, TriviaPosition.Trailing);
                         }
-                    }
 
                 token1 = token1.GetNextToken(true, true, true, true);
                 if (token1.HasLeadingTrivia)
@@ -142,7 +145,7 @@ namespace AnalysisControls
                         // else
                         // {
                         yield return new SyntaxInfo(syntaxTrivia, token1, TriviaPosition.Leading);
-                    // }
+                // }
             }
 
             yield break;
@@ -157,24 +160,18 @@ namespace AnalysisControls
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public override TextRun GetTextRun(int textSourceCharacterIndex)
         {
-            DebugUtils.WriteLine($"GetTextRun(textSourceCharacterIndex = {textSourceCharacterIndex})");
+            // DebugUtils.WriteLine($"GetTextRun(textSourceCharacterIndex = {textSourceCharacterIndex})");
 
             // if (!SyntaxInfos.MoveNext()) return new TextEndOfParagraph(2);
 
             if (textSourceCharacterIndex == 0)
             {
-                SyntaxInfos= GetSyntaxInfos().GetEnumerator();
-                if (!SyntaxInfos.MoveNext())
-                {
-                    return new TextEndOfParagraph(2);
-                }
+                SyntaxInfos = GetSyntaxInfos().GetEnumerator();
+                if (!SyntaxInfos.MoveNext()) return new TextEndOfParagraph(2);
             }
 
             var si = SyntaxInfos.Current;
-            if (si == null)
-            {
-                return new TextEndOfParagraph(2);
-            }
+            if (si == null) return new TextEndOfParagraph(2);
             while (si.Span1.End <= textSourceCharacterIndex || si.Text.Length == 0)
             {
                 if (!SyntaxInfos.MoveNext()) return new TextEndOfParagraph(2);
@@ -209,7 +206,7 @@ namespace AnalysisControls
                     si.SyntaxToken.Value, si.SyntaxToken.Value.Parent);
             }
 
-            throw new AppInvalidOperationException();
+            return new TextEndOfParagraph(2);
             DebugUtils.WriteLine($"index: {textSourceCharacterIndex}");
 
             TextSpan? TakeToken()
@@ -284,7 +281,8 @@ namespace AnalysisControls
 
                                 var characterString = syntaxTrivia.ToFullString();
                                 return new SyntaxTriviaTextCharacters(characterString,
-                                    PropsFor(syntaxTrivia, characterString), syntaxTrivia.FullSpan, syntaxTrivia,null,null, TriviaPosition.Leading);
+                                    PropsFor(syntaxTrivia, characterString), syntaxTrivia.FullSpan, syntaxTrivia, null,
+                                    null, TriviaPosition.Leading);
                             }
                 }
             }
@@ -363,7 +361,8 @@ namespace AnalysisControls
                     }
 
                     var t = syntaxTrivia1.ToFullString();
-                    return new SyntaxTriviaTextCharacters(t, PropsFor(trivia.Value, t), span.Value, syntaxTrivia1,null,null, TriviaPosition.Leading);
+                    return new SyntaxTriviaTextCharacters(t, PropsFor(trivia.Value, t), span.Value, syntaxTrivia1, null,
+                        null, TriviaPosition.Leading);
                 }
 
                 if (token.HasValue && (CSharpExtensions.Kind(token.Value) == SyntaxKind.None ||
@@ -459,6 +458,7 @@ namespace AnalysisControls
             DebugUtils.WriteLine($"{syntaxKind}", DebugCategory.TextFormatting);
             if (syntaxKind == SyntaxKind.SingleLineCommentTrivia || syntaxKind == SyntaxKind.MultiLineCommentTrivia)
             {
+                r.WithFontFamily(new FontFamily("B612 Mono"));
                 r.SetForegroundBrush(Brushes.YellowGreen);
             }
 
@@ -485,7 +485,7 @@ namespace AnalysisControls
                 if (Equals(value, _node)) return;
                 _node = value;
                 SyntaxInfos = GetSyntaxInfos().GetEnumerator();
-            OnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -494,37 +494,7 @@ namespace AnalysisControls
         /// </summary>
         public void GenerateText()
         {
-#if false
-            if (Tree is VisualBasicSyntaxTree)
-            {
-                var f1 = new SyntaxTalkVb(col, this, TakeTextRun, MakeProperties);
-                if (Node != null) f1.DefaultVisit(Node);
-            }
-            else
-            {
-                var f = new SyntaxWalkerF(col, this, TakeTextRun, MakeProperties);
-                var token = Node.GetFirstToken();
-                DebugUtils.WriteLine(token.Span.ToString());
-                var t2 = token.GetNextToken();
-                DebugUtils.WriteLine(t2.Span.ToString());
-                f.DefaultVisit(Node ?? Tree.GetRoot());
-            }
 
-            var i = 0;
-            chars.Clear();
-            //var model =  Compilation?.GetSemanticModel(Tree);
-            foreach (var textRun in col)
-            {
-                Length += textRun.Length;
-                chars.AddRange(Enumerable.Repeat(i, textRun.Length));
-                i++;
-
-                if (textRun.Properties is GenericTextRunProperties)
-                {
-                    //DebugUtils.WriteLine(gp.SyntaxToken.ToString(), DebugCategory.TextFormatting);
-                }
-            }
-#endif
         }
 
         /// <summary>
@@ -785,7 +755,7 @@ namespace AnalysisControls
             if (text.Trim().Length == 0) return pp;
 
             pp.SetForegroundBrush(Brushes.Fuchsia);
-            pp.SetBackgroundBrush(Brushes.Black);
+            // pp.SetBackgroundBrush(Brushes.Black);
             return pp;
         }
 
@@ -803,7 +773,12 @@ namespace AnalysisControls
         private IList colx = new ArrayList();
         private SyntaxNode _node;
         private readonly Typeface _typeface;
-        public override GenericTextRunProperties BaseProps { get; }
+
+        public override GenericTextRunProperties BaseProps
+        {
+            get { return _baseProps; }
+            set { _baseProps = value; }
+        }
 
         public List<CompilationError> Errors
         {
@@ -831,12 +806,15 @@ namespace AnalysisControls
         private SyntaxTrivia? trivia;
         private SyntaxInfo _prev;
         private IEnumerator<SyntaxInfo> _syntaxInfos;
+        private GenericTextRunProperties _baseProps;
         public int EolLength { get; } = 2;
 
         /// <summary>
         /// 
         /// </summary>
         private FontRendering Rendering { get; }
+
+        public SynchronizationContext SynchContext { get; }
 
         #endregion
 
@@ -1076,7 +1054,7 @@ namespace AnalysisControls
 #endif
         }
 
-        private IEnumerator<SyntaxInfo> SyntaxInfos 
+        private IEnumerator<SyntaxInfo> SyntaxInfos
         {
             get { return _syntaxInfos; }
             set

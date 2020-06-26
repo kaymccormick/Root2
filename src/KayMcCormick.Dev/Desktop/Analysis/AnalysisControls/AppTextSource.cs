@@ -22,7 +22,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public abstract GenericTextRunProperties BaseProps { get; }
+        public abstract GenericTextRunProperties BaseProps { get; set; }
 
         /// <summary>
         /// 

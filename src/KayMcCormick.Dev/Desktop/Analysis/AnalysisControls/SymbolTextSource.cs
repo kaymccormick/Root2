@@ -39,7 +39,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public Compilation Compilation { get; set; }
-        public override GenericTextRunProperties BaseProps { get; }
+        public override GenericTextRunProperties BaseProps { get; set; }
 
         /// <inheritdoc />
         public int EolLength { get; }

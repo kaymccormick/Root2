@@ -6,12 +6,15 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.TextFormatting;
 using System.Windows.Shapes;
 using AnalysisAppLib;
@@ -34,20 +37,18 @@ namespace AnalysisControls
         /// <inheritdoc />
         protected override void OnDocumentChanged(Document oldValue, Document newValue)
         {
-            TextSource = null;
             base.OnDocumentChanged(oldValue, newValue);
-            
         }
 
         /// <inheritdoc />
         protected override void OnModelChanged(SemanticModel oldValue, SemanticModel newValue)
         {
             base.OnModelChanged(oldValue, newValue);
-            
         }
 
         public static readonly DependencyProperty InsertionPointProperty = DependencyProperty.Register(
-            "InsertionPoint", typeof(int), typeof(FormattedTextControl3), new PropertyMetadata(default(int), OnInsertionPointChanged));
+            "InsertionPoint", typeof(int), typeof(FormattedTextControl3),
+            new PropertyMetadata(default(int), OnInsertionPointChanged));
 
         public int InsertionPoint
         {
@@ -61,10 +62,8 @@ namespace AnalysisControls
         }
 
 
-
         protected virtual async void OnInsertionPointChanged(int oldValue, int newValue)
         {
-            
             var completionService = CompletionService.GetService(Document);
             var results = await completionService.GetCompletionsAsync(Document, InsertionPoint);
             foreach (var completionItem in results.Items)
@@ -202,7 +201,7 @@ namespace AnalysisControls
             get
             {
                 if (_currentRendering == null)
-                    _currentRendering = FontRendering.CreateInstance(EmSize,
+                    _currentRendering = FontRendering.CreateInstance(FontSize,
                         TextAlignment.Left,
                         null,
                         Brushes.Black,
@@ -220,48 +219,45 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        protected CustomTextSource4 TextSource
-        {
-            get
-            {
-                if (_store == null) _store = CreateAndInitTextSource(PixelsPerDip, TypefaceManager);
-                return _store;
-            }
-            set { _store = value; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="pixelsPerDip"></param>
+        /// <param name="tf"></param>
+        /// <param name="st"></param>
+        /// <param name="node"></param>
+        /// <param name="compilation"></param>
+        /// <param name="s1"></param>
         /// <param name="typefaceManager"></param>
         /// <returns></returns>
-        protected CustomTextSource4 CreateAndInitTextSource(double pixelsPerDip, ITypefaceManager typefaceManager)
+        protected CustomTextSource4 CreateAndInitTextSource(double pixelsPerDip,
+            Typeface tf, SyntaxTree st, SyntaxNode node, Compilation compilation, SynchronizationContext synchContext, double fontSize)
         {
-            var st = SyntaxTree;
-            var node = Node;
-            var compilation = Compilation;
-            var errs = Errors;
+            
             if (st == null)
             {
                 st = SyntaxFactory.ParseSyntaxTree("");
                 node = st.GetRoot();
                 compilation = null;
-                errs = null;
             }
 
-            var source = new CustomTextSource4(pixelsPerDip, typefaceManager)
+            var textDecorationCollection = new TextDecorationCollection();
+            var typeface = tf;
+            var fontRendering = FontRendering.CreateInstance(FontSize,
+                TextAlignment.Left, textDecorationCollection,
+                Brushes.Black, typeface);
+            var source = new CustomTextSource4(pixelsPerDip, fontRendering, new GenericTextRunProperties(
+                fontRendering,
+                PixelsPerDip), synchContext)
             {
-                EmSize = EmSize,
+                EmSize = fontSize,
                 Compilation = compilation,
                 Tree = st,
-                Node = node,
-                Errors = errs
+                Node = node
             };
             source.PropertyChanged += SourceOnPropertyChanged;
             source.Init();
             return source;
         }
+
+        public SynchronizationContext SynchContext { get; set; }
 
         private void SourceOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -356,6 +352,19 @@ namespace AnalysisControls
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(FormattedTextControl3),
                 new FrameworkPropertyMetadata(typeof(FormattedTextControl3)));
+            TextElement.FontFamilyProperty.OverrideMetadata(typeof(FormattedTextControl3), new PropertyMetadata(null, PropertyChangedCallback));
+            TextElement.FontSizeProperty.OverrideMetadata(typeof(FormattedTextControl3), new PropertyMetadata(null, PropertyChangedCallback2));
+        }
+
+        private static async void PropertyChangedCallback2(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            DebugUtils.WriteLine(e.NewValue.ToString());
+            await ((FormattedTextControl3)d).UpdateTextSource();
+        }
+
+        private static async void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            await ((FormattedTextControl3) d).UpdateTextSource();
         }
 
         /// <summary>
@@ -364,6 +373,8 @@ namespace AnalysisControls
         public FormattedTextControl3()
 
         {
+            var xx = new DoubleAnimationUsingPath();
+
             CSharpCompilationOptions = new CSharpCompilationOptions(default(OutputKind));
             PixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
             CommandBindings.Add(new CommandBinding(WpfAppCommands.SerializeContents, Executed));
@@ -379,12 +390,10 @@ namespace AnalysisControls
         private void CompileExecuted(object sender, ExecutedRoutedEventArgs e)
         {
             if (Document != null)
-            {
                 Document.Project.GetCompilationAsync().ContinueWith(task =>
                 {
                     Dispatcher.Invoke(() => Compilation = task.Result);
                 });
-            }
         }
 
         // public static RoutedEvent ErrorEvent = EventManager.RegisterRoutedEvent(typeof(FormattedTextControl3))
@@ -427,18 +436,18 @@ namespace AnalysisControls
         }
 
         /// <inheritdoc />
-        protected override void OnSourceTextChanged1(string newValue, string eOldValue)
+        protected override async void OnSourceTextChanged1(string newValue, string eOldValue)
         {
             base.OnSourceTextChanged1(newValue, eOldValue);
-            
-            if (newValue != null && !ChangingText) UpdateTextSource();
+
+            if (newValue != null && !ChangingText) await UpdateTextSource();
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <exception cref="InvalidOperationException"></exception>
-        protected void UpdateTextSource()
+        protected async Task UpdateTextSource()
         {
             if (!UiLoaded)
                 return;
@@ -453,10 +462,10 @@ namespace AnalysisControls
             if (ReferenceEquals(Node.SyntaxTree, SyntaxTree) == false)
                 throw new AppInvalidOperationException("Node is not within syntax tree");
             DebugUtils.WriteLine("Creating new " + nameof(SyntaxNodeCustomTextSource), DebugCategory.TextFormatting);
-            TextSource = CreateAndInitTextSource(PixelsPerDip, TypefaceManager);
-            _errorTextSource = Errors.Any() ? new ErrorsTextSource(PixelsPerDip, Errors, TypefaceManager) : null;
-            _baseProps = TextSource.BaseProps;
-            UpdateFormattedText();
+
+            //_errorTextSource = Errors.Any() ? new ErrorsTextSource(PixelsPerDip, Errors, TypefaceManager) : null;
+            //_baseProps = TextSource.BaseProps;
+            await UpdateFormattedText();
         }
 
         /// <summary>
@@ -473,10 +482,11 @@ namespace AnalysisControls
         private double EmSize { get; set; }
 
         /// <inheritdoc />
-        public override void OnApplyTemplate()
+        public override async void OnApplyTemplate()
         {
             _scrollViewer = (ScrollViewer) GetTemplateChild("ScrollViewer");
             if (_scrollViewer != null) OutputWidth = _scrollViewer.ActualWidth;
+            DebugUtils.WriteLine(OutputWidth.ToString());
             _rectangle = (Rectangle) GetTemplateChild("Rectangle");
             var dpd = DependencyPropertyDescriptor.FromProperty(TextElement.FontSizeProperty, typeof(Rectangle));
             var dpd2 = DependencyPropertyDescriptor.FromProperty(TextElement.FontFamilyProperty, typeof(Rectangle));
@@ -487,16 +497,13 @@ namespace AnalysisControls
                 // dpd2.AddValueChanged(_rectangle, Handler2);
             }
 
-            SetFontFamily();
-
-
             _grid = (Grid) GetTemplateChild("Grid");
             _canvas = (Canvas) GetTemplateChild("Canvas");
             _innerGrid = (Grid) GetTemplateChild("InnerGrid");
-            var tryGetGlyphTypeface = Typeface.TryGetGlyphTypeface(out var gf);
-            EmSize = (double) _rectangle.GetValue(TextElement.FontSizeProperty);
+            // var tryGetGlyphTypeface = Typeface.TryGetGlyphTypeface(out var gf);
+            EmSize = (double) FontSize;
 
-            _textCaret = new TextCaret(gf.Height * EmSize);
+            _textCaret = new TextCaret(20);
             _canvas.Children.Add(_textCaret);
 
             _border = (Border) GetTemplateChild("Border");
@@ -507,7 +514,7 @@ namespace AnalysisControls
             _dg2 = (DrawingGroup) GetTemplateChild("DG2");
             UiLoaded = true;
 
-            UpdateTextSource();
+            await UpdateTextSource();
             //if (TextSource != null) UpdateFormattedText();
         }
 
@@ -613,10 +620,11 @@ namespace AnalysisControls
             try
             {
                 DebugUtils.WriteLine(eText);
-                if (_textDest.Children.Count == 0) _textDest.Children.Add(new DrawingGroup());
+              //  if (_textDest.Children.Count == 0) _textDest.Children.Add(new DrawingGroup());
 
-                var prev = SourceText.Substring(0, InsertionPoint);
-                var next = SourceText.Substring(InsertionPoint);
+                var insertionPoint = InsertionPoint;
+                var prev = SourceText.Substring(0, insertionPoint);
+                var next = SourceText.Substring(insertionPoint);
                 var code = prev + eText + next;
                 if (InsertionLine != null)
                 {
@@ -639,13 +647,26 @@ namespace AnalysisControls
                 }
 
                 ChangingText = true;
-                TextSource.TextInput(InsertionPoint, eText);
-                var lineInfo = RedrawLine(InsertionLine?.LineNumber ?? 0, InsertionLine?.Offset ?? 0,
-                    InsertionLine?.Origin.Y ?? 0, InsertionLine?.Origin.X ?? 0, InsertionLine);
-                InsertionLine = lineInfo;
+                var insertionLineOffset = InsertionLine?.Offset ?? 0;
+                var originY = InsertionLine?.Origin.Y ?? 0;
+                var originX = InsertionLine?.Origin.X ?? 0;
+                var insertionLineLineNumber = InsertionLine?.LineNumber ?? 0;
+                var insertionLine = InsertionLine;
 
-                InsertionPoint = InsertionPoint + eText.Length;
-                if (InsertionLine.Offset + InsertionLine.Length <= InsertionPoint)
+                var l = new List<LineInfo>();
+                CustomTextSource.SynchContext.Send(state =>
+                {
+                    CustomTextSource.TextInput(insertionPoint, eText);
+
+                    var lineInfo = RedrawLine(insertionLineLineNumber, insertionLineOffset,
+                        originY, originX, insertionLine);
+                    ((List<LineInfo>)state).Add(lineInfo);
+                }, l);
+
+                InsertionLine = l[0];
+
+                InsertionPoint = insertionPoint + eText.Length;
+                if (InsertionLine.Offset + InsertionLine.Length <= insertionPoint)
                 {
                     if (InsertionLine.NextLine != null)
                     {
@@ -692,7 +713,7 @@ namespace AnalysisControls
             LineContext lineCtx;
             LineInfo outLineInfo;
             using (var myTextLine = Formatter.FormatLine(
-                TextSource,
+                CustomTextSource,
                 offset,
                 OutputWidth,
                 new GenericTextParagraphProperties(CurrentRendering, PixelsPerDip), null))
@@ -751,20 +772,16 @@ namespace AnalysisControls
             InsertionPoint += textLength;
         }
 
-        private void Handler2(object sender, EventArgs e)
-        {
-            SetFontFamily();
-            UpdateTextSource();
-            UpdateFormattedText();
-        }
+      
 
         /// <summary>
         /// 
         /// </summary>
-        protected void SetFontFamily()
+
+        private Typeface CreateTypeface(FontFamily fontFamily, FontStyle fontStyle, FontStretch fontStretch,
+            FontWeight fontWeight)
         {
-            if (_rectangle != null) _fontFamily = (FontFamily) _rectangle.GetValue(TextElement.FontFamilyProperty);
-            if (_fontFamily != null) Typeface = new Typeface(_fontFamily, _fontStyle, _fontWeight, _fontStretch);
+            return new Typeface(fontFamily, fontStyle, fontWeight, fontStretch);
         }
 
         protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
@@ -814,7 +831,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        protected virtual void UpdateFormattedText()
+        protected virtual async Task UpdateFormattedText()
         {
             try
             {
@@ -825,23 +842,13 @@ namespace AnalysisControls
                 if (!UiLoaded)
                     return;
 
-
-                if (CurrentRendering == null)
-                {
-                    EmSize = (double) _rectangle.GetValue(TextElement.FontSizeProperty);
-                    CurrentRendering = FontRendering.CreateInstance(EmSize,
-                        TextAlignment.Left,
-                        null,
-                        Brushes.Black,
-                        Typeface);
-                }
-
                 var textStorePosition = 0;
                 var linePosition = new Point(0, 0);
 
                 // Create a DrawingGroup object for storing formatted text.
 
-                var dc = _textDest.Open();
+                _textDest.Children.Clear();
+                
 
                 // Format each line of text from the text store and draw it.
                 TextLineBreak prev = null;
@@ -849,260 +856,304 @@ namespace AnalysisControls
                 CharacterCell prevCell = null;
                 RegionInfo prevRegion = null;
                 var line = 0;
-                if (_nliens == 0)
-                {
-                    _nliens = 10;
+                if (_nliens == 0) _nliens = 10;
 
-                }
-                while (textStorePosition < TextSource.Length))
-                {
-                    using (var myTextLine = Formatter.FormatLine(
-                        TextSource,
-                        textStorePosition,
-                        OutputWidth,
-                        new GenericTextParagraphProperties(CurrentRendering, PixelsPerDip),
-                        prev))
+                DebugUtils.WriteLine("Calling innser updatE");
+                var compilation = Compilation;
+
+                var node0 = Node;
+                var tree = SyntaxTree;
+                _scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                var fontFamilyFamilyName = FontFamily.FamilyNames[XmlLanguage.GetLanguage("en-US")];
+                DebugUtils.WriteLine(fontFamilyFamilyName);
+                var emSize = FontSize;
+                var source = await Task.Run(() =>
                     {
-                        var lineChars = new List<char>();
-
-                        _chars.Add(lineChars);
-
-                        var lineInfo = new LineInfo {Offset = textStorePosition, Length = myTextLine.Length};
-                        lineInfo.PrevLine = prevLine;
-                        lineInfo.LineNumber = line;
-
-                        if (prevLine != null) prevLine.NextLine = lineInfo;
-
-                        prevLine = lineInfo;
-                        LineInfos.Add(lineInfo);
-                        var dd = new DrawingGroup();
-                        var dc1 = dd.Open();
-                        myTextLine.Draw(dc1, new Point(0, 0), InvertAxes.Vertical);
-                        dc1.Close();
-                        lineInfo.Size = new Size(myTextLine.WidthIncludingTrailingWhitespace, myTextLine.Height);
-                        lineInfo.Origin = new Point(linePosition.X, linePosition.Y);
-
-                        var location = linePosition;
-                        var group = 0;
-
-                        var textRunSpans = myTextLine.GetTextRunSpans();
-                        var spans = textRunSpans;
-                        var cell = linePosition;
-                        var cellColumn = 0;
-                        var characterOffset = textStorePosition;
-                        var regionOffset = textStorePosition;
-                        var eol = myTextLine.GetTextRunSpans().Select(xx => xx.Value).OfType<TextEndOfLine>();
-                        if (eol.Any())
+                        
+                        return InnerUpdate(this, textStorePosition, prev, prevLine, line, linePosition, prevCell,
+                            prevRegion,
+                            Formatter, OutputWidth, PixelsPerDip, emSize, tree, node0, compilation,
+                            fontFamilyFamilyName);
+                    })
+                    .ContinueWith(
+                        task =>
                         {
-                            // dc.DrawRectangle(Brushes.Aqua, null,
-                            // new Rect(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace + 2,
-                            // linePosition.Y + 2, 10, 10));
-                        }
-                        else
-                        {
-                            DebugUtils.WriteLine("no end of line", DebugCategory.TextFormatting);
-                            foreach (var textRunSpan in myTextLine.GetTextRunSpans())
-                                DebugUtils.WriteLine(textRunSpan.Value.ToString(), DebugCategory.TextFormatting);
-                        }
-
-                        var lineRegions = new List<RegionInfo>();
-
-                        var lineString = "";
-                        var xoffset = lineInfo.Origin.X;
-                        var xoffsets = new List<double>();
-
-                        var curOffset = linePosition;
-                        foreach (var rect in myTextLine.GetIndexedGlyphRuns())
-                        {
-                            var rectGlyphRun = rect.GlyphRun;
-
-                            if (rectGlyphRun != null)
-                            {
-                                var size = new Size(0, 0);
-                                var cellBounds =
-                                    new List<CharacterCell>();
-                                var emSize = rectGlyphRun.FontRenderingEmSize;
-
-
-                                if (rectGlyphRun.Characters.Count > rectGlyphRun.GlyphIndices.Count)
-                                    DebugUtils.WriteLine($"Character mismatch");
-
-                                var xx = new RectangleGeometry(new Rect(curOffset,
-                                    new Size(rectGlyphRun.AdvanceWidths.Sum(),
-                                        rectGlyphRun.GlyphTypeface.Height * rectGlyphRun.FontRenderingEmSize)));
-                                curOffset.Y += myTextLine.Height;
-                                var x = new CombinedGeometry();
-
-                                for (var i = 0; i < rectGlyphRun.GlyphIndices.Count; i++)
-                                {
-                                    var advanceWidth = rectGlyphRun.AdvanceWidths[i];
-
-                                    xoffsets.Add(xoffset);
-                                    xoffset += advanceWidth;
-                                    size.Width += advanceWidth;
-                                    var gi = rectGlyphRun.GlyphIndices[i];
-                                    var c = rectGlyphRun.Characters[i];
-                                    lineChars.Add(c);
-                                    lineString += c;
-                                    var advWidth = rectGlyphRun.GlyphTypeface.AdvanceWidths[gi];
-                                    var advHeight = rectGlyphRun.GlyphTypeface.AdvanceHeights[gi];
-
-                                    var s = new Size(advWidth * emSize,
-                                        (advHeight
-                                         + rectGlyphRun.GlyphTypeface.BottomSideBearings[gi])
-                                        * emSize);
-
-                                    var topSide = rectGlyphRun.GlyphTypeface.TopSideBearings[gi];
-                                    var bounds = new Rect(new Point(cell.X, cell.Y + topSide), s);
-                                    if (!bounds.IsEmpty)
-                                    {
-                                        // ReSharper disable once UnusedVariable
-                                        var glyphTypefaceBaseline = rectGlyphRun.GlyphTypeface.Baseline;
-                                        //DebugUtils.WriteLine(glyphTypefaceBaseline.ToString(), DebugCategory.TextFormatting);
-                                        //bounds.Offset(cell.X, cell.Y + glyphTypefaceBaseline);
-                                        // dc.DrawRectangle(Brushes.White, null,  bounds);
-                                        // dc.DrawText(
-                                        // new FormattedText(cellColumn.ToString(), CultureInfo.CurrentCulture,
-                                        // FlowDirection.LeftToRight, new Typeface("Arial"), _emSize * .66, Brushes.Aqua,
-                                        // new NumberSubstitution(), _pixelsPerDip), new Point(bounds.Left, bounds.Top));
-                                    }
-
-                                    var char0 = new CharacterCell(bounds, new Point(cellColumn, _chars.Count - 1), c)
-                                    {
-                                        PreviousCell = prevCell
-                                    };
-
-                                    if (prevCell != null)
-                                        prevCell.NextCell = char0;
-                                    prevCell = char0;
-
-                                    cellBounds.Add(char0);
-                                    cell.Offset(rectGlyphRun.AdvanceWidths[i], 0);
-
-                                    cellColumn++;
-                                    characterOffset++;
-                                    //                                _textDest.Children.Add(new GeometryDrawing(null, new Pen(Brushes.DarkOrange, 2), new RectangleGeometry(bounds)));
-                                }
-
-                                //var bb = rect.GlyphRun.BuildGeometry().Bounds;
-
-                                size.Height += myTextLine.Height;
-                                var r = new Rect(location, size);
-                                location.Offset(size.Width, 0);
-//                            dc.DrawRectangle(null, new Pen(Brushes.Green, 1), r);
-                                //rects.Add(r);
-                                if (@group < spans.Count)
-                                {
-                                    var textSpan = spans[@group];
-                                    var textSpanValue = textSpan.Value;
-                                    SyntaxNode node = null;
-                                    SyntaxToken? token = null;
-                                    SyntaxTrivia? trivia = null;
-                                    SyntaxToken? AttachedToken = null;
-                                    SyntaxNode attachedNode = null;
-
-                                    SyntaxNode structuredTrivia = null;
-                                    TriviaPosition? triviaPosition = null;
-                                    if (textSpanValue is SyntaxTokenTextCharacters stc)
-                                    {
-                                        node = stc.Node;
-                                        token = stc.Token;
-                                    }
-                                    else
-                                    {
-                                        if (textSpanValue is SyntaxTriviaTextCharacters stc2)
-                                        {
-                                            trivia = stc2.Trivia;
-                                            AttachedToken = stc2.Token;
-                                            attachedNode = stc2.Node;
-                                            structuredTrivia = stc2.StructuredTrivia;
-                                            triviaPosition = stc2.TriviaPosition;
-                                        }
-                                    }
-
-                                    var tuple = new RegionInfo(textSpanValue, r, cellBounds)
-                                    {
-                                        Line = lineInfo,
-                                        Offset = regionOffset,
-                                        Length = textSpan.Length,
-                                        SyntaxNode = node,
-                                        AttachedToken = AttachedToken,
-                                        AttachedNode = attachedNode,
-                                        SyntaxToken = token,
-                                        Trivia = trivia,
-                                        TriviaPosition = triviaPosition,
-                                        PrevRegion = prevRegion,
-                                        StructuredTrivia = structuredTrivia
-                                    };
-                                    foreach (var ch in tuple.Characters) ch.Region = tuple;
-                                    lineRegions.Add(tuple);
-
-                                    GeoTuples.Add(Tuple.Create(xx, tuple));
-
-                                    if (prevRegion != null) prevRegion.NextRegion = tuple;
-                                    prevRegion = tuple;
-                                    // Infos.Add(tuple);
-                                }
-
-                                @group++;
-                                regionOffset = characterOffset;
-                            }
-
-                            lineInfo.Text = lineString;
-                            lineInfo.Regions = lineRegions;
-                            //                        DebugUtils.WriteLine(rect.ToString(), DebugCategory.TextFormatting);
-                            //dc.DrawRectangle(null, new Pen(Brushes.Green, 1), r1);
-                        }
-
-
-                        var ddBounds = dd.Bounds;
-                        if (!ddBounds.IsEmpty)
-                            ddBounds.Offset(0, linePosition.Y);
-                        //DebugUtils.WriteLine(line.ToString() + ddBounds.ToString(), DebugCategory.TextFormatting);
-                        //dc.DrawRectangle(null, new Pen(Brushes.Red, 1), ddBounds);
-
-                        // Draw the formatted text into the drawing context.
-                        myTextLine.Draw(dc, linePosition, InvertAxes.None);
-                        // ReSharper disable once UnusedVariable
-                        var p = new Point(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace, linePosition.Y);
-                        var textLineBreak = myTextLine.GetTextLineBreak();
-                        if (textLineBreak != null)
-                            DebugUtils.WriteLine(textLineBreak.ToString(), DebugCategory.TextFormatting);
-                        line++;
-
-                        prev = textLineBreak;
-                        if (prev != null) DebugUtils.WriteLine("Line break!", DebugCategory.TextFormatting);
-
-                        // Update the index position in the text store.
-                        textStorePosition += myTextLine.Length;
-                        // Update the line position coordinate for the displayed line.
-                        linePosition.Y += myTextLine.Height;
-                        if (myTextLine.Width >= MaxX) MaxX = myTextLine.Width;
-                    }
-
-                    _pos = linePosition;
-                }
-
-
-                dc.Close();
+                            if (task.IsFaulted) DebugUtils.WriteLine(task.Exception.ToString());
+                            return task.Result;
+                        }).ConfigureAwait(true);
+                _scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+                CustomTextSource = source;
+                DebugUtils.WriteLine("return from Calling innser updatE");
+                ;
                 // Persist the drawn text content.
 
                 _rectangle.Width = MaxX;
                 _rectangle.Height = _pos.Y;
 
-                InsertionCharacter = LineInfos[0].Regions[0].Characters[0];
+                // InsertionCharacter = LineInfos[0].Regions[0].Characters[0];
                 UpdateCaretPosition();
                 InvalidateVisual();
-                Task.Run(() =>
-                {
-
-                });
                 
             }
             catch (Exception ex)
             {
                 throw;
             }
+        }
+
+        public CustomTextSource4 CustomTextSource { get; set; }
+
+        private static CustomTextSource4 InnerUpdate(FormattedTextControl3 formattedTextControl3, int textStorePosition,
+            TextLineBreak prev, LineInfo prevLine, int line, Point linePosition,
+            CharacterCell prevCell, RegionInfo prevRegion,
+            TextFormatter textFormatter, double paragraphWidth, double pixelsPerDip,
+            double emSize0, SyntaxTree tree, SyntaxNode node0, Compilation compilation, string faceName)
+        {
+            var s1 = SynchronizationContext.Current;
+            var tf = formattedTextControl3.CreateTypeface(new FontFamily(faceName), FontStyles.Normal, FontStretches.Normal,
+                FontWeights.Normal);
+
+            var CurrentRendering1 = FontRendering.CreateInstance(emSize0,
+                TextAlignment.Left,
+                null,
+                Brushes.Black,
+                tf);
+            var customTextSource4 =
+                formattedTextControl3.CreateAndInitTextSource(pixelsPerDip, tf, tree, node0, compilation, s1, formattedTextControl3.FontSize);
+            var chars = new List<List<char>>();
+            while (textStorePosition < customTextSource4.Length)
+            {
+                
+                var genericTextParagraphProperties = new GenericTextParagraphProperties(CurrentRendering1, pixelsPerDip);
+                using (var myTextLine = textFormatter.FormatLine(customTextSource4,
+                    textStorePosition, paragraphWidth,
+                    genericTextParagraphProperties,
+                    prev))
+                {
+                    var lineChars = new List<char>();
+                    chars.Add(lineChars);
+
+                    var lineInfo = new LineInfo {Offset = textStorePosition, Length = myTextLine.Length};
+                    lineInfo.PrevLine = prevLine;
+                    lineInfo.LineNumber = line;
+
+                    if (prevLine != null) prevLine.NextLine = lineInfo;
+
+                    prevLine = lineInfo;
+                    lineInfo.Size = new Size(myTextLine.WidthIncludingTrailingWhitespace, myTextLine.Height);
+                    lineInfo.Origin = new Point(linePosition.X, linePosition.Y);
+
+                    var location = linePosition;
+                    var group = 0;
+
+                    var textRunSpans = myTextLine.GetTextRunSpans();
+                    var spans = textRunSpans;
+                    var cell = linePosition;
+                    var cellColumn = 0;
+                    var characterOffset = textStorePosition;
+                    var regionOffset = textStorePosition;
+                    var eol = myTextLine.GetTextRunSpans().Select(xx => xx.Value).OfType<TextEndOfLine>();
+                    if (eol.Any())
+                    {
+                        // dc.DrawRectangle(Brushes.Aqua, null,
+                        // new Rect(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace + 2,
+                        // linePosition.Y + 2, 10, 10));
+                    }
+                    else
+                    {
+                        DebugUtils.WriteLine("no end of line", DebugCategory.TextFormatting);
+                        foreach (var textRunSpan in myTextLine.GetTextRunSpans())
+                            DebugUtils.WriteLine(textRunSpan.Value.ToString(), DebugCategory.TextFormatting);
+                    }
+
+                    var lineRegions = new List<RegionInfo>();
+
+                    var lineString = "";
+                    var xoffset = lineInfo.Origin.X;
+                    var xoffsets = new List<double>();
+
+                    var curOffset = linePosition;
+                    foreach (var rect in myTextLine.GetIndexedGlyphRuns())
+                    {
+                        var rectGlyphRun = rect.GlyphRun;
+
+                        if (rectGlyphRun != null)
+                        {
+                            var size = new Size(0, 0);
+                            var cellBounds =
+                                new List<CharacterCell>();
+                            var emSize = rectGlyphRun.FontRenderingEmSize;
+
+
+                            if (rectGlyphRun.Characters.Count > rectGlyphRun.GlyphIndices.Count)
+                                DebugUtils.WriteLine($"Character mismatch");
+
+                            var xx = new RectangleGeometry(new Rect(curOffset,
+                                new Size(rectGlyphRun.AdvanceWidths.Sum(),
+                                    rectGlyphRun.GlyphTypeface.Height * rectGlyphRun.FontRenderingEmSize)));
+                            curOffset.Y += myTextLine.Height;
+                            var x = new CombinedGeometry();
+
+                            for (var i = 0; i < rectGlyphRun.GlyphIndices.Count; i++)
+                            {
+                                var advanceWidth = rectGlyphRun.AdvanceWidths[i];
+
+                                xoffsets.Add(xoffset);
+                                xoffset += advanceWidth;
+                                size.Width += advanceWidth;
+                                var gi = rectGlyphRun.GlyphIndices[i];
+                                var c = rectGlyphRun.Characters[i];
+                                lineChars.Add(c);
+                                lineString += c;
+                                var advWidth = rectGlyphRun.GlyphTypeface.AdvanceWidths[gi];
+                                var advHeight = rectGlyphRun.GlyphTypeface.AdvanceHeights[gi];
+
+                                var s = new Size(advWidth * emSize,
+                                    (advHeight
+                                     + rectGlyphRun.GlyphTypeface.BottomSideBearings[gi])
+                                    * emSize);
+
+                                var topSide = rectGlyphRun.GlyphTypeface.TopSideBearings[gi];
+                                var bounds = new Rect(new Point(cell.X, cell.Y + topSide), s);
+                                if (!bounds.IsEmpty)
+                                {
+                                    // ReSharper disable once UnusedVariable
+                                    var glyphTypefaceBaseline = rectGlyphRun.GlyphTypeface.Baseline;
+                                    //DebugUtils.WriteLine(glyphTypefaceBaseline.ToString(), DebugCategory.TextFormatting);
+                                    //bounds.Offset(cell.X, cell.Y + glyphTypefaceBaseline);
+                                    // dc.DrawRectangle(Brushes.White, null,  bounds);
+                                    // dc.DrawText(
+                                    // new FormattedText(cellColumn.ToString(), CultureInfo.CurrentCulture,
+                                    // FlowDirection.LeftToRight, new Typeface("Arial"), _emSize * .66, Brushes.Aqua,
+                                    // new NumberSubstitution(), _pixelsPerDip), new Point(bounds.Left, bounds.Top));
+                                }
+
+                                var char0 = new CharacterCell(bounds, new Point(cellColumn, chars.Count - 1), c)
+                                {
+                                    PreviousCell = prevCell
+                                };
+
+                                if (prevCell != null)
+                                    prevCell.NextCell = char0;
+                                prevCell = char0;
+
+                                cellBounds.Add(char0);
+                                cell.Offset(rectGlyphRun.AdvanceWidths[i], 0);
+
+                                cellColumn++;
+                                characterOffset++;
+                                //                                _textDest.Children.Add(new GeometryDrawing(null, new Pen(Brushes.DarkOrange, 2), new RectangleGeometry(bounds)));
+                            }
+
+                            //var bb = rect.GlyphRun.BuildGeometry().Bounds;
+
+                            size.Height += myTextLine.Height;
+                            var r = new Rect(location, size);
+                            location.Offset(size.Width, 0);
+//                            dc.DrawRectangle(null, new Pen(Brushes.Green, 1), r);
+                            //rects.Add(r);
+                            if (@group < spans.Count)
+                            {
+                                var textSpan = spans[@group];
+                                var textSpanValue = textSpan.Value;
+                                SyntaxNode node = null;
+                                SyntaxToken? token = null;
+                                SyntaxTrivia? trivia = null;
+                                SyntaxToken? AttachedToken = null;
+                                SyntaxNode attachedNode = null;
+
+                                SyntaxNode structuredTrivia = null;
+                                TriviaPosition? triviaPosition = null;
+                                if (textSpanValue is SyntaxTokenTextCharacters stc)
+                                {
+                                    node = stc.Node;
+                                    token = stc.Token;
+                                }
+                                else
+                                {
+                                    if (textSpanValue is SyntaxTriviaTextCharacters stc2)
+                                    {
+                                        trivia = stc2.Trivia;
+                                        AttachedToken = stc2.Token;
+                                        attachedNode = stc2.Node;
+                                        structuredTrivia = stc2.StructuredTrivia;
+                                        triviaPosition = stc2.TriviaPosition;
+                                    }
+                                }
+
+                                var tuple = new RegionInfo(textSpanValue, r, cellBounds)
+                                {
+                                    Line = lineInfo,
+                                    Offset = regionOffset,
+                                    Length = textSpan.Length,
+                                    SyntaxNode = node,
+                                    AttachedToken = AttachedToken,
+                                    AttachedNode = attachedNode,
+                                    SyntaxToken = token,
+                                    Trivia = trivia,
+                                    TriviaPosition = triviaPosition,
+                                    PrevRegion = prevRegion,
+                                    StructuredTrivia = structuredTrivia
+                                };
+                                foreach (var ch in tuple.Characters) ch.Region = tuple;
+                                lineRegions.Add(tuple);
+
+                                //formattedTextControl3.GeoTuples.Add(Tuple.Create(xx, tuple));
+
+                                if (prevRegion != null) prevRegion.NextRegion = tuple;
+                                prevRegion = tuple;
+                                // Infos.Add(tuple);
+                            }
+
+                            @group++;
+                            regionOffset = characterOffset;
+                        }
+
+                        lineInfo.Text = lineString;
+                        lineInfo.Regions = lineRegions;
+                        //                        DebugUtils.WriteLine(rect.ToString(), DebugCategory.TextFormatting);
+                        //dc.DrawRectangle(null, new Pen(Brushes.Green, 1), r1);
+                    }
+
+
+                    //DebugUtils.WriteLine(line.ToString() + ddBounds.ToString(), DebugCategory.TextFormatting);
+                    //dc.DrawRectangle(null, new Pen(Brushes.Red, 1), ddBounds);
+
+                    // Draw the formatted text into the drawing context.
+                    var p = new Point(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace, linePosition.Y);
+                    var w = myTextLine.Width;
+                    linePosition.Y += myTextLine.Height;
+                    formattedTextControl3.Dispatcher.Invoke(() =>
+                    {
+                        if (w >= formattedTextControl3.MaxX) formattedTextControl3.MaxX = w;
+                        var dc = formattedTextControl3._textDest.Append();
+                        myTextLine.Draw(dc, linePosition, InvertAxes.None);
+                        dc.Close();
+                        
+                        formattedTextControl3._rectangle.Width = formattedTextControl3.MaxX;
+                        formattedTextControl3._rectangle.Height = formattedTextControl3._pos.Y;
+                        formattedTextControl3.LineInfos.Add(lineInfo);
+
+                    });
+                    // ReSharper disable once UnusedVariable
+                    
+                    var textLineBreak = myTextLine.GetTextLineBreak();
+                    if (textLineBreak != null)
+                        DebugUtils.WriteLine(textLineBreak.ToString(), DebugCategory.TextFormatting);
+                    line++;
+
+                    prev = textLineBreak;
+                    if (prev != null) DebugUtils.WriteLine("Line break!", DebugCategory.TextFormatting);
+
+                    // Update the index position in the text store.
+                    textStorePosition += myTextLine.Length;
+                    // Update the line position coordinate for the displayed line.
+                }
+
+                formattedTextControl3.Dispatcher.Invoke(() => { formattedTextControl3._pos = linePosition; });
+            }
+
+            return customTextSource4;
         }
 
         public GeometryCollection Geometries { get; set; } = new GeometryCollection(200);
@@ -1136,28 +1187,6 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public ObservableCollection<LineInfo> LineInfos { get; } = new ObservableCollection<LineInfo>();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        // public List<RegionInfo> Infos { get; } = new List<RegionInfo>();
-#if false
-        protected override void OnRender(DrawingContext drawingContext)
-        {
-            base.OnRender(drawingContext);
-            returnupda
-            //var b = VisualTreeHelper.GetContentBounds(_dock);
-            var _dock = _border;
-            DrawingBrush br = new DrawingBrush(_textDest);
-            br.SetValue(TileBrush.ViewboxProperty, _textDest.Bounds);
-            br.Viewport = new Rect(0, _offset, _dock.ActualWidth, _dock.ActualHeight);
-            drawingContext.DrawRectangle(br, null, new Rect(0, 0, _dock.ActualWidth, _dock.ActualHeight));
-//            drawingContext.DrawDrawing(_textDest);
-        }
-
-#endif
-
-        private readonly List<List<char>> _chars = new List<List<char>>();
 
         // ReSharper disable once NotAccessedField.Local
         private Border _border;
@@ -1218,6 +1247,13 @@ namespace AnalysisControls
                 // if (SelectionEnabled && e.LeftButton == MouseButtonState.Pressed)
                 // {
                 var point = e.GetPosition(_rectangle);
+                var q = LineInfos.SkipWhile(z => z.Origin.Y < point.Y);
+                if (q.Any())
+                {
+                    var line = q.First();
+                    DebugUtils.WriteLine(line.LineNumber.ToString());
+                }
+
                 var zz = LineInfos.Where(z => z.Regions != null).SelectMany(z => z.Regions)
                     .Where(x => x.BoundingRect.Contains(point)).ToList();
                 if (zz.Count > 1)
@@ -1411,7 +1447,7 @@ namespace AnalysisControls
                             var green = new SolidColorBrush(Colors.Green) {Opacity = .2};
                             var blue = new SolidColorBrush(Colors.Blue) {Opacity = .2};
                             var red = new SolidColorBrush(Colors.Red) {Opacity = .2};
-                            foreach (var regionInfo in LineInfos.SelectMany(z=>z.Regions).Where(info =>
+                            foreach (var regionInfo in LineInfos.SelectMany(z => z.Regions).Where(info =>
                                 info.Offset <= begin && info.Offset + info.Length > begin ||
                                 info.Offset >= begin && info.Offset + info.Length <= end))
                             {
@@ -1535,7 +1571,6 @@ namespace AnalysisControls
         /// <inheritdoc />
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
-            
         }
 
         /// <inheritdoc />
@@ -1555,9 +1590,10 @@ namespace AnalysisControls
                 LineInfos.Clear();
                 MaxX = 0;
                 MaxY = 0;
-                _pos = new Point(0,0);
+                _pos = new Point(0, 0);
+                if (_scrollViewer != null) _scrollViewer.ScrollToTop();
                 UpdateTextSource();
-                
+
                 //UpdateFormattedText();
             }
         }

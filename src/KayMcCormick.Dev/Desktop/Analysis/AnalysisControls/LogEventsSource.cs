@@ -99,7 +99,7 @@ namespace AnalysisControls
         }
 
         public override int Length { get; protected set; }
-        public override GenericTextRunProperties BaseProps { get; }
+        public override GenericTextRunProperties BaseProps { get; set; }
         public IEnumerable<LogEventInstance> EventsSource { get; set; }
 
         public override BasicTextRunProperties BasicProps()

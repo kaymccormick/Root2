@@ -15,6 +15,7 @@ namespace AnalysisControls
         private Brush _foregroundBrush;
         private FontStyle? _fontStyle;
         private Typeface _typeface;
+        private FontFamily _fontFamily ;
 
         /// <summary>
         /// 
@@ -82,12 +83,21 @@ namespace AnalysisControls
             get { return _baseProps.TextEffects; }
         }
 
+        public FontFamily FontFamily
+        {
+            get { return _fontFamily ?? _baseProps.Typeface.FontFamily; }
+        }
         public void SetFontStyle(FontStyle fontStyle)
         {
             _fontStyle = fontStyle;
-            var family = _baseProps.Typeface.FontFamily;
-            _typeface = new Typeface(family, _fontStyle.Value, _baseProps.Typeface.Weight, _baseProps.Typeface.Stretch);
+            _typeface = new Typeface(FontFamily, _fontStyle.Value, _baseProps.Typeface.Weight, _baseProps.Typeface.Stretch);
 
+        }
+
+        public TextRunProperties WithFontFamily(FontFamily family)
+        {
+            _fontFamily = family;
+            return this;
         }
 
         public TextRunProperties WithForegroundBrush(Brush fg)

@@ -35,12 +35,11 @@ namespace AnalysisControls
             PixelsPerDip = pixelsPerDip;
             _typeface = typefaceManager.GetDefaultTypeface();
 
-            Rendering = typefaceManager.
-                GetRendering(EmSize, TextAlignment.Left, new TextDecorationCollection(),
-                Brushes.Black,
-                _typeface);
-            BaseProps = TextPropertiesManager.GetBasicTextRunProperties(
-                PixelsPerDip, Rendering);
+            TextDecorationCollection textDecorationCollection = new TextDecorationCollection();
+            Rendering = FontRendering.CreateInstance(EmSize, TextAlignment.Left, textDecorationCollection, Brushes.Black, _typeface);
+            BaseProps = new GenericTextRunProperties(
+                Rendering,
+                PixelsPerDip);
         }
 
         /// <summary>
@@ -327,7 +326,7 @@ namespace AnalysisControls
         private List<int> chars2 = new List<int>();
         private SyntaxNode _node;
         private readonly Typeface _typeface;
-        public override GenericTextRunProperties BaseProps { get; }
+        public override GenericTextRunProperties BaseProps { get; set; }
 
         public List<CompilationError> Errors
         {

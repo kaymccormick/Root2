@@ -11,20 +11,6 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="pixelsPerDip"></param>
-        /// <param name="fontRendering"></param>
-        /// <returns></returns>
-        public static GenericTextRunProperties GetBasicTextRunProperties(double pixelsPerDip,
-            FontRendering fontRendering)
-        {
-            return new GenericTextRunProperties(
-                fontRendering,
-                pixelsPerDip);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="rendering"></param>
         /// <returns></returns>
         public static GenericTextRunProperties GetBasicTextRunProperties([NotNull] FontRendering rendering)

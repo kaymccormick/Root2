@@ -11,7 +11,9 @@
     <Grid>
         <Grid.RowDefinitions><RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-        <RowDefinition Height="*"/></Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+            <RowDefinition  Height="Auto"/>
+        </Grid.RowDefinitions>
         <ComboBox DataContext="{Binding ElementName=w,Path=Project.Documents}"  ItemsSource="{Binding}" DisplayMemberPath="Name" x:Name="combo"  DataContextChanged="Combo_OnDataContextChanged" />
 <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=Code}" Grid.Row="1">
     <TextBlock Text="{Binding HoverColumn}"/>
@@ -19,5 +21,6 @@
             <TextBlock Text="{Binding HoverRow}"/>
         </StackPanel>
         <analysisControls:CodeDiagnostics x:Name="Code"  Grid.Row="2" Document="{Binding ElementName=combo,Path=SelectedItem}"/>
+        <StatusBar Grid.Row="3"><Ellipse Margin="5" Width="20" Height="20" x:Name="Ellipse" Fill="Red"/></StatusBar>
     </Grid>
 </Window>

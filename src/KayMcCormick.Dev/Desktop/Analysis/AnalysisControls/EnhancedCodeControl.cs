@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -55,6 +57,27 @@ namespace AnalysisControls
 
         }
 
+        public static readonly DependencyProperty FontsProperty = DependencyProperty.Register(
+            "Fonts", typeof(IEnumerable), typeof(EnhancedCodeControl), new PropertyMetadata(default(IEnumerable), OnFontsChanged));
+
+        public IEnumerable Fonts
+        {
+            get { return (IEnumerable) GetValue(FontsProperty); }
+            set { SetValue(FontsProperty, value); }
+        }
+
+        private static void OnFontsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((EnhancedCodeControl) d).OnFontsChanged((IEnumerable) e.OldValue, (IEnumerable) e.NewValue);
+        }
+
+
+
+        protected virtual void OnFontsChanged(IEnumerable oldValue, IEnumerable newValue)
+        {
+        }
+
+
         /// <inheritdoc />
         protected override void OnNodeUpdated()
         {
@@ -100,6 +123,17 @@ namespace AnalysisControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(EnhancedCodeControl), new FrameworkPropertyMetadata(typeof(EnhancedCodeControl)));
             // CompilationProperty.AddOwner(typeof(EnhancedCodeControl));
 //            SyntaxNodeControl.CompilationProperty.OverrideMetadata(typeof(EnhancedCodeControl), new PropertyMetadata(null, PropertyChangedCallback));
+        }
+
+        /// <inheritdoc />
+        public EnhancedCodeControl()
+        {
+            var observableCollection = new ObservableCollection<FontFamily>();
+            foreach (var systemFontFamily in System.Windows.Media.Fonts.SystemFontFamilies)
+            {
+                observableCollection.Add(systemFontFamily);
+            }
+            Fonts = observableCollection;
         }
 
         private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)

@@ -64,6 +64,11 @@ namespace WpfApp1
 
         protected virtual void OnProjectChanged(Project oldValue, Project newValue)
         {
+            if (newValue != null)
+            {
+                Ellipse.Fill = Brushes.LawnGreen;
+                
+            }
         }
 
 
@@ -104,7 +109,7 @@ namespace WpfApp1
             InitializeComponent();
             Code.Focus();
             var ks=w.Services.GetLanguageServices(LanguageNames.CSharp);
-            w.Services.GetService<==)
+            
             Action<string> d = s => DebugUtils.WriteLine(s);
             Loaded += (sender, args) =>
             {

@@ -129,7 +129,7 @@ namespace AnalysisControls
         }
 
         /// <inheritdoc />
-        public override GenericTextRunProperties BaseProps { get; }
+        public override GenericTextRunProperties BaseProps { get; set; }
 
         /// <inheritdoc />
         public int EolLength { get; } = 2;

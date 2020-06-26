@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
@@ -60,7 +61,8 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="newRender"></param>
         /// <param name="pixelsPerDip"></param>
-        public GenericTextRunProperties(FontRendering newRender, 
+        /// <param name="synchContext"></param>
+        public GenericTextRunProperties(FontRendering newRender,
             double pixelsPerDip)
         {
             _typeface = newRender.Typeface;

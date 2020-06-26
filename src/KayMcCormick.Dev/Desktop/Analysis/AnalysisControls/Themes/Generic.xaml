@@ -5164,7 +5164,6 @@
 
                                 <Grid x:Name="InnerGrid">
                                     <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left"
-                                               Stroke="Aqua"
                                                TextElement.FontSize="12">
                                         <Rectangle.Fill>
                                             <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top"
@@ -5664,9 +5663,15 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
                                 <ComboBox
-                                    ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=local:EnhancedCodeControl,AncestorLevel=3,Mode=FindAncestor},Path=CommonFontSizes}"
-                                    SelectedValue="{Binding ElementName=Rectangle,Path=(TextElement.FontSize),Mode=TwoWay,FallbackValue=12}"
+                                    ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CommonFontSizes}"
+                                    SelectedValue="{Binding ElementName=CodeControl,Path=(TextElement.FontSize),Mode=TwoWay,FallbackValue=12}"
                                     FontSize="20" />
+                                <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Fonts,Mode=TwoWay}" x:Name="FontCombo"
+                                          SelectedValue="{Binding ElementName=CodeControl,Path=(TextElement.FontFamily),Mode=TwoWay}"
+                                          ><ComboBox.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type FontFamily}">
+                                            <TextBlock FontFamily="{Binding}" Text="{Binding Path=FamilyNames[en-US]}"/>
+                                        </DataTemplate></ComboBox.ItemTemplate></ComboBox>  
                             </StackPanel>
                             <local:FormattedTextControl3 Grid.Row="1" Grid.Column="0"
                                                          Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document}"
@@ -5675,7 +5680,7 @@
                                                          Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation}"
                                                          Node="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Node}"
                                                          x:Name="CodeControl" />
-                            <StackPanel Margin="10" Grid.Row="2" Grid.Column="0" Orientation="Horizontal"
+                            <StackPanel Background="DarkSeaGreen"  Grid.Row="2" Grid.Column="0" Orientation="Horizontal"
                                         TextElement.FontSize="16">
                                 <TextBlock Margin="15,0,0,0" Text="{Binding HoverOffset}" />
                                 <TextBlock Text=" ( " />
@@ -5691,18 +5696,18 @@
                                     <TextBlock Margin="15,0,0,0"
                                                Text="{Binding HoverToken,Converter={StaticResource SyntaxTokenConverter},ConverterParameter=text}" />
                                 </StackPanel>
-                                <StackPanel Background="Beige" Orientation="Horizontal" Margin="10,0,10,0">
+                                <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Margin="10,0,10,0">
                                     <TextBlock
                                         Text="{Binding HoverSymbol,Converter={StaticResource SymbolInfoConverter},ConverterParameter=kind}" />
                                     <local:SymbolTextControl DisplaySymbol="{Binding HoverSymbol}" />
                                 </StackPanel>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" TextElement.FontSize="16">
-                                <TextBlock Margin="10"
+                            <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Grid.Row="3" Grid.Column="0" TextElement.FontSize="16">
+                                <TextBlock 
                                            Text="{Binding HoverRegionInfo.Trivia,Converter={StaticResource SyntaxTriviaConverter}}" />
-                                <TextBlock Margin="10" Text="{Binding HoverRegionInfo.TriviaValue.HasStructure}" />
+                                <TextBlock Text="{Binding HoverRegionInfo.TriviaValue.HasStructure}" />
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" TextElement.FontSize="16">
+                            <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Grid.Row="4" Grid.Column="0" TextElement.FontSize="16">
                                 <StackPanel.Resources>
                                     <DataTemplate DataType="{x:Type local:SyntaxTokenTextCharacters}">
                                         <StackPanel Orientation="Horizontal" Background="Khaki">
@@ -5900,7 +5905,7 @@
                 <ControlTemplate TargetType="{x:Type local:SyntaxPanel}">
                     <ControlTemplate.Resources>
                         <x:Array x:Key="Brushes" Type="Brush">
-                            <SolidColorBrush Color="Azure" />
+                            <SolidColorBrush Color="DarkSeaGreen" />
                             <SolidColorBrush Color="LemonChiffon" />
                             <SolidColorBrush Color="BlanchedAlmond" />
                             <SolidColorBrush Color="LavenderBlush" />
@@ -7138,7 +7143,7 @@
                                     <ControlTemplate TargetType="local:CustomToggleButton">
                                         <Grid Width="15"
                                               Height="13"
-                                              Background="Azure">
+                                              Background="DarkSeaGreen">
                                             <VisualStateManager.VisualStateGroups>
                                                 <VisualStateGroup
                                                     x:Name="CheckStates">
@@ -8223,7 +8228,7 @@
                             </typeDescriptors:PropItems.ItemsPanel>
                             <typeDescriptors:PropItems.ItemContainerStyle>
                                 <Style TargetType="typeDescriptors:PropItem">
-                                    <Setter Property="Background" Value="Azure" />
+                                    <Setter Property="Background" Value="DarkSeaGreen" />
                                 </Style>
                             </typeDescriptors:PropItems.ItemContainerStyle>
                         </typeDescriptors:PropItems>
@@ -8309,7 +8314,7 @@
                                     <ControlTemplate TargetType="kmDevWpfControls:CustomToggleButton1">
                                         <Grid Width="15"
                                               Height="13"
-                                              Background="Azure">
+                                              Background="DarkSeaGreen">
                                             <VisualStateManager.VisualStateGroups>
                                                 <VisualStateGroup
                                                     x:Name="CheckStates">
@@ -8654,7 +8659,7 @@
                                                       CursorBrush="DarkOrange" x:Name="Terminal"
                                                       BorderBrush="Green" BorderThickness="1" Focusable="False" />
             <wpfTerminalControlLib:WrappedPowerShell x:Name="Shell" Terminal="{x:Reference Terminal}" />
-            <wpfTerminalControlLib:WpfInputLine LineMode="True" InputOnly="True" CursorBrush="Azure" x:Name="Input"
+            <wpfTerminalControlLib:WpfInputLine LineMode="True" InputOnly="True" CursorBrush="DarkSeaGreen" x:Name="Input"
                                                 BorderBrush="Red"
                                                 BorderThickness="1" AutoResize="True" Grid.Row="2" Focusable="True" />
             <StatusBar Grid.Row="3">
