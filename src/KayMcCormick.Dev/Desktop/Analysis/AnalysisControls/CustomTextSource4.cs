@@ -61,17 +61,19 @@ namespace AnalysisControls
         {
             if (Node == null)
                 yield break;
-            var token1 = Node.GetFirstToken(true, true, true, true);
+            if (Node.HasLeadingTrivia)
+            {
+                foreach (var syntaxTrivia in Node.GetLeadingTrivia())
+                {
+                    yield return new SyntaxInfo(syntaxTrivia);
+
+                }
+            }
+
+            var token1 = Node.GetFirstToken();
             while (CSharpExtensions.Kind(token1) != SyntaxKind.None)
             {
-                if (token1.HasLeadingTrivia)
-                {
-                    foreach (var syntaxTrivia in token1.LeadingTrivia)
-                    {
-                        yield return new SyntaxInfo(syntaxTrivia);
-                    }
-                }
-
+                
                 if (CSharpExtensions.Kind(token1)== SyntaxKind.EndOfFileToken)
                     yield break;
                 yield return new SyntaxInfo(token1);
@@ -79,11 +81,87 @@ namespace AnalysisControls
                 {
                     foreach (var syntaxTrivia in token1.TrailingTrivia)
                     {
-                        yield return new SyntaxInfo(syntaxTrivia);
+                        if (syntaxTrivia.IsPartOfStructuredTrivia())
+                        {
+                            SyntaxNode syntaxNode = syntaxTrivia.GetStructure();
+                            var n = syntaxTrivia.Token.Parent;
+                            if (n is StructuredTriviaSyntax sn)
+                            {
+                                var trail = sn.GetTrailingTrivia();
+                            }
+                            // while (syntaxNode == null)
+                            // {
+                                // syntaxNode = n.ParentTrivia;
+                            // }
+                            // syntaxNode = syntaxTrivia.GetStructure();
+                            var token2 = syntaxNode.GetFirstToken(true, true, true, true);
+                            while (CSharpExtensions.Kind(token2) != SyntaxKind.None)
+                            {
+                                if (token2.HasLeadingTrivia)
+                                {
+                                    foreach (var syntaxTrivia2 in token2.LeadingTrivia)
+                                    {
+                                        yield return new SyntaxInfo(syntaxTrivia2);
+                                    }
+                                }
+
+                                yield return new SyntaxInfo(token2);
+                                if (token2.HasTrailingTrivia)
+                                {
+                                    foreach (var syntaxTrivia2 in token2.TrailingTrivia)
+                                    {
+                                        yield return new SyntaxInfo(syntaxTrivia2);
+                                    }
+                                }
+
+                                token2 = token2.GetNextToken(true, true, true, true);
+                            }
+                        }
+                        else
+                        {
+                            yield return new SyntaxInfo(syntaxTrivia);
+                        }
                     }
                 }
 
                 token1 = token1.GetNextToken(true, true, true, true);
+                if (token1.HasLeadingTrivia)
+                {
+                    foreach (var syntaxTrivia in token1.LeadingTrivia)
+                    {
+                        // if (syntaxTrivia.IsPartOfStructuredTrivia())
+                        // {
+
+                            // var token2 = syntaxTrivia.GetStructure().GetFirstToken(true, true, true, true);
+                            // while (CSharpExtensions.Kind(token2) != SyntaxKind.None)
+                            // {
+                                // if (token2.HasLeadingTrivia)
+                                // {
+                                    // foreach (var syntaxTrivia2 in token2.LeadingTrivia)
+                                    // {
+                                        // yield return new SyntaxInfo(syntaxTrivia2);
+                                    // }
+                                // }
+
+                                // yield return new SyntaxInfo(token2);
+                                // if (token2.HasTrailingTrivia)
+                                // {
+                                    // foreach (var syntaxTrivia2 in token2.TrailingTrivia)
+                                    // {
+                                        // yield return new SyntaxInfo(syntaxTrivia2);
+                                    // }
+                                // }
+
+                                // token2 = token2.GetNextToken(true, true, true, true);
+                            // }
+                        // }
+                        // else
+                        // {
+                            yield return new SyntaxInfo(syntaxTrivia);
+                        // }
+                    }
+                }
+
             }
 
             yield break;
@@ -114,9 +192,14 @@ namespace AnalysisControls
                 si = SyntaxInfos.Current;
             }
 
-            if (si.Span1.Start != textSourceCharacterIndex)
+            if (textSourceCharacterIndex < si.Span1.Start)
             {
-
+                var len = si.Span1.Start - textSourceCharacterIndex;
+                var buf = new char[len];
+                Text.CopyTo(textSourceCharacterIndex, buf, 0, len);
+                if (len == 2 && buf[0] == '\r' && buf[1] == '\n') return new CustomTextEndOfLine(2);
+                var t = string.Join("", buf);
+                return new CustomTextCharacters(t, MakeProperties(SyntaxKind.None, t));
             }
 
             _prev = si;

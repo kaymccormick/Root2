@@ -226,7 +226,7 @@ namespace AnalysisControls
                     {
                         SyntaxFactory.ParseSyntaxTree(
                             newValue)
-                    }, new[] {MetadataReference.CreateFromFile(typeof(object).Assembly.Location)});
+                    }, new[] {MetadataReference.CreateFromFile(typeof(object).Assembly.Location)}, CSharpCompilationOptions);
                 SyntaxTree = Compilation.SyntaxTrees.First();
                 Node = SyntaxTree.GetRoot();
                 Model = Compilation?.GetSemanticModel(SyntaxTree);

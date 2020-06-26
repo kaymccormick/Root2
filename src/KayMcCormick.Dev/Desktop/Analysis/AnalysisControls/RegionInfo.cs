@@ -57,6 +57,8 @@ namespace AnalysisControls
             }
         }
 
+        public SyntaxToken TokenValue => SyntaxToken.GetValueOrDefault();
+
         /// <summary>
         /// 
         /// </summary>

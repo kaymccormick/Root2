@@ -5433,6 +5433,7 @@
         </Setter>
     </Style>
 
+    <local:DiagnosticConverter x:Key="DiagnosticConverter" />
     <Style TargetType="{x:Type local:CodeDiagnostics}">
         <Setter Property="Template">
             <Setter.Value>
@@ -5459,6 +5460,16 @@
               
                                     x:Name="code"
  />
+                            </TabItem>
+
+                            <TabItem DataContext="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CSharpCompilation}">
+                                <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=DeclarationDiagnostics}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type codeAnalysis:Diagnostic}">
+                                            <StackPanel Orientation="Horizontal"><TextBlock Text="{Binding Converter={StaticResource DiagnosticConverter}}"/></StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </TabItem>
 
                             <TabItem Header="Source">
@@ -5505,6 +5516,13 @@
                                                                 DisplayMemberBinding="{Binding Path=Length}" />
                                                 <GridViewColumn Header="Node"
                                                                 DisplayMemberBinding="{Binding Path=SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
+                                                <GridViewColumn Header="Node Span"
+                                                                DisplayMemberBinding="{Binding Path=SyntaxNode.Span}" />
+                                                <GridViewColumn Header="Trivia"
+                                                                DisplayMemberBinding="{Binding Path=TriviaValue,Converter={StaticResource SyntaxTriviaConverter}}" />
+                                                <GridViewColumn Header="Token"
+                                                                DisplayMemberBinding="{Binding Path=TokenValue,Converter={StaticResource SyntaxTokenConverter},ConverterParameter=kind}" />
+
                                                 <GridViewColumn Header="Bounding"
                                                                 DisplayMemberBinding="{Binding Path=BoundingRect,Converter={StaticResource RectConverter}}" />
                                             </GridView>
