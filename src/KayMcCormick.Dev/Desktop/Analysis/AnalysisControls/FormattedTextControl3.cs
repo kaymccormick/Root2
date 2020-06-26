@@ -967,14 +967,28 @@ namespace AnalysisControls
                                     SyntaxNode node = null;
                                     SyntaxToken? token = null;
                                     SyntaxTrivia? trivia = null;
+                                    SyntaxToken? AttachedToken = null;
+                                    SyntaxNode attachedNode = null;
+
+                                    SyntaxNode structuredTrivia = null;
+                                    TriviaPosition? triviaPosition = null;
                                     if (textSpanValue is SyntaxTokenTextCharacters stc)
                                     {
                                         node = stc.Node;
                                         token = stc.Token;
                                     }
-                                    else if (textSpanValue is SyntaxTriviaTextCharacters stc2)
+                                    else
                                     {
-                                        trivia = stc2.Trivia;
+                                        if (textSpanValue is SyntaxTriviaTextCharacters stc2)
+                                        {
+                                            trivia = stc2.Trivia;
+                                            AttachedToken = stc2.Token;
+                                            attachedNode = stc2.Node;
+                                            structuredTrivia = stc2.StructuredTrivia;
+                                            triviaPosition = stc2.TriviaPosition;
+                                            
+                                            
+                                        }
                                     }
 
                                     var tuple = new RegionInfo(textSpanValue, r, cellBounds)
@@ -983,9 +997,13 @@ namespace AnalysisControls
                                         Offset = regionOffset,
                                         Length = textSpan.Length,
                                         SyntaxNode = node,
+                                        AttachedToken = AttachedToken,
+                                        AttachedNode = attachedNode,
                                         SyntaxToken = token,
                                         Trivia = trivia,
-                                        PrevRegion = prevRegion
+                                        TriviaPosition = triviaPosition,
+                                        PrevRegion = prevRegion,
+                                        StructuredTrivia = structuredTrivia
                                     };
                                     foreach (var ch in tuple.Characters) ch.Region = tuple;
                                     lineRegions.Add(tuple);

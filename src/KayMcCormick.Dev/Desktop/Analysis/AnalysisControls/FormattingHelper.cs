@@ -309,6 +309,8 @@ namespace AnalysisControls
                         SyntaxToken? token = null;
                         SyntaxTrivia? trivia = null;
                         DebugUtils.WriteLine("text run is length " + textSpanValue.Length, DebugCategory.TextFormatting);
+                        SyntaxToken? AttachedToken = null;
+                        SyntaxNode attachedNode = null;
                         switch (textSpanValue)
                         {
                             case SyntaxTokenTextCharacters stc:
@@ -317,6 +319,8 @@ namespace AnalysisControls
                                 break;
                             case SyntaxTriviaTextCharacters stc2:
                                 trivia = stc2.Trivia;
+                                AttachedToken = stc2.Token;
+                                attachedNode = stc2.Node;
                                 break;
                         }
 
@@ -327,6 +331,8 @@ namespace AnalysisControls
                             Length = textSpan.Length,
                             SyntaxNode = node,
                             SyntaxToken = token,
+                            AttachedToken= AttachedToken,
+                            AttachedNode = attachedNode,
                             Trivia = trivia
                         };
 

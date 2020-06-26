@@ -162,6 +162,11 @@ namespace AnalysisControls
         /// </summary>
         public RegionInfo PrevRegion { get; set; }
 
+        public SyntaxToken? AttachedToken { get; set; }
+        public SyntaxNode AttachedNode { get; set; }
+        public SyntaxNode StructuredTrivia { get; set; }
+        public TriviaPosition? TriviaPosition { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
