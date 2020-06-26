@@ -3,7 +3,7 @@
 // 
 // Analysis
 // ConsoleApp1
-// SyntaxInfo.cs
+// SyntaxSummaryInfo.cs
 // 
 // 2020-04-08-5:31 AM
 // 
@@ -17,7 +17,7 @@ namespace AnalysisAppLib
     /// <summary>
     /// 
     /// </summary>
-    public sealed class SyntaxInfo
+    public sealed class SyntaxSummaryInfo
     {
         /// <summary>
         /// 

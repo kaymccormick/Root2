@@ -334,7 +334,7 @@ namespace AnalysisControls
             DebugUtils.WriteLine($"Calling view func ({command})");
             var n = DateTime.Now;
             DocModel doc1 = DocModel.CreateInstance(command.DisplayName);
-            doc1.Content = view.Value;
+                doc1.Content = view.Value;
             x.Item2.Resolve<IDocumentHost>().AddDocument(doc1);
             // var pane1 = x.Item2.Resolve<ReplaySubject<IControlView>>();
             // DebugUtils.WriteLine((DateTime.Now - n).ToString());

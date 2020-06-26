@@ -351,7 +351,7 @@ namespace AnalysisControls
             var cmd = e.Command.ToString();
             if (e.Command is RoutedUICommand rui) cmd = rui.Text;
 
-            DebugUtils.WriteLine($"{cmd} {e.Handled} {e.Handled}");
+            // DebugUtils.WriteLine($"{cmd} {e.Handled} {e.Handled}");
         }
 
         private void PreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)

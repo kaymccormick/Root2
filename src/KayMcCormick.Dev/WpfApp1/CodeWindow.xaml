@@ -1,5 +1,6 @@
 ﻿<Window x:Class="WpfApp1.CodeWindow" ShowActivated="True" Left="0" Top="0"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        x:Name="w"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -15,6 +16,6 @@
     <TextBlock Text=" "/>
             <TextBlock Text="{Binding HoverRow}"/>
         </StackPanel>
-        <analysisControls:CodeDiagnostics x:Name="Code"  Grid.Row="1"/>
+        <analysisControls:CodeDiagnostics x:Name="Code"  Grid.Row="1" SourceText="{Binding ElementName=w,Path=SourceText}"/>
     </Grid>
 </Window>

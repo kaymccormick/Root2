@@ -13,7 +13,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public static readonly DependencyProperty CompilationProperty = DependencyProperty.RegisterAttached(
-            "Compilation", typeof(Compilation), typeof(SyntaxNodeControl), new FrameworkPropertyMetadata(default(Compilation), FrameworkPropertyMetadataOptions.Inherits));
+            "Compilation", typeof(Compilation), typeof(CompilationControl), new FrameworkPropertyMetadata(default(Compilation), FrameworkPropertyMetadataOptions.None));
 
         /// <summary>
         /// 

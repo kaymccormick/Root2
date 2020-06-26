@@ -44,6 +44,7 @@ namespace AnalysisControls
                 _typeface);
             BaseProps = TextPropertiesManager.GetBasicTextRunProperties(
                 PixelsPerDip, Rendering);
+            _prev = null;
         }
 
         /// <summary>
@@ -56,6 +57,37 @@ namespace AnalysisControls
         /// </summary>
         public override int Length { get; protected set; }
 
+        IEnumerable<SyntaxInfo> GetSyntaxInfos()
+        {
+            if (Node == null)
+                yield break;
+            var token1 = Node.GetFirstToken(true, true, true, true);
+            while (CSharpExtensions.Kind(token1) != SyntaxKind.None)
+            {
+                if (token1.HasLeadingTrivia)
+                {
+                    foreach (var syntaxTrivia in token1.LeadingTrivia)
+                    {
+                        yield return new SyntaxInfo(syntaxTrivia);
+                    }
+                }
+
+                if (CSharpExtensions.Kind(token1)== SyntaxKind.EndOfFileToken)
+                    yield break;
+                yield return new SyntaxInfo(token1);
+                if (token1.HasTrailingTrivia)
+                {
+                    foreach (var syntaxTrivia in token1.TrailingTrivia)
+                    {
+                        yield return new SyntaxInfo(syntaxTrivia);
+                    }
+                }
+
+                token1 = token1.GetNextToken(true, true, true, true);
+            }
+
+            yield break;
+        }
         // Used by the TextFormatter object to retrieve a run of text from the text source.
         /// <summary>
         /// 
@@ -65,6 +97,44 @@ namespace AnalysisControls
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public override TextRun GetTextRun(int textSourceCharacterIndex)
         {
+            DebugUtils.WriteLine($"GetTextRun(textSourceCharacterIndex = {textSourceCharacterIndex})");
+            if (!SyntaxInfos.MoveNext())
+            {
+                return new TextEndOfParagraph(2);
+            }
+
+            var si = SyntaxInfos.Current;
+            while (si.Span1.End <= textSourceCharacterIndex || si.Text.Length == 0)
+            {
+                if (!SyntaxInfos.MoveNext())
+                {
+                    return new TextEndOfParagraph(2);
+                }
+                _prev = si;
+                si = SyntaxInfos.Current;
+            }
+
+            if (si.Span1.Start != textSourceCharacterIndex)
+            {
+
+            }
+
+            _prev = si;
+            
+            if (si.SyntaxTrivia.HasValue)
+            {
+                if (CSharpExtensions.Kind(si.SyntaxTrivia.Value) == SyntaxKind.EndOfLineTrivia)
+                {
+                    return new CustomTextEndOfLine(2);
+                }
+                    return new SyntaxTriviaTextCharacters(si.Text, PropsFor(si.SyntaxTrivia.Value, si.Text), si.Span1, si.SyntaxTrivia.Value);
+            } else if (si.SyntaxToken.HasValue)
+            {
+                return new SyntaxTokenTextCharacters(si.Text, si.Text.Length, PropsFor(si.SyntaxToken.Value, si.Text),
+                    si.SyntaxToken.Value, si.SyntaxToken.Value.Parent);
+
+            }
+
             DebugUtils.WriteLine($"index: {textSourceCharacterIndex}");
             TextSpan? TakeToken()
             {
@@ -365,7 +435,13 @@ namespace AnalysisControls
         public SyntaxNode Node
         {
             get { return _node; }
-            set { _node = value; }
+            set
+            {
+                if (Equals(value, _node)) return;
+                _node = value;
+                SyntaxInfos = GetSyntaxInfos().GetEnumerator();
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -709,6 +785,7 @@ private readonly List<int> chars = new List<int>();
         private int _curStart;
         private SyntaxTree _newTree;
         private SyntaxTrivia? trivia;
+        private SyntaxInfo _prev;
         public int EolLength { get; } = 2;
 
         /// <summary>
@@ -753,7 +830,8 @@ private readonly List<int> chars = new List<int>();
 
             var chL = newTree.GetChangedSpans(Tree);
             var syntaxNode = newTree.GetRoot();
-            foreach (var textSpan in chL)
+#if false
+            foreachs (var textSpan in chL)
             {
                 var sn = syntaxNode.ChildThatContainsPosition(textSpan.Start);
                 var istoken = sn.IsToken;
@@ -865,9 +943,16 @@ private readonly List<int> chars = new List<int>();
                 // this.token = this.token.Value.GetPreviousToken(true, true, true, true);
                 DebugUtils.WriteLine("Changed region " + textSpan);
             }
+#endif
             Tree = newTree;
             _newTree = null;
             Node = syntaxNode;
+            // foreach (var syntaxInfo in GetSyntaxInfos())
+            // {
+                // DebugUtils.WriteLine(syntaxInfo.ToString());
+            // }
+
+            SyntaxInfos = GetSyntaxInfos().GetEnumerator();
             
             return;
 #if false
@@ -949,6 +1034,8 @@ private readonly List<int> chars = new List<int>();
 #endif
         }
 
+        private IEnumerator<SyntaxInfo> SyntaxInfos { get; set; }
+
         public (int i, TextSpan? span, SyntaxToken? token1) SearchStarts(TextSpan textSpan)
         {
             if (!_starts.Any())
@@ -1021,6 +1108,37 @@ private readonly List<int> chars = new List<int>();
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    internal class SyntaxInfo
+    {
+        public SyntaxTrivia? SyntaxTrivia { get; }
+        public SyntaxToken? SyntaxToken { get; }
+
+        public SyntaxInfo(in SyntaxTrivia syntaxTrivia)
+        {
+            SyntaxTrivia = syntaxTrivia;
+            Span1 = syntaxTrivia.FullSpan;
+            Text = syntaxTrivia.ToFullString();
+        }
+
+        public TextSpan Span1 { get; set; }
+
+        public SyntaxInfo(in SyntaxToken syntaxToken)
+        {
+            SyntaxToken = syntaxToken;
+            Span1 = syntaxToken.Span;
+            Text = syntaxToken.Text;
+        }
+
+        public string Text { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Span1} " + (SyntaxTrivia.HasValue
+                ? "SyntaxTrivia " + CSharpExtensions.Kind(SyntaxTrivia.Value)
+                : "SyntaxToken " + CSharpExtensions.Kind(SyntaxToken.Value)) + " " + Text;
         }
     }
 

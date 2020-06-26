@@ -33,6 +33,7 @@ namespace WpfApp1
             Action<string> d = s => DebugUtils.WriteLine(s);
             Loaded += (sender, args) =>
             {
+                return;
                 var c = Code.CodeControl.CodeControl;
                 string[] lines = new string[] {"/* foo */", "public "};
                 bool first = true;

@@ -113,7 +113,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public static readonly DependencyProperty SourceTextProperty = DependencyProperty.Register(
-            "SourceText", typeof(string), typeof(FormattedTextControl3), new PropertyMetadata("", OnSourceTextUpdated));
+            "SourceText", typeof(string), typeof(SyntaxNodeControl), new PropertyMetadata("", OnSourceTextUpdated));
 
         /// <summary>
         /// 

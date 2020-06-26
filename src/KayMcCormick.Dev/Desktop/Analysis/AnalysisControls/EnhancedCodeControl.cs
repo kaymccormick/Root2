@@ -73,7 +73,7 @@ namespace AnalysisControls
         static EnhancedCodeControl()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(EnhancedCodeControl), new FrameworkPropertyMetadata(typeof(EnhancedCodeControl)));
-            CompilationProperty.AddOwner(typeof(EnhancedCodeControl));
+            // CompilationProperty.AddOwner(typeof(EnhancedCodeControl));
 //            SyntaxNodeControl.CompilationProperty.OverrideMetadata(typeof(EnhancedCodeControl), new PropertyMetadata(null, PropertyChangedCallback));
         }
 
