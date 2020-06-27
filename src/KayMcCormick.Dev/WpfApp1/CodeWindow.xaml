@@ -27,6 +27,6 @@
             <TextBlock Text="{Binding HoverRow}"/>
         </StackPanel>
         <analysisControls:CodeDiagnostics x:Name="Code"  Grid.Row="2" Document="{Binding ElementName=combo,Path=SelectedItem}"/>
-        <StatusBar Grid.Row="3"><Ellipse Margin="5" Width="20" Height="20" x:Name="Ellipse" Fill="Red"/></StatusBar>
+        <StatusBar Grid.Row="3"><Ellipse Margin="5" Width="20" Height="20" x:Name="Ellipse" Fill="Red"/><TextBlock Text="{Binding ElementName=Code,Path=CodeControl.CodeControl.InsertionPoint}"/></StatusBar>
     </Grid>
 </Window>

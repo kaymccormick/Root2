@@ -5109,7 +5109,9 @@
                                                           TileMode="None"
                                                           Stretch="Uniform">
                                                 <DrawingBrush.Drawing>
-                                                    <DrawingGroup x:Name="DG2" />
+                                                    <DrawingGroup x:Name="DG2" >
+                                                        <DrawingGroup x:Name="Region"/>
+                                                    </DrawingGroup>
                                                 </DrawingBrush.Drawing>
                                             </DrawingBrush>
                                         </Rectangle.Fill>
@@ -5183,14 +5185,28 @@
                                             </DrawingBrush>
                                         </Rectangle.Fill>
                                     </Rectangle>
-                                    <Rectangle x:Name="Rect2" Panel.ZIndex="100" VerticalAlignment="Top"
+                                    <Rectangle x:Name="Rect2" Panel.ZIndex="100" VerticalAlignment="Top" Width="{Binding ElementName=Rect,Path=ActualWidth}" Height="{Binding ElementName=Rect2,Path=ActualHeight}"
                                                HorizontalAlignment="Left">
                                         <Rectangle.Fill>
-                                            <DrawingBrush x:Name="DrawingBrush2" AlignmentX="Left" AlignmentY="Top"
-                                                          TileMode="None"
-                                                          Stretch="Uniform">
+                                            <DrawingBrush x:Name="DrawingBrush2" AlignmentX="Left" AlignmentY="Top" Viewport="{Binding ElementName=DrawingBrush,Path=Viewport}"
+                                                          ViewportUnits="{Binding ElementName=DrawingBrush,Path=ViewportUnits}"
+                                                          TileMode="None" Viewbox="{Binding ElementName=DrawingBrush,Path=Viewbox}"
+                                                          ViewboxUnits="{Binding ElementName=DrawingBrush,Path=ViewboxUnits}"
+                                                          Stretch="None">
+                                                <DrawingBrush.Transform>
+                                                    <TranslateTransform></TranslateTransform>
+                                                </DrawingBrush.Transform>
                                                 <DrawingBrush.Drawing>
-                                                    <DrawingGroup x:Name="DG2" />
+                                                    <DrawingGroup x:Name="DG2">
+                                                        <GeometryDrawing>
+                                                            <GeometryDrawing.Pen>
+                                                                <Pen Brush="Red" Thickness="2"/>
+                                                            </GeometryDrawing.Pen>
+                                                            <GeometryDrawing.Geometry>
+                                                            <RectangleGeometry Rect="{Binding RelativeSource={RelativeSource TemplatedParent},Path=HoverRegionInfo.BoundingRect}"/>
+                                                            </GeometryDrawing.Geometry>
+                                                        </GeometryDrawing>
+                                                    </DrawingGroup>
                                                 </DrawingBrush.Drawing>
                                             </DrawingBrush>
                                         </Rectangle.Fill>

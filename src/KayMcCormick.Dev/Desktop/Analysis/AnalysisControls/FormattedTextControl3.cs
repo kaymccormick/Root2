@@ -122,8 +122,18 @@ namespace AnalysisControls
 
         protected virtual async void OnInsertionPointChanged(int oldValue, int newValue)
         {
-            ISymbol enclosingsymbol = Model.GetEnclosingSymbol(newValue);
+            UpdateCaretPosition();
+            ISymbol enclosingsymbol = Model?.GetEnclosingSymbol(newValue);
             EnclosingSymbol = enclosingsymbol;
+
+            DebugUtils.WriteLine(EnclosingSymbol?.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
+            if (Model != null && InsertionRegion.SyntaxNode != null)
+            {
+                var ti = Model.GetTypeInfo(InsertionRegion.SyntaxNode);
+                if (ti.Type != null)
+                    DebugUtils.WriteLine(ti.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
+                ;
+            }
             // var completionService = CompletionService.GetService(Document);
             // var results = await completionService.GetCompletionsAsync(Document, InsertionPoint);
             // foreach (var completionItem in results.Items)
@@ -555,6 +565,14 @@ namespace AnalysisControls
         private GeometryDrawing _geometryDrawing;
         private Rect _rect;
 
+        /// <inheritdoc />
+        protected override Size MeasureOverride(Size constraint)
+        {
+            var measureOverride = base.MeasureOverride(constraint);
+            var w = _scrollViewer.DesiredSize.Width;
+            return measureOverride;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -563,14 +581,15 @@ namespace AnalysisControls
         {
             _scrollViewer = (ScrollViewer) GetTemplateChild("ScrollViewer");
             if (_scrollViewer != null) OutputWidth = _scrollViewer.ActualWidth;
-	    if(OutputWidth == 0)
-	    {
-	    throw new InvalidOperationException();
-	    }
+	    // if(OutputWidth == 0)
+	    // {
+	    // throw new InvalidOperationException();
+	    // }
 	    
             DebugUtils.WriteLine(OutputWidth.ToString());
             CodeControl = (FormattedTextControl3) GetTemplateChild("CodeControl");
             _rectangle = (Rectangle) GetTemplateChild("Rectangle");
+            RegionDG = (DrawingGroup) GetTemplateChild("Region");
             var dpd = DependencyPropertyDescriptor.FromProperty(TextElement.FontSizeProperty, typeof(Rectangle));
             var dpd2 = DependencyPropertyDescriptor.FromProperty(TextElement.FontFamilyProperty, typeof(Rectangle));
 	    Translate = (TranslateTransform)GetTemplateChild("TranslateTransform");
@@ -600,15 +619,22 @@ namespace AnalysisControls
             _dg2 = (DrawingGroup) GetTemplateChild("DG2");
             UiLoaded = true;
 
+            StartSecondaryThread();
+            //if (TextSource != null) UpdateFormattedText();
+        }
+
+        public DrawingGroup RegionDG { get; set; }
+
+        private void StartSecondaryThread()
+        {
             var t = new ThreadStart(SecondaryThread);
             Thread newWindowThread = new Thread(t);
             newWindowThread.SetApartmentState(ApartmentState.STA);
             newWindowThread.IsBackground = true;
             newWindowThread.Start();
-            //if (TextSource != null) UpdateFormattedText();
         }
 
-public TranslateTransform Translate {get;set;}
+        public TranslateTransform Translate {get;set;}
 
         private void SecondaryThread()
         {
@@ -927,7 +953,7 @@ public TranslateTransform Translate {get;set;}
                 inClassName.FormattedTextControl3._rectangle.Height = lineCtx.MaxY;
                 inClassName.FormattedTextControl3._rect2.Width = lineCtx.MaxX;
                 inClassName.FormattedTextControl3._rect2.Height = lineCtx.MaxY;
-                inClassName.FormattedTextControl3.UpdateCaretPosition();
+                // inClassName.FormattedTextControl3.UpdateCaretPosition();
 //                inClassName.FormattedTextControl3.InvalidateVisual();
             });
 
@@ -983,9 +1009,21 @@ public TranslateTransform Translate {get;set;}
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
             _nliens = (int) (arrangeBounds.Height / (FontFamily.LineSpacing * FontSize));
-            DebugUtils.WriteLine(_nliens.ToString());
-            return base.ArrangeOverride(arrangeBounds);
+            DebugUtils.WriteLine("poassible lines " + _nliens.ToString());
+            var arrangeOverride = base.ArrangeOverride(arrangeBounds);
+            DebugUtils.WriteLine(arrangeOverride);
+            DebugUtils.WriteLine(_scrollViewer.ActualWidth);
+            OutputWidth = _scrollViewer.ActualWidth;
+            if (InitialUpdate)
+            {
+                _updateOperation = Dispatcher.InvokeAsync(async () => { await UpdateFormattedText(); });
+                InitialUpdate = false;
+            }
+
+            return arrangeOverride;
         }
+
+        public bool InitialUpdate { get; set; } = true;
 
         /// <summary>
         /// 
@@ -1049,7 +1087,7 @@ public TranslateTransform Translate {get;set;}
                 _rectangle.Height = _pos.Y;
 
                 // InsertionCharacter = LineInfos[0].Regions[0].Characters[0];
-                UpdateCaretPosition();
+                // UpdateCaretPosition();
 //                InvalidateVisual();
             }
             catch (Exception ex)
@@ -1135,7 +1173,7 @@ public TranslateTransform Translate {get;set;}
                     }
 
                     var lineRegions = new List<RegionInfo>();
-
+                    lineInfo.Regions = lineRegions;
                     var lineString = "";
                     var xoffset = lineInfo.Origin.X;
                     var xoffsets = new List<double>();
@@ -1297,10 +1335,15 @@ public TranslateTransform Translate {get;set;}
                         var dc = formattedTextControl3._textDest.Append();
                         myTextLine.Draw(dc, linePosition, InvertAxes.None);
                         dc.Close();
-//			formattedTextControl3.Translate.X = -1 * formattedTextControl3._textDest.Bounds.Left;
+                        
+			// formattedTextControl3.Translate.X = -1 * formattedTextControl3._textDest.Bounds.Left;
 
-                        formattedTextControl3._rectangle.Width = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
-                        formattedTextControl3._rectangle.Height = Math.Min(formattedTextControl3._pos.Y, formattedTextControl3.ActualHeight);
+            var rectangleWidth = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
+            formattedTextControl3._rectangle.Width = rectangleWidth;
+            var rectangleHeight = Math.Min(formattedTextControl3._pos.Y, formattedTextControl3.ActualHeight);
+            formattedTextControl3._rectangle.Height = rectangleHeight;
+            formattedTextControl3._myDrawingBrush.Viewbox = new Rect(0, 0, rectangleWidth, rectangleHeight);
+            formattedTextControl3._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
                         formattedTextControl3.LineInfos.Add(lineInfo);
                     });
                     // ReSharper disable once UnusedVariable
@@ -1413,12 +1456,15 @@ public TranslateTransform Translate {get;set;}
         private Dispatcher _secondaryDispatcher;
         private double _xOffset = 50.0;
         private ISymbol _enclosingSymbol;
+        private DispatcherOperation<Task> _updateOperation;
 
         /// <inheritdoc />
         protected override void OnMouseMove(MouseEventArgs e)
         {
+            DrawingContext dc=null;
             try
             {
+                //dc = _dg2.Open();
                 // if (SelectionEnabled && e.LeftButton == MouseButtonState.Pressed)
                 // {
                 var point = e.GetPosition(_rectangle);
@@ -1448,31 +1494,31 @@ public TranslateTransform Translate {get;set;}
 
 
                 // Perform the hit test against a given portion of the visual object tree.
-                var drawingVisual = new DrawingVisual();
-                var drawingVisualDrawing = new DrawingGroup();
-                var dc = drawingVisual.RenderOpen();
+                // var drawingVisual = new DrawingVisual();
+                // var drawingVisualDrawing = new DrawingGroup();
+                // var dc = drawingVisual.RenderOpen();
 
                 // foreach (var g in GeoTuples)
                 // {
                 // dc.DrawGeometry(Brushes.Black, null, g);
                 // }
 
-                foreach (var g in GeoTuples)
-                    if (g.Item1.Rect.Contains(point))
-                        Debug.WriteLine(g.Item2.SyntaxNode?.Kind().ToString() ?? "");
+                // foreach (var g in GeoTuples)
+                // if (g.Item1.Rect.Contains(point))
+                // Debug.WriteLine(g.Item2.SyntaxNode?.Kind().ToString() ?? "");
                 // Debug.WriteLine(((RectangleGeometry)g).Rect);
 
                 //
 
-                dc.Close();
+                // dc.Close();
 
 
-                var result = VisualTreeHelper.HitTest(drawingVisual, point);
+                // var result = VisualTreeHelper.HitTest(drawingVisual, point);
 
-                if (result != null)
-                {
-                    // Perform action on hit visual object.
-                }
+                // if (result != null)
+                // {
+                // Perform action on hit visual object.
+                // }
 
                 if (!zz.Any())
                 {
@@ -1488,7 +1534,12 @@ public TranslateTransform Translate {get;set;}
                 foreach (var tuple in zz)
                 {
                     HoverRegionInfo = tuple;
-                    if (tuple.Trivia.HasValue) DebugUtils.WriteLine(tuple.ToString(), DebugCategory.TextFormatting);
+                    var dc1 = RegionDG.Open();
+                    dc1.DrawRectangle(null, new Pen(Brushes.Red, 2), tuple.BoundingRect);
+                    dc1.Close();
+                    // _dg2.Children.Add(new GeometryDrawing(null, 
+                    // if (tuple.Trivia.HasValue) DebugUtils.WriteLine(tuple
+                    // ~.ToString(), DebugCategory.TextFormatting);
 
                     if (tuple.SyntaxNode != HoverSyntaxNode)
                     {
@@ -1503,34 +1554,34 @@ public TranslateTransform Translate {get;set;}
                                 {
                                     sym = Model?.GetDeclaredSymbol(tuple.SyntaxNode);
                                     operation = Model.GetOperation(tuple.SyntaxNode);
-                                    var zzz = tuple.SyntaxNode.AncestorsAndSelf().OfType<ForEachStatementSyntax>()
-                                        .FirstOrDefault();
-                                    if (zzz != null)
-                                    {
-                                        var info = Model.GetForEachStatementInfo(zzz);
-                                        Debug.WriteLine(info.ElementType?.ToDisplayString());
-                                    }
+                                    // var zzz = tuple.SyntaxNode.AncestorsAndSelf().OfType<ForEachStatementSyntax>()
+                                    // .FirstOrDefault();
+                                    // if (zzz != null)
+                                    // {
+                                    // var info = Model.GetForEachStatementInfo(zzz);
+                                    // Debug.WriteLine(info.ElementType?.ToDisplayString());
+                                    // }
 
-                                    switch ((CSharpSyntaxNode) tuple.SyntaxNode)
-                                    {
-                                        case AssignmentExpressionSyntax assignmentExpressionSyntax:
-                                            break;
-                                        case ForEachStatementSyntax forEachStatementSyntax:
-                                            var info = Model.GetForEachStatementInfo(forEachStatementSyntax);
-                                            Debug.WriteLine(info.ElementType.ToDisplayString());
-                                            break;
-                                        case ForEachVariableStatementSyntax forEachVariableStatementSyntax:
-                                            break;
-                                        case MethodDeclarationSyntax methodDeclarationSyntax:
+                                    // switch ((CSharpSyntaxNode) tuple.SyntaxNode)
+                                    // {
+                                    // case AssignmentExpressionSyntax assignmentExpressionSyntax:
+                                    // break;
+                                    // case ForEachStatementSyntax forEachStatementSyntax:
+                                    // var info = Model.GetForEachStatementInfo(forEachStatementSyntax);
+                                    // Debug.WriteLine(info.ElementType.ToDisplayString());
+                                    // break;
+                                    // case ForEachVariableStatementSyntax forEachVariableStatementSyntax:
+                                    // break;
+                                    // case MethodDeclarationSyntax methodDeclarationSyntax:
 
-                                            break;
-                                        case TryStatementSyntax tryStatementSyntax:
-                                            break;
-                                        case StatementSyntax statementSyntax:
-                                            break;
-                                        default:
-                                            break;
-                                    }
+                                    // break;
+                                    // case TryStatementSyntax tryStatementSyntax:
+                                    // break;
+                                    // case StatementSyntax statementSyntax:
+                                    // break;
+                                    // default:
+                                    // break;
+                                    // }
                                 }
                                 catch
                                 {
@@ -1667,10 +1718,10 @@ public TranslateTransform Translate {get;set;}
 
 
                             _selectionGeometry = @group;
-                            _textDest.Children.Add(_selectionGeometry);
-                            _myDrawingBrush.Drawing = _textDest;
+                            // _dg2.Children.Add(_selectionGeometry);
+                            // _myDrawingBrush.Drawing = _textDest;
                             _selectionEnd = newOffset;
-                            InvalidateVisual();
+                            // InvalidateVisual();
                         }
                     }
 
@@ -1687,8 +1738,8 @@ public TranslateTransform Translate {get;set;}
                         _geometryDrawing =
                             new GeometryDrawing(solidColorBrush, null, new RectangleGeometry(tuple.BoundingRect));
 
-                        _textDest.Children.Add(_geometryDrawing);
-                        InvalidateVisual();
+                        // _dg2.Children.Add(_geometryDrawing);
+                        // InvalidateVisual();
                     }
 
                     //DebugUtils.WriteLine(pp.Text);
@@ -1716,6 +1767,10 @@ public TranslateTransform Translate {get;set;}
             catch (Exception ex)
             {
                 DebugUtils.WriteLine(ex.ToString());
+            }
+            finally
+            {
+                dc?.Close();
             }
         }
 
@@ -1755,6 +1810,7 @@ public TranslateTransform Translate {get;set;}
         /// <inheritdoc />
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
+            InsertionPoint = HoverOffset;
         }
 
         /// <inheritdoc />
@@ -1774,7 +1830,7 @@ public TranslateTransform Translate {get;set;}
                 LineInfos.Clear();
                 MaxX = 0;
                 MaxY = 0;
-                _pos = new Point(0, 0);
+                _pos = new Point(_xOffset, 0);
                 if (_scrollViewer != null) _scrollViewer.ScrollToTop();
                 if (SecondaryDispatcher != null)
                     await UpdateTextSource();
