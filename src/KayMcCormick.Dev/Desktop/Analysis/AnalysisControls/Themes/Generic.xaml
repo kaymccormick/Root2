@@ -5168,9 +5168,17 @@
                                         <Rectangle.Fill>
                                             <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top"
                                                           TileMode="None"
-                                                          Stretch="Uniform">
+                                                          Stretch="None">
+                                                <DrawingBrush.Transform>
+                                                    <TransformGroup>
+                                                        <TranslateTransform x:Name="Translate"/>
+
+                                                    </TransformGroup>
+                                                </DrawingBrush.Transform>
                                                 <DrawingBrush.Drawing>
-                                                    <DrawingGroup x:Name="TextDest" />
+                                                    <DrawingGroup x:Name="TextDest">
+						                                
+						    </DrawingGroup>
                                                 </DrawingBrush.Drawing>
                                             </DrawingBrush>
                                         </Rectangle.Fill>
@@ -5679,6 +5687,9 @@
                                                          Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation}"
                                                          Node="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Node}"
                                                          x:Name="CodeControl" />
+                            <StackPanel Grid.Row="1" Grid.Column="2">
+                                <TextBlock Text="{Binding ElementName=CodeControl,Path=EnclosingSymbol}"/>
+                            </StackPanel>
                             <StackPanel Background="DarkSeaGreen"  Grid.Row="2" Grid.Column="0" Orientation="Horizontal"
                                         TextElement.FontSize="16">
                                 <TextBlock Margin="15,0,0,0" Text="{Binding HoverOffset}" />

@@ -109,15 +109,27 @@ namespace AnalysisControls
             ((FormattedTextControl3) d).OnInsertionPointChanged((int) e.OldValue, (int) e.NewValue);
         }
 
+        public ISymbol EnclosingSymbol
+        {
+            get { return _enclosingSymbol; }
+            set
+            {
+                if (Equals(value, _enclosingSymbol)) return;
+                _enclosingSymbol = value;
+                OnPropertyChanged();
+            }
+        }
 
         protected virtual async void OnInsertionPointChanged(int oldValue, int newValue)
         {
+            ISymbol enclosingsymbol = Model.GetEnclosingSymbol(newValue);
+            EnclosingSymbol = enclosingsymbol;
             // var completionService = CompletionService.GetService(Document);
             // var results = await completionService.GetCompletionsAsync(Document, InsertionPoint);
             // foreach (var completionItem in results.Items)
             // {
-                // DebugUtils.WriteLine(completionItem.DisplayText);
-                // DebugUtils.WriteLine(completionItem.InlineDescription);
+            // DebugUtils.WriteLine(completionItem.DisplayText);
+            // DebugUtils.WriteLine(completionItem.InlineDescription);
             // }
         }
 
@@ -551,11 +563,17 @@ namespace AnalysisControls
         {
             _scrollViewer = (ScrollViewer) GetTemplateChild("ScrollViewer");
             if (_scrollViewer != null) OutputWidth = _scrollViewer.ActualWidth;
+	    if(OutputWidth == 0)
+	    {
+	    throw new InvalidOperationException();
+	    }
+	    
             DebugUtils.WriteLine(OutputWidth.ToString());
             CodeControl = (FormattedTextControl3) GetTemplateChild("CodeControl");
             _rectangle = (Rectangle) GetTemplateChild("Rectangle");
             var dpd = DependencyPropertyDescriptor.FromProperty(TextElement.FontSizeProperty, typeof(Rectangle));
             var dpd2 = DependencyPropertyDescriptor.FromProperty(TextElement.FontFamilyProperty, typeof(Rectangle));
+	    Translate = (TranslateTransform)GetTemplateChild("TranslateTransform");
 
             if (_rectangle != null)
             {
@@ -589,6 +607,8 @@ namespace AnalysisControls
             newWindowThread.Start();
             //if (TextSource != null) UpdateFormattedText();
         }
+
+public TranslateTransform Translate {get;set;}
 
         private void SecondaryThread()
         {
@@ -908,7 +928,7 @@ namespace AnalysisControls
                 inClassName.FormattedTextControl3._rect2.Width = lineCtx.MaxX;
                 inClassName.FormattedTextControl3._rect2.Height = lineCtx.MaxY;
                 inClassName.FormattedTextControl3.UpdateCaretPosition();
-                inClassName.FormattedTextControl3.InvalidateVisual();
+//                inClassName.FormattedTextControl3.InvalidateVisual();
             });
 
             return outLineInfo;
@@ -982,7 +1002,7 @@ namespace AnalysisControls
                     return;
 
                 var textStorePosition = 0;
-                var linePosition = new Point(0, 0);
+                var linePosition = new Point(_xOffset, 0);
 
                 // Create a DrawingGroup object for storing formatted text.
 
@@ -1030,7 +1050,7 @@ namespace AnalysisControls
 
                 // InsertionCharacter = LineInfos[0].Regions[0].Characters[0];
                 UpdateCaretPosition();
-                InvalidateVisual();
+//                InvalidateVisual();
             }
             catch (Exception ex)
             {
@@ -1277,8 +1297,9 @@ namespace AnalysisControls
                         var dc = formattedTextControl3._textDest.Append();
                         myTextLine.Draw(dc, linePosition, InvertAxes.None);
                         dc.Close();
+//			formattedTextControl3.Translate.X = -1 * formattedTextControl3._textDest.Bounds.Left;
 
-                        formattedTextControl3._rectangle.Width = formattedTextControl3.MaxX;
+                        formattedTextControl3._rectangle.Width = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
                         formattedTextControl3._rectangle.Height = Math.Min(formattedTextControl3._pos.Y, formattedTextControl3.ActualHeight);
                         formattedTextControl3.LineInfos.Add(lineInfo);
                     });
@@ -1390,6 +1411,8 @@ namespace AnalysisControls
         private ObjectAnimationUsingKeyFrames _x1;
         private CustomTextSource4 _customTextSource;
         private Dispatcher _secondaryDispatcher;
+        private double _xOffset = 50.0;
+        private ISymbol _enclosingSymbol;
 
         /// <inheritdoc />
         protected override void OnMouseMove(MouseEventArgs e)
