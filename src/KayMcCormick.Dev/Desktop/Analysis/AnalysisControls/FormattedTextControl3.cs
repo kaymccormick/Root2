@@ -211,7 +211,7 @@ namespace AnalysisControls
             get { return (SyntaxToken?) GetValue(HoverTokenProperty); }
             set { SetValue(HoverTokenProperty, value); }
         }
-
+        
         /// <summary>
         /// 
         /// </summary>
@@ -261,24 +261,6 @@ namespace AnalysisControls
         {
             get { return (int) GetValue(HoverRowProperty); }
             set { SetValue(HoverRowProperty, value); }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        protected FontRendering CurrentRendering
-        {
-            get
-            {
-                if (_currentRendering == null)
-                    _currentRendering = FontRendering.CreateInstance(FontSize,
-                        TextAlignment.Left,
-                        null,
-                        Brushes.Black,
-                        Typeface);
-                return _currentRendering;
-            }
-            private set { _currentRendering = value; }
         }
 
         /// <summary>
@@ -1534,9 +1516,10 @@ namespace AnalysisControls
                 foreach (var tuple in zz)
                 {
                     HoverRegionInfo = tuple;
-                    var dc1 = RegionDG.Open();
-                    dc1.DrawRectangle(null, new Pen(Brushes.Red, 2), tuple.BoundingRect);
-                    dc1.Close();
+                    // var dc1 = RegionDG.Open();
+                    // dc1.DrawRectangle(null, new Pen(Brushes.Red, 2), tuple.BoundingRect);
+                    // dc1.Close();
+
                     // _dg2.Children.Add(new GeometryDrawing(null, 
                     // if (tuple.Trivia.HasValue) DebugUtils.WriteLine(tuple
                     // ~.ToString(), DebugCategory.TextFormatting);
@@ -1730,7 +1713,8 @@ namespace AnalysisControls
                     if (_rect != tuple.BoundingRect)
                     {
                         _rect = tuple.BoundingRect;
-                        if (_geometryDrawing != null) _textDest.Children.Remove(_geometryDrawing);
+                        // if (_geometryDrawing != null) _textDest.Children.Remove(_geometryDrawing);
+
 
                         var solidColorBrush = new SolidColorBrush(Colors.CadetBlue) {Opacity = .6};
 

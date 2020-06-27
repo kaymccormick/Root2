@@ -137,6 +137,17 @@ namespace WpfApp4
         }
 
         /// <inheritdoc />
+        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        {
+            base.OnPreviewMouseDown(e);
+            if (!e.Handled)
+            {
+                Keyboard.Focus(Terminal);
+                e.Handled = true;
+            }
+        }
+
+        /// <inheritdoc />
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
             base.OnPreviewKeyDown(e);

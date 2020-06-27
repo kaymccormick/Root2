@@ -5128,6 +5128,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <local:NegativeConverter x:Key="NegativeConverter" />
     <Style TargetType="{x:Type local:FormattedTextControl3}">
         <Setter Property="Template">
             <Setter.Value>
@@ -5185,27 +5186,27 @@
                                             </DrawingBrush>
                                         </Rectangle.Fill>
                                     </Rectangle>
-                                    <Rectangle x:Name="Rect2" Panel.ZIndex="100" VerticalAlignment="Top" Width="{Binding ElementName=Rect,Path=ActualWidth}" Height="{Binding ElementName=Rect2,Path=ActualHeight}"
+                                    <Rectangle x:Name="Rect2" Panel.ZIndex="100" VerticalAlignment="Top" Width="{Binding ElementName=Rectangle,Path=ActualWidth}" Height="{Binding ElementName=Rectangle,Path=ActualHeight}"
                                                HorizontalAlignment="Left">
                                         <Rectangle.Fill>
-                                            <DrawingBrush x:Name="DrawingBrush2" AlignmentX="Left" AlignmentY="Top" Viewport="{Binding ElementName=DrawingBrush,Path=Viewport}"
-                                                          ViewportUnits="{Binding ElementName=DrawingBrush,Path=ViewportUnits}"
-                                                          TileMode="None" Viewbox="{Binding ElementName=DrawingBrush,Path=Viewbox}"
-                                                          ViewboxUnits="{Binding ElementName=DrawingBrush,Path=ViewboxUnits}"
-                                                          Stretch="None">
+                                            <DrawingBrush x:Name="DrawingBrush2" AlignmentX="Left" AlignmentY="Top"  Viewbox="{Binding ElementName=TextDest,Path=Bounds}" ViewboxUnits="Absolute"
+                                                          TileMode="None"  Viewport="{Binding ElementName=TextDest,Path=Bounds}" ViewportUnits="Absolute"
+                                            Stretch="None">
                                                 <DrawingBrush.Transform>
-                                                    <TranslateTransform></TranslateTransform>
+                                                    <TranslateTransform x:Name="DG2Transform" />
                                                 </DrawingBrush.Transform>
                                                 <DrawingBrush.Drawing>
                                                     <DrawingGroup x:Name="DG2">
                                                         <GeometryDrawing>
                                                             <GeometryDrawing.Pen>
-                                                                <Pen Brush="Red" Thickness="2"/>
+                                                                <Pen Brush="Red" Thickness="0"/>
                                                             </GeometryDrawing.Pen>
                                                             <GeometryDrawing.Geometry>
                                                             <RectangleGeometry Rect="{Binding RelativeSource={RelativeSource TemplatedParent},Path=HoverRegionInfo.BoundingRect}"/>
                                                             </GeometryDrawing.Geometry>
                                                         </GeometryDrawing>
+                                                       
+
                                                     </DrawingGroup>
                                                 </DrawingBrush.Drawing>
                                             </DrawingBrush>
@@ -5217,6 +5218,24 @@
                                 </Grid>
 
                             </ScrollViewer>
+                            <Rectangle x:Name="Rect3" Panel.ZIndex="120" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                                <Rectangle.Fill>
+                                    <DrawingBrush AlignmentX="Left" AlignmentY="Top" TileMode="None" Stretch="None" >
+                                        <DrawingBrush.Drawing>
+                                            <DrawingGroup x:Name="DG3">
+                                                <DrawingGroup>
+                                                    <GeometryDrawing>
+                                                        <GeometryDrawing.Pen>
+<Pen Brush="Green" Thickness="3"/>
+                                                        </GeometryDrawing.Pen>
+                                                        <GeometryDrawing.Geometry><RectangleGeometry Rect="{Binding RelativeSource={RelativeSource TemplatedParent},Path=HoverRegionInfo.BoundingRect}"></RectangleGeometry></GeometryDrawing.Geometry>
+                                                    </GeometryDrawing>
+                                                </DrawingGroup>
+                                                </DrawingGroup>
+                                        </DrawingBrush.Drawing>
+                                    </DrawingBrush>
+                                </Rectangle.Fill>
+                                </Rectangle>
                         </Grid>
                     </Border>
                 </ControlTemplate>
