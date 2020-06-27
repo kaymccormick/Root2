@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -78,7 +79,7 @@ namespace AnalysisControls
     /// 
     /// </summary>
 //    [TitleMetadata("Formatted Code Control")]
-    public class FormattedTextControl3 : SyntaxNodeControl, ILineDrawer
+    public class FormattedTextControl3 : SyntaxNodeControl, ILineDrawer, INotifyPropertyChanged
     {
         /// <inheritdoc />
         protected override void OnDocumentChanged(Document oldValue, Document newValue)
@@ -863,7 +864,7 @@ namespace AnalysisControls
                 {
                     LineNumber = inClassName.LineNo,
                     CurCellRow = inClassName.LineNo,
-                    LineInfo = inClassName.LineInfo,
+                    // LineInfo = inClassName.LineInfo,
                     LineOriginPoint = new Point(inClassName.X, inClassName.Y),
                     MyTextLine = myTextLine,
                     MaxX = inClassName.MaxX,
@@ -906,6 +907,7 @@ namespace AnalysisControls
                 inClassName.FormattedTextControl3._rectangle.Height = lineCtx.MaxY;
                 inClassName.FormattedTextControl3._rect2.Width = lineCtx.MaxX;
                 inClassName.FormattedTextControl3._rect2.Height = lineCtx.MaxY;
+                inClassName.FormattedTextControl3.UpdateCaretPosition();
                 inClassName.FormattedTextControl3.InvalidateVisual();
             });
 
@@ -1000,7 +1002,7 @@ namespace AnalysisControls
 
                 var node0 = Node;
                 var tree = SyntaxTree;
-                _scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+                // _scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
                 var fontFamilyFamilyName = FontFamily.FamilyNames[XmlLanguage.GetLanguage("en-US")];
                 DebugUtils.WriteLine(fontFamilyFamilyName);
                 var emSize = FontSize;
@@ -1039,7 +1041,12 @@ namespace AnalysisControls
         public CustomTextSource4 CustomTextSource
         {
             get { return _customTextSource; }
-            set { _customTextSource = value; }
+            set
+            {
+                if (Equals(value, _customTextSource)) return;
+                _customTextSource = value;
+                OnPropertyChanged();
+            }
         }
 
         private static CustomTextSource4 InnerUpdate(FormattedTextControl3 formattedTextControl3, int textStorePosition,
@@ -1272,7 +1279,7 @@ namespace AnalysisControls
                         dc.Close();
 
                         formattedTextControl3._rectangle.Width = formattedTextControl3.MaxX;
-                        formattedTextControl3._rectangle.Height = formattedTextControl3._pos.Y;
+                        formattedTextControl3._rectangle.Height = Math.Min(formattedTextControl3._pos.Y, formattedTextControl3.ActualHeight);
                         formattedTextControl3.LineInfos.Add(lineInfo);
                     });
                     // ReSharper disable once UnusedVariable
@@ -1306,7 +1313,7 @@ namespace AnalysisControls
             {
                 InsertionLine = l0;
                 _textCaret.SetValue(Canvas.TopProperty, l0.Origin.Y);
-                var rr = l0.Regions.FirstOrDefault(r => r.Offset + r.Length >= insertionPoint);
+                var rr = l0.Regions.FirstOrDefault(r => r.Offset + r.Length > insertionPoint);
                 InsertionRegion = rr;
                 if (rr != null)
                 {
@@ -1775,6 +1782,14 @@ namespace AnalysisControls
         /// <inheritdoc />
         public void EndDrawLines(LineContext lineContext)
         {
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

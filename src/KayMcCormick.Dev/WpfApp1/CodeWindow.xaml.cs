@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using Microsoft.Build.Locator;
@@ -84,7 +85,7 @@ namespace WpfApp1
             var f = ((App) Application.Current).LoadFilename;
             if (f != null && f.EndsWith(".csproj"))
             {
-                
+
                 _task = LoadProjectAsync(f);
                 return;
             }
@@ -106,43 +107,54 @@ namespace WpfApp1
 
             w2 = w.CurrentSolution.AddDocument(documentInfo);
             w.TryApplyChanges(w2);
-          
+
             Project = w.CurrentSolution.GetProject(projectInfo.Id);
             Document = w.CurrentSolution.GetDocument(documentInfo.Id);
-            
+
             Code.Focus();
-            var ks=w.Services.GetLanguageServices(LanguageNames.CSharp);
-            
+            var ks = w.Services.GetLanguageServices(LanguageNames.CSharp);
+
             Action<string> d = s => DebugUtils.WriteLine(s);
-            Loaded += (sender, args) =>
+            Code.PropertyChanged += (sender, args) =>
             {
                 return;
-                var c = Code.CodeControl.CodeControl;
-                var lines = new string[] {"/* foo */", "public "};
-                var first = true;
-                foreach (var line in lines)
+                if (args.PropertyName == "CodeControl" && Code.CodeControl != null)
                 {
-                    if (!first)
-                        c.DoInput("\r\n");
-                    first = false;
-                    foreach (var ch in line)
+                    Code.CodeControl.CodeControl.PropertyChanged += async (sender, args) =>
                     {
-                        DebugUtils.WriteLine("Input is char '" + ch + "'");
-                        c.DoInput(ch.ToString());
-                        if (c.InsertionLine != null) d(c.InsertionLine.Length.ToString());
-                    }
-                }
+                        if (args.PropertyName != "CustomTextSource")
+                            return;
+                        var c = Code.CodeControl.CodeControl;
+                        var lines = new string[] {"/* foo */", "public "};
+                        var first = true;
+                        foreach (var line in lines)
+                        {
+                            if (!first)
+                                await c.DoInput("\r\n").ConfigureAwait(true);
+                            first = false;
+                            foreach (var ch in line)
+                            {
+                                DebugUtils.WriteLine("Input is char '" + ch + "'");
+                                await c.DoInput(ch.ToString()).ConfigureAwait(true);
+                                if (c.InsertionLine != null) d(c.InsertionLine.Length.ToString());
+                            }
+                        }
 
-                c.DoInput("c");
+                        c.DoInput("c");
+                    };
+                }
             };
         }
 
         private async Task LoadProjectAsync(string s)
         {
+            StatusScrollViewer.Visibility = Visibility.Visible;
+            status.Visibility = Visibility.Visible;
             MSBuildLocator.RegisterDefaults();
             var ww = MSBuildWorkspace.Create();
-            var project = await ww.OpenProjectAsync(s, new Progress1()).ConfigureAwait(true);
+            var project = await ww.OpenProjectAsync(s, new Progress1(this)).ConfigureAwait(true);
             Project = project;
+            StatusScrollViewer.Visibility = Visibility.Hidden;
         }
 
         public string SourceText
@@ -172,10 +184,22 @@ namespace WpfApp1
 
     internal class Progress1 : IProgress<ProjectLoadProgress>
     {
+        public CodeWindow CodeWindow { get; }
+
+        public Progress1(CodeWindow codeWindow)
+        {
+            CodeWindow = codeWindow;
+        }
+
         /// <inheritdoc />
         public void Report(ProjectLoadProgress value)
         {
-            DebugUtils.WriteLine(value.ElapsedTime.ToString());
+            CodeWindow.Dispatcher.Invoke(() =>
+            {
+                CodeWindow.status.Text +=
+                     $"{value.Operation}: {value.TargetFramework}: {value.ElapsedTime}: {value.FilePath}\r\n\r\n";
+                CodeWindow.StatusScrollViewer.ScrollToBottom();
+            }, DispatcherPriority.Send);
         }
     }
 }

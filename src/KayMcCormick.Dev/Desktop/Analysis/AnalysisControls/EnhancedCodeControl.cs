@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using JetBrains.Annotations;
 using KayMcCormick.Dev.Attributes;
 using Microsoft.CodeAnalysis;
 
@@ -49,7 +52,7 @@ namespace AnalysisControls
     ///
     /// </summary>
     [TitleMetadata("Enhanced Code Control")]
-    public class EnhancedCodeControl : SyntaxNodeControl
+    public class EnhancedCodeControl : SyntaxNodeControl, INotifyPropertyChanged
     {
         /// <inheritdoc />
         protected override void OnDocumentChanged(Document oldValue, Document newValue)
@@ -216,5 +219,13 @@ namespace AnalysisControls
             120.0d, 128.0d, 136.0d, 144.0d, 152.0d, 160.0d,  176.0d,  192.0d,  208.0d,
             224.0d, 240.0d, 256.0d, 272.0d, 288.0d, 304.0d, 320.0d, 352.0d, 384.0d,
             416.0d, 448.0d, 480.0d, 512.0d, 544.0d, 576.0d, 608.0d, 640.0d};
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
