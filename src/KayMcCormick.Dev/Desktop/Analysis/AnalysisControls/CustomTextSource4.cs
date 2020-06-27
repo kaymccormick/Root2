@@ -16,6 +16,7 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
+using System.Windows.Threading;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis.Classification;
 using Microsoft.CodeAnalysis.CSharp;
@@ -40,16 +41,19 @@ namespace AnalysisControls
         /// <param name="synchContext"></param>
         /// <param name="typefaceManager"></param>
         public CustomTextSource4(double pixelsPerDip, FontRendering fontRendering,
-            GenericTextRunProperties genericTextRunProperties, SynchronizationContext synchContext)
+            GenericTextRunProperties genericTextRunProperties, [NotNull] SynchronizationContext synchContext)
         {
+            Dispatcher = Dispatcher.CurrentDispatcher;
             PixelsPerDip = pixelsPerDip;
             //_typeface = typefaceManager.GetDefaultTypeface();
 
             Rendering = fontRendering;
-            SynchContext = synchContext;
+            SynchContext = synchContext ?? throw new ArgumentNullException(nameof(synchContext));
             _baseProps = genericTextRunProperties;
             _prev = null;
         }
+
+        public Dispatcher Dispatcher { get; set; }
 
         /// <summary>
         /// 
@@ -459,6 +463,7 @@ namespace AnalysisControls
             if (syntaxKind == SyntaxKind.SingleLineCommentTrivia || syntaxKind == SyntaxKind.MultiLineCommentTrivia)
             {
                 r.WithFontFamily(new FontFamily("B612 Mono"));
+                r.SetFontSize(30.0);
                 r.SetForegroundBrush(Brushes.YellowGreen);
             }
 

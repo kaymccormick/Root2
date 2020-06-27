@@ -1,8 +1,7 @@
 {
   "profiles": {
     "WpfApp1": {
-      "commandName": "Project",
-      "commandLineArgs": " C:\\Users\\mccor.LAPTOP-T6T0BN1K\\source\\repos\\KayMcCormick.Dev\\src\\KayMcCormick.Dev\\Desktop\\Analysis\\AnalysisControls\\AnalysisControls.csproj"
+      "commandName": "Project"
     }
   }
 }

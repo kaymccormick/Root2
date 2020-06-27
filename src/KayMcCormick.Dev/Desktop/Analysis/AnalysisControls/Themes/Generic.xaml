@@ -5662,12 +5662,11 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal">
-                                <ComboBox
+                                <ComboBox x:Name="FontSizeCombo"
                                     ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CommonFontSizes}"
-                                    SelectedValue="{Binding ElementName=CodeControl,Path=(TextElement.FontSize),Mode=TwoWay,FallbackValue=12}"
                                     FontSize="20" />
                                 <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Fonts,Mode=TwoWay}" x:Name="FontCombo"
-                                          SelectedValue="{Binding ElementName=CodeControl,Path=(TextElement.FontFamily),Mode=TwoWay}"
+                                          
                                           ><ComboBox.ItemTemplate>
                                         <DataTemplate DataType="{x:Type FontFamily}">
                                             <TextBlock FontFamily="{Binding}" Text="{Binding Path=FamilyNames[en-US]}"/>

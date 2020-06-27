@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,7 +18,9 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.TextFormatting;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using AnalysisAppLib;
+using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Lib.Wpf;
 using Microsoft.CodeAnalysis;
@@ -28,6 +31,49 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace AnalysisControls
 {
+    public class InClassName
+    {
+        public InClassName(FormattedTextControl3 formattedTextControl3, int lineNo, int offset, double y, double x,
+            LineInfo lineInfo, TextFormatter textFormatter, double paragraphWidth, FontRendering currentRendering,
+            double pixelsPerDip, CustomTextSource4 customTextSource4, double maxY, double maxX, DrawingGroup d,
+            DrawingContext dc)
+        {
+            FormattedTextControl3 = formattedTextControl3;
+            LineNo = lineNo;
+            Offset = offset;
+            Y = y;
+            X = x;
+            LineInfo = lineInfo;
+            TextFormatter = textFormatter;
+            ParagraphWidth = paragraphWidth;
+            CurrentRendering = currentRendering;
+            PixelsPerDip = pixelsPerDip;
+            CustomTextSource4 = customTextSource4;
+            MaxY = maxY;
+            MaxX = maxX;
+            D = d;
+            Dc = dc;
+        }
+
+        public FormattedTextControl3 FormattedTextControl3 { get; private set; }
+        public int LineNo { get; private set; }
+        public int Offset { get; private set; }
+        public double Y { get; private set; }
+        public double X { get; private set; }
+        public LineInfo LineInfo { get; private set; }
+        public TextFormatter TextFormatter { get; private set; }
+        public double ParagraphWidth { get; private set; }
+        public FontRendering CurrentRendering { get; set; }
+        public double PixelsPerDip { get; private set; }
+        public CustomTextSource4 CustomTextSource4 { get; private set; }
+        public double MaxY { get; private set; }
+        public double MaxX { get; private set; }
+        public DrawingGroup D { get; private set; }
+        public DrawingContext Dc { get; private set; }
+        public string FontFamilyName { get; set; }
+        public double FontSize { get; set; }
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -44,6 +90,7 @@ namespace AnalysisControls
         protected override void OnModelChanged(SemanticModel oldValue, SemanticModel newValue)
         {
             base.OnModelChanged(oldValue, newValue);
+            
         }
 
         public static readonly DependencyProperty InsertionPointProperty = DependencyProperty.Register(
@@ -64,13 +111,13 @@ namespace AnalysisControls
 
         protected virtual async void OnInsertionPointChanged(int oldValue, int newValue)
         {
-            var completionService = CompletionService.GetService(Document);
-            var results = await completionService.GetCompletionsAsync(Document, InsertionPoint);
-            foreach (var completionItem in results.Items)
-            {
-                DebugUtils.WriteLine(completionItem.DisplayText);
-                DebugUtils.WriteLine(completionItem.InlineDescription);
-            }
+            // var completionService = CompletionService.GetService(Document);
+            // var results = await completionService.GetCompletionsAsync(Document, InsertionPoint);
+            // foreach (var completionItem in results.Items)
+            // {
+                // DebugUtils.WriteLine(completionItem.DisplayText);
+                // DebugUtils.WriteLine(completionItem.InlineDescription);
+            // }
         }
 
 
@@ -228,9 +275,11 @@ namespace AnalysisControls
         /// <param name="typefaceManager"></param>
         /// <returns></returns>
         protected CustomTextSource4 CreateAndInitTextSource(double pixelsPerDip,
-            Typeface tf, SyntaxTree st, SyntaxNode node, Compilation compilation, SynchronizationContext synchContext, double fontSize)
+            Typeface tf, SyntaxTree st, SyntaxNode node, Compilation compilation,
+            [NotNull] SynchronizationContext synchContext, double fontSize)
         {
-            
+            if (synchContext == null) throw new ArgumentNullException(nameof(synchContext));
+
             if (st == null)
             {
                 st = SyntaxFactory.ParseSyntaxTree("");
@@ -240,7 +289,7 @@ namespace AnalysisControls
 
             var textDecorationCollection = new TextDecorationCollection();
             var typeface = tf;
-            var fontRendering = FontRendering.CreateInstance(FontSize,
+            var fontRendering = FontRendering.CreateInstance(fontSize,
                 TextAlignment.Left, textDecorationCollection,
                 Brushes.Black, typeface);
             var source = new CustomTextSource4(pixelsPerDip, fontRendering, new GenericTextRunProperties(
@@ -259,9 +308,13 @@ namespace AnalysisControls
 
         public SynchronizationContext SynchContext { get; set; }
 
-        private void SourceOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void SourceOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "Text") TextSourceText = _store.Text.ToString();
+            if (e.PropertyName == "Text")
+            {
+                var textSourceText = CustomTextSource.Text.ToString();
+                await Dispatcher.InvokeAsync(() => { TextSourceText = textSourceText; });
+            }
         }
 
         public static readonly DependencyProperty TextSourceTextProperty = DependencyProperty.Register(
@@ -352,19 +405,19 @@ namespace AnalysisControls
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(FormattedTextControl3),
                 new FrameworkPropertyMetadata(typeof(FormattedTextControl3)));
-            TextElement.FontFamilyProperty.OverrideMetadata(typeof(FormattedTextControl3), new PropertyMetadata(null, PropertyChangedCallback));
-            TextElement.FontSizeProperty.OverrideMetadata(typeof(FormattedTextControl3), new PropertyMetadata(null, PropertyChangedCallback2));
+            // TextElement.FontFamilyProperty.OverrideMetadata(typeof(FormattedTextControl3), new PropertyMetadata(null, PropertyChangedCallback));
+            // TextElement.FontSizeProperty.OverrideMetadata(typeof(FormattedTextControl3), new PropertyMetadata(16.0, PropertyChangedCallback2));
         }
 
         private static async void PropertyChangedCallback2(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             DebugUtils.WriteLine(e.NewValue.ToString());
-            await ((FormattedTextControl3)d).UpdateTextSource();
+            //    await ((FormattedTextControl3)d).UpdateTextSource();
         }
 
         private static async void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            await ((FormattedTextControl3) d).UpdateTextSource();
+            //   await ((FormattedTextControl3) d).UpdateTextSource();
         }
 
         /// <summary>
@@ -374,6 +427,17 @@ namespace AnalysisControls
 
         {
             var xx = new DoubleAnimationUsingPath();
+            _x1 = new ObjectAnimationUsingKeyFrames();
+            _x1.RepeatBehavior = RepeatBehavior.Forever;
+            _x1.Duration = new Duration(TimeSpan.FromSeconds(1));
+            DebugUtils.WriteLine(_x1.Duration.ToString());
+
+            var c = new ObjectKeyFrameCollection();
+            c.Add(new DiscreteObjectKeyFrame(Visibility.Visible));
+            c.Add(new DiscreteObjectKeyFrame(Visibility.Hidden, KeyTime.FromPercent(.6)));
+            c.Add(new DiscreteObjectKeyFrame(Visibility.Visible, KeyTime.FromPercent(.4)));
+            _x1.KeyFrames = c;
+
 
             CSharpCompilationOptions = new CSharpCompilationOptions(default(OutputKind));
             PixelsPerDip = VisualTreeHelper.GetDpi(this).PixelsPerDip;
@@ -392,15 +456,17 @@ namespace AnalysisControls
             if (Document != null)
                 Document.Project.GetCompilationAsync().ContinueWith(task =>
                 {
-                    Dispatcher.Invoke(() => Compilation = task.Result);
+                    Dispatcher.InvokeAsync(() => Compilation = task.Result);
                 });
         }
 
         // public static RoutedEvent ErrorEvent = EventManager.RegisterRoutedEvent(typeof(FormattedTextControl3))
 
-        private void OnEnterLineBreak(object sender, ExecutedRoutedEventArgs e)
+        private async void OnEnterLineBreak(object sender, ExecutedRoutedEventArgs e)
         {
-            if (!DoInput("\r\n")) DebugUtils.WriteLine("Newline failed");
+            var b = await DoInput("\r\n");
+            if (!b)
+                DebugUtils.WriteLine("Newline failed");
             // ChangingText = true;
             // DebugUtils.WriteLine("Enter line break");
             // InsertionPoint = TextSource.EnterLineBreak(InsertionPoint);
@@ -447,7 +513,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <exception cref="InvalidOperationException"></exception>
-        protected async Task UpdateTextSource()
+        public async Task UpdateTextSource()
         {
             if (!UiLoaded)
                 return;
@@ -479,14 +545,13 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        private double EmSize { get; set; }
-
         /// <inheritdoc />
         public override async void OnApplyTemplate()
         {
             _scrollViewer = (ScrollViewer) GetTemplateChild("ScrollViewer");
             if (_scrollViewer != null) OutputWidth = _scrollViewer.ActualWidth;
             DebugUtils.WriteLine(OutputWidth.ToString());
+            CodeControl = (FormattedTextControl3) GetTemplateChild("CodeControl");
             _rectangle = (Rectangle) GetTemplateChild("Rectangle");
             var dpd = DependencyPropertyDescriptor.FromProperty(TextElement.FontSizeProperty, typeof(Rectangle));
             var dpd2 = DependencyPropertyDescriptor.FromProperty(TextElement.FontFamilyProperty, typeof(Rectangle));
@@ -501,10 +566,12 @@ namespace AnalysisControls
             _canvas = (Canvas) GetTemplateChild("Canvas");
             _innerGrid = (Grid) GetTemplateChild("InnerGrid");
             // var tryGetGlyphTypeface = Typeface.TryGetGlyphTypeface(out var gf);
-            EmSize = (double) FontSize;
 
             _textCaret = new TextCaret(20);
+
+
             _canvas.Children.Add(_textCaret);
+
 
             _border = (Border) GetTemplateChild("Border");
             _myDrawingBrush = (DrawingBrush) GetTemplateChild("DrawingBrush");
@@ -514,9 +581,43 @@ namespace AnalysisControls
             _dg2 = (DrawingGroup) GetTemplateChild("DG2");
             UiLoaded = true;
 
-            await UpdateTextSource();
+            var t = new ThreadStart(SecondaryThread);
+            Thread newWindowThread = new Thread(t);
+            newWindowThread.SetApartmentState(ApartmentState.STA);
+            newWindowThread.IsBackground = true;
+            newWindowThread.Start();
             //if (TextSource != null) UpdateFormattedText();
         }
+
+        private void SecondaryThread()
+        {
+            var d = Dispatcher.CurrentDispatcher;
+            Dispatcher.Invoke(() =>
+            {
+                SecondaryDispatcher = d;
+            });
+            System.Windows.Threading.Dispatcher.Run();
+        }
+
+        public Dispatcher SecondaryDispatcher
+        {
+            get { return _secondaryDispatcher; }
+            set
+            {
+                _secondaryDispatcher = value;
+                if (_secondaryDispatcher != null)
+                    DoUpdateTextSource();
+            }
+        }
+
+        private async Task DoUpdateTextSource()
+        {
+            await UpdateTextSource();
+        }
+
+
+        public FormattedTextControl3 CodeControl { get; set; }
+
 
         /// <summary>
         /// 
@@ -599,28 +700,27 @@ namespace AnalysisControls
         }
 
         /// <inheritdoc />
-        protected override void OnPreviewTextInput(TextCompositionEventArgs e)
+        protected override async void OnPreviewTextInput(TextCompositionEventArgs e)
         {
             base.OnPreviewTextInput(e);
             var eText = e.Text;
+            e.Handled = true;
             try
             {
-                DoInput(eText);
+                await DoInput(eText);
             }
             catch (Exception ex)
             {
                 DebugUtils.WriteLine(ex.ToString());
             }
-
-            e.Handled = true;
         }
 
-        public bool DoInput(string eText)
+        public async Task<bool> DoInput(string eText)
         {
             try
             {
                 DebugUtils.WriteLine(eText);
-              //  if (_textDest.Children.Count == 0) _textDest.Children.Add(new DrawingGroup());
+                //  if (_textDest.Children.Count == 0) _textDest.Children.Add(new DrawingGroup());
 
                 var insertionPoint = InsertionPoint;
                 var prev = SourceText.Substring(0, insertionPoint);
@@ -654,47 +754,56 @@ namespace AnalysisControls
                 var insertionLine = InsertionLine;
 
                 var l = new List<LineInfo>();
-                CustomTextSource.SynchContext.Send(state =>
+              
+
+                var d = new DrawingGroup();
+                var drawingContext = d.Open();
+                var typefaceName = FontFamily.FamilyNames[XmlLanguage.GetLanguage("en-US")];
+                ;
+                var inn = new InClassName(this, insertionLineLineNumber, insertionLineOffset, originY, originX,
+                    insertionLine, Formatter, OutputWidth, null, PixelsPerDip, CustomTextSource, MaxY, MaxX,
+                    d, drawingContext) {FontSize = FontSize, FontFamilyName = typefaceName};
+                var lineInfo = await SecondaryDispatcher.InvokeAsync(
+                    new Func<LineInfo>(() => Callback(inn, insertionPoint, eText)),
+                    DispatcherPriority.Send, CancellationToken.None);
+                await Dispatcher.InvokeAsync(() =>
                 {
-                    CustomTextSource.TextInput(insertionPoint, eText);
+                    if (lineInfo == null) throw new InvalidOleVariantTypeException();
 
-                    var lineInfo = RedrawLine(insertionLineLineNumber, insertionLineOffset,
-                        originY, originX, insertionLine);
-                    ((List<LineInfo>)state).Add(lineInfo);
-                }, l);
+                    DebugUtils.WriteLine("No customTextSource");
+                    InsertionLine = (LineInfo) lineInfo;
 
-                InsertionLine = l[0];
-
-                InsertionPoint = insertionPoint + eText.Length;
-                if (InsertionLine.Offset + InsertionLine.Length <= insertionPoint)
-                {
-                    if (InsertionLine.NextLine != null)
+                    InsertionPoint = insertionPoint + eText.Length;
+                    if (InsertionLine.Offset + InsertionLine.Length <= insertionPoint)
                     {
-                        InsertionLine = InsertionLine.NextLine;
-                    }
-                    else
-                    {
-                        InsertionLine.NextLine = new LineInfo()
+                        if (InsertionLine.NextLine != null)
                         {
-                            LineNumber = InsertionLine.LineNumber + 1, PrevLine = InsertionLine,
-                            Origin = new Point(0, InsertionLine.Origin.Y + InsertionLine.Height),
-                            Offset = InsertionLine.Offset + InsertionLine.Length
-                        };
-                        InsertionLine = InsertionLine.NextLine;
+                            InsertionLine = InsertionLine.NextLine;
+                        }
+                        else
+                        {
+                            InsertionLine.NextLine = new LineInfo()
+                            {
+                                LineNumber = InsertionLine.LineNumber + 1, PrevLine = InsertionLine,
+                                Origin = new Point(0, InsertionLine.Origin.Y + InsertionLine.Height),
+                                Offset = InsertionLine.Offset + InsertionLine.Length
+                            };
+                            InsertionLine = InsertionLine.NextLine;
+                        }
                     }
-                }
 
-                if (eText.Length == 1)
-                {
-                    //_textCaret.SetValue(Canvas.LeftProperty, 0);
-                }
+                    if (eText.Length == 1)
+                    {
+                        //_textCaret.SetValue(Canvas.LeftProperty, 0);
+                    }
 
-                //AdvanceInsertionPoint(e.Text.Length);
+                    //AdvanceInsertionPoint(e.Text.Length);
 
-                DebugUtils.WriteLine("About to update source text", DebugCategory.TextFormatting);
-                SourceText = code;
-                DebugUtils.WriteLine("Done updating source text", DebugCategory.TextFormatting);
-                ChangingText = false;
+                    DebugUtils.WriteLine("About to update source text", DebugCategory.TextFormatting);
+                    SourceText = code;
+                    DebugUtils.WriteLine("Done updating source text", DebugCategory.TextFormatting);
+                    ChangingText = false;
+                });
                 return true;
             }
             catch (Exception ex)
@@ -704,66 +813,102 @@ namespace AnalysisControls
             }
         }
 
-        private LineInfo RedrawLine(int lineNo, int offset, double y, double x, LineInfo lineInfo)
+        private LineInfo Callback(InClassName inn, int insertionPoin, string eText)
         {
-            var d = new DrawingGroup();
-            var dc = d.Open();
-            if (LineInfos.Count == 0)
-                LineInfos.Add(null);
+            try
+            {
+                inn.CurrentRendering = FontRendering.CreateInstance(inn.FontSize, TextAlignment.Left,
+                    new TextDecorationCollection(), Brushes.Black,
+                    new Typeface(new FontFamily(inn.FontFamilyName), FontStyles.Normal, FontWeights.Normal,
+                        FontStretches.Normal));
+                CustomTextSource.TextInput(insertionPoin, eText);
+
+                var lineInfo = RedrawLine((InClassName) inn);
+                return lineInfo;
+            }
+            catch (Exception ex)
+
+            {
+                DebugUtils.WriteLine(ex.ToString());
+            }
+
+            return null;
+        }
+
+
+        /// <inheritdoc />
+        protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)
+        {
+            base.OnGotKeyboardFocus(e);
+            _textCaret.BeginAnimation(VisibilityProperty, _x1);
+        }
+
+        /// <inheritdoc />
+        protected override void OnLostKeyboardFocus(KeyboardFocusChangedEventArgs e)
+        {
+            base.OnLostKeyboardFocus(e);
+            _textCaret.BeginAnimation(VisibilityProperty, null);
+        }
+
+        private static LineInfo RedrawLine(InClassName inClassName)
+        {
+            //if (formattedTextControl3.LineInfos.Count == 0) formattedTextControl3.LineInfos.Add(null);
             LineContext lineCtx;
             LineInfo outLineInfo;
-            using (var myTextLine = Formatter.FormatLine(
-                CustomTextSource,
-                offset,
-                OutputWidth,
-                new GenericTextParagraphProperties(CurrentRendering, PixelsPerDip), null))
+            using (var myTextLine = inClassName.TextFormatter.FormatLine(inClassName.CustomTextSource4,
+                inClassName.Offset, inClassName.ParagraphWidth,
+                new GenericTextParagraphProperties(inClassName.CurrentRendering, inClassName.PixelsPerDip), null))
             {
                 lineCtx = new LineContext()
                 {
-                    LineNumber = lineNo,
-                    CurCellRow = lineNo,
-                    LineInfo = lineInfo,
-                    LineOriginPoint = new Point(x, y),
+                    LineNumber = inClassName.LineNo,
+                    CurCellRow = inClassName.LineNo,
+                    LineInfo = inClassName.LineInfo,
+                    LineOriginPoint = new Point(inClassName.X, inClassName.Y),
                     MyTextLine = myTextLine,
-                    MaxX = MaxX,
-                    MaxY = MaxY,
-                    TextStorePosition = offset
+                    MaxX = inClassName.MaxX,
+                    MaxY = inClassName.MaxY,
+                    TextStorePosition = inClassName.Offset
                 };
 
-                myTextLine.Draw(dc, lineCtx.LineOriginPoint, InvertAxes.None);
+                inClassName.Dc.Dispatcher.Invoke(() =>
+                {
+                    myTextLine.Draw(inClassName.Dc, lineCtx.LineOriginPoint, InvertAxes.None);
+                });
                 var regions = new List<RegionInfo>();
-                FormattingHelper.HandleTextLine(regions, ref lineCtx, out var lineI, this);
-                if (LineInfos.Count <= lineNo)
-                    LineInfos.Add(lineI);
-                else
-                    LineInfos[lineNo] = lineI;
+                FormattingHelper.HandleTextLine(regions, ref lineCtx, out var lineI, inClassName.FormattedTextControl3);
 
+                inClassName.FormattedTextControl3.Dispatcher.Invoke(() =>
+                {
+                    if (inClassName.FormattedTextControl3.LineInfos.Count <= inClassName.LineNo)
+                        inClassName.FormattedTextControl3.LineInfos.Add(lineI);
+                    else
+                        inClassName.FormattedTextControl3.LineInfos[inClassName.LineNo] = lineI;
+                });
                 outLineInfo = lineI;
             }
 
-            dc.Close();
-            DebugUtils.WriteLine($"{_rect.Width}x{_rect.Height}", DebugCategory.TextFormatting);
+            DebugUtils.WriteLine(
+                $"{inClassName.FormattedTextControl3._rect.Width}x{inClassName.FormattedTextControl3._rect.Height}",
+                DebugCategory.TextFormatting);
 
-            if (_textDest.Children.Count <= lineNo)
-                _textDest.Children.Add(d);
-            else
-                _textDest.Children[lineNo] = d;
+            inClassName.FormattedTextControl3.Dispatcher.Invoke(() =>
+            {
+                inClassName.Dc.Close();
+                if (inClassName.FormattedTextControl3._textDest.Children.Count <= inClassName.LineNo)
+                    inClassName.FormattedTextControl3._textDest.Children.Add(inClassName.D);
+                else
+                    inClassName.FormattedTextControl3._textDest.Children[inClassName.LineNo] = inClassName.D;
 
-            // if (_textDest.Children.Count < lineNo + 1)
-            // {
-            // _textDest.Children.Add(d.Children[0]);
-            // }
-            // else
-            // {
-            // _textDest.Children[lineNo] = d.Children[0];
-            // }
-            MaxX = lineCtx.MaxX;
-            MaxY = lineCtx.MaxY;
-            _rectangle.Width = lineCtx.MaxX;
-            _rectangle.Height = lineCtx.MaxY;
-            _rect2.Width = lineCtx.MaxX;
-            _rect2.Height = lineCtx.MaxY;
-            InvalidateVisual();
+                inClassName.FormattedTextControl3.MaxX = lineCtx.MaxX;
+                inClassName.FormattedTextControl3.MaxY = lineCtx.MaxY;
+                inClassName.FormattedTextControl3._rectangle.Width = lineCtx.MaxX;
+                inClassName.FormattedTextControl3._rectangle.Height = lineCtx.MaxY;
+                inClassName.FormattedTextControl3._rect2.Width = lineCtx.MaxX;
+                inClassName.FormattedTextControl3._rect2.Height = lineCtx.MaxY;
+                inClassName.FormattedTextControl3.InvalidateVisual();
+            });
+
             return outLineInfo;
         }
 
@@ -772,12 +917,10 @@ namespace AnalysisControls
             InsertionPoint += textLength;
         }
 
-      
 
         /// <summary>
         /// 
         /// </summary>
-
         private Typeface CreateTypeface(FontFamily fontFamily, FontStyle fontStyle, FontStretch fontStretch,
             FontWeight fontWeight)
         {
@@ -808,12 +951,6 @@ namespace AnalysisControls
             }
         }
 
-        private void Handler(object sender, EventArgs e)
-        {
-            EmSize = (double) _rectangle.GetValue(TextElement.FontSizeProperty);
-            _baseProps.SetFontRenderingEmSize(EmSize);
-            UpdateFormattedText();
-        }
 
         /// <summary>
         /// 
@@ -823,7 +960,7 @@ namespace AnalysisControls
         /// <inheritdoc />
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
-            _nliens = (int) (arrangeBounds.Height / (FontFamily.LineSpacing * EmSize));
+            _nliens = (int) (arrangeBounds.Height / (FontFamily.LineSpacing * FontSize));
             DebugUtils.WriteLine(_nliens.ToString());
             return base.ArrangeOverride(arrangeBounds);
         }
@@ -831,7 +968,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        protected virtual async Task UpdateFormattedText()
+        public virtual async Task UpdateFormattedText()
         {
             try
             {
@@ -848,7 +985,7 @@ namespace AnalysisControls
                 // Create a DrawingGroup object for storing formatted text.
 
                 _textDest.Children.Clear();
-                
+
 
                 // Format each line of text from the text store and draw it.
                 TextLineBreak prev = null;
@@ -867,14 +1004,13 @@ namespace AnalysisControls
                 var fontFamilyFamilyName = FontFamily.FamilyNames[XmlLanguage.GetLanguage("en-US")];
                 DebugUtils.WriteLine(fontFamilyFamilyName);
                 var emSize = FontSize;
-                var source = await Task.Run(() =>
+                var source = await SecondaryDispatcher.InvokeAsync(() =>
                     {
-                        
                         return InnerUpdate(this, textStorePosition, prev, prevLine, line, linePosition, prevCell,
                             prevRegion,
                             Formatter, OutputWidth, PixelsPerDip, emSize, tree, node0, compilation,
                             fontFamilyFamilyName);
-                    })
+                    }).Task
                     .ContinueWith(
                         task =>
                         {
@@ -893,7 +1029,6 @@ namespace AnalysisControls
                 // InsertionCharacter = LineInfos[0].Regions[0].Characters[0];
                 UpdateCaretPosition();
                 InvalidateVisual();
-                
             }
             catch (Exception ex)
             {
@@ -901,7 +1036,11 @@ namespace AnalysisControls
             }
         }
 
-        public CustomTextSource4 CustomTextSource { get; set; }
+        public CustomTextSource4 CustomTextSource
+        {
+            get { return _customTextSource; }
+            set { _customTextSource = value; }
+        }
 
         private static CustomTextSource4 InnerUpdate(FormattedTextControl3 formattedTextControl3, int textStorePosition,
             TextLineBreak prev, LineInfo prevLine, int line, Point linePosition,
@@ -909,8 +1048,10 @@ namespace AnalysisControls
             TextFormatter textFormatter, double paragraphWidth, double pixelsPerDip,
             double emSize0, SyntaxTree tree, SyntaxNode node0, Compilation compilation, string faceName)
         {
-            var s1 = SynchronizationContext.Current;
-            var tf = formattedTextControl3.CreateTypeface(new FontFamily(faceName), FontStyles.Normal, FontStretches.Normal,
+            var s1 = new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher);
+            if (s1 == null) throw new InvalidOperationException("no synchh context");
+            var tf = formattedTextControl3.CreateTypeface(new FontFamily(faceName), FontStyles.Normal,
+                FontStretches.Normal,
                 FontWeights.Normal);
 
             var CurrentRendering1 = FontRendering.CreateInstance(emSize0,
@@ -919,12 +1060,12 @@ namespace AnalysisControls
                 Brushes.Black,
                 tf);
             var customTextSource4 =
-                formattedTextControl3.CreateAndInitTextSource(pixelsPerDip, tf, tree, node0, compilation, s1, formattedTextControl3.FontSize);
+                formattedTextControl3.CreateAndInitTextSource(pixelsPerDip, tf, tree, node0, compilation, s1, emSize0);
             var chars = new List<List<char>>();
             while (textStorePosition < customTextSource4.Length)
             {
-                
-                var genericTextParagraphProperties = new GenericTextParagraphProperties(CurrentRendering1, pixelsPerDip);
+                var genericTextParagraphProperties =
+                    new GenericTextParagraphProperties(CurrentRendering1, pixelsPerDip);
                 using (var myTextLine = textFormatter.FormatLine(customTextSource4,
                     textStorePosition, paragraphWidth,
                     genericTextParagraphProperties,
@@ -1129,14 +1270,13 @@ namespace AnalysisControls
                         var dc = formattedTextControl3._textDest.Append();
                         myTextLine.Draw(dc, linePosition, InvertAxes.None);
                         dc.Close();
-                        
+
                         formattedTextControl3._rectangle.Width = formattedTextControl3.MaxX;
                         formattedTextControl3._rectangle.Height = formattedTextControl3._pos.Y;
                         formattedTextControl3.LineInfos.Add(lineInfo);
-
                     });
                     // ReSharper disable once UnusedVariable
-                    
+
                     var textLineBreak = myTextLine.GetTextLineBreak();
                     if (textLineBreak != null)
                         DebugUtils.WriteLine(textLineBreak.ToString(), DebugCategory.TextFormatting);
@@ -1238,6 +1378,11 @@ namespace AnalysisControls
         private Rectangle geometryRectangle = new Rectangle();
         private SourceText _text;
         private int _nliens;
+        private ComboBox _fontSizeCombo;
+        private ComboBox _fontCombo;
+        private ObjectAnimationUsingKeyFrames _x1;
+        private CustomTextSource4 _customTextSource;
+        private Dispatcher _secondaryDispatcher;
 
         /// <inheritdoc />
         protected override void OnMouseMove(MouseEventArgs e)
@@ -1252,6 +1397,15 @@ namespace AnalysisControls
                 {
                     var line = q.First();
                     DebugUtils.WriteLine(line.LineNumber.ToString());
+                    if (line.Regions != null)
+                    {
+                        var qq = line.Regions.SkipWhile(zz => !zz.BoundingRect.Contains(point));
+                        if (qq.Any())
+                        {
+                            var region = qq.First();
+                            DebugUtils.WriteLine(region.SyntaxToken?.ToString());
+                        }
+                    }
                 }
 
                 var zz = LineInfos.Where(z => z.Regions != null).SelectMany(z => z.Regions)
@@ -1581,7 +1735,7 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        protected override void OnNodeUpdated()
+        protected override async void OnNodeUpdated()
         {
             base.OnNodeUpdated();
             if (!(ChangingText || UpdatingSourceText))
@@ -1592,7 +1746,8 @@ namespace AnalysisControls
                 MaxY = 0;
                 _pos = new Point(0, 0);
                 if (_scrollViewer != null) _scrollViewer.ScrollToTop();
-                UpdateTextSource();
+                if (SecondaryDispatcher != null)
+                    await UpdateTextSource();
 
                 //UpdateFormattedText();
             }

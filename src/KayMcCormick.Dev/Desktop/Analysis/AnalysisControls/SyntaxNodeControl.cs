@@ -90,6 +90,7 @@ namespace AnalysisControls
 
         protected virtual void OnNodeUpdated()
         {
+            DebugUtils.WriteLine("node updated");
         }
 
         /// <summary>

@@ -382,7 +382,7 @@ namespace AnalysisControls.ViewModel
             // AddTypeProvider();
 
             // AddPowerShell();
-            AddPowerShell2();
+            
             // ObservableCollection<CodeElementDocumentation> coll = new ObservableCollection<CodeElementDocumentation>();
             // DocModel dm = DocModel.CreateInstance();
             // dm.Content = new ScrollViewer
@@ -658,8 +658,10 @@ namespace AnalysisControls.ViewModel
                 if (Equals(value, _view)) return;
                 _view = value;
 
-//                AddInitialDocuments();
+                //                AddInitialDocuments();
 
+
+                AddPowerShell2();
                 AddInitialAnchorables();
 
                 OnPropertyChanged();

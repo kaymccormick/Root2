@@ -49,6 +49,7 @@ namespace WpfApp1
             "Project", typeof(Project), typeof(CodeWindow), new PropertyMetadata(default(Project), OnProjectChanged));
 
         private Task _task;
+        private MefHostServices _host;
 
         public Project Project
         {
@@ -78,15 +79,17 @@ namespace WpfApp1
 
         public CodeWindow()
         {
-            var host = MefHostServices.Create(MefHostServices.DefaultAssemblies);
+            InitializeComponent();
+            _host = MefHostServices.Create(MefHostServices.DefaultAssemblies);
             var f = ((App) Application.Current).LoadFilename;
             if (f != null && f.EndsWith(".csproj"))
             {
+                
                 _task = LoadProjectAsync(f);
                 return;
             }
 
-            var w = new AdhocWorkspace(host);
+            var w = new AdhocWorkspace(_host);
             w.AddSolution(SolutionInfo.Create(SolutionId.CreateNewId(), VersionStamp.Create()));
             var projectInfo = ProjectInfo.Create(ProjectId.CreateNewId(), VersionStamp.Create(),
                 "Code Project", "code", LanguageNames.CSharp);
@@ -106,7 +109,7 @@ namespace WpfApp1
           
             Project = w.CurrentSolution.GetProject(projectInfo.Id);
             Document = w.CurrentSolution.GetDocument(documentInfo.Id);
-            InitializeComponent();
+            
             Code.Focus();
             var ks=w.Services.GetLanguageServices(LanguageNames.CSharp);
             

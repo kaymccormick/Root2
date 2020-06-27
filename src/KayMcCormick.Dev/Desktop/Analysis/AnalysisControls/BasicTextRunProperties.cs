@@ -15,7 +15,9 @@ namespace AnalysisControls
         private Brush _foregroundBrush;
         private FontStyle? _fontStyle;
         private Typeface _typeface;
-        private FontFamily _fontFamily ;
+        private FontFamily _fontFamily;
+        private double? _fontRenderingEmSize;
+        private double? _fontHintingEmSize;
 
         /// <summary>
         /// 
@@ -26,7 +28,14 @@ namespace AnalysisControls
             _baseProps = baseProps;
         }
 
-        public bool HasCustomization => _backgroundBrush != null || _foregroundBrush != null || _fontStyle.HasValue || _typeface != null;
+        public bool HasCustomization
+        {
+            get
+            {
+                return _backgroundBrush != null || _foregroundBrush != null || _fontStyle.HasValue || _typeface != null;
+            }
+        }
+
         /// <inheritdoc />
         public override Typeface Typeface
         {
@@ -36,13 +45,17 @@ namespace AnalysisControls
         /// <inheritdoc />
         public override double FontRenderingEmSize
         {
-            get { return _baseProps.FontRenderingEmSize; }
+            get
+            {
+                return _fontRenderingEmSize.HasValue ? _fontRenderingEmSize.Value : _baseProps.FontRenderingEmSize;
+                
+            }
         }
 
         /// <inheritdoc />
         public override double FontHintingEmSize
         {
-            get { return _baseProps.FontHintingEmSize; }
+            get { return _fontHintingEmSize.HasValue ? _fontHintingEmSize.Value : _baseProps.FontHintingEmSize; }
         }
 
         /// <inheritdoc />
@@ -87,11 +100,12 @@ namespace AnalysisControls
         {
             get { return _fontFamily ?? _baseProps.Typeface.FontFamily; }
         }
+
         public void SetFontStyle(FontStyle fontStyle)
         {
             _fontStyle = fontStyle;
-            _typeface = new Typeface(FontFamily, _fontStyle.Value, _baseProps.Typeface.Weight, _baseProps.Typeface.Stretch);
-
+            _typeface = new Typeface(FontFamily, _fontStyle.Value, _baseProps.Typeface.Weight,
+                _baseProps.Typeface.Stretch);
         }
 
         public TextRunProperties WithFontFamily(FontFamily family)
@@ -104,6 +118,11 @@ namespace AnalysisControls
         {
             _foregroundBrush = fg;
             return this;
+        }
+
+        public void SetFontSize(double d)
+        {
+            _fontRenderingEmSize = d;
         }
     }
 }

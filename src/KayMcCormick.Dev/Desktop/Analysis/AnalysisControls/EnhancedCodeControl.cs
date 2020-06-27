@@ -146,10 +146,48 @@ namespace AnalysisControls
         {
             base.OnApplyTemplate();
             CodeControl = (FormattedTextControl3) GetTemplateChild("CodeControl");
+            FontSizeCombo = (ComboBox)GetTemplateChild("FontSizeCombo");
+            FontCombo = (ComboBox)GetTemplateChild("FontCombo");
+
+        }
+        public ComboBox FontCombo
+        {
+            get { return _fontCombo; }
+            set
+            {
+                _fontCombo = value;
+                if (_fontCombo != null) _fontCombo.SelectionChanged += FontComboOnSelectionChanged;
+            }
+        }
+
+        private async void FontComboOnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CodeControl.FontFamily = (FontFamily)FontCombo.SelectedItem;
+            await CodeControl.UpdateTextSource();
+        }
+
+
+        public ComboBox FontSizeCombo
+        {
+            get { return _fontSizeCombo; }
+            set
+            {
+                _fontSizeCombo = value;
+                if (_fontSizeCombo != null) _fontSizeCombo.SelectionChanged += FontSizeComboOnSelectionChanged;
+            }
+        }
+
+        private async void FontSizeComboOnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CodeControl.FontSize = (double)FontSizeCombo.SelectedItem;
+            await CodeControl.UpdateFormattedText();
         }
 
         public static readonly DependencyProperty CodeControlProperty = DependencyProperty.Register(
             "CodeControl", typeof(FormattedTextControl3), typeof(EnhancedCodeControl), new PropertyMetadata(default(FormattedTextControl3), OnCodeControlChanged));
+
+        private ComboBox _fontCombo;
+        private ComboBox _fontSizeCombo;
 
         public FormattedTextControl3 CodeControl
         {
