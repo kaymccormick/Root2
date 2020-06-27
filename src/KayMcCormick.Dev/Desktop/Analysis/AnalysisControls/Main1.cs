@@ -32,7 +32,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class Main1 : AppControl, IView<Main1Model>
+    public class Main1 : ContentControl, IView<Main1Model>
     {
         /// <summary>
         /// 
@@ -159,7 +159,8 @@ namespace AnalysisControls
             SetBinding(DocumentsProperty, new Binding("ViewModel.Documents") {Source = this});
             SetBinding(AnchorablesProperty, new Binding("ViewModel.Anchorables") {Source = this});
 
-
+            CommandBindings.Add(new CommandBinding(WpfAppCommands.AppSettings, OnAppSettingsExecuuted));
+            
             CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateWorkspace, OnCreateWorkSpaceExecuted,
                 CanExecute));
             CommandBindings.Add(new CommandBinding(WpfAppCommands.CreateSolution, OnCreateSolutionExecuted));
@@ -178,6 +179,12 @@ namespace AnalysisControls
             CommandBindings.Add(new CommandBinding(WpfAppCommands.ConvertToJson, OnConvertToJsonExecuted));
 
             //Documents.Add(new DocInfo { Description = "test", Content = Properties.Resources.Program_Parse});
+        }
+
+        private void OnAppSettingsExecuuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            // AppSettingsWindow w = new AppSettingsWindow();
+            // w.ShowD
         }
 
         private void OnCreateClass(object sender, ExecutedRoutedEventArgs e)
@@ -503,6 +510,7 @@ namespace AnalysisControls
             set { SetValue(DockingManagerProperty, value); }
         }
     }
+
 
 
     class DocConverter : IMultiValueConverter

@@ -36,9 +36,11 @@ using KmDevWpfControls;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.Identity.Client;
 using NLog;
 using RibbonLib.Model;
 using WpfApp4;
+using Logger = NLog.Logger;
 using TypeControl = KayMcCormick.Lib.Wpf.TypeControl;
 using XamlReader = System.Windows.Markup.XamlReader;
 
@@ -52,8 +54,13 @@ namespace AnalysisControls.ViewModel
         // IAnchorableHost,
         ICommandProvider,
         ISubjectWatcher
+
+
     {
+        //private IPublicClientApplication a\pp;
+        
         public IDocumentHost DocHost
+    
         {
             get { return _docHost; }
             set
@@ -308,7 +315,7 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         /// <param name="replay"></param>
         public Main1Model(ReplaySubject<Workspace> replay, IActivationStream ss, MySubjectReplaySubject impl2,
-            IDocumentHost dochost, IContentSelector contentSelector) : this()
+            IDocumentHost dochost, IContentSelector contentSelector): this()
         {
             DocHost = dochost;
 
@@ -326,10 +333,10 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public Main1Model()
-        {
-            
-	    BindingOperations.SetBinding(this, Main1Model.ActiveContentProperty, new Binding("ContentSelector.ActiveContent") { Source = this });
+        public Main1Model( )       {
+            // this.app = app;
+
+            BindingOperations.SetBinding(this, Main1Model.ActiveContentProperty, new Binding("ContentSelector.ActiveContent") { Source = this });
             DocumentsCollection = new ObservableCollection<object>();
             Anchorables = new ObservableCollection<object>();
             //_r = r;

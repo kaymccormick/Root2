@@ -68,13 +68,15 @@
                             </Grid.Resources>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <ToolBarTray Grid.Row="0" Grid.Column="0">
+                            <ContentPresenter Content="{TemplateBinding Content}"/>
+                            <ToolBarTray Grid.Row="1" Grid.Column="0">
                                 <ToolBar Band="1" BandIndex="1">
                                     <TextBlock Text="{Binding CurrentOperation.Desc}" />
                                     <Button Content="Create workspace" Command="wpf:WpfAppCommands.CreateWorkspace" />
@@ -85,7 +87,7 @@
 
                                 </ToolBar>
                             </ToolBarTray>
-                            <Border Grid.Row="1" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">
+                            <Border Grid.Row="2" Grid.Column="0" BorderBrush="Aquamarine" BorderThickness="2">
                                 <avalondock:DockingManager
                                     DocumentsSource="{Binding Path=Documents}"
                                     x:Name="_DockingManager" AnchorablesSource="{Binding Anchorables}"

@@ -8,6 +8,7 @@
               xmlns:viewModel1="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControlsCore"
               xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControlsCore"
               xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
+              xmlns:model="clr-namespace:RibbonLib.Model;assembly=RibbonLibCore"
               mc:Ignorable="d"
               Loaded="Client2Window1_OnLoaded"
               DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -54,13 +55,17 @@
         <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
-      <Ribbon FontSize="18"
-        DataContext="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=RibbonWindow,AncestorLevel=1},Path=ViewModel.PrimaryRibbon}" d:IsHidden="True" />
-      <analysisControls:Main1 HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"
-        ViewModel="{wpf:Resolve viewModel1:Main1Model}"
-        ViewModel2="{wpf:Resolve viewModel1:Main1Mode2}" />
-    </Grid>
+        <analysisControls:Main1 HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"
+                                ViewModel="{wpf:Resolve viewModel1:Main1Model}"
+                                ViewModel2="{wpf:Resolve viewModel1:Main1Mode2}" >
+            <Ribbon FontSize="18"
+                    DataContext="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=RibbonWindow,AncestorLevel=1},Path=ViewModel.PrimaryRibbon}" 
+                    ><Ribbon.ApplicationMenu>
+                        <model:RibbonModelApplicationMenu></model:RibbonModelApplicationMenu>
+                    </Ribbon.ApplicationMenu></Ribbon></analysisControls:Main1>
+
+        </Grid>
   </Grid>
 
 </RibbonWindow>

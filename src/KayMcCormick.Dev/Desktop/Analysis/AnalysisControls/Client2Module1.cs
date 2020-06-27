@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Windows;
 using AnalysisAppLib;
+using AnalysisAppLib.ViewModel;
 using AnalysisControls.Commands;
 using AnalysisControls.Converters;
 using AnalysisControls.Ribbon2;
@@ -157,6 +158,8 @@ namespace AnalysisControls
 #endif
             builder.RegisterType<AppCommandTypeConverter>().AsSelf().WithCallerMetadata();
             builder.RegisterType<ObjectStringTypeConverter>().AsSelf().WithCallerMetadata();
+            builder.RegisterType<MicrosoftUserViewModel>().AsImplementedInterfaces().AsSelf().WithCallerMetadata();
+
         }
 
         public bool RegisterPython { get; set; }

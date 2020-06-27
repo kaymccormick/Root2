@@ -1,0 +1,40 @@
+﻿<Window x:Class="AnalysisControls.AppSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AnalysisControls"
+        mc:Ignorable="d"
+        Title="AppSettingsWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TabControl>
+            <TabItem Header="Interface">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <GroupBox Header="Ribbon" Padding="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <CheckBox IsChecked="True" VerticalAlignment="Center" Content="Use the ribbon interface." />
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+
+            </TabItem>
+        </TabControl>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button FontSize="20"  Content="Save" Margin="10" />
+        </StackPanel>
+    </Grid>
+</Window>

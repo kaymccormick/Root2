@@ -151,7 +151,12 @@ namespace AnalysisControls
 
 
             if (r.AppMenu != null)
+            {
                 r.AppMenu.Items.Add(new RibbonModelAppMenuItem {Header = "Open", Command = ApplicationCommands.Open});
+                r.AppMenu.Items.Add(new RibbonModelAppMenuItem
+                    {Header = "Preferences", Command = WpfAppCommands.AppSettings});
+
+            }
 
             if (RibbonTabFactory != null)
             {
