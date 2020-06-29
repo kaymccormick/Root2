@@ -80,11 +80,12 @@ namespace AnalysisControls
     /// 
     /// </summary>
 //    [TitleMetadata("Formatted Code Control")]
-    public class FormattedTextControl3 : SyntaxNodeControl, ILineDrawer, INotifyPropertyChanged, IDocumentPaginatorSource
+    public class FormattedTextControl3 : SyntaxNodeControl, ILineDrawer, INotifyPropertyChanged,
+        IDocumentPaginatorSource
     {
-
         public static readonly RoutedEvent RenderCompleteEvent = EventManager.RegisterRoutedEvent("RenderComplete",
             RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(FormattedTextControl3));
+
         public static readonly RoutedEvent RenderStartEvent = EventManager.RegisterRoutedEvent("RenderStart",
             RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(FormattedTextControl3));
 
@@ -98,7 +99,6 @@ namespace AnalysisControls
         protected override void OnModelChanged(SemanticModel oldValue, SemanticModel newValue)
         {
             base.OnModelChanged(oldValue, newValue);
-            
         }
 
         public static readonly DependencyProperty InsertionPointProperty = DependencyProperty.Register(
@@ -130,7 +130,7 @@ namespace AnalysisControls
         protected virtual async void OnInsertionPointChanged(int oldValue, int newValue)
         {
             UpdateCaretPosition();
-            ISymbol enclosingsymbol = Model?.GetEnclosingSymbol(newValue);
+            var enclosingsymbol = Model?.GetEnclosingSymbol(newValue);
             EnclosingSymbol = enclosingsymbol;
 
             DebugUtils.WriteLine(EnclosingSymbol?.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
@@ -141,6 +141,7 @@ namespace AnalysisControls
                     DebugUtils.WriteLine(ti.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
                 ;
             }
+
             // var completionService = CompletionService.GetService(Document);
             // var results = await completionService.GetCompletionsAsync(Document, InsertionPoint);
             // foreach (var completionItem in results.Items)
@@ -218,7 +219,7 @@ namespace AnalysisControls
             get { return (SyntaxToken?) GetValue(HoverTokenProperty); }
             set { SetValue(HoverTokenProperty, value); }
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -570,18 +571,18 @@ namespace AnalysisControls
         {
             _scrollViewer = (ScrollViewer) GetTemplateChild("ScrollViewer");
             if (_scrollViewer != null) OutputWidth = _scrollViewer.ActualWidth;
-	    // if(OutputWidth == 0)
-	    // {
-	    // throw new InvalidOperationException();
-	    // }
-	    
+            // if(OutputWidth == 0)
+            // {
+            // throw new InvalidOperationException();
+            // }
+
             DebugUtils.WriteLine(OutputWidth.ToString());
             CodeControl = (FormattedTextControl3) GetTemplateChild("CodeControl");
             _rectangle = (Rectangle) GetTemplateChild("Rectangle");
             RegionDG = (DrawingGroup) GetTemplateChild("Region");
             var dpd = DependencyPropertyDescriptor.FromProperty(TextElement.FontSizeProperty, typeof(Rectangle));
             var dpd2 = DependencyPropertyDescriptor.FromProperty(TextElement.FontFamilyProperty, typeof(Rectangle));
-	    Translate = (TranslateTransform)GetTemplateChild("TranslateTransform");
+            Translate = (TranslateTransform) GetTemplateChild("TranslateTransform");
 
             if (_rectangle != null)
             {
@@ -625,16 +626,16 @@ namespace AnalysisControls
 
         public static Thread SecondaryThread { get; set; }
 
-        public TranslateTransform Translate {get;set;}
+        public TranslateTransform Translate { get; set; }
 
         private static void SecondaryThreadStart()
         {
             var d = Dispatcher.CurrentDispatcher;
             // Dispatcher.Invoke(() =>
             // {
-                SecondaryDispatcher1 = d;
+            SecondaryDispatcher1 = d;
             // });
-            System.Windows.Threading.Dispatcher.Run();
+            Dispatcher.Run();
         }
 
         public static Dispatcher SecondaryDispatcher1 { get; set; }
@@ -788,7 +789,7 @@ namespace AnalysisControls
                 var insertionLine = InsertionLine;
 
                 var l = new List<LineInfo>();
-              
+
 
                 var d = new DrawingGroup();
                 var drawingContext = d.Open();
@@ -1003,11 +1004,12 @@ namespace AnalysisControls
             OutputWidth = _scrollViewer.ActualWidth;
             if (InitialUpdate)
             {
-                if(PerformingUpdate)
+                if (PerformingUpdate)
                 {
                     DebugUtils.WriteLine("already performing update");
                     return arrangeOverride;
                 }
+
                 InitialUpdate = false;
                 DebugUtils.WriteLine("Performing initial update of text");
                 var updateFormattedText = UpdateFormattedText();
@@ -1083,7 +1085,8 @@ namespace AnalysisControls
                 DebugUtils.WriteLine(fontFamilyFamilyName);
                 DebugUtils.WriteLine("OutputWidth " + OutputWidth);
                 var emSize = FontSize;
-                var dispatcherOperation = SecondaryDispatcher.InvokeAsync(() => InnerUpdate(this, textStorePosition, prev, prevLine, line, linePosition, prevCell,
+                var dispatcherOperation = SecondaryDispatcher.InvokeAsync(() => InnerUpdate(this, textStorePosition,
+                    prev, prevLine, line, linePosition, prevCell,
                     prevRegion,
                     Formatter, OutputWidth, PixelsPerDip, emSize, tree, node0, compilation,
                     fontFamilyFamilyName));
@@ -1108,7 +1111,7 @@ namespace AnalysisControls
 
                 PerformingUpdate = false;
                 InitialUpdate = false;
-                RaiseEvent(new RoutedEventArgs(FormattedTextControl3.RenderCompleteEvent, this));
+                RaiseEvent(new RoutedEventArgs(RenderCompleteEvent, this));
                 // InsertionCharacter = LineInfos[0].Regions[0].Characters[0];
                 // UpdateCaretPosition();
 //                InvalidateVisual();
@@ -1119,9 +1122,7 @@ namespace AnalysisControls
             }
             finally
             {
-                
             }
-           
         }
 
         public DispatcherOperation<CustomTextSource4> InnerUpdateDispatcherOperation
@@ -1181,7 +1182,6 @@ namespace AnalysisControls
             var startTime = DateTime.Now;
             while (textStorePosition < customTextSource4.Length)
             {
-                
                 var genericTextParagraphProperties =
                     new GenericTextParagraphProperties(CurrentRendering1, pixelsPerDip);
                 using (var myTextLine = textFormatter.FormatLine(customTextSource4,
@@ -1388,15 +1388,16 @@ namespace AnalysisControls
                         var dc = formattedTextControl3._textDest.Append();
                         myTextLine.Draw(dc, linePosition, InvertAxes.None);
                         dc.Close();
-                        
-			// formattedTextControl3.Translate.X = -1 * formattedTextControl3._textDest.Bounds.Left;
 
-            var rectangleWidth = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
-            formattedTextControl3._rectangle.Width = rectangleWidth;
-            var rectangleHeight = Math.Min(formattedTextControl3._pos.Y, formattedTextControl3.ActualHeight);
-            formattedTextControl3._rectangle.Height = rectangleHeight;
-            formattedTextControl3._myDrawingBrush.Viewbox = new Rect(0, 0, rectangleWidth, rectangleHeight);
-            formattedTextControl3._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
+                        // formattedTextControl3.Translate.X = -1 * formattedTextControl3._textDest.Bounds.Left;
+
+                        var rectangleWidth = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
+                        formattedTextControl3._rectangle.Width = rectangleWidth;
+                        var rectangleHeight =
+                            Math.Min(formattedTextControl3._pos.Y, formattedTextControl3.ActualHeight);
+                        formattedTextControl3._rectangle.Height = rectangleHeight;
+                        formattedTextControl3._myDrawingBrush.Viewbox = new Rect(0, 0, rectangleWidth, rectangleHeight);
+                        formattedTextControl3._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
                         formattedTextControl3.LineInfos.Add(lineInfo);
                     });
                     // ReSharper disable once UnusedVariable
@@ -1415,10 +1416,12 @@ namespace AnalysisControls
                 }
 
                 formattedTextControl3.Dispatcher.Invoke(() => { formattedTextControl3._pos = linePosition; });
-                var span = DateTime.Now - startTime;
-                if (line % 10 == 0)
+                
+                if (line % 100 == 0)
                 {
+                    var span = DateTime.Now - startTime;
                     DebugUtils.WriteLine("Process line took " + span);
+                    startTime = DateTime.Now;
                 }
             }
 
@@ -1500,7 +1503,7 @@ namespace AnalysisControls
         private FontRendering _currentRendering;
         private CustomTextSource4 _store;
         private ITypefaceManager _typefaceManager;
-        
+
         private int _selectionEnd;
         private SyntaxNode _startNode;
         private SyntaxNode _endNode;
@@ -1523,7 +1526,7 @@ namespace AnalysisControls
         /// <inheritdoc />
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            DrawingContext dc=null;
+            DrawingContext dc = null;
             try
             {
                 //dc = _dg2.Open();
@@ -1943,10 +1946,11 @@ namespace AnalysisControls
                 if (_documentPaginator1 == null)
                 {
                     var target = new CodePaginator(this);
-                    var i = ProxyUtils.CreateInterceptor(s => DebugUtils.WriteLine(s));
+                    var i = ProxyUtilsBase.CreateInterceptor(s => DebugUtils.WriteLine(s));
                     var pr = ProxyGeneratorHelper.ProxyGenerator.CreateClassProxyWithTarget<CodePaginator>(target, i);
                     _documentPaginator1 = pr;
                 }
+
                 return _documentPaginator1;
             }
         }
