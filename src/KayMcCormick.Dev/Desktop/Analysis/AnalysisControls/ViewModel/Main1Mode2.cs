@@ -639,6 +639,7 @@ namespace AnalysisControls.ViewModel
         /// <returns></returns>
         ///
         public delegate DocModel Del1(SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file);
+        public delegate DocModel Del2(string file);
 
         public static async Task CodeDocAsync(Main1Mode2 main1Mode2, SyntaxTree contextSyntaxTree, Compilation cSharpCompilation, string file)
         { 
@@ -674,6 +675,24 @@ namespace AnalysisControls.ViewModel
             //Workspace.Services.GetLanguageServices(LanguageNames.CSharp).GetServ;ice<ILanguageService>()
             //
         }
+
+        public static async Task CodeDocAsync(Main1Mode2 main1Mode2, string fileName)
+        {
+            await main1Mode2.Dispatcher.BeginInvoke(new Del2(main1Mode2.Method2), fileName);
+        }
+
+        private DocModel Method2(string file)
+        {
+            var doc = new CodeDocument(file)
+            {
+                Title = Path.GetFileNameWithoutExtension(file)
+            };
+            _docHost.AddDocument(doc);
+            _contentSelector.SetActiveContent(doc);
+
+            return doc;
+
+        }
     }
 
     internal class CodeDocument : DocModel
@@ -700,6 +719,19 @@ namespace AnalysisControls.ViewModel
         public CodeDocument(Document docDocument)
         {
             CreateCodeControl(docDocument);
+        }
+
+        public CodeDocument(string docDocument)
+        {
+            CreateCodeControlFromFile(docDocument);
+        }
+
+        private void CreateCodeControlFromFile(string filename)
+        {
+            var c = DoCodeDiagnostics ? CreateCodeDiagnostics() : CreateFormattedTextControl();
+            c.Filename = filename;
+            CodeControl = c;
+
         }
 
         private void CreateCodeControl(Document docDocument)

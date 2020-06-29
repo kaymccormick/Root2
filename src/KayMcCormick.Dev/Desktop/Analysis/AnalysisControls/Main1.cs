@@ -261,18 +261,20 @@ namespace AnalysisControls
                                 file);
 
                             compilation = VisualBasicCompilation.Create("x", new[] {tree});
-                        }
+                            await Main1Mode2.CodeDocAsync(main1Mode2, tree, compilation, file);
+                            }
                         else
                         {
-                            var context = await AnalysisService.LoadAsync(file, "x", false).ConfigureAwait(true);
-                            var cSharpCompilation = context.Compilation;
-                            compilation = cSharpCompilation;
-                            DebugUtils.WriteLine(string.Join("\n", cSharpCompilation.GetDiagnostics()));
+                            await Main1Mode2.CodeDocAsync(main1Mode2, file);
+                                // var context = await AnalysisService.LoadAsync(file, "x", false).ConfigureAwait(true);
+                            // var cSharpCompilation = context.Compilation;
+                            // compilation = cSharpCompilation;
+                            // DebugUtils.WriteLine(string.Join("\n", cSharpCompilation.GetDiagnostics()));
 
-                            tree = context.SyntaxTree;
+                            // tree = context.SyntaxTree;
                         }
 
-                        await Main1Mode2.CodeDocAsync(main1Mode2, tree, compilation, file);
+
                     }
                     else if (file.ToLowerInvariant().EndsWith(".sln"))
                     {

@@ -185,6 +185,27 @@ namespace AnalysisControls
         /// </summary>
         public bool ChangingText { get; set; }
 
+        public static readonly DependencyProperty FilenameProperty = DependencyProperty.Register(
+            "Filename", typeof(string), typeof(SyntaxNodeControl), new PropertyMetadata(default(string), OnFilenameChanged));
+
+        public string Filename
+        {
+            get { return (string) GetValue(FilenameProperty); }
+            set { SetValue(FilenameProperty, value); }
+        }
+
+        private static void OnFilenameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((SyntaxNodeControl) d).OnFilenameChanged((string) e.OldValue, (string) e.NewValue);
+        }
+
+
+
+        protected virtual void OnFilenameChanged(string oldValue, string newValue)
+        {
+        }
+
+
         private static void OnSourceTextUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var f = (SyntaxNodeControl) d;

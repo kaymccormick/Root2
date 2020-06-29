@@ -1078,6 +1078,7 @@ namespace AnalysisControls
                 if (PerformingUpdate)
                 {
                     DebugUtils.WriteLine("Already performing update");
+                    return;
                     throw new AppInvalidOperationException("Already performing update");
                 }
 
@@ -1191,6 +1192,17 @@ namespace AnalysisControls
                 if (Equals(value, _customTextSource)) return;
                 _customTextSource = value;
                 OnPropertyChanged();
+            }
+        }
+
+        /// <inheritdoc />
+        protected override async void OnFilenameChanged(string oldValue, string newValue)
+        {
+            base.OnFilenameChanged(oldValue, newValue);
+            if (newValue != null)
+            {
+                var code = await File.ReadAllTextAsync(newValue);
+                SourceText = code;
             }
         }
 
