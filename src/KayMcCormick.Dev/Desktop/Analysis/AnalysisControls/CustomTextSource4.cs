@@ -489,7 +489,6 @@ namespace AnalysisControls
             {
                 if (Equals(value, _node)) return;
                 _node = value;
-                SyntaxInfos = GetSyntaxInfos().GetEnumerator();
                 OnPropertyChanged();
             }
         }

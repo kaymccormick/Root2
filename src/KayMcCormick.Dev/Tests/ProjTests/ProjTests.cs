@@ -2901,6 +2901,11 @@ namespace ProjTests
         [WpfFact]
         public void TestPrint1()
         {
+            AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
+            {
+                Debug.WriteLine("<KM> " + args.Exception.ToString());
+            };
+            FormattedTextControl3.StartSecondaryThread();
             DebugUtils.WriteLine("Begin test");
             var start = DateTime.Now;
             var file =
@@ -2910,9 +2915,18 @@ namespace ProjTests
             var x =ProjTestsHelper.SetupSyntaxParams(out var comp, code);
             FormattedTextControl3 x1 = new FormattedTextControl3();
             Window w = new Window();
-            x1.AddHandler(FormattedTextControl3.RenderCompleteEvent, new RoutedEventHandler((sender, args) =>
+            DateTime? renderStart = null;
+            w.AddHandler(FormattedTextControl3.RenderStartEvent, new RoutedEventHandler((sender, args) =>
             {
-                DebugUtils.WriteLine(DateTime.Now.ToString());
+                renderStart = DateTime.Now;
+                DebugUtils.WriteLine("Render start");
+                
+
+            }));
+            w.AddHandler(FormattedTextControl3.RenderCompleteEvent, new RoutedEventHandler((sender, args) =>
+            {
+                var span = DateTime.Now - renderStart.Value;
+                DebugUtils.WriteLine(span.ToString());
                 DebugUtils.WriteLine("Render complete");
                 w.Close();
 

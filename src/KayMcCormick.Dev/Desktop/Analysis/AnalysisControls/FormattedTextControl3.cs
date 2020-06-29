@@ -85,6 +85,8 @@ namespace AnalysisControls
 
         public static readonly RoutedEvent RenderCompleteEvent = EventManager.RegisterRoutedEvent("RenderComplete",
             RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(FormattedTextControl3));
+        public static readonly RoutedEvent RenderStartEvent = EventManager.RegisterRoutedEvent("RenderStart",
+            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(FormattedTextControl3));
 
         /// <inheritdoc />
         protected override void OnDocumentChanged(Document oldValue, Document newValue)
@@ -606,42 +608,40 @@ namespace AnalysisControls
             _dg2 = (DrawingGroup) GetTemplateChild("DG2");
             UiLoaded = true;
 
-            StartSecondaryThread();
+            // StartSecondaryThread();
             //if (TextSource != null) UpdateFormattedText();
         }
 
         public DrawingGroup RegionDG { get; set; }
 
-        private void StartSecondaryThread()
+        public static void StartSecondaryThread()
         {
-            var t = new ThreadStart(SecondaryThread);
-            Thread newWindowThread = new Thread(t);
+            var t = new ThreadStart(SecondaryThreadStart);
+            var newWindowThread = SecondaryThread = new Thread(t);
             newWindowThread.SetApartmentState(ApartmentState.STA);
             newWindowThread.IsBackground = true;
             newWindowThread.Start();
         }
 
+        public static Thread SecondaryThread { get; set; }
+
         public TranslateTransform Translate {get;set;}
 
-        private void SecondaryThread()
+        private static void SecondaryThreadStart()
         {
             var d = Dispatcher.CurrentDispatcher;
-            Dispatcher.Invoke(() =>
-            {
-                SecondaryDispatcher = d;
-            });
+            // Dispatcher.Invoke(() =>
+            // {
+                SecondaryDispatcher1 = d;
+            // });
             System.Windows.Threading.Dispatcher.Run();
         }
 
+        public static Dispatcher SecondaryDispatcher1 { get; set; }
+
         public Dispatcher SecondaryDispatcher
         {
-            get { return _secondaryDispatcher; }
-            set
-            {
-                _secondaryDispatcher = value;
-                if (_secondaryDispatcher != null)
-                    DoUpdateTextSource();
-            }
+            get { return SecondaryDispatcher1; }
         }
 
         private async Task DoUpdateTextSource()
@@ -1003,19 +1003,15 @@ namespace AnalysisControls
             OutputWidth = _scrollViewer.ActualWidth;
             if (InitialUpdate)
             {
-                DebugUtils.WriteLine("Performing initial update of text");
-                UpdateOperation = Dispatcher.InvokeAsync(async () =>
+                if(PerformingUpdate)
                 {
-                    var updateFormattedText = UpdateFormattedText();
-                    UpdateFormattedTestTask = updateFormattedText;
-                    await updateFormattedText;
-                    UpdateFormattedTestTask = null;
-                });
-                UpdateOperation
-                .Task
-                    .ContinueWith(
-                        z => { DebugUtils.WriteLine("Dispatcher operation for update complete."); });
+                    DebugUtils.WriteLine("already performing update");
+                    return arrangeOverride;
+                }
                 InitialUpdate = false;
+                DebugUtils.WriteLine("Performing initial update of text");
+                var updateFormattedText = UpdateFormattedText();
+                UpdateFormattedTestTask = updateFormattedText;
             }
 
             return arrangeOverride;
@@ -1040,17 +1036,24 @@ namespace AnalysisControls
         public virtual async Task UpdateFormattedText()
         {
             if (!UiLoaded)
+            {
+                DebugUtils.WriteLine("Reutnring from Update becaus ui not initialized");
                 return;
+            }
 
             try
             {
+                DebugUtils.WriteLine("Enteirng updateformattedtext " + PerformingUpdate);
                 if (PerformingUpdate)
                 {
+                    DebugUtils.WriteLine("Already performing update");
                     throw new AppInvalidOperationException("Already performing update");
                 }
 
                 PerformingUpdate = true;
+                RaiseEvent(new RoutedEventArgs(RenderStartEvent, this));
                 // Geometries.Clear();
+
                 // GeoTuples.Clear();
 
                 // Make sure all UI is loaded
@@ -1078,6 +1081,7 @@ namespace AnalysisControls
                 // _scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
                 var fontFamilyFamilyName = FontFamily.FamilyNames[XmlLanguage.GetLanguage("en-US")];
                 DebugUtils.WriteLine(fontFamilyFamilyName);
+                DebugUtils.WriteLine("OutputWidth " + OutputWidth);
                 var emSize = FontSize;
                 var dispatcherOperation = SecondaryDispatcher.InvokeAsync(() => InnerUpdate(this, textStorePosition, prev, prevLine, line, linePosition, prevCell,
                     prevRegion,
@@ -1103,7 +1107,7 @@ namespace AnalysisControls
                 _rectangle.Height = _pos.Y;
 
                 PerformingUpdate = false;
-
+                InitialUpdate = false;
                 RaiseEvent(new RoutedEventArgs(FormattedTextControl3.RenderCompleteEvent, this));
                 // InsertionCharacter = LineInfos[0].Regions[0].Characters[0];
                 // UpdateCaretPosition();
@@ -1174,8 +1178,10 @@ namespace AnalysisControls
             var customTextSource4 =
                 formattedTextControl3.CreateAndInitTextSource(pixelsPerDip, tf, tree, node0, compilation, s1, emSize0);
             var chars = new List<List<char>>();
+            var startTime = DateTime.Now;
             while (textStorePosition < customTextSource4.Length)
             {
+                
                 var genericTextParagraphProperties =
                     new GenericTextParagraphProperties(CurrentRendering1, pixelsPerDip);
                 using (var myTextLine = textFormatter.FormatLine(customTextSource4,
@@ -1409,6 +1415,11 @@ namespace AnalysisControls
                 }
 
                 formattedTextControl3.Dispatcher.Invoke(() => { formattedTextControl3._pos = linePosition; });
+                var span = DateTime.Now - startTime;
+                if (line % 10 == 0)
+                {
+                    DebugUtils.WriteLine("Process line took " + span);
+                }
             }
 
             return customTextSource4;
@@ -1523,7 +1534,7 @@ namespace AnalysisControls
                 if (q.Any())
                 {
                     var line = q.First();
-                    DebugUtils.WriteLine(line.LineNumber.ToString());
+                    // DebugUtils.WriteLine(line.LineNumber.ToString());
                     if (line.Regions != null)
                     {
                         var qq = line.Regions.SkipWhile(zz => !zz.BoundingRect.Contains(point));

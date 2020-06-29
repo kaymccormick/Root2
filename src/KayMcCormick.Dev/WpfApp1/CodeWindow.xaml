@@ -36,6 +36,7 @@
         <StatusBar Grid.Row="4">
             <Ellipse Margin="5" Width="20" Height="20" x:Name="Ellipse" Fill="Red"/>
             <TextBlock Text="{Binding ElementName=Code,Path=CodeControl.CodeControl.InsertionPoint}"/>
+            <Ellipse Margin="5" Width="20" Height="20" x:Name="Ellipse2" Fill="Gray"/>
         </StatusBar>
     </Grid>
 </Window>

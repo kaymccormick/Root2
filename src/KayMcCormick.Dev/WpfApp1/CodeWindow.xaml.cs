@@ -83,8 +83,10 @@ namespace WpfApp1
 
         public CodeWindow()
         {
+            FormattedTextControl3.StartSecondaryThread();
             InitializeComponent();
-
+            AddHandler(FormattedTextControl3.RenderStartEvent, new RoutedEventHandler(Target1));
+            AddHandler(FormattedTextControl3.RenderCompleteEvent, new RoutedEventHandler(Target));
             LocalPrintServer s = new LocalPrintServer();
             _queue = s.DefaultPrintQueue;
             
@@ -117,7 +119,7 @@ namespace WpfApp1
 
             Project = w.CurrentSolution.GetProject(projectInfo.Id);
             Document = w.CurrentSolution.GetDocument(documentInfo.Id);
-
+            
             Code.Focus();
             var ks = w.Services.GetLanguageServices(LanguageNames.CSharp);
 
@@ -151,6 +153,18 @@ namespace WpfApp1
                     };
                 }
             };
+        }
+
+        private void Target1(object sender, RoutedEventArgs e)
+        {
+            Ellipse2.Fill = Brushes.Orange;
+            
+        }
+
+        private void Target(object sender, RoutedEventArgs e)
+        {
+            Ellipse2.Fill = Brushes.GreenYellow;
+            
         }
 
         private async Task LoadProjectAsync(string s)
