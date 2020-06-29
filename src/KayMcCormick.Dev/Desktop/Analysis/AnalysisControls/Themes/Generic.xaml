@@ -5166,11 +5166,11 @@
                             </Grid.ColumnDefinitions>
                             <ScrollViewer VerticalAlignment="Stretch" x:Name="ScrollViewer"
                                           HorizontalContentAlignment="Left"
-                                          VerticalContentAlignment="Top" Focusable="False">
+                                          VerticalContentAlignment="Top" Focusable="True">
 
                                 <Grid x:Name="InnerGrid">
                                     <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left"
-                                               TextElement.FontSize="12">
+                                               TextElement.FontSize="12" Stroke="Aquamarine">
                                         <Rectangle.Fill>
                                             <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top"
                                                           TileMode="None"
@@ -5190,7 +5190,7 @@
                                         </Rectangle.Fill>
                                     </Rectangle>
                                     <Rectangle x:Name="Rect2" Panel.ZIndex="100" VerticalAlignment="Top" Width="{Binding ElementName=Rectangle,Path=ActualWidth}" Height="{Binding ElementName=Rectangle,Path=ActualHeight}"
-                                               HorizontalAlignment="Left">
+                                               HorizontalAlignment="Left" IsHitTestVisible="False">
                                         <Rectangle.Fill>
                                             <DrawingBrush x:Name="DrawingBrush2" AlignmentX="Left" AlignmentY="Top"  Viewbox="{Binding ElementName=TextDest,Path=Bounds}" ViewboxUnits="Absolute"
                                                           TileMode="None"  Viewport="{Binding ElementName=TextDest,Path=Bounds}" ViewportUnits="Absolute"
@@ -5221,7 +5221,7 @@
                                 </Grid>
 
                             </ScrollViewer>
-                            <Rectangle x:Name="Rect3" Panel.ZIndex="120" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                            <Rectangle x:Name="Rect3" Panel.ZIndex="120" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
                                 <Rectangle.Fill>
                                     <DrawingBrush AlignmentX="Left" AlignmentY="Top" TileMode="None" Stretch="None" >
                                         <DrawingBrush.Drawing>

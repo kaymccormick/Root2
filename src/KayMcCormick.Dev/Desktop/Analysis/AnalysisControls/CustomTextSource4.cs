@@ -462,8 +462,8 @@ namespace AnalysisControls
             DebugUtils.WriteLine($"{syntaxKind}", DebugCategory.TextFormatting);
             if (syntaxKind == SyntaxKind.SingleLineCommentTrivia || syntaxKind == SyntaxKind.MultiLineCommentTrivia)
             {
-                r.WithFontFamily(new FontFamily("B612 Mono"));
-                r.SetFontSize(30.0);
+                // r.WithFontFamily(new FontFamily("B612 Mono"));
+                // r.SetFontSize(30.0);
                 r.SetForegroundBrush(Brushes.YellowGreen);
             }
 

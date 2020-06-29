@@ -20,7 +20,7 @@
         <ToolBarTray><ToolBar>
             <Button Command="Print" Content="Print"/>
         </ToolBar></ToolBarTray>
-        <ScrollViewer Margin="0,40,0,0" x:Name="StatusScrollViewer"  x:FieldModifier="public" Background="Transparent" Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Panel.ZIndex="10" >
+        <ScrollViewer Margin="0,40,0,0" x:Name="StatusScrollViewer"  x:FieldModifier="public" Background="Transparent" Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Panel.ZIndex="10"  Visibility="Hidden">
             <TextBlock FontWeight="Black"  TextWrapping="Wrap" x:Name="status" Visibility="Visible" x:FieldModifier="public"   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity=".6" >
                 <TextBlock.Background>
                     <SolidColorBrush Color="Beige" Opacity=".5"></SolidColorBrush>

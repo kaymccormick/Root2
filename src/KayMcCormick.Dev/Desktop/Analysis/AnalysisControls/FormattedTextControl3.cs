@@ -12,11 +12,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Media.TextFormatting;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -620,6 +622,7 @@ namespace AnalysisControls
             var t = new ThreadStart(SecondaryThreadStart);
             var newWindowThread = SecondaryThread = new Thread(t);
             newWindowThread.SetApartmentState(ApartmentState.STA);
+            newWindowThread.Name = "SecondaryThread";
             newWindowThread.IsBackground = true;
             newWindowThread.Start();
         }
@@ -1001,7 +1004,9 @@ namespace AnalysisControls
             var arrangeOverride = base.ArrangeOverride(arrangeBounds);
             // DebugUtils.WriteLine(arrangeOverride);
             // DebugUtils.WriteLine(_scrollViewer.ActualWidth);
-            OutputWidth = _scrollViewer.ActualWidth;
+            var sbar = (ScrollBar)_scrollViewer.Template.FindName("PART_VerticalScrollBar", _scrollViewer);
+
+            OutputWidth = _scrollViewer.ActualWidth - sbar.ActualWidth - _rectangle.StrokeThickness * 2;
             if (InitialUpdate)
             {
                 if (PerformingUpdate)
@@ -1084,6 +1089,7 @@ namespace AnalysisControls
                 var fontFamilyFamilyName = FontFamily.FamilyNames[XmlLanguage.GetLanguage("en-US")];
                 DebugUtils.WriteLine(fontFamilyFamilyName);
                 DebugUtils.WriteLine("OutputWidth " + OutputWidth);
+                _rectangle.Width = OutputWidth + _rectangle.StrokeThickness * 2;
                 var emSize = FontSize;
                 var dispatcherOperation = SecondaryDispatcher.InvokeAsync(() => InnerUpdate(this, textStorePosition,
                     prev, prevLine, line, linePosition, prevCell,
@@ -1095,7 +1101,12 @@ namespace AnalysisControls
                     .ContinueWith(
                         task =>
                         {
-                            if (task.IsFaulted) DebugUtils.WriteLine(task.Exception.ToString());
+                            if (task.IsFaulted)
+                            {
+                                var xx1 = task.Exception.Flatten().ToString();
+                                DebugUtils.WriteLine(xx1);
+                                DebugUtils.WriteLine(task.Exception.ToString());
+                            }
                             return task.Result;
                         }).ConfigureAwait(true);
                 InnerUpdateDispatcherOperation = null;
@@ -1105,9 +1116,9 @@ namespace AnalysisControls
                 ;
                 // Persist the drawn text content.
 
-                _rectangle.Width = MaxX;
+                // _rectangle.Width = MaxX;
                 DebugUtils.WriteLine("Setting reactangle width to " + MaxX);
-                _rectangle.Height = _pos.Y;
+                // _rectangle.Height = _pos.Y;
 
                 PerformingUpdate = false;
                 InitialUpdate = false;
@@ -1180,6 +1191,8 @@ namespace AnalysisControls
                 formattedTextControl3.CreateAndInitTextSource(pixelsPerDip, tf, tree, node0, compilation, s1, emSize0);
             var chars = new List<List<char>>();
             var startTime = DateTime.Now;
+            var myGroup = new DrawingGroup();
+            var myDc = myGroup.Open();
             while (textStorePosition < customTextSource4.Length)
             {
                 var genericTextParagraphProperties =
@@ -1191,7 +1204,15 @@ namespace AnalysisControls
                 {
                     var lineChars = new List<char>();
                     chars.Add(lineChars);
+                    if (myTextLine.HasOverflowed)
+                    {
+                        DebugUtils.WriteLine("overflowed");
+                    }
 
+                    if (myTextLine.Width > paragraphWidth)
+                    {
+                        DebugUtils.WriteLine("overflowed2");
+                    }
                     var lineInfo = new LineInfo {Offset = textStorePosition, Length = myTextLine.Length};
                     lineInfo.PrevLine = prevLine;
                     lineInfo.LineNumber = line;
@@ -1381,25 +1402,31 @@ namespace AnalysisControls
                     // Draw the formatted text into the drawing context.
                     var p = new Point(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace, linePosition.Y);
                     var w = myTextLine.Width;
+                    
+                    myTextLine.Draw(myDc, linePosition, InvertAxes.None);
                     linePosition.Y += myTextLine.Height;
-                    formattedTextControl3.Dispatcher.Invoke(() =>
+                    if (false)
                     {
-                        if (w >= formattedTextControl3.MaxX) formattedTextControl3.MaxX = w;
-                        var dc = formattedTextControl3._textDest.Append();
-                        myTextLine.Draw(dc, linePosition, InvertAxes.None);
-                        dc.Close();
+                        formattedTextControl3.Dispatcher.Invoke(() =>
+                        {
+                            if (w >= formattedTextControl3.MaxX) formattedTextControl3.MaxX = w;
+                            var dc = formattedTextControl3._textDest.Append();
+                            myTextLine.Draw(dc, linePosition, InvertAxes.None);
+                            dc.Close();
 
-                        // formattedTextControl3.Translate.X = -1 * formattedTextControl3._textDest.Bounds.Left;
+                            // formattedTextControl3.Translate.X = -1 * formattedTextControl3._textDest.Bounds.Left;
 
-                        var rectangleWidth = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
-                        formattedTextControl3._rectangle.Width = rectangleWidth;
-                        var rectangleHeight =
-                            Math.Min(formattedTextControl3._pos.Y, formattedTextControl3.ActualHeight);
-                        formattedTextControl3._rectangle.Height = rectangleHeight;
-                        formattedTextControl3._myDrawingBrush.Viewbox = new Rect(0, 0, rectangleWidth, rectangleHeight);
-                        formattedTextControl3._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
-                        formattedTextControl3.LineInfos.Add(lineInfo);
-                    });
+                            var rectangleWidth = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
+                            formattedTextControl3._rectangle.Width = rectangleWidth;
+                            var rectangleHeight =
+                                Math.Min(formattedTextControl3._pos.Y, formattedTextControl3.ActualHeight);
+                            formattedTextControl3._rectangle.Height = rectangleHeight;
+                            formattedTextControl3._myDrawingBrush.Viewbox =
+                                new Rect(0, 0, rectangleWidth, rectangleHeight);
+                            formattedTextControl3._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
+                            formattedTextControl3.LineInfos.Add(lineInfo);
+                        });
+                    }
                     // ReSharper disable once UnusedVariable
 
                     var textLineBreak = myTextLine.GetTextLineBreak();
@@ -1416,14 +1443,117 @@ namespace AnalysisControls
                 }
 
                 formattedTextControl3.Dispatcher.Invoke(() => { formattedTextControl3._pos = linePosition; });
-                
-                if (line % 100 == 0)
+
+                if (line > 0 && line % 5 == 0)
                 {
+                    myDc.Close();
+
+                    RenderTargetBitmap SaveImage(Drawing d)
+                    {
+                        DrawingBrush b = new DrawingBrush(d);
+                        DrawingVisual v = new DrawingVisual();
+                        var dc = v.RenderOpen();
+                        Rect rect = new Rect(new Point(0, 0), d.Bounds.Size);
+
+                        dc.DrawRectangle(b, null, rect);
+                        dc.Close();
+                        int width = (int) rect.Width;
+                        int height = (int) rect.Height;
+                        RenderTargetBitmap rtb = new RenderTargetBitmap(width, height, 96,
+                            96,
+                            PixelFormats.Pbgra32);
+                        rtb.Render(v);
+                        return rtb;
+                    }
+
+
+                    var out1 = SaveImage(myGroup);
+                    out1.Freeze();
+                    myDc = myGroup.Open();
+                    Rect rect = myGroup.Bounds; //new Rect(0, 0, myGroup.Bounds.Width, myGroup.Bounds.Height);
+                    var w = myGroup.Bounds.Width;
+                    // DebugUtils.WriteLine("width = " + w);
+                    var y = myGroup.Bounds.Bottom;
+                    // DebugUtils.WriteLine("bottom = " + (int) y);
+                    formattedTextControl3.Dispatcher.Invoke(() =>
+                    {
+                        var dc = formattedTextControl3._textDest.Append();
+                        dc.DrawImage(out1, rect);
+                        dc.Close();
+
+
+                        if (w >= formattedTextControl3.MaxX) formattedTextControl3.MaxX = w;
+
+                        var rectangleWidth = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
+                        // formattedTextControl3._rectangle.Width = rectangleWidth;
+
+                        formattedTextControl3._rectangle.Height = y;
+                        formattedTextControl3._myDrawingBrush.Viewbox =
+                            new Rect(0, 0, paragraphWidth, y);
+                        formattedTextControl3._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
+                    });
+
                     var span = DateTime.Now - startTime;
-                    DebugUtils.WriteLine("Process line took " + span);
+                    // DebugUtils.WriteLine("Process line took " + span);
                     startTime = DateTime.Now;
                 }
             }
+
+
+            if(line % 5 != 0)
+            {
+                myDc.Close();
+                RenderTargetBitmap SaveImage(Drawing d)
+                {
+                    DrawingBrush b = new DrawingBrush(d);
+                    DrawingVisual v = new DrawingVisual();
+                    var dc = v.RenderOpen();
+                    Rect rect = new Rect(new Point(0, 0), d.Bounds.Size);
+
+                    dc.DrawRectangle(b, null, rect);
+                    dc.Close();
+                    int width = (int) rect.Width;
+                    int height = (int) rect.Height;
+                    RenderTargetBitmap rtb = new RenderTargetBitmap(width, height, 96,
+                        96,
+                        PixelFormats.Pbgra32);
+                    rtb.Render(v);
+                    return rtb;
+                }
+
+
+                var out1 = SaveImage(myGroup);
+                out1.Freeze();
+                myDc = myGroup.Open();
+                Rect rect = myGroup.Bounds; //new Rect(0, 0, myGroup.Bounds.Width, myGroup.Bounds.Height);
+                var w = myGroup.Bounds.Width;
+                DebugUtils.WriteLine("width = " + w);
+                var y = myGroup.Bounds.Bottom;
+                DebugUtils.WriteLine("bottom = " + (int) y);
+                formattedTextControl3.Dispatcher.Invoke(() =>
+                {
+                    var dc = formattedTextControl3._textDest.Append();
+                    dc.DrawImage(out1, rect);
+                    dc.Close();
+
+
+                    if (w >= formattedTextControl3.MaxX) formattedTextControl3.MaxX = w;
+
+                    var rectangleWidth = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
+                    // formattedTextControl3._rectangle.Width = rectangleWidth;
+
+                    formattedTextControl3._rectangle.Height = y;
+                    formattedTextControl3._myDrawingBrush.Viewbox =
+                        new Rect(0, 0, paragraphWidth, y);
+                    formattedTextControl3._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
+                });
+
+                var span = DateTime.Now - startTime;
+                DebugUtils.WriteLine("Process line took " + span);
+                startTime = DateTime.Now;
+            }
+
+            myDc.Close();
 
             return customTextSource4;
         }
@@ -1515,7 +1645,7 @@ namespace AnalysisControls
         private ObjectAnimationUsingKeyFrames _x1;
         private CustomTextSource4 _customTextSource;
         private Dispatcher _secondaryDispatcher;
-        private double _xOffset = 50.0;
+        private double _xOffset = 0.0;
         private ISymbol _enclosingSymbol;
         private DispatcherOperation<Task> _updateOperation;
         private DocumentPaginator _documentPaginator1 = null;

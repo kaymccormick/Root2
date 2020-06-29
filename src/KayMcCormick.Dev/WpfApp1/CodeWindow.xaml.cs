@@ -76,6 +76,20 @@ namespace WpfApp1
             }
         }
 
+        /// <inheritdoc />
+        protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+        {
+            base.OnPreviewMouseDown(e);
+
+            var s = e.OriginalSource;
+            string n = "";
+            if (s is FrameworkElement ee)
+            {
+                n = ee.Name;
+            }
+            
+            DebugUtils.WriteLine(n);
+        }
 
         protected virtual void OnDocumentChanged(Document oldValue, Document newValue)
         {
