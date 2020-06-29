@@ -24,6 +24,11 @@
     <PackageReference Include="Microsoft.CodeAnalysis.FlowAnalysis.Utilities" Version="2.9.6" />
     <PackageReference Include="Microsoft.CodeAnalysis.Metrics" Version="3.3.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="3.7.0-2.final" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.0-preview.6.20312.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0-preview.6.20312.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Interactive.Async" Version="4.1.1" />
   </ItemGroup>
 

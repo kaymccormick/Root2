@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using AnalysisAppLib;
 using AnalysisControls;
+using AnalysisControls.ViewModel;
 using Autofac;
 using Autofac.Core.Lifetime;
 using Autofac.Features.Metadata;
@@ -19,6 +20,7 @@ namespace Client2
         /// <inheritdoc />
         protected override void Load(ContainerBuilder builder)
         {
+            builder.Register(c => new UserSettingsDbContext()).AsSelf().As<IUserSettingsDbContext>().WithCallerMetadata().SingleInstance();
             builder.Register((c) =>
                 {
                     var lifetimeScope = c.Resolve<ILifetimeScope>();

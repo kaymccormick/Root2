@@ -21,7 +21,7 @@ namespace AnalysisControls.ViewModel
         object ActiveContent { get; set; }
     }
 
-    class ContentSelector : IContentSelector, INotifyPropertyChanged
+    public class ContentSelector : IContentSelector, INotifyPropertyChanged
     {
         private object _activeContent;
 

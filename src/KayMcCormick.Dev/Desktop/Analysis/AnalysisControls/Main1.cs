@@ -468,7 +468,7 @@ namespace AnalysisControls
         private void OnViewModelChanged(Main1Model oldValue, Main1Model newValue)
         {
 	DebugUtils.WriteLine($"View Model changed to ${newValue}");
-            newValue.Dispatcher = Dispatcher;
+            //newValue.Dispatcher = Dispatcher;
             newValue.View = this;
             DataContext = newValue;
         }

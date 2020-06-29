@@ -1,11 +1,22 @@
 ﻿using AnalysisAppLib;
 using AnalysisAppLib.Project;
 using AnalysisAppLib.Syntax;
+using AnalysisControls.ViewModel;
 using KayMcCormick.Dev;
 using Microsoft.EntityFrameworkCore;
 
 namespace Client2
 {
+    public class UserSettingsDbContext : DbContext, IUserSettingsDbContext
+    {
+        public DbSet<UserSetting> UserSettings { get; set; }
+
+        /// <inheritdoc />
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite("Data source=usersettings.db");
+        }
+    }
     public class AppDbContext2 : DbContext
     {
         public DbSet<AppTypeInfo> AppTypeInfos { get; set; }
