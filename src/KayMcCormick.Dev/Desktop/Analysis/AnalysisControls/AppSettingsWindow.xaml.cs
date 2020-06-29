@@ -63,6 +63,7 @@ namespace AnalysisControls
         public object InstanceObjectId { get; set; }
 
         public Visibility RibbonVisibility => Ribbon ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility AltWindowTitleVisibility => !Ribbon ? Visibility.Visible : Visibility.Collapsed;
 
         public bool Ribbon
         {
@@ -73,6 +74,7 @@ namespace AnalysisControls
                 _ribbon = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(RibbonVisibility));
+                OnPropertyChanged(nameof(AltWindowTitleVisibility));
             }
         }
 

@@ -1,4 +1,4 @@
-﻿    <RibbonWindow x:Class="Client2.Client2Window1"
+﻿<RibbonWindow x:Class="Client2.Client2Window1"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -61,6 +61,7 @@
                                     ViewModel="{wpf:Resolve viewModel1:Main1Model}"
                                     ViewModel2="{wpf:Resolve viewModel1:Main1Mode2}">
                 <analysisControls:Main1.InputBindings><KeyBinding Gesture="Ctrl+Alt+S" Command="wpf:WpfAppCommands.AppSettings"/></analysisControls:Main1.InputBindings>
+                <Grid>
                 <Ribbon
                     Visibility="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=analysisControls:Main1},Path=AppSettingsViewModel.RibbonVisibility}"
                     FontSize="18"
@@ -68,9 +69,11 @@
 
 
                     <Ribbon.ApplicationMenu>
-                        <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMemnu.Items}" />
+                        <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" />
                     </Ribbon.ApplicationMenu>
                 </Ribbon>
+                    <TextBlock FontSize="24" Text="Window" Visibility="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=analysisControls:Main1},Path=AppSettingsViewModel.AltWindowTitleVisibility}"/>
+                </Grid>
             </analysisControls:Main1>
 
         </Grid>

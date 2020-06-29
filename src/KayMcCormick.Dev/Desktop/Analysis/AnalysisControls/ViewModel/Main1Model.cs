@@ -653,7 +653,7 @@ namespace AnalysisControls.ViewModel
         private IDocumentHost _docHost;
         private IContentSelector _contentSelector;
 
-        public bool AllDocs { get; set; }
+        public bool AllDocs { get; set; } = true;
 
         /// <summary>
         /// 

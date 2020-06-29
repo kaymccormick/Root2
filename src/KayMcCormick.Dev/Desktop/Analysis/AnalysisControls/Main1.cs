@@ -184,7 +184,7 @@ namespace AnalysisControls
         private void OnAppSettingsExecuuted(object sender, ExecutedRoutedEventArgs e)
         {
             AppSettingsWindow w = new AppSettingsWindow();
-            w.DataContext = AppSettingsViewModel;
+            w.ViewModel = AppSettingsViewModel;
              w.ShowDialog();
 
         }

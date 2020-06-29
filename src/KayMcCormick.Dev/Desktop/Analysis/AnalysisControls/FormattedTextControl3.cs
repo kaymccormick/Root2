@@ -1040,6 +1040,8 @@ namespace AnalysisControls
                 }
 
                 InitialUpdate = false;
+                if (Node == null)
+                    return arrangeBounds;
                 DebugUtils.WriteLine("Performing initial update of text");
                 var updateFormattedText = UpdateFormattedText();
                 UpdateFormattedTestTask = updateFormattedText;
