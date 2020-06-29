@@ -183,8 +183,10 @@ namespace AnalysisControls
 
         private void OnAppSettingsExecuuted(object sender, ExecutedRoutedEventArgs e)
         {
-            // AppSettingsWindow w = new AppSettingsWindow();
-            // w.ShowD
+            AppSettingsWindow w = new AppSettingsWindow();
+            w.DataContext = AppSettingsViewModel;
+             w.ShowDialog();
+
         }
 
         private void OnCreateClass(object sender, ExecutedRoutedEventArgs e)
@@ -509,6 +511,8 @@ namespace AnalysisControls
             get { return (DockingManager) GetValue(DockingManagerProperty); }
             set { SetValue(DockingManagerProperty, value); }
         }
+
+        public AppSettingsViewModel AppSettingsViewModel { get; set; }
     }
 
 

@@ -2899,6 +2899,43 @@ namespace ProjTests
         }
 
         [WpfFact]
+        public void TestPrint1()
+        {
+            DebugUtils.WriteLine("Begin test");
+            var start = DateTime.Now;
+            var file =
+                 @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\AvalonDock\source\Components\AvalonDock\DockingManager.cs";
+                
+            var code = File.ReadAllText(file);
+            var x =ProjTestsHelper.SetupSyntaxParams(out var comp, code);
+            FormattedTextControl3 x1 = new FormattedTextControl3();
+            Window w = new Window();
+            x1.AddHandler(FormattedTextControl3.RenderCompleteEvent, new RoutedEventHandler((sender, args) =>
+            {
+                DebugUtils.WriteLine(DateTime.Now.ToString());
+                DebugUtils.WriteLine("Render complete");
+                w.Close();
+
+            }));
+            x1.PropertyChanged += (sender, args) =>
+            {
+                var z = DateTime.Now - start;
+                DebugUtils.WriteLine(z.ToString() + ": Property " + args.PropertyName + " updated");
+            };
+            x1.SyntaxTree = x;
+            w.Loaded += (sender, args) =>
+            {
+                var dpi = VisualTreeHelper.GetDpi(w);
+                DebugUtils.WriteLine($"PixelsPerDip = {dpi.PixelsPerDip}");
+                DebugUtils.WriteLine($"DpiScaleX = {dpi.DpiScaleX}");
+                DebugUtils.WriteLine($"DpiScaleY = {dpi.DpiScaleY}");
+            };
+            w.Content = x1;
+            DebugUtils.WriteLine(DateTime.Now.ToString());
+            w.ShowDialog();
+        }
+
+        [WpfFact]
         public void T1()
         {
             var assemblies = new[]

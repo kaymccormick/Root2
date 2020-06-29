@@ -8,25 +8,34 @@
         xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControlsCore"
         mc:Ignorable="d"
         Title="CodeWindow" Height="600" Width="800">
+    <Window.CommandBindings><CommandBinding Command="Print" Executed="CommandBinding_OnExecuted"></CommandBinding></Window.CommandBindings>
     <Grid>
-        <Grid.RowDefinitions><RowDefinition Height="Auto"/>
+        <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-        <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition  Height="Auto"/>
         </Grid.RowDefinitions>
-        <ScrollViewer Margin="0,40,0,0" x:Name="StatusScrollViewer"  x:FieldModifier="public" Background="Transparent" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Panel.ZIndex="10" >
+        <ToolBarTray><ToolBar>
+            <Button Command="Print" Content="Print"/>
+        </ToolBar></ToolBarTray>
+        <ScrollViewer Margin="0,40,0,0" x:Name="StatusScrollViewer"  x:FieldModifier="public" Background="Transparent" Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Panel.ZIndex="10" >
             <TextBlock FontWeight="Black"  TextWrapping="Wrap" x:Name="status" Visibility="Visible" x:FieldModifier="public"   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity=".6" >
                 <TextBlock.Background>
                     <SolidColorBrush Color="Beige" Opacity=".5"></SolidColorBrush>
                 </TextBlock.Background></TextBlock>
         </ScrollViewer>
-        <ComboBox DataContext="{Binding ElementName=w,Path=Project.Documents}"  ItemsSource="{Binding}" DisplayMemberPath="Name" x:Name="combo"  DataContextChanged="Combo_OnDataContextChanged" />
-<StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=Code}" Grid.Row="1">
-    <TextBlock Text="{Binding HoverColumn}"/>
-    <TextBlock Text=" "/>
+        <ComboBox DataContext="{Binding ElementName=w,Path=Project.Documents}"  ItemsSource="{Binding}" DisplayMemberPath="Name" x:Name="combo"  DataContextChanged="Combo_OnDataContextChanged" Grid.Row="1" />
+        <StackPanel Orientation="Horizontal" DataContext="{Binding ElementName=Code}" Grid.Row="2">
+            <TextBlock Text="{Binding HoverColumn}"/>
+            <TextBlock Text=" "/>
             <TextBlock Text="{Binding HoverRow}"/>
         </StackPanel>
-        <analysisControls:CodeDiagnostics x:Name="Code"  Grid.Row="2" Document="{Binding ElementName=combo,Path=SelectedItem}"/>
-        <StatusBar Grid.Row="3"><Ellipse Margin="5" Width="20" Height="20" x:Name="Ellipse" Fill="Red"/><TextBlock Text="{Binding ElementName=Code,Path=CodeControl.CodeControl.InsertionPoint}"/></StatusBar>
+        <analysisControls:CodeDiagnostics x:Name="Code"  Grid.Row="3" Document="{Binding ElementName=combo,Path=SelectedItem}"/>
+        <StatusBar Grid.Row="4">
+            <Ellipse Margin="5" Width="20" Height="20" x:Name="Ellipse" Fill="Red"/>
+            <TextBlock Text="{Binding ElementName=Code,Path=CodeControl.CodeControl.InsertionPoint}"/>
+        </StatusBar>
     </Grid>
 </Window>

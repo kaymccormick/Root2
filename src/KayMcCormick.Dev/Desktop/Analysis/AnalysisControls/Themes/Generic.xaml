@@ -20,9 +20,10 @@
     xmlns:reflection="clr-namespace:System.Reflection;assembly=System.Runtime"
     xmlns:analysisControl="clr-namespace:AnalysisControl"
     xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KmDevLib"
-    xmlns:lifetime="clr-namespace:Autofac.Core.Lifetime;assembly=Autofac"
+    xmlns:lifetime="clr-space:Autofac.Core.Lifetime;assembly=Autofac"
     xmlns:reg="clr-namespace:Autofac.Core.Registration;assembly=Autofac"
-    xmlns:reflection1="clr-namespace:Autofac.Core.Activators.Reflection;assembly=Autofac">
+    xmlns:reflection1="clr-namespace:Autofac.Core.Activators.Reflection;assembly=Autofac"
+    xmlns:lifetime1="clr-namespace:Autofac.Core.Lifetime;assembly=Autofac">
     <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
     <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
     <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
@@ -75,7 +76,7 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <ContentPresenter Content="{TemplateBinding Content}"/>
+                            <ContentPresenter Visibility="{Binding AppSettings.RibbonVisibility}"  Content="{TemplateBinding Content}"/>
                             <ToolBarTray Grid.Row="1" Grid.Column="0">
                                 <ToolBar Band="1" BandIndex="1">
                                     <TextBlock Text="{Binding CurrentOperation.Desc}" />
@@ -8571,7 +8572,7 @@
                                             Content="{Binding ElementName=TreeView,Path=SelectedItem.NodeItem}"
                                             Grid.Column="1">
                                             <ContentPresenter.Resources>
-                                                <DataTemplate DataType="{x:Type lifetime:LifetimeScope}">
+                                                <DataTemplate DataType="{x:Type lifetime1:LifetimeScope}">
                                                     <StackPanel>
                                                         <GroupBox Header="Tag">
                                                             <ContentPresenter Content="{Binding Path=Tag}" />
@@ -8608,8 +8609,7 @@
                                                                 <ColumnDefinition Width="*" />
                                                                 <ColumnDefinition Width="2*" />
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Text="Id" />
-                                                            <ContentPresenter TextElement.FontFamily="B612"
+                                                            <ContentPresenter Grid.Row="0"  Visibility="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=Window},Path=ViewModel.AppSettings.RibbonVisibility}"  TextElement.FontFamily="B612"
                                                                               TextElement.FontSize="16"
                                                                               TextElement.FontWeight="Bold"
                                                                               Content="{Binding Path=Id}"

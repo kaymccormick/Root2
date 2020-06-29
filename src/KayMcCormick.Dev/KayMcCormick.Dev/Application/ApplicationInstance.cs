@@ -421,7 +421,10 @@ namespace KayMcCormick.Dev.Application
             
             return b;
         }
+        class myPaginayor : nDyamicDocumentPaginator
+        {
 
+        }
         /// <summary>
         /// </summary>
         /// <param name="lifetimeScope"></param>
@@ -429,6 +432,7 @@ namespace KayMcCormick.Dev.Application
         [NotNull]
         protected void BuildContainer2(ContainerBuilder builder)
         {
+
             builder.RegisterModule<AttributedMetadataModule>();
             builder.RegisterMetadataRegistrationSources();
             builder.RegisterModule<LegacyAppBuildModule>();
@@ -634,5 +638,9 @@ namespace KayMcCormick.Dev.Application
         #region IDisposable
 
         #endregion
+    }
+
+    internal class nDyamicDocumentPaginator
+    {
     }
 }

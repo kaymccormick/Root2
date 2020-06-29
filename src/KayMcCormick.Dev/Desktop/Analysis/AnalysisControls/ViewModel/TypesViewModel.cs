@@ -32,6 +32,10 @@ namespace AnalysisControls.ViewModel
       , INotifyPropertyChanged
       , ISupportInitializeNotification
     {
+        public TypesViewModel()
+        {
+        }
+
         /// <summary>
         /// 
         /// </summary>

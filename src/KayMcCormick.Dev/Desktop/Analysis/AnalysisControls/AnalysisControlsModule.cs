@@ -73,6 +73,7 @@ namespace AnalysisControls
         // ReSharper disable once AnnotateNotNullParameter
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<AppSettingsViewModel>().SingleInstance().WithCallerMetadata();
             builder.RegisterAssemblyTypes(typeof(AnalysisControlsModule).Assembly)
                 .Where(type => (typeof(IDisplayableAppCommand).IsAssignableFrom(type) && !type.IsAbstract && type != typeof(OpenFileCommand2))).As<IDisplayableAppCommand>()
                 .WithCallerMetadata().WithAttributedMetadata();
@@ -91,6 +92,7 @@ namespace AnalysisControls
                             TypeDescriptor.AddProvider(args.Instance, type);
                     }
                 );
+
             if (RegisterControlViewCommandAdapters)
             {
                 // builder

@@ -56,6 +56,7 @@ namespace AnalysisControls
             Dc = dc;
         }
 
+
         public FormattedTextControl3 FormattedTextControl3 { get; private set; }
         public int LineNo { get; private set; }
         public int Offset { get; private set; }
@@ -79,8 +80,12 @@ namespace AnalysisControls
     /// 
     /// </summary>
 //    [TitleMetadata("Formatted Code Control")]
-    public class FormattedTextControl3 : SyntaxNodeControl, ILineDrawer, INotifyPropertyChanged
+    public class FormattedTextControl3 : SyntaxNodeControl, ILineDrawer, INotifyPropertyChanged, IDocumentPaginatorSource
     {
+
+        public static readonly RoutedEvent RenderCompleteEvent = EventManager.RegisterRoutedEvent("RenderComplete",
+            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(FormattedTextControl3));
+
         /// <inheritdoc />
         protected override void OnDocumentChanged(Document oldValue, Document newValue)
         {
@@ -991,18 +996,40 @@ namespace AnalysisControls
         protected override Size ArrangeOverride(Size arrangeBounds)
         {
             _nliens = (int) (arrangeBounds.Height / (FontFamily.LineSpacing * FontSize));
-            DebugUtils.WriteLine("poassible lines " + _nliens.ToString());
+            // DebugUtils.WriteLine("poassible lines " + _nliens.ToString());
             var arrangeOverride = base.ArrangeOverride(arrangeBounds);
-            DebugUtils.WriteLine(arrangeOverride);
-            DebugUtils.WriteLine(_scrollViewer.ActualWidth);
+            // DebugUtils.WriteLine(arrangeOverride);
+            // DebugUtils.WriteLine(_scrollViewer.ActualWidth);
             OutputWidth = _scrollViewer.ActualWidth;
             if (InitialUpdate)
             {
-                _updateOperation = Dispatcher.InvokeAsync(async () => { await UpdateFormattedText(); });
+                DebugUtils.WriteLine("Performing initial update of text");
+                UpdateOperation = Dispatcher.InvokeAsync(async () =>
+                {
+                    var updateFormattedText = UpdateFormattedText();
+                    UpdateFormattedTestTask = updateFormattedText;
+                    await updateFormattedText;
+                    UpdateFormattedTestTask = null;
+                });
+                UpdateOperation
+                .Task
+                    .ContinueWith(
+                        z => { DebugUtils.WriteLine("Dispatcher operation for update complete."); });
                 InitialUpdate = false;
             }
 
             return arrangeOverride;
+        }
+
+        public Task UpdateFormattedTestTask
+        {
+            get { return _updateFormattedTestTask; }
+            set
+            {
+                if (Equals(value, _updateFormattedTestTask)) return;
+                _updateFormattedTestTask = value;
+                OnPropertyChanged();
+            }
         }
 
         public bool InitialUpdate { get; set; } = true;
@@ -1012,14 +1039,21 @@ namespace AnalysisControls
         /// </summary>
         public virtual async Task UpdateFormattedText()
         {
+            if (!UiLoaded)
+                return;
+
             try
             {
-                Geometries.Clear();
-                GeoTuples.Clear();
+                if (PerformingUpdate)
+                {
+                    throw new AppInvalidOperationException("Already performing update");
+                }
+
+                PerformingUpdate = true;
+                // Geometries.Clear();
+                // GeoTuples.Clear();
 
                 // Make sure all UI is loaded
-                if (!UiLoaded)
-                    return;
 
                 var textStorePosition = 0;
                 var linePosition = new Point(_xOffset, 0);
@@ -1027,7 +1061,6 @@ namespace AnalysisControls
                 // Create a DrawingGroup object for storing formatted text.
 
                 _textDest.Children.Clear();
-
 
                 // Format each line of text from the text store and draw it.
                 TextLineBreak prev = null;
@@ -1037,7 +1070,7 @@ namespace AnalysisControls
                 var line = 0;
                 if (_nliens == 0) _nliens = 10;
 
-                DebugUtils.WriteLine("Calling innser updatE");
+                DebugUtils.WriteLine("Calling inner update");
                 var compilation = Compilation;
 
                 var node0 = Node;
@@ -1046,28 +1079,32 @@ namespace AnalysisControls
                 var fontFamilyFamilyName = FontFamily.FamilyNames[XmlLanguage.GetLanguage("en-US")];
                 DebugUtils.WriteLine(fontFamilyFamilyName);
                 var emSize = FontSize;
-                var source = await SecondaryDispatcher.InvokeAsync(() =>
-                    {
-                        return InnerUpdate(this, textStorePosition, prev, prevLine, line, linePosition, prevCell,
-                            prevRegion,
-                            Formatter, OutputWidth, PixelsPerDip, emSize, tree, node0, compilation,
-                            fontFamilyFamilyName);
-                    }).Task
+                var dispatcherOperation = SecondaryDispatcher.InvokeAsync(() => InnerUpdate(this, textStorePosition, prev, prevLine, line, linePosition, prevCell,
+                    prevRegion,
+                    Formatter, OutputWidth, PixelsPerDip, emSize, tree, node0, compilation,
+                    fontFamilyFamilyName));
+                InnerUpdateDispatcherOperation = dispatcherOperation;
+                var source = await dispatcherOperation.Task
                     .ContinueWith(
                         task =>
                         {
                             if (task.IsFaulted) DebugUtils.WriteLine(task.Exception.ToString());
                             return task.Result;
                         }).ConfigureAwait(true);
+                InnerUpdateDispatcherOperation = null;
                 _scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
                 CustomTextSource = source;
-                DebugUtils.WriteLine("return from Calling innser updatE");
+                DebugUtils.WriteLine("Return from await inner update");
                 ;
                 // Persist the drawn text content.
 
                 _rectangle.Width = MaxX;
+                DebugUtils.WriteLine("Setting reactangle width to " + MaxX);
                 _rectangle.Height = _pos.Y;
 
+                PerformingUpdate = false;
+
+                RaiseEvent(new RoutedEventArgs(FormattedTextControl3.RenderCompleteEvent, this));
                 // InsertionCharacter = LineInfos[0].Regions[0].Characters[0];
                 // UpdateCaretPosition();
 //                InvalidateVisual();
@@ -1075,6 +1112,34 @@ namespace AnalysisControls
             catch (Exception ex)
             {
                 throw;
+            }
+            finally
+            {
+                
+            }
+           
+        }
+
+        public DispatcherOperation<CustomTextSource4> InnerUpdateDispatcherOperation
+        {
+            get { return _innerUpdateDispatcherOperation; }
+            set
+            {
+                if (Equals(value, _innerUpdateDispatcherOperation)) return;
+                _innerUpdateDispatcherOperation = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool PerformingUpdate
+        {
+            get { return _performingUpdate; }
+            set
+            {
+                if (value == _performingUpdate) return;
+                DebugUtils.WriteLine("Performing update set to " + value);
+                _performingUpdate = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1424,7 +1489,7 @@ namespace AnalysisControls
         private FontRendering _currentRendering;
         private CustomTextSource4 _store;
         private ITypefaceManager _typefaceManager;
-        private readonly DocumentPaginator _documentPaginator;
+        
         private int _selectionEnd;
         private SyntaxNode _startNode;
         private SyntaxNode _endNode;
@@ -1439,6 +1504,10 @@ namespace AnalysisControls
         private double _xOffset = 50.0;
         private ISymbol _enclosingSymbol;
         private DispatcherOperation<Task> _updateOperation;
+        private DocumentPaginator _documentPaginator1 = null;
+        private bool _performingUpdate;
+        private DispatcherOperation<CustomTextSource4> _innerUpdateDispatcherOperation;
+        private Task _updateFormattedTestTask;
 
         /// <inheritdoc />
         protected override void OnMouseMove(MouseEventArgs e)
@@ -1853,6 +1922,39 @@ namespace AnalysisControls
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <inheritdoc />
+        public DocumentPaginator DocumentPaginator
+        {
+            get
+            {
+                if (_documentPaginator1 == null)
+                {
+                    var target = new CodePaginator(this);
+                    var i = ProxyUtils.CreateInterceptor(s => DebugUtils.WriteLine(s));
+                    var pr = ProxyGeneratorHelper.ProxyGenerator.CreateClassProxyWithTarget<CodePaginator>(target, i);
+                    _documentPaginator1 = pr;
+                }
+                return _documentPaginator1;
+            }
+        }
+
+        public Rectangle Rectangle1
+        {
+            get { return _rectangle; }
+            set { _rectangle = value; }
+        }
+
+        public DispatcherOperation<Task> UpdateOperation
+        {
+            get { return _updateOperation; }
+            set
+            {
+                if (Equals(value, _updateOperation)) return;
+                _updateOperation = value;
+                DebugUtils.WriteLine("Setting update operation task");
+            }
         }
     }
 }

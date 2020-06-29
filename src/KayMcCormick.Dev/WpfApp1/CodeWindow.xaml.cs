@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Printing;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using AnalysisControls;
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using Microsoft.Build.Locator;
@@ -51,6 +53,7 @@ namespace WpfApp1
 
         private Task _task;
         private MefHostServices _host;
+        private PrintQueue _queue;
 
         public Project Project
         {
@@ -81,6 +84,10 @@ namespace WpfApp1
         public CodeWindow()
         {
             InitializeComponent();
+
+            LocalPrintServer s = new LocalPrintServer();
+            _queue = s.DefaultPrintQueue;
+            
             _host = MefHostServices.Create(MefHostServices.DefaultAssemblies);
             var f = ((App) Application.Current).LoadFilename;
             if (f != null && f.EndsWith(".csproj"))
@@ -179,6 +186,34 @@ namespace WpfApp1
         private void Combo_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             combo.SelectedIndex = 0;
+        }
+
+        private void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            PrintDialog d = new PrintDialog();
+            // d.ShowDialog();
+            // var i = d.PrintQueue.AddJob("test", d.PrintTicket);
+            
+            // Window w = new Window();
+            // var documentViewer = new DocumentViewer();
+            var codeControlCodeControl = Code.CodeControl.CodeControl;
+            
+
+            d.PrintDocument(codeControlCodeControl.DocumentPaginator, "test");
+            var p = VisualTreeHelper.GetParent(codeControlCodeControl);
+            if (p is Grid g)
+            {
+                // g.Children.Remove(codeControlCodeControl);
+            }
+            else
+            {
+                TabItem t = (TabItem)p;
+                t.Content = null;
+            }
+
+            // documentViewer.Document = codeControlCodeControl;
+            // w.Content = documentViewer;
+            // w.ShowDialog();
         }
     }
 

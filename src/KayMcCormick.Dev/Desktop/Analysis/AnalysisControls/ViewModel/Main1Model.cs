@@ -303,6 +303,7 @@ namespace AnalysisControls.ViewModel
             get { return DocHost.Documents; }
         }
 
+        private AppSettingsViewModel AppSettingsViewModel { get; set; }
         /// <summary>
         /// 
         /// </summary>
@@ -315,7 +316,7 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         /// <param name="replay"></param>
         public Main1Model(ReplaySubject<Workspace> replay, IActivationStream ss, MySubjectReplaySubject impl2,
-            IDocumentHost dochost, IContentSelector contentSelector): this()
+            IDocumentHost dochost, IContentSelector contentSelector, AppSettingsViewModel appSettingsViewModel) : this()
         {
             DocHost = dochost;
 
@@ -324,6 +325,7 @@ namespace AnalysisControls.ViewModel
             _ss = ss;
             _impl2 = impl2;
             ContentSelector = contentSelector;
+            AppSettingsViewModel = appSettingsViewModel;
             _impl2.Subject.Subscribe(subject => { Subject(subject); });
             //_subs = subs;
             Subject(ss);
@@ -665,7 +667,7 @@ namespace AnalysisControls.ViewModel
                 if (Equals(value, _view)) return;
                 _view = value;
 
-                //                AddInitialDocuments();
+                AddInitialDocuments();
 
 
                 AddPowerShell2();

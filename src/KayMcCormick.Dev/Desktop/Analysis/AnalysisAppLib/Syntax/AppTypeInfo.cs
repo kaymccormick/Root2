@@ -591,8 +591,8 @@ namespace AnalysisAppLib.Syntax
 
 
     /// <summary>
-    /// 
     /// </summary>
+    
     public sealed class SyntaxFieldInfo
     {
         private int _id;

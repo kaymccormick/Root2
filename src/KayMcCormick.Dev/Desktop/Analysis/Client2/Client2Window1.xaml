@@ -1,4 +1,4 @@
-﻿<RibbonWindow x:Class="Client2.Client2Window1"
+﻿    <RibbonWindow x:Class="Client2.Client2Window1"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -13,59 +13,67 @@
               Loaded="Client2Window1_OnLoaded"
               DataContext="{Binding RelativeSource={RelativeSource Self}}"
               Title="Client2Window1" Height="900" Width="1600">
-  <RibbonWindow.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary
-          Source="Client2Global.xaml" />
-        <ResourceDictionary
-          Source="pack://application:,,,/AnalysisControlsCore;component/AppRibbonResources.xaml" />
+    <RibbonWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary
+                    Source="Client2Global.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/AnalysisControlsCore;component/AppRibbonResources.xaml" />
 
-        <ResourceDictionary
+                <ResourceDictionary
 
-          Source="pack://application:,,,/WpfLibCore;component/SharedResources.xaml" />
-        <ResourceDictionary
-          Source="pack://application:,,,/WpfLibCore;component/ResourcesMisc.xaml" />
-        <ResourceDictionary
-          Source="pack://application:,,,/AnalysisControlsCore;component/Templates.xaml" />
-        <ResourceDictionary
-          Source="pack://application:,,,/RibbonLibCore;component/RibbonStyles.xaml" />
-        <ResourceDictionary />
-      </ResourceDictionary.MergedDictionaries>
-      <local:TabItemTemplateSelector x:Key="TabItemTemplateSelector" />
-      <CollectionViewSource Source="{Binding ViewModel.PrimaryRibbon.QuickAccessToolBar.Items}" x:Key="QATView" />
-    </ResourceDictionary>
-  </RibbonWindow.Resources>
-  <RibbonWindow.CommandBindings>
-    <CommandBinding Command="Paste" CanExecute="CanExecutePaste" Executed="OnExecutedPaste" />
-    <CommandBinding Command="wpf:WpfAppCommands.CustomizeQAT" Executed="CustomizeQATExecuted" />
-  </RibbonWindow.CommandBindings>
-  <RibbonWindow.InputBindings>
-    <KeyBinding Command="Paste" Key="V" Modifiers="Control" />
-  </RibbonWindow.InputBindings>
-  <Grid>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*" />
-    </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="*" />
-    </Grid.RowDefinitions>
+                    Source="pack://application:,,,/WpfLibCore;component/SharedResources.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/WpfLibCore;component/ResourcesMisc.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/AnalysisControlsCore;component/Templates.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/RibbonLibCore;component/RibbonStyles.xaml" />
+                <ResourceDictionary />
+            </ResourceDictionary.MergedDictionaries>
+            <local:TabItemTemplateSelector x:Key="TabItemTemplateSelector" />
+            <CollectionViewSource Source="{Binding ViewModel.PrimaryRibbon.QuickAccessToolBar.Items}" x:Key="QATView" />
+        </ResourceDictionary>
+    </RibbonWindow.Resources>
+    <RibbonWindow.CommandBindings>
+        <CommandBinding Command="Paste" CanExecute="CanExecutePaste" Executed="OnExecutedPaste" />
+        <CommandBinding Command="wpf:WpfAppCommands.CustomizeQAT" Executed="CustomizeQATExecuted" />
+    </RibbonWindow.CommandBindings>
+    <RibbonWindow.InputBindings>
+        <KeyBinding Command="Paste" Key="V" Modifiers="Control" />
+    </RibbonWindow.InputBindings>
     <Grid>
-      <Grid.RowDefinitions>
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="*" />
-      </Grid.RowDefinitions>
-        <analysisControls:Main1 HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"
-                                ViewModel="{wpf:Resolve viewModel1:Main1Model}"
-                                ViewModel2="{wpf:Resolve viewModel1:Main1Mode2}" >
-            <Ribbon FontSize="18"
-                    DataContext="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=RibbonWindow,AncestorLevel=1},Path=ViewModel.PrimaryRibbon}" 
-                    ><Ribbon.ApplicationMenu>
-                        <model:RibbonModelApplicationMenu></model:RibbonModelApplicationMenu>
-                    </Ribbon.ApplicationMenu></Ribbon></analysisControls:Main1>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <analysisControls:Main1 HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"
+                                    AppSettingsViewModel="{wpf:Resolve analysisControls:AppSettingsViewModel}"
+                                    ViewModel="{wpf:Resolve viewModel1:Main1Model}"
+                                    ViewModel2="{wpf:Resolve viewModel1:Main1Mode2}">
+                <analysisControls:Main1.InputBindings><KeyBinding Gesture="Ctrl+Alt+S" Command="wpf:WpfAppCommands.AppSettings"/></analysisControls:Main1.InputBindings>
+                <Ribbon
+                    Visibility="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=analysisControls:Main1},Path=AppSettingsViewModel.RibbonVisibility}"
+                    FontSize="18"
+                    DataContext="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=RibbonWindow,AncestorLevel=1},Path=ViewModel.PrimaryRibbon}">
+
+
+                    <Ribbon.ApplicationMenu>
+                        <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMemnu.Items}" />
+                    </Ribbon.ApplicationMenu>
+                </Ribbon>
+            </analysisControls:Main1>
 
         </Grid>
-  </Grid>
+    </Grid>
 
 </RibbonWindow>
