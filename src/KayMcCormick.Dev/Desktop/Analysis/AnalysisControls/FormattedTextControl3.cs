@@ -1218,15 +1218,26 @@ namespace AnalysisControls
             var startTime = DateTime.Now;
             var myGroup = new DrawingGroup();
             var myDc = myGroup.Open();
+            LineContext lineContext = new LineContext();
+            var genericTextParagraphProperties =
+                new GenericTextParagraphProperties(CurrentRendering1, pixelsPerDip);
+            List<Tuple<TextRun, Rect>> runsInfos = new List<Tuple<TextRun, Rect>>();
+
             while (textStorePosition < customTextSource4.Length)
             {
-                var genericTextParagraphProperties =
-                    new GenericTextParagraphProperties(CurrentRendering1, pixelsPerDip);
+                var runCount = customTextSource4.Runs.Count;
+#if DEBUGTEXTSOURCE
+                DebugUtils.WriteLine("Runcount = " + runCount);
+#endif
                 using (var myTextLine = textFormatter.FormatLine(customTextSource4,
                     textStorePosition, paragraphWidth,
                     genericTextParagraphProperties,
                     prev))
                 {
+                    var nRuns = customTextSource4.Runs.Count - runCount;
+#if DEBUGTEXTSOURCE
+                    DebugUtils.WriteLine("num runs for line is "  + nRuns);
+#endif
                     var lineChars = new List<char>();
                     chars.Add(lineChars);
                     if (myTextLine.HasOverflowed)
@@ -1257,6 +1268,45 @@ namespace AnalysisControls
                     var cellColumn = 0;
                     var characterOffset = textStorePosition;
                     var regionOffset = textStorePosition;
+
+                    var curPos = linePosition;
+                    List<Rect> positions = new List<Rect>();
+                    var indexedGlyphRuns = myTextLine.GetIndexedGlyphRuns();
+                    var textRuns = customTextSource4.Runs.GetRange(runCount, nRuns);
+                    var enum1 = textRuns.GetEnumerator();
+                    enum1.MoveNext();
+                    foreach (var glyphRunC in indexedGlyphRuns)
+                    {
+                        var gl = glyphRunC.GlyphRun;
+                        var bo = gl.BaselineOrigin;
+                        var advanceSum = gl.AdvanceWidths.Sum() ;
+                        var item = new Rect(curPos, new Size(advanceSum, myTextLine.Height));
+                        runsInfos.Add(Tuple.Create(enum1.Current, item));
+                        positions.Add(item);
+                        curPos.X += advanceSum;
+                        enum1.MoveNext();
+                    }
+#if DEBUGTEXTSOURCE
+                    if (positions.Count != nRuns - 1)
+                    {
+                        DebugUtils.WriteLine("number of line positions does not match number of runs");
+                        var z = string.Join("",
+                            indexedGlyphRuns.SelectMany(iz => iz.GlyphRun.Characters));
+                        
+                        foreach (var textRun in textRuns)
+                        {
+                            if (textRun is CustomTextCharacters c1)
+                            {
+                                var tt = c1.Text;
+                            } else
+                            {
+
+                            }
+                        }
+                        DebugUtils.WriteLine(z);
+                    }
+#endif
+                        // FormattingHelper.HandleTextLine(null, ref lineContext, out var lineInfo2, null);
 #if false
                     var eol = myTextLine.GetTextRunSpans().Select(xx => xx.Value).OfType<TextEndOfLine>();
                     if (eol.Any())
@@ -1425,8 +1475,8 @@ namespace AnalysisControls
                     //DebugUtils.WriteLine(line.ToString() + ddBounds.ToString(), DebugCategory.TextFormatting);
                     //dc.DrawRectangle(null, new Pen(Brushes.Red, 1), ddBounds);
 #endif
-                    // Draw the formatted text into the drawing context.
-                    var p = new Point(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace, linePosition.Y);
+                        // Draw the formatted text into the drawing context.
+                        var p = new Point(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace, linePosition.Y);
                     var w = myTextLine.Width;
                     
                     myTextLine.Draw(myDc, linePosition, InvertAxes.None);
@@ -1455,13 +1505,13 @@ namespace AnalysisControls
                     }
                     // ReSharper disable once UnusedVariable
 
-                    var textLineBreak = myTextLine.GetTextLineBreak();
-                    if (textLineBreak != null)
-                        DebugUtils.WriteLine(textLineBreak.ToString(), DebugCategory.TextFormatting);
+                    // var textLineBreak = myTextLine.GetTextLineBreak();
+                    // if (textLineBreak != null)
+                        // DebugUtils.WriteLine(textLineBreak.ToString(), DebugCategory.TextFormatting);
                     line++;
 
-                    prev = textLineBreak;
-                    if (prev != null) DebugUtils.WriteLine("Line break!", DebugCategory.TextFormatting);
+                    prev = null;
+                    // if (prev != null) DebugUtils.WriteLine("Line break!", DebugCategory.TextFormatting);
 
                     // Update the index position in the text store.
                     textStorePosition += myTextLine.Length;
@@ -1558,18 +1608,19 @@ namespace AnalysisControls
                 myDc = myGroup.Open();
                 Rect rect = myGroup.Bounds; //new Rect(0, 0, myGroup.Bounds.Width, myGroup.Bounds.Height);
                 var w = myGroup.Bounds.Width;
-                DebugUtils.WriteLine("width = " + w);
+                // DebugUtils.WriteLine("width = " + w);
                 var y = myGroup.Bounds.Bottom;
                 UpdateInfo curUi = new UpdateInfo() { ImageSource = out1, Rect = rect };
                 channelWriter.WriteAsync(curUi);
 
                 var span = DateTime.Now - startTime;
-                DebugUtils.WriteLine("Process line took " + span);
+                // DebugUtils.WriteLine("Process line took " + span);
                 startTime = DateTime.Now;
             }
 
             myDc.Close();
 
+            customTextSource4.RunInfos = runsInfos;
             return customTextSource4;
         }
 
@@ -1680,6 +1731,26 @@ namespace AnalysisControls
                 // if (SelectionEnabled && e.LeftButton == MouseButtonState.Pressed)
                 // {
                 var point = e.GetPosition(_rectangle);
+                if (CustomTextSource?.RunInfos != null)
+                {
+                    var runInfo = CustomTextSource.RunInfos.Where(zz => zz.Item2.Contains(point));
+                    if (runInfo.Any())
+                    {
+                        DebugUtils.WriteLine(runInfo.Count().ToString());
+                        var first = runInfo.First();
+                        DebugUtils.WriteLine(first.Item2.ToString());
+                        DebugUtils.WriteLine(first.Item1.ToString() ?? "");
+                        if (first.Item1 is CustomTextCharacters c0)
+                        {
+                            DebugUtils.WriteLine(c0.Text);
+                        }
+                        HoverRegionInfo = new RegionInfo(first.Item1, first.Item2, new List<CharacterCell>());
+                    }
+                    
+                    
+                }
+
+                return;
                 var q = LineInfos.SkipWhile(z => z.Origin.Y < point.Y);
                 if (q.Any())
                 {

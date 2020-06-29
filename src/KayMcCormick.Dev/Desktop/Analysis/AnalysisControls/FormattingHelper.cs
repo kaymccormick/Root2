@@ -351,7 +351,7 @@ namespace AnalysisControls
 
 
             DebugUtils.WriteLine($"Drawing text line at origin {lineContext.LineOriginPoint}", DebugCategory.TextFormatting);
-            drawer.DrawLine(lineContext);
+            drawer?.DrawLine(lineContext);
             //lineContext.MyTextLine.Draw(dc, lineContext.LineOriginPoint, InvertAxes.None);
 
             // ReSharper disable once UnusedVariable

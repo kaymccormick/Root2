@@ -171,14 +171,31 @@ namespace AnalysisControls
             if (textSourceCharacterIndex == 0)
             {
                 SyntaxInfos = GetSyntaxInfos().GetEnumerator();
-                if (!SyntaxInfos.MoveNext()) return new TextEndOfParagraph(2);
+                if (!SyntaxInfos.MoveNext())
+                {
+                    var endOfParagraph = new TextEndOfParagraph(2);
+                    _runs.Add(endOfParagraph);
+                    return endOfParagraph;
+                }
             }
 
             var si = SyntaxInfos.Current;
-            if (si == null) return new TextEndOfParagraph(2);
+            if (si == null)
+            {
+                var endOfParagraph = new TextEndOfParagraph(2);
+                _runs.Add(endOfParagraph);
+                return endOfParagraph;
+            }
+
             while (si.Span1.End <= textSourceCharacterIndex || si.Text.Length == 0)
             {
-                if (!SyntaxInfos.MoveNext()) return new TextEndOfParagraph(2);
+                if (!SyntaxInfos.MoveNext())
+                {
+                    var endOfParagraph = new TextEndOfParagraph(2);
+                    _runs.Add(endOfParagraph);
+                    return endOfParagraph;
+                }
+
                 _prev = si;
                 si = SyntaxInfos.Current;
             }
@@ -190,27 +207,47 @@ namespace AnalysisControls
                 Text.CopyTo(textSourceCharacterIndex, buf, 0, len);
                 if (len == 2 && buf[0] == '\r' && buf[1] == '\n') return new CustomTextEndOfLine(2);
                 var t = string.Join("", buf);
-                return new CustomTextCharacters(t, MakeProperties(SyntaxKind.None, t));
+                var customTextCharacters = new CustomTextCharacters(t, MakeProperties(SyntaxKind.None, t));
+                _runs.Add(customTextCharacters);
+                return customTextCharacters;
             }
 
             _prev = si;
 
             if (si.SyntaxTrivia.HasValue)
             {
-                if (CSharpExtensions.Kind(si.SyntaxTrivia.Value) == SyntaxKind.EndOfLineTrivia)
-                    return new CustomTextEndOfLine(2);
+                var syntaxKind = CSharpExtensions.Kind(si.SyntaxTrivia.Value);
+                if (syntaxKind == SyntaxKind.EndOfLineTrivia || syntaxKind == SyntaxKind.XmlTextLiteralNewLineToken)
+                {
+                    var customTextEndOfLine = new CustomTextEndOfLine(2);
+                    _runs.Add(customTextEndOfLine);
+                    return customTextEndOfLine;
+                }
+
                 var p = PropsFor(si.SyntaxTrivia.Value, si.Text);
-                return new SyntaxTriviaTextCharacters(si.Text, p, si.Span1,
+                var syntaxTriviaTextCharacters = new SyntaxTriviaTextCharacters(si.Text, p, si.Span1,
                     si.SyntaxTrivia.Value, si.Node, si.Token, si.TriviaPosition, si.StructuredTrivia);
+                _runs.Add(syntaxTriviaTextCharacters);
+                return syntaxTriviaTextCharacters;
             }
             else if (si.SyntaxToken.HasValue)
             {
-                return new SyntaxTokenTextCharacters(si.Text, si.Text.Length,
+                if (CSharpExtensions.Kind(si.SyntaxToken.Value) == SyntaxKind.XmlTextLiteralNewLineToken)
+                {
+                    var customTextEndOfLine = new CustomTextEndOfLine(2);
+                    _runs.Add(customTextEndOfLine);
+                    return customTextEndOfLine;
+                }
+                var syntaxTokenTextCharacters = new SyntaxTokenTextCharacters(si.Text, si.Text.Length,
                     PropsFor(si.SyntaxToken.Value, si.Text),
                     si.SyntaxToken.Value, si.SyntaxToken.Value.Parent);
+                _runs.Add(syntaxTokenTextCharacters);
+                return syntaxTokenTextCharacters;
             }
 
-            return new TextEndOfParagraph(2);
+            var textEndOfParagraph = new TextEndOfParagraph(2);
+            _runs.Add(textEndOfParagraph);
+            return textEndOfParagraph;
             DebugUtils.WriteLine($"index: {textSourceCharacterIndex}");
 
             TextSpan? TakeToken()
@@ -459,7 +496,9 @@ namespace AnalysisControls
         {
             var r = BasicProps();
             var syntaxKind = CSharpExtensions.Kind(trivia);
+#if DEBUGTEXTSOURCE
             DebugUtils.WriteLine($"{syntaxKind}", DebugCategory.TextFormatting);
+#endif
             if (syntaxKind == SyntaxKind.SingleLineCommentTrivia || syntaxKind == SyntaxKind.MultiLineCommentTrivia)
             {
                 // r.WithFontFamily(new FontFamily("B612 Mono"));
@@ -472,7 +511,7 @@ namespace AnalysisControls
             return r;
         }
 
-        #region Properties
+#region Properties
 
         /// <summary>
         /// 
@@ -724,7 +763,9 @@ namespace AnalysisControls
                     pp.SetFontStyle(FontStyles.Italic);
                 }
 
-                DebugUtils.WriteLine(syntaxKind.ToString(), DebugCategory.TextFormatting);
+#if DEBUGTEXTSOURCE
+DebugUtils.WriteLine(syntaxKind.ToString(), DebugCategory.TextFormatting);
+#endif
                 // if (SyntaxFacts.IsName(syntaxKind))
                 // pp.SetForegroundBrush(Brushes.Pink);
                 // if (SyntaxFacts.IsTypeSyntax(syntaxKind)) pp.SetForegroundBrush(Brushes.Crimson);
@@ -763,9 +804,9 @@ namespace AnalysisControls
             return pp;
         }
 
-        #endregion
+#endregion
 
-        #region Private Fields
+#region Private Fields
 
         private Type _type;
         private readonly List<int> chars = new List<int>();
@@ -811,6 +852,7 @@ namespace AnalysisControls
         private SyntaxInfo _prev;
         private IEnumerator<SyntaxInfo> _syntaxInfos;
         private GenericTextRunProperties _baseProps;
+        private List<TextRun> _runs = new List<TextRun>();
         public int EolLength { get; } = 2;
 
         /// <summary>
@@ -820,7 +862,7 @@ namespace AnalysisControls
 
         public SynchronizationContext SynchContext { get; }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// 
@@ -837,6 +879,7 @@ namespace AnalysisControls
         /// <param name="text"></param>
         public override void TextInput(int insertionPoint, string text)
         {
+
             DebugUtils.WriteLine($"Insertion point is {insertionPoint}.");
             DebugUtils.WriteLine($"Input text is \"{text}\"");
             var change = new TextChange(new TextSpan(insertionPoint, 0), text);
@@ -1064,7 +1107,9 @@ namespace AnalysisControls
             set
             {
                 _syntaxInfos = value;
+#if DEBUGTEXTSOURCE
                 DebugUtils.WriteLine("Syntax enumerator set");
+#endif
             }
         }
 
@@ -1101,6 +1146,14 @@ namespace AnalysisControls
                 OnPropertyChanged();
             }
         }
+
+        public List<TextRun> Runs
+        {
+            get { return _runs; }
+            set { _runs = value; }
+        }
+
+        public List<Tuple<TextRun, Rect>> RunInfos { get; set; }
 
         /// <summary>
         /// 
