@@ -66,6 +66,7 @@ namespace Client2
             AppDomain.CurrentDomain.ProcessExit += ( sender , args )
                 => LogManager.GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
 
+            FormattedTextControl3.StartSecondaryThread();
             RunApp();
 #if false
             var action = CheckModifiers();

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -441,6 +442,10 @@ namespace AnalysisControls
         public FormattedTextControl3()
 
         {
+
+            _channel = Channel.CreateUnbounded<UpdateInfo>(new UnboundedChannelOptions(){SingleReader = true, SingleWriter = true});
+            _reader = _channel.Reader;
+            _reader.ReadAsync().AsTask().ContinueWith(ContinuationFunction, CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
             var xx = new DoubleAnimationUsingPath();
             _x1 = new ObjectAnimationUsingKeyFrames();
             _x1.RepeatBehavior = RepeatBehavior.Forever;
@@ -464,6 +469,25 @@ namespace AnalysisControls
             ;
             InputBindings.Add(new KeyBinding(EditingCommands.EnterLineBreak, Key.Enter, ModifierKeys.None));
             TypefaceManager = new DefaultTypefaceManager();
+        }
+
+        private void ContinuationFunction(Task<UpdateInfo> z)
+        {
+            var ui = z.Result;
+            var dc = _textDest.Append();
+            dc.DrawImage(ui.ImageSource, ui.Rect);
+            dc.Close();
+
+
+            // if (w >= formattedTextControl3.MaxX) formattedTextControl3.MaxX = w;
+
+            // var rectangleWidth = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
+            // formattedTextControl3._rectangle.Width = rectangleWidth;
+
+            _rectangle.Height = ui.Rect.Bottom;
+            _myDrawingBrush.Viewbox = new Rect(0, 0, _rectangle.ActualWidth, ui.Rect.Bottom);
+            _myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
+            _reader.ReadAsync().AsTask().ContinueWith(ContinuationFunction, CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void CompileExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -1095,7 +1119,7 @@ namespace AnalysisControls
                     prev, prevLine, line, linePosition, prevCell,
                     prevRegion,
                     Formatter, OutputWidth, PixelsPerDip, emSize, tree, node0, compilation,
-                    fontFamilyFamilyName));
+                    fontFamilyFamilyName, _channel.Writer));
                 InnerUpdateDispatcherOperation = dispatcherOperation;
                 var source = await dispatcherOperation.Task
                     .ContinueWith(
@@ -1174,7 +1198,8 @@ namespace AnalysisControls
             TextLineBreak prev, LineInfo prevLine, int line, Point linePosition,
             CharacterCell prevCell, RegionInfo prevRegion,
             TextFormatter textFormatter, double paragraphWidth, double pixelsPerDip,
-            double emSize0, SyntaxTree tree, SyntaxNode node0, Compilation compilation, string faceName)
+            double emSize0, SyntaxTree tree, SyntaxNode node0, Compilation compilation, string faceName,
+            ChannelWriter<UpdateInfo> channelWriter)
         {
             var s1 = new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher);
             if (s1 == null) throw new InvalidOperationException("no synchh context");
@@ -1232,6 +1257,7 @@ namespace AnalysisControls
                     var cellColumn = 0;
                     var characterOffset = textStorePosition;
                     var regionOffset = textStorePosition;
+#if false
                     var eol = myTextLine.GetTextRunSpans().Select(xx => xx.Value).OfType<TextEndOfLine>();
                     if (eol.Any())
                     {
@@ -1398,7 +1424,7 @@ namespace AnalysisControls
 
                     //DebugUtils.WriteLine(line.ToString() + ddBounds.ToString(), DebugCategory.TextFormatting);
                     //dc.DrawRectangle(null, new Pen(Brushes.Red, 1), ddBounds);
-
+#endif
                     // Draw the formatted text into the drawing context.
                     var p = new Point(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace, linePosition.Y);
                     var w = myTextLine.Width;
@@ -1442,9 +1468,11 @@ namespace AnalysisControls
                     // Update the line position coordinate for the displayed line.
                 }
 
+#if false
                 formattedTextControl3.Dispatcher.Invoke(() => { formattedTextControl3._pos = linePosition; });
+#endif
 
-                if (line > 0 && line % 5 == 0)
+                if (line > 0 && line % 100 == 0)
                 {
                     myDc.Close();
 
@@ -1475,6 +1503,9 @@ namespace AnalysisControls
                     // DebugUtils.WriteLine("width = " + w);
                     var y = myGroup.Bounds.Bottom;
                     // DebugUtils.WriteLine("bottom = " + (int) y);
+                    UpdateInfo curUi = new UpdateInfo(){ImageSource = out1, Rect = rect};
+                    channelWriter.WriteAsync(curUi);
+#if false
                     formattedTextControl3.Dispatcher.Invoke(() =>
                     {
                         var dc = formattedTextControl3._textDest.Append();
@@ -1492,7 +1523,7 @@ namespace AnalysisControls
                             new Rect(0, 0, paragraphWidth, y);
                         formattedTextControl3._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
                     });
-
+#endif
                     var span = DateTime.Now - startTime;
                     // DebugUtils.WriteLine("Process line took " + span);
                     startTime = DateTime.Now;
@@ -1500,7 +1531,7 @@ namespace AnalysisControls
             }
 
 
-            if(line % 5 != 0)
+            if(line % 100 != 0)
             {
                 myDc.Close();
                 RenderTargetBitmap SaveImage(Drawing d)
@@ -1529,24 +1560,8 @@ namespace AnalysisControls
                 var w = myGroup.Bounds.Width;
                 DebugUtils.WriteLine("width = " + w);
                 var y = myGroup.Bounds.Bottom;
-                DebugUtils.WriteLine("bottom = " + (int) y);
-                formattedTextControl3.Dispatcher.Invoke(() =>
-                {
-                    var dc = formattedTextControl3._textDest.Append();
-                    dc.DrawImage(out1, rect);
-                    dc.Close();
-
-
-                    if (w >= formattedTextControl3.MaxX) formattedTextControl3.MaxX = w;
-
-                    var rectangleWidth = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
-                    // formattedTextControl3._rectangle.Width = rectangleWidth;
-
-                    formattedTextControl3._rectangle.Height = y;
-                    formattedTextControl3._myDrawingBrush.Viewbox =
-                        new Rect(0, 0, paragraphWidth, y);
-                    formattedTextControl3._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
-                });
+                UpdateInfo curUi = new UpdateInfo() { ImageSource = out1, Rect = rect };
+                channelWriter.WriteAsync(curUi);
 
                 var span = DateTime.Now - startTime;
                 DebugUtils.WriteLine("Process line took " + span);
@@ -1652,6 +1667,8 @@ namespace AnalysisControls
         private bool _performingUpdate;
         private DispatcherOperation<CustomTextSource4> _innerUpdateDispatcherOperation;
         private Task _updateFormattedTestTask;
+        private ChannelReader<UpdateInfo> _reader;
+        private Channel<UpdateInfo> _channel;
 
         /// <inheritdoc />
         protected override void OnMouseMove(MouseEventArgs e)
@@ -2101,5 +2118,11 @@ namespace AnalysisControls
                 DebugUtils.WriteLine("Setting update operation task");
             }
         }
+    }
+
+    public class UpdateInfo 
+    {
+        public BitmapSource ImageSource { get; set; }
+        public Rect Rect { get; set; }
     }
 }
