@@ -133,16 +133,23 @@ namespace AnalysisControls
         protected virtual async void OnInsertionPointChanged(int oldValue, int newValue)
         {
             UpdateCaretPosition();
-            var enclosingsymbol = Model?.GetEnclosingSymbol(newValue);
-            EnclosingSymbol = enclosingsymbol;
-
-            DebugUtils.WriteLine(EnclosingSymbol?.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
-            if (Model != null && InsertionRegion.SyntaxNode != null)
+            try
             {
-                var ti = Model.GetTypeInfo(InsertionRegion.SyntaxNode);
-                if (ti.Type != null)
-                    DebugUtils.WriteLine(ti.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
-                ;
+                var enclosingsymbol = Model?.GetEnclosingSymbol(newValue);
+                EnclosingSymbol = enclosingsymbol;
+
+                DebugUtils.WriteLine(EnclosingSymbol?.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
+                if (Model != null && InsertionRegion.SyntaxNode != null)
+                {
+                    var ti = Model.GetTypeInfo(InsertionRegion.SyntaxNode);
+                    if (ti.Type != null)
+                        DebugUtils.WriteLine(ti.Type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat));
+                    ;
+                }
+            }
+            catch (Exception ex)
+            {
+
             }
 
             // var completionService = CompletionService.GetService(Document);
@@ -781,6 +788,10 @@ namespace AnalysisControls
         {
             try
             {
+                if (CustomTextSource == null)
+                {
+                    await UpdateTextSource();
+                }
                 DebugUtils.WriteLine(eText);
                 //  if (_textDest.Children.Count == 0) _textDest.Children.Add(new DrawingGroup());
 
@@ -830,12 +841,20 @@ namespace AnalysisControls
                     DispatcherPriority.Send, CancellationToken.None);
                 await Dispatcher.InvokeAsync(() =>
                 {
+                    InsertionPoint = insertionPoint + eText.Length;
                     if (lineInfo == null) throw new InvalidOleVariantTypeException();
 
                     DebugUtils.WriteLine("No customTextSource");
-                    InsertionLine = (LineInfo) lineInfo;
+                    if (InsertionPoint == lineInfo.Offset + lineInfo.Length)
+                    {
+                        InsertionLine = new LineInfo() { LineNumber = lineInfo.LineNumber + 1, Offset = InsertionPoint, Origin = new Point(0, InsertionLine.Origin.Y + InsertionLine.Height), PrevLine = InsertionLine };
+                    }
+                    else
+                    {
+                        InsertionLine = (LineInfo) lineInfo;
+                    }
 
-                    InsertionPoint = insertionPoint + eText.Length;
+                    
                     if (InsertionLine.Offset + InsertionLine.Length <= insertionPoint)
                     {
                         if (InsertionLine.NextLine != null)
@@ -885,7 +904,10 @@ namespace AnalysisControls
                         FontStretches.Normal));
                 CustomTextSource.TextInput(insertionPoin, eText);
 
-                var lineInfo = RedrawLine((InClassName) inn);
+                
+                var lineInfo = RedrawLine((InClassName) inn, out var lineCtx);
+              
+
                 return lineInfo;
             }
             catch (Exception ex)
@@ -912,10 +934,10 @@ namespace AnalysisControls
             _textCaret.BeginAnimation(VisibilityProperty, null);
         }
 
-        private static LineInfo RedrawLine(InClassName inClassName)
+        private static LineInfo RedrawLine(InClassName inClassName, out LineContext lineCtx)
         {
             //if (formattedTextControl3.LineInfos.Count == 0) formattedTextControl3.LineInfos.Add(null);
-            LineContext lineCtx;
+            
             LineInfo outLineInfo;
             using (var myTextLine = inClassName.TextFormatter.FormatLine(inClassName.CustomTextSource4,
                 inClassName.Offset, inClassName.ParagraphWidth,
@@ -933,9 +955,11 @@ namespace AnalysisControls
                     TextStorePosition = inClassName.Offset
                 };
 
+                var o = lineCtx.LineOriginPoint;
                 inClassName.Dc.Dispatcher.Invoke(() =>
                 {
-                    myTextLine.Draw(inClassName.Dc, lineCtx.LineOriginPoint, InvertAxes.None);
+                    
+                    myTextLine.Draw(inClassName.Dc, o, InvertAxes.None);
                 });
                 var regions = new List<RegionInfo>();
                 FormattingHelper.HandleTextLine(regions, ref lineCtx, out var lineI, inClassName.FormattedTextControl3);
@@ -954,6 +978,8 @@ namespace AnalysisControls
                 $"{inClassName.FormattedTextControl3._rect.Width}x{inClassName.FormattedTextControl3._rect.Height}",
                 DebugCategory.TextFormatting);
 
+            var lineCtxMaxX = lineCtx.MaxX;
+            var lineCtxMaxY = lineCtx.MaxY;
             inClassName.FormattedTextControl3.Dispatcher.Invoke(() =>
             {
                 inClassName.Dc.Close();
@@ -962,12 +988,14 @@ namespace AnalysisControls
                 else
                     inClassName.FormattedTextControl3._textDest.Children[inClassName.LineNo] = inClassName.D;
 
-                inClassName.FormattedTextControl3.MaxX = lineCtx.MaxX;
-                inClassName.FormattedTextControl3.MaxY = lineCtx.MaxY;
-                inClassName.FormattedTextControl3._rectangle.Width = lineCtx.MaxX;
-                inClassName.FormattedTextControl3._rectangle.Height = lineCtx.MaxY;
-                inClassName.FormattedTextControl3._rect2.Width = lineCtx.MaxX;
-                inClassName.FormattedTextControl3._rect2.Height = lineCtx.MaxY;
+
+                inClassName.FormattedTextControl3.MaxX = lineCtxMaxX;
+                
+                inClassName.FormattedTextControl3.MaxY = lineCtxMaxY;
+                inClassName.FormattedTextControl3._rectangle.Width = lineCtxMaxX;
+                inClassName.FormattedTextControl3._rectangle.Height = lineCtxMaxY;
+                inClassName.FormattedTextControl3._rect2.Width = lineCtxMaxX;
+                inClassName.FormattedTextControl3._rect2.Height = lineCtxMaxY;
                 // inClassName.FormattedTextControl3.UpdateCaretPosition();
 //                inClassName.FormattedTextControl3.InvalidateVisual();
             });

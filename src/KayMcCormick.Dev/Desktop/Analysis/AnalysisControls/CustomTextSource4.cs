@@ -627,6 +627,8 @@ namespace AnalysisControls
                 if (_tree != null)
                 {
                     Text = _tree.GetText();
+                    SyntaxInfos = GetSyntaxInfos().GetEnumerator();
+                    SyntaxInfos.MoveNext();
                     Length = Text.Length;
                 }
             }
@@ -1020,7 +1022,7 @@ DebugUtils.WriteLine(syntaxKind.ToString(), DebugCategory.TextFormatting);
             // DebugUtils.WriteLine(syntaxInfo.ToString());
             // }
 
-            SyntaxInfos = GetSyntaxInfos().GetEnumerator();
+            //SyntaxInfos = GetSyntaxInfos().GetEnumerator();
 
             return;
 #if false

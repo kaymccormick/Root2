@@ -183,9 +183,8 @@ namespace AnalysisControls
 
         private void OnAppSettingsExecuuted(object sender, ExecutedRoutedEventArgs e)
         {
-            AppSettingsWindow w = new AppSettingsWindow();
-            w.ViewModel = AppSettingsViewModel;
-             w.ShowDialog();
+            AppSettingsWindow w = AttachedProperties.GetLifetimeScope(this).Resolve<AppSettingsWindow>();
+            w.ShowDialog();
 
         }
 

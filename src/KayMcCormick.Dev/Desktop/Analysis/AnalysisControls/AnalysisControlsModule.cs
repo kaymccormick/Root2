@@ -73,6 +73,7 @@ namespace AnalysisControls
         // ReSharper disable once AnnotateNotNullParameter
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<AppSettingsWindow>().AsSelf().As<Window>().WithCallerMetadata();
             builder.RegisterType<AppSettingsViewModel>().SingleInstance().WithCallerMetadata();
             builder.RegisterAssemblyTypes(typeof(AnalysisControlsModule).Assembly)
                 .Where(type => (typeof(IDisplayableAppCommand).IsAssignableFrom(type) && !type.IsAbstract && type != typeof(OpenFileCommand2))).As<IDisplayableAppCommand>()
@@ -230,8 +231,21 @@ namespace AnalysisControls
             builder.RegisterType<DocumentHost>().AsImplementedInterfaces().InstancePerLifetimeScope().WithCallerMetadata();
             builder.RegisterType<ContentSelector>().AsImplementedInterfaces().InstancePerLifetimeScope().WithCallerMetadata();
             builder.RegisterType<Main1Mode2>().WithCallerMetadata();
+            builder.RegisterType<MiscCommands>().WithCallerMetadata();
+            builder.Register((c1) =>
+            {
+                var c = c1.Resolve<ILifetimeScope>();
+                return new LambdaAppCommand("Build Types view", async (command, o) =>
+                {
+                    
+                    await c.Resolve<MiscCommands>().BuildTypeViewAsync(command, c.Resolve<IAppDbContext1>(),
+                        c, c.Resolve<AppDbContextHelper>(),
+                        c.Resolve<JsonSerializerOptions>());
+                    return AppCommandResult.Success;
+                }, null);
+            }).As<IDisplayableAppCommand>().WithCallerMetadata();
 
-            builder.Register(
+                builder.Register(
                     (context, parameters) =>
                     {
                         try

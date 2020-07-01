@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 
 <viewModel:TypesViewModel ShowBordersIsChecked="False" IsInitialized="False" InitializationDateTime="0001-01-01"
-                          xmlns="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControls"
+                          xmlns="clr-namespace:AnalysisControls.ViewModel;assembly=AnalysisControlsCore"
                           xmlns:mcacss="clr-namespace:Microsoft.CodeAnalysis.CSharp.Syntax;assembly=Microsoft.CodeAnalysis.CSharp"
                           xmlns:s="clr-namespace:System;assembly=mscorlib"
                           xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml"
 
                           xmlns:mcacs="clr-namespace:Microsoft.CodeAnalysis.CSharp;assembly=Microsoft.CodeAnalysis.CSharp"
-                          xmlns="clr-namespace:AnalysisControls.ViewModel"
                           xmlns:syntax="clr-namespace:AnalysisAppLib.Syntax;assembly=AnalysisAppLibCore"
                           xmlns:viewModel="clr-namespace:AnalysisControls.ViewModel">
     <viewModel:TypesViewModel.StructureRoot>

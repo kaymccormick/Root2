@@ -24,6 +24,13 @@ namespace AnalysisControls
     {
         private AppSettingsViewModel _viewModel;
 
+        /// <inheritdoc />
+        public AppSettingsWindow(AppSettingsViewModel viewModel)
+        {
+            _viewModel = viewModel;
+            InitializeComponent();
+        }
+
         public AppSettingsWindow()
         {
             InitializeComponent();

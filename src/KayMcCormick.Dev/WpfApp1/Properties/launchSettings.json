@@ -1,8 +1,7 @@
 {
   "profiles": {
     "WpfApp1": {
-      "commandName": "Project",
-      "commandLineArgs": "c:\\temp\\dockingmanager.cs"
+      "commandName": "Project"
     }
   }
 }
