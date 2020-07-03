@@ -9,8 +9,8 @@
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="6.0.1" />
     <PackageReference Include="Microsoft.CodeAnalysis.AnalyzerUtilities" Version="3.3.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="3.7.0-2.final" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Features" Version="3.7.0-2.final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="3.7.0-3.final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Features" Version="3.7.0-3.final" />
     <PackageReference Include="Microsoft.CodeAnalysis.FlowAnalysis.Utilities" Version="2.9.6" />
     <PackageReference Include="Microsoft.CodeAnalysis.Metrics" Version="3.3.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
