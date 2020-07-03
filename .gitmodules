@@ -10,3 +10,6 @@
 [submodule "src/AvalonDock"]
 	path = src/AvalonDock
 	url = https://github.com/kaymccormick/AvalonDock.git
+[submodule "src/RoslynCodeControls"]
+	path = src/RoslynCodeControls
+	url = https://github.com/kaymccormick/RoslynCodeControls.git
