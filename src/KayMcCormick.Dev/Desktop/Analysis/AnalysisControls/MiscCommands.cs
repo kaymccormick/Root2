@@ -38,7 +38,7 @@ namespace AnalysisControls
         /// <param name="db"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        [NotNull]
+        
         public List<AppTypeInfo> TypesViewModel_Stage1(
             
              out ITypesViewModel unknown
@@ -57,7 +57,7 @@ namespace AnalysisControls
                 throw new ArgumentNullException(nameof(typesViewModel));
             }
 
-            List<AppTypeInfo> r;
+            List<AppTypeInfo> r=null;
 
             {
                 var appTypeInfos = typesViewModel.GetAppTypeInfos();
@@ -73,21 +73,43 @@ namespace AnalysisControls
                         continue;
                     }
 
-                    
-                    var clr = helper.FindOrAddClrType(db, appTypeInfo.Type);
-                    appTypeInfo.AppClrType = clr;
-                    if (appTypeInfo.Id != 0)
+
+                    try
                     {
-                        db.AppTypeInfos.Update(appTypeInfo);
+                        var clr = helper.FindOrAddClrType(db, appTypeInfo.Type);
+                        appTypeInfo.AppClrType = clr;
+                        if (appTypeInfo.Id != 0)
+                        {
+                            db.AppTypeInfos.Update(appTypeInfo);
+                        }
+                        else
+                        {
+                            db.AppTypeInfos.Add(appTypeInfo);
+                        }
                     }
-                    else
+                    catch 
                     {
-                        db.AppTypeInfos.Add(appTypeInfo);
+                        break;
                     }
                 }
 
-                db.SaveChanges();
-                r = db.AppTypeInfos.ToList();
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch
+                {
+                }
+
+                try
+                {
+                    r = db.AppTypeInfos.ToList();
+                }
+                catch
+                {
+
+                }
+
             }
 
             WriteThisTypesViewModel(
@@ -193,20 +215,27 @@ namespace AnalysisControls
 
             DebugUtils.WriteLine("Begin initialize TypeViewModel");
 
-            //var db = new AppDbContext ( ) ;
+            //var db = new AppDbContext ( )
+            try
             {
                 db.AppClrType.RemoveRange(db.AppClrType);
                 db.AppTypeInfos.RemoveRange(db.AppTypeInfos);
                 db.SyntaxFieldInfo.RemoveRange(db.SyntaxFieldInfo);
                 await db.SaveChangesAsync();
             }
+            catch{}
 
+            try
             {
                 if (db.AppTypeInfos.Any()
                     || db.AppClrType.Any())
                 {
                     throw new AppInvalidOperationException();
                 }
+            }
+            catch
+            {
+
             }
 
             var factory = scope.Resolve<Func<ITypesViewModel>>();
@@ -264,7 +293,14 @@ namespace AnalysisControls
                     var syntaxFieldCollection = appTypeInfo.Fields;
                     foreach (SyntaxFieldInfo o in syntaxFieldCollection)
                     {
-                        db.SyntaxFieldInfo.Add(o);
+                        try
+                        {
+                            db.SyntaxFieldInfo.Add(o);
+                        }
+                        catch
+                        {
+                            break;
+                        }
                     }
                     // if ( appTypeInfo.AppClrType != null )
                     // {

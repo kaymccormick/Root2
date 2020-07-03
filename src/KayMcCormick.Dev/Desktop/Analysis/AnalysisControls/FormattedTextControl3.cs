@@ -35,50 +35,6 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace AnalysisControls
 {
-    public class InClassName
-    {
-        public InClassName(FormattedTextControl3 formattedTextControl3, int lineNo, int offset, double y, double x,
-            LineInfo lineInfo, TextFormatter textFormatter, double paragraphWidth, FontRendering currentRendering,
-            double pixelsPerDip, CustomTextSource4 customTextSource4, double maxY, double maxX, DrawingGroup d,
-            DrawingContext dc)
-        {
-            FormattedTextControl3 = formattedTextControl3;
-            LineNo = lineNo;
-            Offset = offset;
-            Y = y;
-            X = x;
-            LineInfo = lineInfo;
-            TextFormatter = textFormatter;
-            ParagraphWidth = paragraphWidth;
-            CurrentRendering = currentRendering;
-            PixelsPerDip = pixelsPerDip;
-            CustomTextSource4 = customTextSource4;
-            MaxY = maxY;
-            MaxX = maxX;
-            D = d;
-            Dc = dc;
-        }
-
-
-        public FormattedTextControl3 FormattedTextControl3 { get; private set; }
-        public int LineNo { get; private set; }
-        public int Offset { get; private set; }
-        public double Y { get; private set; }
-        public double X { get; private set; }
-        public LineInfo LineInfo { get; private set; }
-        public TextFormatter TextFormatter { get; private set; }
-        public double ParagraphWidth { get; private set; }
-        public FontRendering CurrentRendering { get; set; }
-        public double PixelsPerDip { get; private set; }
-        public CustomTextSource4 CustomTextSource4 { get; private set; }
-        public double MaxY { get; private set; }
-        public double MaxX { get; private set; }
-        public DrawingGroup D { get; private set; }
-        public DrawingContext Dc { get; private set; }
-        public string FontFamilyName { get; set; }
-        public double FontSize { get; set; }
-    }
-
     /// <summary>
     /// 
     /// </summary>
@@ -91,18 +47,6 @@ namespace AnalysisControls
 
         public static readonly RoutedEvent RenderStartEvent = EventManager.RegisterRoutedEvent("RenderStart",
             RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(FormattedTextControl3));
-
-        /// <inheritdoc />
-        protected override void OnDocumentChanged(Document oldValue, Document newValue)
-        {
-            base.OnDocumentChanged(oldValue, newValue);
-        }
-
-        /// <inheritdoc />
-        protected override void OnModelChanged(SemanticModel oldValue, SemanticModel newValue)
-        {
-            base.OnModelChanged(oldValue, newValue);
-        }
 
         public static readonly DependencyProperty InsertionPointProperty = DependencyProperty.Register(
             "InsertionPoint", typeof(int), typeof(FormattedTextControl3),
@@ -149,7 +93,6 @@ namespace AnalysisControls
             }
             catch (Exception ex)
             {
-
             }
 
             // var completionService = CompletionService.GetService(Document);
@@ -428,8 +371,16 @@ namespace AnalysisControls
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(FormattedTextControl3),
                 new FrameworkPropertyMetadata(typeof(FormattedTextControl3)));
+            SyntaxTreeProperty.OverrideMetadata(typeof(FormattedTextControl3), new FrameworkPropertyMetadata(default(SyntaxTree), FrameworkPropertyMetadataOptions.None, OnSyntaxTreeChanged_));
+            SyntaxNodeProperty.OverrideMetadata(typeof(FormattedTextControl3), new PropertyMetadata(default(SyntaxNode), OnNodeUpdated));
             // TextElement.FontFamilyProperty.OverrideMetadata(typeof(FormattedTextControl3), new PropertyMetadata(null, PropertyChangedCallback));
             // TextElement.FontSizeProperty.OverrideMetadata(typeof(FormattedTextControl3), new PropertyMetadata(16.0, PropertyChangedCallback2));
+        }
+
+        private static void OnSyntaxTreeChanged_(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var ss = (FormattedTextControl3)d;
+            ss.OnSyntaxTreeUpdated((SyntaxTree)e.NewValue);
         }
 
         private static async void PropertyChangedCallback2(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -449,10 +400,11 @@ namespace AnalysisControls
         public FormattedTextControl3()
 
         {
-
-            _channel = Channel.CreateUnbounded<UpdateInfo>(new UnboundedChannelOptions(){SingleReader = true, SingleWriter = true});
+            _channel = Channel.CreateUnbounded<UpdateInfo>(new UnboundedChannelOptions()
+                {SingleReader = true, SingleWriter = true});
             _reader = _channel.Reader;
-            _reader.ReadAsync().AsTask().ContinueWith(ContinuationFunction, CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+            _reader.ReadAsync().AsTask().ContinueWith(ContinuationFunction, CancellationToken.None,
+                TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
             var xx = new DoubleAnimationUsingPath();
             _x1 = new ObjectAnimationUsingKeyFrames();
             _x1.RepeatBehavior = RepeatBehavior.Forever;
@@ -494,7 +446,8 @@ namespace AnalysisControls
             _rectangle.Height = ui.Rect.Bottom;
             _myDrawingBrush.Viewbox = new Rect(0, 0, _rectangle.ActualWidth, ui.Rect.Bottom);
             _myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
-            _reader.ReadAsync().AsTask().ContinueWith(ContinuationFunction, CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+            _reader.ReadAsync().AsTask().ContinueWith(ContinuationFunction, CancellationToken.None,
+                TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void CompileExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -539,9 +492,8 @@ namespace AnalysisControls
         }
 
         /// <inheritdoc />
-        protected override void OnSyntaxTreeUpdated(SyntaxTree newValue)
+        protected virtual void OnSyntaxTreeUpdated(SyntaxTree newValue)
         {
-            base.OnSyntaxTreeUpdated(newValue);
             _text = newValue.GetText();
             if (UpdatingSourceText)
                 SourceText = _text.ToString();
@@ -570,9 +522,9 @@ namespace AnalysisControls
                 DebugUtils.WriteLine("Compilation does not contain syntax tree.");
             }
 
-            if (Node == null || SyntaxTree == null) return;
-            if (ReferenceEquals(Node.SyntaxTree, SyntaxTree) == false)
-                throw new AppInvalidOperationException("Node is not within syntax tree");
+            if (SyntaxNode == null || SyntaxTree == null) return;
+            if (ReferenceEquals(SyntaxNode.SyntaxTree, SyntaxTree) == false)
+                throw new AppInvalidOperationException("SyntaxNode is not within syntax tree");
             DebugUtils.WriteLine("Creating new " + nameof(SyntaxNodeCustomTextSource), DebugCategory.TextFormatting);
 
             //_errorTextSource = Errors.Any() ? new ErrorsTextSource(PixelsPerDip, Errors, TypefaceManager) : null;
@@ -788,10 +740,7 @@ namespace AnalysisControls
         {
             try
             {
-                if (CustomTextSource == null)
-                {
-                    await UpdateTextSource();
-                }
+                if (CustomTextSource == null) await UpdateTextSource();
                 DebugUtils.WriteLine(eText);
                 //  if (_textDest.Children.Count == 0) _textDest.Children.Add(new DrawingGroup());
 
@@ -844,17 +793,17 @@ namespace AnalysisControls
                     InsertionPoint = insertionPoint + eText.Length;
                     if (lineInfo == null) throw new InvalidOleVariantTypeException();
 
-                    DebugUtils.WriteLine("No customTextSource");
                     if (InsertionPoint == lineInfo.Offset + lineInfo.Length)
-                    {
-                        InsertionLine = new LineInfo() { LineNumber = lineInfo.LineNumber + 1, Offset = InsertionPoint, Origin = new Point(0, InsertionLine.Origin.Y + InsertionLine.Height), PrevLine = InsertionLine };
-                    }
+                        InsertionLine = new LineInfo()
+                        {
+                            LineNumber = lineInfo.LineNumber + 1, Offset = InsertionPoint,
+                            Origin = new Point(0, InsertionLine.Origin.Y + InsertionLine.Height),
+                            PrevLine = InsertionLine
+                        };
                     else
-                    {
                         InsertionLine = (LineInfo) lineInfo;
-                    }
 
-                    
+
                     if (InsertionLine.Offset + InsertionLine.Length <= insertionPoint)
                     {
                         if (InsertionLine.NextLine != null)
@@ -904,9 +853,9 @@ namespace AnalysisControls
                         FontStretches.Normal));
                 CustomTextSource.TextInput(insertionPoin, eText);
 
-                
+
                 var lineInfo = RedrawLine((InClassName) inn, out var lineCtx);
-              
+
 
                 return lineInfo;
             }
@@ -937,7 +886,7 @@ namespace AnalysisControls
         private static LineInfo RedrawLine(InClassName inClassName, out LineContext lineCtx)
         {
             //if (formattedTextControl3.LineInfos.Count == 0) formattedTextControl3.LineInfos.Add(null);
-            
+
             LineInfo outLineInfo;
             using (var myTextLine = inClassName.TextFormatter.FormatLine(inClassName.CustomTextSource4,
                 inClassName.Offset, inClassName.ParagraphWidth,
@@ -956,11 +905,7 @@ namespace AnalysisControls
                 };
 
                 var o = lineCtx.LineOriginPoint;
-                inClassName.Dc.Dispatcher.Invoke(() =>
-                {
-                    
-                    myTextLine.Draw(inClassName.Dc, o, InvertAxes.None);
-                });
+                inClassName.Dc.Dispatcher.Invoke(() => { myTextLine.Draw(inClassName.Dc, o, InvertAxes.None); });
                 var regions = new List<RegionInfo>();
                 FormattingHelper.HandleTextLine(regions, ref lineCtx, out var lineI, inClassName.FormattedTextControl3);
 
@@ -990,7 +935,7 @@ namespace AnalysisControls
 
 
                 inClassName.FormattedTextControl3.MaxX = lineCtxMaxX;
-                
+
                 inClassName.FormattedTextControl3.MaxY = lineCtxMaxY;
                 inClassName.FormattedTextControl3._rectangle.Width = lineCtxMaxX;
                 inClassName.FormattedTextControl3._rectangle.Height = lineCtxMaxY;
@@ -1056,7 +1001,7 @@ namespace AnalysisControls
             var arrangeOverride = base.ArrangeOverride(arrangeBounds);
             // DebugUtils.WriteLine(arrangeOverride);
             // DebugUtils.WriteLine(_scrollViewer.ActualWidth);
-            var sbar = (ScrollBar)_scrollViewer.Template.FindName("PART_VerticalScrollBar", _scrollViewer);
+            var sbar = (ScrollBar) _scrollViewer.Template.FindName("PART_VerticalScrollBar", _scrollViewer);
 
             OutputWidth = _scrollViewer.ActualWidth - sbar.ActualWidth - _rectangle.StrokeThickness * 2;
             if (InitialUpdate)
@@ -1068,7 +1013,7 @@ namespace AnalysisControls
                 }
 
                 InitialUpdate = false;
-                if (Node == null)
+                if (SyntaxNode == null)
                     return arrangeBounds;
                 DebugUtils.WriteLine("Performing initial update of text");
                 var updateFormattedText = UpdateFormattedText();
@@ -1138,7 +1083,7 @@ namespace AnalysisControls
                 DebugUtils.WriteLine("Calling inner update");
                 var compilation = Compilation;
 
-                var node0 = Node;
+                var node0 = SyntaxNode;
                 var tree = SyntaxTree;
                 // _scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
                 var fontFamilyFamilyName = FontFamily.FamilyNames[XmlLanguage.GetLanguage("en-US")];
@@ -1162,6 +1107,7 @@ namespace AnalysisControls
                                 DebugUtils.WriteLine(xx1);
                                 DebugUtils.WriteLine(task.Exception.ToString());
                             }
+
                             return task.Result;
                         }).ConfigureAwait(true);
                 InnerUpdateDispatcherOperation = null;
@@ -1260,10 +1206,10 @@ namespace AnalysisControls
             var startTime = DateTime.Now;
             var myGroup = new DrawingGroup();
             var myDc = myGroup.Open();
-            LineContext lineContext = new LineContext();
+            var lineContext = new LineContext();
             var genericTextParagraphProperties =
                 new GenericTextParagraphProperties(CurrentRendering1, pixelsPerDip);
-            List<Tuple<TextRun, Rect>> runsInfos = new List<Tuple<TextRun, Rect>>();
+            var runsInfos = new List<Tuple<TextRun, Rect>>();
 
             while (textStorePosition < customTextSource4.Length)
             {
@@ -1282,15 +1228,9 @@ namespace AnalysisControls
 #endif
                     var lineChars = new List<char>();
                     chars.Add(lineChars);
-                    if (myTextLine.HasOverflowed)
-                    {
-                        DebugUtils.WriteLine("overflowed");
-                    }
+                    if (myTextLine.HasOverflowed) DebugUtils.WriteLine("overflowed");
 
-                    if (myTextLine.Width > paragraphWidth)
-                    {
-                        DebugUtils.WriteLine("overflowed2");
-                    }
+                    if (myTextLine.Width > paragraphWidth) DebugUtils.WriteLine("overflowed2");
                     var lineInfo = new LineInfo {Offset = textStorePosition, Length = myTextLine.Length};
                     lineInfo.PrevLine = prevLine;
                     lineInfo.LineNumber = line;
@@ -1312,7 +1252,7 @@ namespace AnalysisControls
                     var regionOffset = textStorePosition;
 
                     var curPos = linePosition;
-                    List<Rect> positions = new List<Rect>();
+                    var positions = new List<Rect>();
                     var indexedGlyphRuns = myTextLine.GetIndexedGlyphRuns();
                     var textRuns = customTextSource4.Runs.GetRange(runCount, nRuns);
                     var enum1 = textRuns.GetEnumerator();
@@ -1321,7 +1261,7 @@ namespace AnalysisControls
                     {
                         var gl = glyphRunC.GlyphRun;
                         var bo = gl.BaselineOrigin;
-                        var advanceSum = gl.AdvanceWidths.Sum() ;
+                        var advanceSum = gl.AdvanceWidths.Sum();
                         var item = new Rect(curPos, new Size(advanceSum, myTextLine.Height));
                         runsInfos.Add(Tuple.Create(enum1.Current, item));
                         positions.Add(item);
@@ -1348,7 +1288,7 @@ namespace AnalysisControls
                         DebugUtils.WriteLine(z);
                     }
 #endif
-                        // FormattingHelper.HandleTextLine(null, ref lineContext, out var lineInfo2, null);
+                    // FormattingHelper.HandleTextLine(null, ref lineContext, out var lineInfo2, null);
 #if false
                     var eol = myTextLine.GetTextRunSpans().Select(xx => xx.Value).OfType<TextEndOfLine>();
                     if (eol.Any())
@@ -1464,7 +1404,7 @@ namespace AnalysisControls
                                 TriviaPosition? triviaPosition = null;
                                 if (textSpanValue is SyntaxTokenTextCharacters stc)
                                 {
-                                    node = stc.Node;
+                                    node = stc.SyntaxNode;
                                     token = stc.Token;
                                 }
                                 else
@@ -1473,7 +1413,7 @@ namespace AnalysisControls
                                     {
                                         trivia = stc2.Trivia;
                                         AttachedToken = stc2.Token;
-                                        attachedNode = stc2.Node;
+                                        attachedNode = stc2.SyntaxNode;
                                         structuredTrivia = stc2.StructuredTrivia;
                                         triviaPosition = stc2.TriviaPosition;
                                     }
@@ -1517,14 +1457,13 @@ namespace AnalysisControls
                     //DebugUtils.WriteLine(line.ToString() + ddBounds.ToString(), DebugCategory.TextFormatting);
                     //dc.DrawRectangle(null, new Pen(Brushes.Red, 1), ddBounds);
 #endif
-                        // Draw the formatted text into the drawing context.
-                        var p = new Point(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace, linePosition.Y);
+                    // Draw the formatted text into the drawing context.
+                    var p = new Point(linePosition.X + myTextLine.WidthIncludingTrailingWhitespace, linePosition.Y);
                     var w = myTextLine.Width;
-                    
+
                     myTextLine.Draw(myDc, linePosition, InvertAxes.None);
                     linePosition.Y += myTextLine.Height;
                     if (false)
-                    {
                         formattedTextControl3.Dispatcher.Invoke(() =>
                         {
                             if (w >= formattedTextControl3.MaxX) formattedTextControl3.MaxX = w;
@@ -1544,12 +1483,11 @@ namespace AnalysisControls
                             formattedTextControl3._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
                             formattedTextControl3.LineInfos.Add(lineInfo);
                         });
-                    }
                     // ReSharper disable once UnusedVariable
 
                     // var textLineBreak = myTextLine.GetTextLineBreak();
                     // if (textLineBreak != null)
-                        // DebugUtils.WriteLine(textLineBreak.ToString(), DebugCategory.TextFormatting);
+                    // DebugUtils.WriteLine(textLineBreak.ToString(), DebugCategory.TextFormatting);
                     line++;
 
                     prev = null;
@@ -1570,16 +1508,16 @@ namespace AnalysisControls
 
                     RenderTargetBitmap SaveImage(Drawing d)
                     {
-                        DrawingBrush b = new DrawingBrush(d);
-                        DrawingVisual v = new DrawingVisual();
+                        var b = new DrawingBrush(d);
+                        var v = new DrawingVisual();
                         var dc = v.RenderOpen();
-                        Rect rect = new Rect(new Point(0, 0), d.Bounds.Size);
+                        var rect = new Rect(new Point(0, 0), d.Bounds.Size);
 
                         dc.DrawRectangle(b, null, rect);
                         dc.Close();
-                        int width = (int) rect.Width;
-                        int height = (int) rect.Height;
-                        RenderTargetBitmap rtb = new RenderTargetBitmap(width, height, 96,
+                        var width = (int) rect.Width;
+                        var height = (int) rect.Height;
+                        var rtb = new RenderTargetBitmap(width, height, 96,
                             96,
                             PixelFormats.Pbgra32);
                         rtb.Render(v);
@@ -1590,12 +1528,12 @@ namespace AnalysisControls
                     var out1 = SaveImage(myGroup);
                     out1.Freeze();
                     myDc = myGroup.Open();
-                    Rect rect = myGroup.Bounds; //new Rect(0, 0, myGroup.Bounds.Width, myGroup.Bounds.Height);
+                    var rect = myGroup.Bounds; //new Rect(0, 0, myGroup.Bounds.Width, myGroup.Bounds.Height);
                     var w = myGroup.Bounds.Width;
                     // DebugUtils.WriteLine("width = " + w);
                     var y = myGroup.Bounds.Bottom;
                     // DebugUtils.WriteLine("bottom = " + (int) y);
-                    UpdateInfo curUi = new UpdateInfo(){ImageSource = out1, Rect = rect};
+                    var curUi = new UpdateInfo() {ImageSource = out1, Rect = rect};
                     channelWriter.WriteAsync(curUi);
 #if false
                     formattedTextControl3.Dispatcher.Invoke(() =>
@@ -1623,21 +1561,22 @@ namespace AnalysisControls
             }
 
 
-            if(line % 100 != 0)
+            if (line % 100 != 0)
             {
                 myDc.Close();
+
                 RenderTargetBitmap SaveImage(Drawing d)
                 {
-                    DrawingBrush b = new DrawingBrush(d);
-                    DrawingVisual v = new DrawingVisual();
+                    var b = new DrawingBrush(d);
+                    var v = new DrawingVisual();
                     var dc = v.RenderOpen();
-                    Rect rect = new Rect(new Point(0, 0), d.Bounds.Size);
+                    var rect = new Rect(new Point(0, 0), d.Bounds.Size);
 
                     dc.DrawRectangle(b, null, rect);
                     dc.Close();
-                    int width = (int) rect.Width;
-                    int height = (int) rect.Height;
-                    RenderTargetBitmap rtb = new RenderTargetBitmap(width, height, 96,
+                    var width = (int) rect.Width;
+                    var height = (int) rect.Height;
+                    var rtb = new RenderTargetBitmap(width, height, 96,
                         96,
                         PixelFormats.Pbgra32);
                     rtb.Render(v);
@@ -1648,11 +1587,11 @@ namespace AnalysisControls
                 var out1 = SaveImage(myGroup);
                 out1.Freeze();
                 myDc = myGroup.Open();
-                Rect rect = myGroup.Bounds; //new Rect(0, 0, myGroup.Bounds.Width, myGroup.Bounds.Height);
+                var rect = myGroup.Bounds; //new Rect(0, 0, myGroup.Bounds.Width, myGroup.Bounds.Height);
                 var w = myGroup.Bounds.Width;
                 // DebugUtils.WriteLine("width = " + w);
                 var y = myGroup.Bounds.Bottom;
-                UpdateInfo curUi = new UpdateInfo() { ImageSource = out1, Rect = rect };
+                var curUi = new UpdateInfo() {ImageSource = out1, Rect = rect};
                 channelWriter.WriteAsync(curUi);
 
                 var span = DateTime.Now - startTime;
@@ -1782,14 +1721,9 @@ namespace AnalysisControls
                         var first = runInfo.First();
                         DebugUtils.WriteLine(first.Item2.ToString());
                         DebugUtils.WriteLine(first.Item1.ToString() ?? "");
-                        if (first.Item1 is CustomTextCharacters c0)
-                        {
-                            DebugUtils.WriteLine(c0.Text);
-                        }
+                        if (first.Item1 is CustomTextCharacters c0) DebugUtils.WriteLine(c0.Text);
                         HoverRegionInfo = new RegionInfo(first.Item1, first.Item2, new List<CharacterCell>());
                     }
-                    
-                    
                 }
 
                 return;
@@ -2145,15 +2079,20 @@ namespace AnalysisControls
         {
         }
 
+        private static void OnNodeUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var ss = (FormattedTextControl3)d;
+            ss.OnNodeUpdated();
+        }
+
         /// <summary>
         /// 
         /// </summary>
-        protected override async void OnNodeUpdated()
+        protected virtual async void OnNodeUpdated()
         {
-            base.OnNodeUpdated();
             if (!(ChangingText || UpdatingSourceText))
             {
-                DebugUtils.WriteLine("Node updated", DebugCategory.TextFormatting);
+                DebugUtils.WriteLine("SyntaxNode updated", DebugCategory.TextFormatting);
                 LineInfos.Clear();
                 MaxX = 0;
                 MaxY = 0;
@@ -2233,7 +2172,7 @@ namespace AnalysisControls
         }
     }
 
-    public class UpdateInfo 
+    public class UpdateInfo
     {
         public BitmapSource ImageSource { get; set; }
         public Rect Rect { get; set; }

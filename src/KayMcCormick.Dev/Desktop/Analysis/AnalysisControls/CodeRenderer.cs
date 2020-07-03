@@ -723,7 +723,7 @@ namespace AnalysisControls
         {
             if (!SourceUpdateInProgress)
             {
-                DebugUtils.WriteLine("Node updated");
+                DebugUtils.WriteLine("SyntaxNode updated");
                 UpdateTextSource();
                 UpdateFormattedText();
             }

@@ -1026,7 +1026,7 @@ DebugUtils.WriteLine(syntaxKind.ToString(), DebugCategory.TextFormatting);
 
             return;
 #if false
-            var t = Node.GetFirstToken(true, true, true, true);
+            var t = SyntaxNode.GetFirstToken(true, true, true, true);
             _starts.Push(new Tuple<TextSpan, SyntaxToken>(t.Span, t));
             var q = _starts.Where(z => z.Item1.End >= insertionPoint || z.Item1.Start >= insertionPoint);
             var syntaxToken = q.First().Item2;
@@ -1049,25 +1049,25 @@ DebugUtils.WriteLine(syntaxKind.ToString(), DebugCategory.TextFormatting);
                 }
 
 
-                Node = Node.ReplaceNode(p, n);
+                SyntaxNode = SyntaxNode.ReplaceNode(p, n);
             }
             catch (Exception ex)
             {
                 var tr = SyntaxFactory.ParseSyntaxTree(syntaxToken1.Text);
                 Tree = tr;
-                Node = tr.GetRoot();
+                SyntaxNode = tr.GetRoot();
                 _starts.Clear();
             }
-            // var newNode = Node.ReplaceNode(p, n);
-            // Node = newNode;
+            // var newNode = SyntaxNode.ReplaceNode(p, n);
+            // SyntaxNode = newNode;
 
-            var t2 = Node.GetFirstToken(true, true, true, true);
+            var t2 = SyntaxNode.GetFirstToken(true, true, true, true);
 
             // DebugUtils.WriteLine($"{t2.Text} [{t2.Span}]");
             _starts.Push(new Tuple<TextSpan, SyntaxToken>(t2.Span, t2));
 
             //
-            // Node.Repl
+            // SyntaxNode.Repl
             // if (chars.Count > InsertionPoint)
             // {
             //     var xx = chars[InsertionPoint];

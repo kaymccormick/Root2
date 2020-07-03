@@ -1688,7 +1688,7 @@ namespace ProjTests
             var compilation = AnalysisService.CreateCompilation("x", stree);
             d.Compilation = compilation;
             d.Model = compilation.GetSemanticModel(stree);
-            d.Node = stree.GetRoot();
+            d.SyntaxNode = stree.GetRoot();
 
 
             //CustomControl2 c = new CustomControl2() { Type = type2 };

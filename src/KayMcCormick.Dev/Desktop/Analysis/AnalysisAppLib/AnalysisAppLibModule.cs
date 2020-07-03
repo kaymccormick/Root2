@@ -137,6 +137,7 @@ namespace AnalysisAppLib
         /// <param name="builder"></param>
         public override void DoLoad([NotNull] ContainerBuilder builder)
         {
+            builder.RegisterType<AppDbContextHelper>().WithCallerMetadata();
             var mySubjectReplaySubject = new MySubjectReplaySubject();
             builder.RegisterInstance(mySubjectReplaySubject).AsSelf().WithCallerMetadata();
             builder.RegisterInstance(_regInfoReplaySubject).AsSelf().WithCallerMetadata();

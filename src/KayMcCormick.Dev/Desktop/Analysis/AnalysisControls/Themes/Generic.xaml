@@ -5533,7 +5533,7 @@
                                     Filename="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Filename,Mode=TwoWay}"
                                                            SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree,Mode=TwoWay}"
                                                            Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation,Mode=TwoWay}"
-                                                           Node="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Node,Mode=TwoWay}"
+                                                           SyntaxNode="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxNode,Mode=TwoWay}"
               
                                     x:Name="code"
  />
@@ -5725,7 +5725,7 @@
                                                          SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText}"
                                                          SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree}"
                                                          Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation}"
-                                                         Node="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Node}"
+                                                         SyntaxNode="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxNode}"
                                                          x:Name="CodeControl" />
                             <StackPanel Grid.Row="1" Grid.Column="2">
                                 <TextBlock Text="{Binding ElementName=CodeControl,Path=EnclosingSymbol}"/>

@@ -442,7 +442,7 @@ namespace AnalysisControls
                 throw new AppInvalidOperationException("Compilation does not contain syntax tree.");
 
             if (ReferenceEquals(node.SyntaxTree, syntaxTree) == false)
-                throw new AppInvalidOperationException("Node is not within syntax tree");
+                throw new AppInvalidOperationException("SyntaxNode is not within syntax tree");
             var store = new SyntaxNodeCustomTextSource(pixelsPerDip, manager)
             {
                 EmSize = emSize,

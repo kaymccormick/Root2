@@ -14,13 +14,18 @@ namespace AnalysisControls
     /// </summary>
     public abstract class CompilationControl : Control, IAppCustomControl
     {
-            public CSharpCompilation CSharpCompilation
+
+        static CompilationControl()
+        {
+            RoslynProperties.CompilationProperty.AddOwner(typeof(CompilationControl),
+                new FrameworkPropertyMetadata(default(Compilation)));
+        }
+        public static readonly DependencyProperty CSharpCompilationOptionsProperty = DependencyProperty.Register(
+            "CSharpCompilationOptions", typeof(CSharpCompilationOptions), typeof(CompilationControl), new PropertyMetadata(default(CSharpCompilationOptions)));
+        public CSharpCompilation CSharpCompilation
             {
                 get { return Compilation as CSharpCompilation; }
             }
-
-            public static readonly DependencyProperty CSharpCompilationOptionsProperty = DependencyProperty.Register(
-                "CSharpCompilationOptions", typeof(CSharpCompilationOptions), typeof(CompilationControl), new PropertyMetadata(default(CSharpCompilationOptions), OnCSharpCompilationOptionsChanged));
 
             public CSharpCompilationOptions CSharpCompilationOptions
             {
@@ -28,23 +33,11 @@ namespace AnalysisControls
                 set { SetValue(CSharpCompilationOptionsProperty, value); }
             }
 
-            private static void OnCSharpCompilationOptionsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-            {
-                ((CompilationControl) d).OnCSharpCompilationOptionsChanged((CSharpCompilationOptions) e.OldValue, (CSharpCompilationOptions) e.NewValue);
-            }
-
-
-
-            protected virtual void OnCSharpCompilationOptionsChanged(CSharpCompilationOptions oldValue, CSharpCompilationOptions newValue)
-            {
-            }
-
 
             /// <summary>
-        /// 
-        /// </summary>
-        public static readonly DependencyProperty CompilationProperty = DependencyProperty.Register(
-            "Compilation", typeof(Compilation), typeof(CompilationControl), new FrameworkPropertyMetadata(default(Compilation),  FrameworkPropertyMetadataOptions.None, PropertyChangedCallback));
+            /// 
+            /// </summary>
+            public static readonly DependencyProperty CompilationProperty = RoslynProperties.CompilationProperty;
 
             private static void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
             {

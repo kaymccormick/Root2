@@ -299,8 +299,12 @@ namespace AnalysisControls
                                             // JsonSerializerOptions
                                         // >()
                                 // );
-                                throw;
+                                 //throw;
                             }
+                            var m = new TypesViewModel(context.Resolve<JsonSerializerOptions>());
+                            m.BeginInit();
+                            m.EndInit();
+                            return m;
                         }
                     }
                 )

@@ -305,7 +305,7 @@ namespace AnalysisControls
                 EmSize = EmSize,
                 Compilation = Compilation,
                 Tree = SyntaxTree,
-                Node = Node,
+                Node = SyntaxNode,
                 Errors = Errors
             };
             source.Init();
@@ -418,9 +418,9 @@ namespace AnalysisControls
                 DebugUtils.WriteLine("Compilation does not contain syntax tree.");
             }
 
-            if (Node == null || SyntaxTree == null) return;
-            if (ReferenceEquals(Node.SyntaxTree, SyntaxTree) == false)
-                throw new AppInvalidOperationException("Node is not within syntax tree");
+            if (SyntaxNode == null || SyntaxTree == null) return;
+            if (ReferenceEquals(SyntaxNode.SyntaxTree, SyntaxTree) == false)
+                throw new AppInvalidOperationException("SyntaxNode is not within syntax tree");
             DebugUtils.WriteLine("Creating new " + nameof(SyntaxNodeCustomTextSource), DebugCategory.TextFormatting);
             TextSource = CreateAndInitTextSource(PixelsPerDip, TypefaceManager);
             _errorTextSource = Errors.Any() ? new ErrorsTextSource(PixelsPerDip, Errors, TypefaceManager) : null;
@@ -1410,12 +1410,11 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        protected override void OnNodeUpdated()
+        protected virtual void OnNodeUpdated()
         {
-            base.OnNodeUpdated();
             if (!ChangingText)
             {
-                DebugUtils.WriteLine("Node updated", DebugCategory.TextFormatting);
+                DebugUtils.WriteLine("SyntaxNode updated", DebugCategory.TextFormatting);
                 UpdateTextSource();
                 UpdateFormattedText();
             }

@@ -54,11 +54,6 @@ namespace AnalysisControls
     [TitleMetadata("Enhanced Code Control")]
     public class EnhancedCodeControl : SyntaxNodeControl, INotifyPropertyChanged
     {
-        /// <inheritdoc />
-        protected override void OnDocumentChanged(Document oldValue, Document newValue)
-        {
-
-        }
 
         public static readonly DependencyProperty FontsProperty = DependencyProperty.Register(
             "Fonts", typeof(IEnumerable), typeof(EnhancedCodeControl), new PropertyMetadata(default(IEnumerable), OnFontsChanged));
@@ -80,24 +75,6 @@ namespace AnalysisControls
         {
         }
 
-
-        /// <inheritdoc />
-        protected override void OnNodeUpdated()
-        {
-
-        }
-
-        /// <inheritdoc />
-        protected override void OnSyntaxTreeUpdated(SyntaxTree newValue)
-        {
-
-        }
-
-        /// <inheritdoc />
-        protected override void OnSourceTextChanged1(string newValue, string eOldValue)
-        {
-
-        }
 
         /// <inheritdoc />
         protected override void OnGotKeyboardFocus(KeyboardFocusChangedEventArgs e)

@@ -46,28 +46,11 @@ namespace AnalysisControls
     public class CodeDiagnostics : SyntaxNodeControl, INotifyPropertyChanged
     {
         /// <inheritdoc />
-        protected override void OnDocumentChanged(Document oldValue, Document newValue)
-        {
-            
-        }
 
         /// <inheritdoc />
-        protected override void OnNodeUpdated()
-        {
-            
-        }
 
         /// <inheritdoc />
-        protected override void OnSyntaxTreeUpdated(SyntaxTree newValue)
-        {
-            
-        }
-
         /// <inheritdoc />
-        protected override void OnSourceTextChanged1(string newValue, string eOldValue)
-        {
-            
-        }
 
         private ListView _regions;
         private ListView _lines;
