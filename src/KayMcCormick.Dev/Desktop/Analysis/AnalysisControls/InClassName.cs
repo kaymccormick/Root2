@@ -5,12 +5,12 @@ namespace AnalysisControls
 {
     public class InClassName
     {
-        public InClassName(FormattedTextControl3 formattedTextControl3, int lineNo, int offset, double y, double x,
+        public InClassName(RoslynCodeControl roslynCodeControl, int lineNo, int offset, double y, double x,
             LineInfo lineInfo, TextFormatter textFormatter, double paragraphWidth, FontRendering currentRendering,
             double pixelsPerDip, CustomTextSource4 customTextSource4, double maxY, double maxX, DrawingGroup d,
             DrawingContext dc)
         {
-            FormattedTextControl3 = formattedTextControl3;
+            RoslynCodeControl = roslynCodeControl;
             LineNo = lineNo;
             Offset = offset;
             Y = y;
@@ -28,7 +28,7 @@ namespace AnalysisControls
         }
 
 
-        public FormattedTextControl3 FormattedTextControl3 { get; private set; }
+        public RoslynCodeControl RoslynCodeControl { get; private set; }
         public int LineNo { get; private set; }
         public int Offset { get; private set; }
         public double Y { get; private set; }

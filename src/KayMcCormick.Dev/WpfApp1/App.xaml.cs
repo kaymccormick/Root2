@@ -18,7 +18,7 @@ namespace WpfApp1
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-FormattedTextControl3.StartSecondaryThread();
+RoslynCodeControl.StartSecondaryThread();
 // CustomConsole.ConsoleHandler(600);
             if (e.Args.Any())
             {

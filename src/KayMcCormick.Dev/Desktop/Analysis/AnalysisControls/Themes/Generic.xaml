@@ -5132,10 +5132,10 @@
         </Setter>
     </Style>
     <local:NegativeConverter x:Key="NegativeConverter" />
-    <Style TargetType="{x:Type local:FormattedTextControl3}">
+    <Style TargetType="{x:Type local:RoslynCodeControl}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:FormattedTextControl3}">
+                <ControlTemplate TargetType="{x:Type local:RoslynCodeControl}">
                     <Border Background="{TemplateBinding Background}"
                             DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
                             BorderBrush="{TemplateBinding BorderBrush}"
@@ -5719,7 +5719,7 @@
                                             <TextBlock FontFamily="{Binding}" Text="{Binding Path=FamilyNames[en-US]}"/>
                                         </DataTemplate></ComboBox.ItemTemplate></ComboBox>  
                             </StackPanel>
-                            <local:FormattedTextControl3 Grid.Row="1" Grid.Column="0"
+                            <local:RoslynCodeControl Grid.Row="1" Grid.Column="0"
                                                          Filename="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Filename,Mode=TwoWay}"
                                                          Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document}"
                                                          SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText}"

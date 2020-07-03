@@ -27,7 +27,7 @@ namespace AnalysisControlsCore
         {
             var doc = new CodeDocument();
             doc.Title = "Code";
-            // doc.CodeControl = new FormattedTextControl3()
+            // doc.CodeControl = new RoslynCodeControl()
             _host.AddDocument(doc);
             _contentSelector.SetActiveContent(doc);
             return Task.FromResult(AppCommandResult.Success);

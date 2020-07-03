@@ -1821,7 +1821,7 @@ namespace ProjTests
        [WpfFact]
         public void TestFormattedControl()
         {
-            ProjTestsHelper.TestSyntaxControl(new FormattedTextControl3());
+            ProjTestsHelper.TestSyntaxControl(new RoslynCodeControl());
         }
 
         [WpfFact]
@@ -2905,7 +2905,7 @@ namespace ProjTests
             {
                 Debug.WriteLine("<KM> " + args.Exception.ToString());
             };
-            FormattedTextControl3.StartSecondaryThread();
+            RoslynCodeControl.StartSecondaryThread();
             DebugUtils.WriteLine("Begin test");
             var start = DateTime.Now;
             var file =
@@ -2913,17 +2913,17 @@ namespace ProjTests
                 
             var code = File.ReadAllText(file);
             var x =ProjTestsHelper.SetupSyntaxParams(out var comp, code);
-            FormattedTextControl3 x1 = new FormattedTextControl3();
+            RoslynCodeControl x1 = new RoslynCodeControl();
             Window w = new Window();
             DateTime? renderStart = null;
-            w.AddHandler(FormattedTextControl3.RenderStartEvent, new RoutedEventHandler((sender, args) =>
+            w.AddHandler(RoslynCodeControl.RenderStartEvent, new RoutedEventHandler((sender, args) =>
             {
                 renderStart = DateTime.Now;
                 DebugUtils.WriteLine("Render start");
                 
 
             }));
-            w.AddHandler(FormattedTextControl3.RenderCompleteEvent, new RoutedEventHandler((sender, args) =>
+            w.AddHandler(RoslynCodeControl.RenderCompleteEvent, new RoutedEventHandler((sender, args) =>
             {
                 var span = DateTime.Now - renderStart.Value;
                 DebugUtils.WriteLine(span.ToString());

@@ -9,12 +9,12 @@ namespace AnalysisControls
 {
     public class CodePaginator : DynamicDocumentPaginator
     {
-        private readonly FormattedTextControl3 _codeControlCodeControl;
+        private readonly RoslynCodeControl _codeControlCodeControl;
         private int _pageCount=0;
         private readonly IDocumentPaginatorSource _source;
         private readonly bool _isPageCountValid = false;
 
-        public CodePaginator(FormattedTextControl3 codeControlCodeControl)
+        public CodePaginator(RoslynCodeControl codeControlCodeControl)
         {
             _codeControlCodeControl = codeControlCodeControl;
             _source = codeControlCodeControl;

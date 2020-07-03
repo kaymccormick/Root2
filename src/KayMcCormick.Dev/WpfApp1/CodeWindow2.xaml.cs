@@ -25,7 +25,7 @@ namespace WpfApp1
             CodeControl.Focus();
             Keyboard.Focus(CodeControl);
             //Loaded += OnLoaded;//));
-            AddHandler(FormattedTextControl3.RenderCompleteEvent, new RoutedEventHandler(OnLoaded));
+            AddHandler(RoslynCodeControl.RenderCompleteEvent, new RoutedEventHandler(OnLoaded));
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs args)

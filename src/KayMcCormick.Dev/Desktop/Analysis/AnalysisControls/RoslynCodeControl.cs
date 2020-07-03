@@ -39,17 +39,17 @@ namespace AnalysisControls
     /// 
     /// </summary>
 //    [TitleMetadata("Formatted Code Control")]
-    public class FormattedTextControl3 : SyntaxNodeControl, ILineDrawer, INotifyPropertyChanged,
+    public class RoslynCodeControl : SyntaxNodeControl, ILineDrawer, INotifyPropertyChanged,
         IDocumentPaginatorSource
     {
         public static readonly RoutedEvent RenderCompleteEvent = EventManager.RegisterRoutedEvent("RenderComplete",
-            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(FormattedTextControl3));
+            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(RoslynCodeControl));
 
         public static readonly RoutedEvent RenderStartEvent = EventManager.RegisterRoutedEvent("RenderStart",
-            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(FormattedTextControl3));
+            RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(RoslynCodeControl));
 
         public static readonly DependencyProperty InsertionPointProperty = DependencyProperty.Register(
-            "InsertionPoint", typeof(int), typeof(FormattedTextControl3),
+            "InsertionPoint", typeof(int), typeof(RoslynCodeControl),
             new PropertyMetadata(default(int), OnInsertionPointChanged));
 
         public int InsertionPoint
@@ -60,7 +60,7 @@ namespace AnalysisControls
 
         private static void OnInsertionPointChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((FormattedTextControl3) d).OnInsertionPointChanged((int) e.OldValue, (int) e.NewValue);
+            ((RoslynCodeControl) d).OnInsertionPointChanged((int) e.OldValue, (int) e.NewValue);
         }
 
         public ISymbol EnclosingSymbol
@@ -109,13 +109,13 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public static readonly DependencyProperty HoverOffsetProperty = DependencyProperty.Register(
-            "HoverOffset", typeof(int), typeof(FormattedTextControl3), new PropertyMetadata(default(int)));
+            "HoverOffset", typeof(int), typeof(RoslynCodeControl), new PropertyMetadata(default(int)));
 
         /// <summary>
         /// 
         /// </summary>
         public static readonly DependencyProperty HoverRegionInfoProperty = DependencyProperty.Register(
-            "HoverRegionInfo", typeof(RegionInfo), typeof(FormattedTextControl3),
+            "HoverRegionInfo", typeof(RegionInfo), typeof(RoslynCodeControl),
             new PropertyMetadata(default(RegionInfo)));
 
         /// <summary>
@@ -146,14 +146,14 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public static readonly DependencyProperty HoverTokenProperty = DependencyProperty.Register(
-            "HoverToken", typeof(SyntaxToken?), typeof(FormattedTextControl3),
+            "HoverToken", typeof(SyntaxToken?), typeof(RoslynCodeControl),
             new PropertyMetadata(default(SyntaxToken?)));
 
         /// <summary>
         /// 
         /// </summary>
         public static readonly DependencyProperty HoverSymbolProperty = DependencyProperty.Register(
-            "HoverSymbol", typeof(ISymbol), typeof(FormattedTextControl3), new PropertyMetadata(default(ISymbol)));
+            "HoverSymbol", typeof(ISymbol), typeof(RoslynCodeControl), new PropertyMetadata(default(ISymbol)));
 
         /// <summary>
         /// 
@@ -177,7 +177,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public static readonly DependencyProperty HoverSyntaxNodeProperty = DependencyProperty.Register(
-            "HoverSyntaxNode", typeof(SyntaxNode), typeof(FormattedTextControl3),
+            "HoverSyntaxNode", typeof(SyntaxNode), typeof(RoslynCodeControl),
             new PropertyMetadata(default(SyntaxNode), new PropertyChangedCallback(OnHoverSyntaxNodeUpdated)));
 
         private static void OnHoverSyntaxNodeUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -198,7 +198,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public static readonly DependencyProperty HoverColumnProperty = DependencyProperty.Register(
-            "HoverColumn", typeof(int), typeof(FormattedTextControl3), new PropertyMetadata(default(int)));
+            "HoverColumn", typeof(int), typeof(RoslynCodeControl), new PropertyMetadata(default(int)));
 
         /// <summary>
         /// 
@@ -213,7 +213,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public static readonly DependencyProperty HoverRowProperty = DependencyProperty.Register(
-            "HoverRow", typeof(int), typeof(FormattedTextControl3), new PropertyMetadata(default(int)));
+            "HoverRow", typeof(int), typeof(RoslynCodeControl), new PropertyMetadata(default(int)));
 
         /// <summary>
         /// 
@@ -284,7 +284,7 @@ namespace AnalysisControls
         }
 
         public static readonly DependencyProperty TextSourceTextProperty = DependencyProperty.Register(
-            "TextSourceText", typeof(string), typeof(FormattedTextControl3),
+            "TextSourceText", typeof(string), typeof(RoslynCodeControl),
             new PropertyMetadata(default(string), OnTextSourceTextChanged));
 
         public string TextSourceText
@@ -295,7 +295,7 @@ namespace AnalysisControls
 
         private static void OnTextSourceTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((FormattedTextControl3) d).OnTextSourceTextChanged((string) e.OldValue, (string) e.NewValue);
+            ((RoslynCodeControl) d).OnTextSourceTextChanged((string) e.OldValue, (string) e.NewValue);
         }
 
 
@@ -367,37 +367,37 @@ namespace AnalysisControls
         }
 #endif
 
-        static FormattedTextControl3()
+        static RoslynCodeControl()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(FormattedTextControl3),
-                new FrameworkPropertyMetadata(typeof(FormattedTextControl3)));
-            SyntaxTreeProperty.OverrideMetadata(typeof(FormattedTextControl3), new FrameworkPropertyMetadata(default(SyntaxTree), FrameworkPropertyMetadataOptions.None, OnSyntaxTreeChanged_));
-            SyntaxNodeProperty.OverrideMetadata(typeof(FormattedTextControl3), new PropertyMetadata(default(SyntaxNode), OnNodeUpdated));
-            // TextElement.FontFamilyProperty.OverrideMetadata(typeof(FormattedTextControl3), new PropertyMetadata(null, PropertyChangedCallback));
-            // TextElement.FontSizeProperty.OverrideMetadata(typeof(FormattedTextControl3), new PropertyMetadata(16.0, PropertyChangedCallback2));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(RoslynCodeControl),
+                new FrameworkPropertyMetadata(typeof(RoslynCodeControl)));
+            SyntaxTreeProperty.OverrideMetadata(typeof(RoslynCodeControl), new FrameworkPropertyMetadata(default(SyntaxTree), FrameworkPropertyMetadataOptions.None, OnSyntaxTreeChanged_));
+            SyntaxNodeProperty.OverrideMetadata(typeof(RoslynCodeControl), new PropertyMetadata(default(SyntaxNode), OnNodeUpdated));
+            // TextElement.FontFamilyProperty.OverrideMetadata(typeof(RoslynCodeControl), new PropertyMetadata(null, PropertyChangedCallback));
+            // TextElement.FontSizeProperty.OverrideMetadata(typeof(RoslynCodeControl), new PropertyMetadata(16.0, PropertyChangedCallback2));
         }
 
         private static void OnSyntaxTreeChanged_(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var ss = (FormattedTextControl3)d;
+            var ss = (RoslynCodeControl)d;
             ss.OnSyntaxTreeUpdated((SyntaxTree)e.NewValue);
         }
 
         private static async void PropertyChangedCallback2(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             DebugUtils.WriteLine(e.NewValue.ToString());
-            //    await ((FormattedTextControl3)d).UpdateTextSource();
+            //    await ((RoslynCodeControl)d).UpdateTextSource();
         }
 
         private static async void PropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            //   await ((FormattedTextControl3) d).UpdateTextSource();
+            //   await ((RoslynCodeControl) d).UpdateTextSource();
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public FormattedTextControl3()
+        public RoslynCodeControl()
 
         {
             _channel = Channel.CreateUnbounded<UpdateInfo>(new UnboundedChannelOptions()
@@ -438,10 +438,10 @@ namespace AnalysisControls
             dc.Close();
 
 
-            // if (w >= formattedTextControl3.MaxX) formattedTextControl3.MaxX = w;
+            // if (w >= roslynCodeControl.MaxX) roslynCodeControl.MaxX = w;
 
-            // var rectangleWidth = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
-            // formattedTextControl3._rectangle.Width = rectangleWidth;
+            // var rectangleWidth = roslynCodeControl.MaxX + roslynCodeControl._xOffset;
+            // roslynCodeControl._rectangle.Width = rectangleWidth;
 
             _rectangle.Height = ui.Rect.Bottom;
             _myDrawingBrush.Viewbox = new Rect(0, 0, _rectangle.ActualWidth, ui.Rect.Bottom);
@@ -459,7 +459,7 @@ namespace AnalysisControls
                 });
         }
 
-        // public static RoutedEvent ErrorEvent = EventManager.RegisterRoutedEvent(typeof(FormattedTextControl3))
+        // public static RoutedEvent ErrorEvent = EventManager.RegisterRoutedEvent(typeof(RoslynCodeControl))
 
         private async void OnEnterLineBreak(object sender, ExecutedRoutedEventArgs e)
         {
@@ -562,7 +562,7 @@ namespace AnalysisControls
             // }
 
             DebugUtils.WriteLine(OutputWidth.ToString());
-            CodeControl = (FormattedTextControl3) GetTemplateChild("CodeControl");
+            CodeControl = (RoslynCodeControl) GetTemplateChild("CodeControl");
             _rectangle = (Rectangle) GetTemplateChild("Rectangle");
             RegionDG = (DrawingGroup) GetTemplateChild("Region");
             var dpd = DependencyPropertyDescriptor.FromProperty(TextElement.FontSizeProperty, typeof(Rectangle));
@@ -637,7 +637,7 @@ namespace AnalysisControls
         }
 
 
-        public FormattedTextControl3 CodeControl { get; set; }
+        public RoslynCodeControl CodeControl { get; set; }
 
 
         /// <summary>
@@ -885,7 +885,7 @@ namespace AnalysisControls
 
         private static LineInfo RedrawLine(InClassName inClassName, out LineContext lineCtx)
         {
-            //if (formattedTextControl3.LineInfos.Count == 0) formattedTextControl3.LineInfos.Add(null);
+            //if (roslynCodeControl.LineInfos.Count == 0) roslynCodeControl.LineInfos.Add(null);
 
             LineInfo outLineInfo;
             using (var myTextLine = inClassName.TextFormatter.FormatLine(inClassName.CustomTextSource4,
@@ -907,42 +907,42 @@ namespace AnalysisControls
                 var o = lineCtx.LineOriginPoint;
                 inClassName.Dc.Dispatcher.Invoke(() => { myTextLine.Draw(inClassName.Dc, o, InvertAxes.None); });
                 var regions = new List<RegionInfo>();
-                FormattingHelper.HandleTextLine(regions, ref lineCtx, out var lineI, inClassName.FormattedTextControl3);
+                FormattingHelper.HandleTextLine(regions, ref lineCtx, out var lineI, inClassName.RoslynCodeControl);
 
-                inClassName.FormattedTextControl3.Dispatcher.Invoke(() =>
+                inClassName.RoslynCodeControl.Dispatcher.Invoke(() =>
                 {
-                    if (inClassName.FormattedTextControl3.LineInfos.Count <= inClassName.LineNo)
-                        inClassName.FormattedTextControl3.LineInfos.Add(lineI);
+                    if (inClassName.RoslynCodeControl.LineInfos.Count <= inClassName.LineNo)
+                        inClassName.RoslynCodeControl.LineInfos.Add(lineI);
                     else
-                        inClassName.FormattedTextControl3.LineInfos[inClassName.LineNo] = lineI;
+                        inClassName.RoslynCodeControl.LineInfos[inClassName.LineNo] = lineI;
                 });
                 outLineInfo = lineI;
             }
 
             DebugUtils.WriteLine(
-                $"{inClassName.FormattedTextControl3._rect.Width}x{inClassName.FormattedTextControl3._rect.Height}",
+                $"{inClassName.RoslynCodeControl._rect.Width}x{inClassName.RoslynCodeControl._rect.Height}",
                 DebugCategory.TextFormatting);
 
             var lineCtxMaxX = lineCtx.MaxX;
             var lineCtxMaxY = lineCtx.MaxY;
-            inClassName.FormattedTextControl3.Dispatcher.Invoke(() =>
+            inClassName.RoslynCodeControl.Dispatcher.Invoke(() =>
             {
                 inClassName.Dc.Close();
-                if (inClassName.FormattedTextControl3._textDest.Children.Count <= inClassName.LineNo)
-                    inClassName.FormattedTextControl3._textDest.Children.Add(inClassName.D);
+                if (inClassName.RoslynCodeControl._textDest.Children.Count <= inClassName.LineNo)
+                    inClassName.RoslynCodeControl._textDest.Children.Add(inClassName.D);
                 else
-                    inClassName.FormattedTextControl3._textDest.Children[inClassName.LineNo] = inClassName.D;
+                    inClassName.RoslynCodeControl._textDest.Children[inClassName.LineNo] = inClassName.D;
 
 
-                inClassName.FormattedTextControl3.MaxX = lineCtxMaxX;
+                inClassName.RoslynCodeControl.MaxX = lineCtxMaxX;
 
-                inClassName.FormattedTextControl3.MaxY = lineCtxMaxY;
-                inClassName.FormattedTextControl3._rectangle.Width = lineCtxMaxX;
-                inClassName.FormattedTextControl3._rectangle.Height = lineCtxMaxY;
-                inClassName.FormattedTextControl3._rect2.Width = lineCtxMaxX;
-                inClassName.FormattedTextControl3._rect2.Height = lineCtxMaxY;
-                // inClassName.FormattedTextControl3.UpdateCaretPosition();
-//                inClassName.FormattedTextControl3.InvalidateVisual();
+                inClassName.RoslynCodeControl.MaxY = lineCtxMaxY;
+                inClassName.RoslynCodeControl._rectangle.Width = lineCtxMaxX;
+                inClassName.RoslynCodeControl._rectangle.Height = lineCtxMaxY;
+                inClassName.RoslynCodeControl._rect2.Width = lineCtxMaxX;
+                inClassName.RoslynCodeControl._rect2.Height = lineCtxMaxY;
+                // inClassName.RoslynCodeControl.UpdateCaretPosition();
+//                inClassName.RoslynCodeControl.InvalidateVisual();
             });
 
             return outLineInfo;
@@ -1182,7 +1182,7 @@ namespace AnalysisControls
             }
         }
 
-        private static CustomTextSource4 InnerUpdate(FormattedTextControl3 formattedTextControl3, int textStorePosition,
+        private static CustomTextSource4 InnerUpdate(RoslynCodeControl roslynCodeControl, int textStorePosition,
             TextLineBreak prev, LineInfo prevLine, int line, Point linePosition,
             CharacterCell prevCell, RegionInfo prevRegion,
             TextFormatter textFormatter, double paragraphWidth, double pixelsPerDip,
@@ -1191,7 +1191,7 @@ namespace AnalysisControls
         {
             var s1 = new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher);
             if (s1 == null) throw new InvalidOperationException("no synchh context");
-            var tf = formattedTextControl3.CreateTypeface(new FontFamily(faceName), FontStyles.Normal,
+            var tf = roslynCodeControl.CreateTypeface(new FontFamily(faceName), FontStyles.Normal,
                 FontStretches.Normal,
                 FontWeights.Normal);
 
@@ -1201,7 +1201,7 @@ namespace AnalysisControls
                 Brushes.Black,
                 tf);
             var customTextSource4 =
-                formattedTextControl3.CreateAndInitTextSource(pixelsPerDip, tf, tree, node0, compilation, s1, emSize0);
+                roslynCodeControl.CreateAndInitTextSource(pixelsPerDip, tf, tree, node0, compilation, s1, emSize0);
             var chars = new List<List<char>>();
             var startTime = DateTime.Now;
             var myGroup = new DrawingGroup();
@@ -1436,7 +1436,7 @@ namespace AnalysisControls
                                 foreach (var ch in tuple.Characters) ch.Region = tuple;
                                 lineRegions.Add(tuple);
 
-                                //formattedTextControl3.GeoTuples.Add(Tuple.Create(xx, tuple));
+                                //roslynCodeControl.GeoTuples.Add(Tuple.Create(xx, tuple));
 
                                 if (prevRegion != null) prevRegion.NextRegion = tuple;
                                 prevRegion = tuple;
@@ -1464,24 +1464,24 @@ namespace AnalysisControls
                     myTextLine.Draw(myDc, linePosition, InvertAxes.None);
                     linePosition.Y += myTextLine.Height;
                     if (false)
-                        formattedTextControl3.Dispatcher.Invoke(() =>
+                        roslynCodeControl.Dispatcher.Invoke(() =>
                         {
-                            if (w >= formattedTextControl3.MaxX) formattedTextControl3.MaxX = w;
-                            var dc = formattedTextControl3._textDest.Append();
+                            if (w >= roslynCodeControl.MaxX) roslynCodeControl.MaxX = w;
+                            var dc = roslynCodeControl._textDest.Append();
                             myTextLine.Draw(dc, linePosition, InvertAxes.None);
                             dc.Close();
 
-                            // formattedTextControl3.Translate.X = -1 * formattedTextControl3._textDest.Bounds.Left;
+                            // roslynCodeControl.Translate.X = -1 * roslynCodeControl._textDest.Bounds.Left;
 
-                            var rectangleWidth = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
-                            formattedTextControl3._rectangle.Width = rectangleWidth;
+                            var rectangleWidth = roslynCodeControl.MaxX + roslynCodeControl._xOffset;
+                            roslynCodeControl._rectangle.Width = rectangleWidth;
                             var rectangleHeight =
-                                Math.Min(formattedTextControl3._pos.Y, formattedTextControl3.ActualHeight);
-                            formattedTextControl3._rectangle.Height = rectangleHeight;
-                            formattedTextControl3._myDrawingBrush.Viewbox =
+                                Math.Min(roslynCodeControl._pos.Y, roslynCodeControl.ActualHeight);
+                            roslynCodeControl._rectangle.Height = rectangleHeight;
+                            roslynCodeControl._myDrawingBrush.Viewbox =
                                 new Rect(0, 0, rectangleWidth, rectangleHeight);
-                            formattedTextControl3._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
-                            formattedTextControl3.LineInfos.Add(lineInfo);
+                            roslynCodeControl._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
+                            roslynCodeControl.LineInfos.Add(lineInfo);
                         });
                     // ReSharper disable once UnusedVariable
 
@@ -1499,7 +1499,7 @@ namespace AnalysisControls
                 }
 
 #if false
-                formattedTextControl3.Dispatcher.Invoke(() => { formattedTextControl3._pos = linePosition; });
+                roslynCodeControl.Dispatcher.Invoke(() => { roslynCodeControl._pos = linePosition; });
 #endif
 
                 if (line > 0 && line % 100 == 0)
@@ -1536,22 +1536,22 @@ namespace AnalysisControls
                     var curUi = new UpdateInfo() {ImageSource = out1, Rect = rect};
                     channelWriter.WriteAsync(curUi);
 #if false
-                    formattedTextControl3.Dispatcher.Invoke(() =>
+                    roslynCodeControl.Dispatcher.Invoke(() =>
                     {
-                        var dc = formattedTextControl3._textDest.Append();
+                        var dc = roslynCodeControl._textDest.Append();
                         dc.DrawImage(out1, rect);
                         dc.Close();
 
 
-                        if (w >= formattedTextControl3.MaxX) formattedTextControl3.MaxX = w;
+                        if (w >= roslynCodeControl.MaxX) roslynCodeControl.MaxX = w;
 
-                        var rectangleWidth = formattedTextControl3.MaxX + formattedTextControl3._xOffset;
-                        // formattedTextControl3._rectangle.Width = rectangleWidth;
+                        var rectangleWidth = roslynCodeControl.MaxX + roslynCodeControl._xOffset;
+                        // roslynCodeControl._rectangle.Width = rectangleWidth;
 
-                        formattedTextControl3._rectangle.Height = y;
-                        formattedTextControl3._myDrawingBrush.Viewbox =
+                        roslynCodeControl._rectangle.Height = y;
+                        roslynCodeControl._myDrawingBrush.Viewbox =
                             new Rect(0, 0, paragraphWidth, y);
-                        formattedTextControl3._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
+                        roslynCodeControl._myDrawingBrush.ViewboxUnits = BrushMappingMode.Absolute;
                     });
 #endif
                     var span = DateTime.Now - startTime;
@@ -2081,7 +2081,7 @@ namespace AnalysisControls
 
         private static void OnNodeUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var ss = (FormattedTextControl3)d;
+            var ss = (RoslynCodeControl)d;
             ss.OnNodeUpdated();
         }
 

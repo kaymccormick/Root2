@@ -758,9 +758,9 @@ namespace AnalysisControls.ViewModel
             return new CodeDiagnostics();
         }
 
-        private static FormattedTextControl3 CreateFormattedTextControl()
+        private static RoslynCodeControl CreateFormattedTextControl()
         {
-            var c = new FormattedTextControl3();
+            var c = new RoslynCodeControl();
             return c;
         }
 

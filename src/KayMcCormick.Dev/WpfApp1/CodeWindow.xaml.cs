@@ -97,10 +97,10 @@ namespace WpfApp1
 
         public CodeWindow()
         {
-            FormattedTextControl3.StartSecondaryThread();
+            RoslynCodeControl.StartSecondaryThread();
             InitializeComponent();
-            AddHandler(FormattedTextControl3.RenderStartEvent, new RoutedEventHandler(Target1));
-            AddHandler(FormattedTextControl3.RenderCompleteEvent, new RoutedEventHandler(Target));
+            AddHandler(RoslynCodeControl.RenderStartEvent, new RoutedEventHandler(Target1));
+            AddHandler(RoslynCodeControl.RenderCompleteEvent, new RoutedEventHandler(Target));
             LocalPrintServer s = new LocalPrintServer();
             _queue = s.DefaultPrintQueue;
             

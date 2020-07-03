@@ -8,6 +8,6 @@
         mc:Ignorable="d"
         Title="CodeWindow2" Height="450" Width="800">
     <Grid>
-        <analysisControls:FormattedTextControl3 FontSize="32"  SourceText=""  x:Name="CodeControl"/>
+        <analysisControls:RoslynCodeControl FontSize="32"  SourceText=""  x:Name="CodeControl"/>
     </Grid>
 </Window>

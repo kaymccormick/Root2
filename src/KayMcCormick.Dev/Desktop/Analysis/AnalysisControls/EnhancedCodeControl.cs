@@ -125,7 +125,7 @@ namespace AnalysisControls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            CodeControl = (FormattedTextControl3) GetTemplateChild("CodeControl");
+            CodeControl = (RoslynCodeControl) GetTemplateChild("CodeControl");
             FontSizeCombo = (ComboBox)GetTemplateChild("FontSizeCombo");
             FontCombo = (ComboBox)GetTemplateChild("FontCombo");
 
@@ -164,25 +164,25 @@ namespace AnalysisControls
         }
 
         public static readonly DependencyProperty CodeControlProperty = DependencyProperty.Register(
-            "CodeControl", typeof(FormattedTextControl3), typeof(EnhancedCodeControl), new PropertyMetadata(default(FormattedTextControl3), OnCodeControlChanged));
+            "CodeControl", typeof(RoslynCodeControl), typeof(EnhancedCodeControl), new PropertyMetadata(default(RoslynCodeControl), OnCodeControlChanged));
 
         private ComboBox _fontCombo;
         private ComboBox _fontSizeCombo;
 
-        public FormattedTextControl3 CodeControl
+        public RoslynCodeControl CodeControl
         {
-            get { return (FormattedTextControl3) GetValue(CodeControlProperty); }
+            get { return (RoslynCodeControl) GetValue(CodeControlProperty); }
             set { SetValue(CodeControlProperty, value); }
         }
 
         private static void OnCodeControlChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            ((EnhancedCodeControl) d).OnCodeControlChanged((FormattedTextControl3) e.OldValue, (FormattedTextControl3) e.NewValue);
+            ((EnhancedCodeControl) d).OnCodeControlChanged((RoslynCodeControl) e.OldValue, (RoslynCodeControl) e.NewValue);
         }
 
 
 
-        protected virtual void OnCodeControlChanged(FormattedTextControl3 oldValue, FormattedTextControl3 newValue)
+        protected virtual void OnCodeControlChanged(RoslynCodeControl oldValue, RoslynCodeControl newValue)
         {
         }
 
