@@ -23,7 +23,8 @@
     xmlns:lifetime="clr-space:Autofac.Core.Lifetime;assembly=Autofac"
     xmlns:reg="clr-namespace:Autofac.Core.Registration;assembly=Autofac"
     xmlns:reflection1="clr-namespace:Autofac.Core.Activators.Reflection;assembly=Autofac"
-    xmlns:lifetime1="clr-namespace:Autofac.Core.Lifetime;assembly=Autofac">
+    xmlns:lifetime1="clr-namespace:Autofac.Core.Lifetime;assembly=Autofac"
+    xmlns:roslynCodeControls="clr-namespace:RoslynCodeControls;assembly=RoslynCodeControls">
     <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
     <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
     <Color x:Key="ControlMouseOverColor">#FF3843C4</Color>
@@ -5055,197 +5056,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type local:FormattedTextControl}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:FormattedTextControl}">
-                    <Border Background="{TemplateBinding Background}"
-                            DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="Grid">
-                            <Grid.Resources>
-                                <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter" />
-                                <converters:SyntaxTokenConverter x:Key="SyntaxTokenConverter" />
-                                <converters:SyntaxTriviaConverter x:Key="SyntaxTriviaConverter" />
-                                <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
-                                <DataTemplate DataType="{x:Type local:CodeToolTipContent}">
-                                    <StackPanel Orientation="Vertical">
-                                        <ContentControl Content="{Binding SyntaxNode}" />
-                                        <ContentControl Content="{Binding Symbol}" />
-                                    </StackPanel>
-                                </DataTemplate>
-
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Margin" Value="10" />
-                                </Style>
-                            </Grid.Resources>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <ScrollViewer VerticalAlignment="Stretch" x:Name="ScrollViewer"
-                                          HorizontalContentAlignment="Left"
-                                          VerticalContentAlignment="Top">
-
-                                <Grid x:Name="InnerGrid">
-                                    <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left"
-                                               Stroke="Aqua"
-                                               TextElement.FontSize="12">
-                                        <Rectangle.Fill>
-                                            <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top"
-                                                          TileMode="None"
-                                                          Stretch="Uniform">
-                                                <DrawingBrush.Drawing>
-                                                    <DrawingGroup x:Name="TextDest" />
-                                                </DrawingBrush.Drawing>
-                                            </DrawingBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                    <Rectangle x:Name="Rect2" Panel.ZIndex="100" VerticalAlignment="Top"
-                                               HorizontalAlignment="Left">
-                                        <Rectangle.Fill>
-                                            <DrawingBrush x:Name="DrawingBrush2" AlignmentX="Left" AlignmentY="Top"
-                                                          TileMode="None"
-                                                          Stretch="Uniform">
-                                                <DrawingBrush.Drawing>
-                                                    <DrawingGroup x:Name="DG2" >
-                                                        <DrawingGroup x:Name="Region"/>
-                                                    </DrawingGroup>
-                                                </DrawingBrush.Drawing>
-                                            </DrawingBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                    <Canvas x:Name="Canvas" Panel.ZIndex="101" VerticalAlignment="Stretch"
-                                            HorizontalAlignment="Stretch" />
-
-                                </Grid>
-
-                            </ScrollViewer>
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
     <local:NegativeConverter x:Key="NegativeConverter" />
-    <Style TargetType="{x:Type local:RoslynCodeControl}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:RoslynCodeControl}">
-                    <Border Background="{TemplateBinding Background}"
-                            DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="Grid">
-                            <Grid.Resources>
-                                <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter" />
-                                <converters:SyntaxTokenConverter x:Key="SyntaxTokenConverter" />
-                                <converters:SyntaxTriviaConverter x:Key="SyntaxTriviaConverter" />
-                                <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
-                                <DataTemplate DataType="{x:Type local:CodeToolTipContent}">
-                                    <StackPanel Orientation="Vertical">
-                                        <ContentControl Content="{Binding SyntaxNode}" />
-                                        <ContentControl Content="{Binding Symbol}" />
-                                    </StackPanel>
-                                </DataTemplate>
-
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Margin" Value="10" />
-                                </Style>
-                            </Grid.Resources>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <ScrollViewer VerticalAlignment="Stretch" x:Name="ScrollViewer"
-                                          HorizontalContentAlignment="Left"
-                                          VerticalContentAlignment="Top" Focusable="True">
-
-                                <Grid x:Name="InnerGrid">
-                                    <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left"
-                                               TextElement.FontSize="12" Stroke="Aquamarine">
-                                        <Rectangle.Fill>
-                                            <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top"
-                                                          TileMode="None"
-                                                          Stretch="None">
-                                                <DrawingBrush.Transform>
-                                                    <TransformGroup>
-                                                        <TranslateTransform x:Name="Translate"/>
-
-                                                    </TransformGroup>
-                                                </DrawingBrush.Transform>
-                                                <DrawingBrush.Drawing>
-                                                    <DrawingGroup x:Name="TextDest">
-						                                
-						    </DrawingGroup>
-                                                </DrawingBrush.Drawing>
-                                            </DrawingBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                    <Rectangle x:Name="Rect2" Panel.ZIndex="100" VerticalAlignment="Top" Width="{Binding ElementName=Rectangle,Path=ActualWidth}" Height="{Binding ElementName=Rectangle,Path=ActualHeight}"
-                                               HorizontalAlignment="Left" IsHitTestVisible="False">
-                                        <Rectangle.Fill>
-                                            <DrawingBrush x:Name="DrawingBrush2" AlignmentX="Left" AlignmentY="Top"  Viewbox="{Binding ElementName=TextDest,Path=Bounds}" ViewboxUnits="Absolute"
-                                                          TileMode="None"  Viewport="{Binding ElementName=TextDest,Path=Bounds}" ViewportUnits="Absolute"
-                                            Stretch="None">
-                                                <DrawingBrush.Transform>
-                                                    <TranslateTransform x:Name="DG2Transform" />
-                                                </DrawingBrush.Transform>
-                                                <DrawingBrush.Drawing>
-                                                    <DrawingGroup x:Name="DG2">
-                                                        <GeometryDrawing>
-                                                            <GeometryDrawing.Pen>
-                                                                <Pen Brush="Red" Thickness="0"/>
-                                                            </GeometryDrawing.Pen>
-                                                            <GeometryDrawing.Geometry>
-                                                            <RectangleGeometry Rect="{Binding RelativeSource={RelativeSource TemplatedParent},Path=HoverRegionInfo.BoundingRect}"/>
-                                                            </GeometryDrawing.Geometry>
-                                                        </GeometryDrawing>
-                                                       
-
-                                                    </DrawingGroup>
-                                                </DrawingBrush.Drawing>
-                                            </DrawingBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                    <Canvas x:Name="Canvas" Panel.ZIndex="101" VerticalAlignment="Stretch"
-                                            HorizontalAlignment="Stretch" />
-
-                                </Grid>
-
-                            </ScrollViewer>
-                            <Rectangle x:Name="Rect3" Panel.ZIndex="120" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsHitTestVisible="False">
-                                <Rectangle.Fill>
-                                    <DrawingBrush AlignmentX="Left" AlignmentY="Top" TileMode="None" Stretch="None" >
-                                        <DrawingBrush.Drawing>
-                                            <DrawingGroup x:Name="DG3">
-                                                <DrawingGroup>
-                                                    <GeometryDrawing>
-                                                        <GeometryDrawing.Pen>
-<Pen Brush="Green" Thickness="3"/>
-                                                        </GeometryDrawing.Pen>
-                                                        <GeometryDrawing.Geometry><RectangleGeometry Rect="{Binding RelativeSource={RelativeSource TemplatedParent},Path=HoverRegionInfo.BoundingRect}"></RectangleGeometry></GeometryDrawing.Geometry>
-                                                    </GeometryDrawing>
-                                                </DrawingGroup>
-                                                </DrawingGroup>
-                                        </DrawingBrush.Drawing>
-                                    </DrawingBrush>
-                                </Rectangle.Fill>
-                                </Rectangle>
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
 
     <Style TargetType="{x:Type local:ElementTextFormatterControl}">
         <Setter Property="Template">
@@ -5398,54 +5209,6 @@
                                         </Rectangle.Fill>
                                     </Rectangle>
                                 </Grid>
-                            </ScrollViewer>
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style TargetType="{x:Type local:CodeControl2}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:FormattedTextControl}">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="Grid">
-                            <Grid.Resources>
-                                <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter" />
-                                <converters:SyntaxTokenConverter x:Key="SyntaxTokenConverter" />
-                                <converters:SyntaxTriviaConverter x:Key="SyntaxTriviaConverter" />
-                                <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Margin" Value="10" />
-                                </Style>
-                            </Grid.Resources>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <ScrollViewer VerticalAlignment="Stretch" x:Name="ScrollViewer"
-                                          HorizontalContentAlignment="Left"
-                                          VerticalContentAlignment="Top">
-                                <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left"
-                                           Stroke="Aqua"
-                                           TextElement.FontSize="12">
-                                    <Rectangle.Fill>
-                                        <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top"
-                                                      TileMode="None"
-                                                      Stretch="Uniform">
-                                            <DrawingBrush.Drawing>
-                                                <DrawingGroup x:Name="TextDest" />
-                                            </DrawingBrush.Drawing>
-                                        </DrawingBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
                             </ScrollViewer>
                         </Grid>
                     </Border>
@@ -5719,7 +5482,7 @@
                                             <TextBlock FontFamily="{Binding}" Text="{Binding Path=FamilyNames[en-US]}"/>
                                         </DataTemplate></ComboBox.ItemTemplate></ComboBox>  
                             </StackPanel>
-                            <local:RoslynCodeControl Grid.Row="1" Grid.Column="0"
+                            <roslynCodeControls:RoslynCodeControl Grid.Row="1" Grid.Column="0"
                                                          Filename="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Filename,Mode=TwoWay}"
                                                          Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document}"
                                                          SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText}"
@@ -5862,32 +5625,6 @@
     </Style>
 
 
-    <Style TargetType="{x:Type local:SemanticControl1}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:SemanticControl1}">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-                        <Border.Resources>
-                            <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
-                        </Border.Resources>
-
-
-                        <TreeView x:Name="TreeView">
-                            <TreeView.ItemTemplate>
-                                <HierarchicalDataTemplate DataType="{x:Type codeAnalysis:INamespaceOrTypeSymbol}"
-                                                          ItemsSource="{Binding Converter={StaticResource SymbolInfoConverter},ConverterParameter=Members}">
-                                    <local:SymbolTextControl DisplaySymbol="{Binding}" />
-                                </HierarchicalDataTemplate>
-                            </TreeView.ItemTemplate>
-                        </TreeView>
-
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 
     <Style TargetType="{x:Type local:AssembliesControl}">
         <Setter Property="Template">

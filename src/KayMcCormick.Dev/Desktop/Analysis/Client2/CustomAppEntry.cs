@@ -14,6 +14,7 @@ using KayMcCormick.Dev;
 using KayMcCormick.Dev.Logging;
 using KayMcCormick.Lib.Wpf;
 using NLog;
+using RoslynCodeControls;
 using Terminal1;
 using WpfTerminalControlLib;
 using MyConsoleWriter = AnalysisControls.MyConsoleWriter;

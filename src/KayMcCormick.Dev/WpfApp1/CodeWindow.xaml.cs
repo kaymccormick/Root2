@@ -23,6 +23,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.MSBuild;
+using RoslynCodeControls;
 
 namespace WpfApp1
 {
@@ -227,7 +228,7 @@ namespace WpfApp1
             var codeControlCodeControl = Code.CodeControl.CodeControl;
             
 
-            d.PrintDocument(codeControlCodeControl.DocumentPaginator, "test");
+            // d.PrintDocument(codeControlCodeControl.DocumentPaginator, "test");
             var p = VisualTreeHelper.GetParent(codeControlCodeControl);
             if (p is Grid g)
             {

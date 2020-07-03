@@ -99,20 +99,32 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using NLog;
 using RibbonLib.Model;
+using RoslynCodeControls;
 using Xunit;
 using Xunit.Abstractions;
 using static AnalysisControls.TypeDescriptors.UiElementTypeConverter;
 using AssembliesControl = AnalysisControls.AssembliesControl;
+using BasicTextRunProperties = AnalysisControls.BasicTextRunProperties;
 using Binding = System.Windows.Data.Binding;
 using Brushes = System.Windows.Media.Brushes;
 using Button = System.Windows.Controls.Button;
 using ColorConverter = System.Windows.Media.ColorConverter;
+using CompilationError = AnalysisControls.CompilationError;
 using Condition = System.Windows.Automation.Condition;
 using Control = System.Windows.Forms.Control;
 using ConversionUtils = AnalysisControls.ConversionUtils;
+using CustomTextCharacters = AnalysisControls.CustomTextCharacters;
+using CustomTextEndOfLine = AnalysisControls.CustomTextEndOfLine;
+using DiagnosticError = AnalysisControls.DiagnosticError;
 using File = System.IO.File;
 using FontFamily = System.Windows.Media.FontFamily;
+using FontRendering = AnalysisControls.FontRendering;
+using FormattingHelper = AnalysisControls.FormattingHelper;
+using GenericTextParagraphProperties = AnalysisControls.GenericTextParagraphProperties;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using ILineDrawer = AnalysisControls.ILineDrawer;
+using LineContext = AnalysisControls.LineContext;
+using LineInfo = AnalysisControls.LineInfo;
 using ListBox = System.Windows.Controls.ListBox;
 using Menu = System.Windows.Controls.Menu;
 using MenuItem = System.Windows.Controls.MenuItem;
@@ -1298,7 +1310,7 @@ namespace ProjTests
         {
             var x = new ResourceManager(
                 "AnalysisControls.g"
-                , typeof(FormattedTextControl).Assembly
+                , typeof(AnalysisControlsModule).Assembly
             );
             // ReSharper disable once ResourceItemNotResolved
             var y = x.GetStream("mainstatusbar.baml");
@@ -1662,7 +1674,7 @@ namespace ProjTests
             var type2 = typeof(Dictionary<string, ConcurrentDictionary<object, Window>>);
             var ss = new StackPanel {Orientation = Orientation.Vertical};
 
-            var d = new FormattedTextControl() {BorderThickness = new Thickness(3), BorderBrush = Brushes.Pink};
+            var d = new RoslynCodeControl {BorderThickness = new Thickness(3), BorderBrush = Brushes.Pink};
             var xb = new TextBlock();
             xb.SetBinding(TextBlock.TextProperty, new Binding("HoverColumn") {Source = d});
             var xy = new TextBlock();
@@ -1727,11 +1739,6 @@ namespace ProjTests
             ProjTestsHelper.TestSyntaxControl(new CodeDiagnostics());
         }
 
-//        [WpfFact]
-        public void TestCodeControl2()
-        {
-            ProjTestsHelper.TestSyntaxControl(new CodeControl2());
-        }
 
         [WpfFact]
         public void TestText()
@@ -1827,7 +1834,7 @@ namespace ProjTests
         [WpfFact]
         public void TestFormattedControlVb()
         {
-            ProjTestsHelper.TestSyntaxControlVb(new FormattedTextControl());
+            ProjTestsHelper.TestSyntaxControlVb(new RoslynCodeControl());
         }
 
         //[WpfFact]
@@ -2002,7 +2009,7 @@ namespace ProjTests
         //  [WpfFact]
         public void TestCodeEntry()
         {
-            var c = new FormattedTextControl();
+            var c = new RoslynCodeControl();
             var w = new Window {Content = c};
             w.Loaded += (sender, args) =>
             {
@@ -2440,67 +2447,67 @@ namespace ProjTests
             }
         }
 
-        [WpfFact]
-        public void TestCodeRenderer()
-        {
-            var code = new CodeRenderer
-            {
-                FontFamily = new FontFamily("Lucida Console"), FontSize = 16.0, Foreground = Brushes.Pink
-            };
-            code.BeginInit();
-            code.EndInit();
-
-//	    var cBounds = code.VisualContentBounds;
-//	    DebugUtils.WriteLine(cBounds.ToString());
-            var tree = ProjTestsHelper.SetupSyntaxParams(out var comp);
-            CodeAnalysisProperties.SetCompilation(code, comp);
-            CodeAnalysisProperties.SetSyntaxTree(code, tree);
-            code.UpdateFormattedText();
-
-            var clip = VisualTreeHelper.GetClip(code);
-            DebugUtils.WriteLine(clip?.ToString() ?? "");
-            var contentBounds = VisualTreeHelper.GetContentBounds(code);
-            DebugUtils.WriteLine(contentBounds.ToString());
-            var dg = VisualTreeHelper.GetDrawing(code);
-            if (dg != null)
-            {
-                DebugUtils.WriteLine("have drawing group");
-                DebugUtils.WriteLine(dg.ToString());
-                DebugUtils.WriteLine(dg.Children.Count.ToString());
-            }
-            else
-            {
-                DebugUtils.WriteLine("no drawing group");
-            }
-
-
-//	    Image theImage = new Image();
-//            DrawingImage dImageSource = new DrawingImage(dGroup);
-//            theImage.Source = dImageSource;
-
-
-            var vb = new VisualBrush(code);
-            var width = 800;
-            var height = 600;
-            var r = new Rectangle {Width = width, Height = height, Fill = vb};
-            var renderTargetBitmap = new RenderTargetBitmap(
-                (int) width
-                , (int) height
-                , 96
-                , 96
-                , PixelFormats.Pbgra32
-            );
-            renderTargetBitmap.Render(code);
-
-            var encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
-            object filePrefix = "renderedCode";
-            var fname = $"{filePrefix}.png";
-            using (var s = File.Create("C:\\OUTPUT\\" + fname))
-            {
-                encoder.Save(s);
-            }
-        }
+//         [WpfFact]
+//         public void TestCodeRenderer()
+//         {
+//             var code = new CodeRenderer
+//             {
+//                 FontFamily = new FontFamily("Lucida Console"), FontSize = 16.0, Foreground = Brushes.Pink
+//             };
+//             code.BeginInit();
+//             code.EndInit();
+//
+// //	    var cBounds = code.VisualContentBounds;
+// //	    DebugUtils.WriteLine(cBounds.ToString());
+//             var tree = ProjTestsHelper.SetupSyntaxParams(out var comp);
+//             CodeAnalysisProperties.SetCompilation(code, comp);
+//             CodeAnalysisProperties.SetSyntaxTree(code, tree);
+//             code.UpdateNext();
+//
+//             var clip = VisualTreeHelper.GetClip(code);
+//             DebugUtils.WriteLine(clip?.ToString() ?? "");
+//             var contentBounds = VisualTreeHelper.GetContentBounds(code);
+//             DebugUtils.WriteLine(contentBounds.ToString());
+//             var dg = VisualTreeHelper.GetDrawing(code);
+//             if (dg != null)
+//             {
+//                 DebugUtils.WriteLine("have drawing group");
+//                 DebugUtils.WriteLine(dg.ToString());
+//                 DebugUtils.WriteLine(dg.Children.Count.ToString());
+//             }
+//             else
+//             {
+//                 DebugUtils.WriteLine("no drawing group");
+//             }
+//
+//
+// //	    Image theImage = new Image();
+// //            DrawingImage dImageSource = new DrawingImage(dGroup);
+// //            theImage.Source = dImageSource;
+//
+//
+//             var vb = new VisualBrush(code);
+//             var width = 800;
+//             var height = 600;
+//             var r = new Rectangle {Width = width, Height = height, Fill = vb};
+//             var renderTargetBitmap = new RenderTargetBitmap(
+//                 (int) width
+//                 , (int) height
+//                 , 96
+//                 , 96
+//                 , PixelFormats.Pbgra32
+//             );
+//             renderTargetBitmap.Render(code);
+//
+//             var encoder = new PngBitmapEncoder();
+//             encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+//             object filePrefix = "renderedCode";
+//             var fname = $"{filePrefix}.png";
+//             using (var s = File.Create("C:\\OUTPUT\\" + fname))
+//             {
+//                 encoder.Save(s);
+//             }
+//         }
 
         [WpfFact]
         public void TestSerializer()
@@ -2830,7 +2837,7 @@ namespace ProjTests
             DebugUtils.WriteLine(enumerateFile);
             var code = File.ReadAllText(enumerateFile);
             var t = ProjTestsHelper.SetupSyntaxParams(out var x, code);
-            FormattedTextControl z = new FormattedTextControl() {Compilation = x, SyntaxTree = t};
+            var z = new RoslynCodeControl() {Compilation = x, SyntaxTree = t};
             Window w = new Window {Content = z};
             w.Loaded += (sender, args) => w.Close();
             try

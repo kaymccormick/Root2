@@ -22,6 +22,7 @@ using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.EntityFrameworkCore;
 using NLog;
+using RoslynCodeControls;
 using Path = System.IO.Path;
 
 namespace AnalysisControls.ViewModel
@@ -608,12 +609,12 @@ namespace AnalysisControls.ViewModel
             }
             else if (SelectedProject != null)
             {
-                var semanticControl1 = new SemanticControl1();
-                var continueWith = SelectedProject.Project.GetCompilationAsync().ContinueWith(
-                    task => { semanticControl1.Compilation = (CSharpCompilation) task.Result; }, taskScheduler);
+                // var semanticControl1 = new SemanticControl1();
+                // var continueWith = SelectedProject.Project.GetCompilationAsync().ContinueWith(
+                    // task => { semanticControl1.Compilation = (CSharpCompilation) task.Result; }, taskScheduler);
 
-                var anchorableModel = new AnchorableModel {Content = semanticControl1};
-                _anchHost.AddAnchorable(anchorableModel);
+                // var anchorableModel = new AnchorableModel {Content = semanticControl1};
+                // _anchHost.AddAnchorable(anchorableModel);
             }
         }
 

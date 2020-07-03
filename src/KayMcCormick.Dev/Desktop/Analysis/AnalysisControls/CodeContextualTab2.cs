@@ -9,6 +9,7 @@ using AnalysisControls.ViewModel;
 using Microsoft.CodeAnalysis;
 using RibbonLib;
 using RibbonLib.Model;
+using RoslynCodeControls;
 
 namespace AnalysisControls
 {
@@ -80,7 +81,7 @@ namespace AnalysisControls
 
                 
                 var symbolPresenter = new RibbonModelPresenter();
-                d.CodeControl.SetBinding(FormattedTextControl.HoverSymbolProperty,
+                d.CodeControl.SetBinding(RoslynCodeControl.HoverSymbolProperty,
                     new Binding("Content") {Mode = BindingMode.OneWayToSource, Source = symbolPresenter});
                 controlGroup.Items.Add(symbolPresenter);
 
@@ -93,7 +94,7 @@ namespace AnalysisControls
                 // .Where(d1 => d1.Severity >= DiagnosticSeverity.Error))
                 // errorMenu.ItemsCollection.Add(new RibbonModelAppMenuItem() {Header = diagnostic.GetMessage()});
 
-                d.CodeControl.SetBinding(FormattedTextControl.HoverSyntaxNodeProperty,
+                d.CodeControl.SetBinding(RoslynCodeControl.HoverSyntaxNodeProperty,
                     new Binding("Text")
                     {
                         Mode = BindingMode.OneWayToSource, Source = nodePresenter, ConverterParameter = SyntaxNodeInfo.Kind,
@@ -140,7 +141,7 @@ namespace AnalysisControls
             //            ((CSharpCompilation)model.Compilation).Options.OutputKind.
 
             var label1 = new RibbonModelTwoLineText();
-            d.CodeControl.SetBinding(FormattedTextControl.HoverSymbolProperty,
+            d.CodeControl.SetBinding(RoslynCodeControl.HoverSymbolProperty,
                 new Binding("Text") {Source = label1, Mode = BindingMode.OneWayToSource});
 
             controlGroup.Items.Add(label1);

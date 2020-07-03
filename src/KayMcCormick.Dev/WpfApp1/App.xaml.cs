@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using AnalysisControls;
+using RoslynCodeControls;
 
 namespace WpfApp1
 {

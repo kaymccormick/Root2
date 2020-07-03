@@ -9,7 +9,7 @@ namespace NetCoreTest1
         [WpfFact]
         public void Test1()
         {
-            FormattedTextControl c = new FormattedTextControl();
+            // FormattedTextControl c = new FormattedTextControl();
         }
     }
 }

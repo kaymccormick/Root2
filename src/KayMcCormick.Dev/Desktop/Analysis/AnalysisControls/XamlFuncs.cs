@@ -106,7 +106,7 @@ namespace AnalysisControls
 
                         var reader = new XamlReader();
                         var xamlXmlReaderSettings = new XamlXmlReaderSettings();
-                        xamlXmlReaderSettings.LocalAssembly = typeof(FormattedTextControl).Assembly;
+                        xamlXmlReaderSettings.LocalAssembly = typeof(AnalysisControlsModule).Assembly;
                         XamlXmlReader rrr = new XamlXmlReader(xmlReader, xamlXmlReaderSettings);
                         var results = new List<LinearGradientBrush>();
                         try

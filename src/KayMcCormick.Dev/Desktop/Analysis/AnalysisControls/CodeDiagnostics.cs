@@ -10,6 +10,7 @@ using System.Windows.Shapes;
 using JetBrains.Annotations;
 using KayMcCormick.Dev.Attributes;
 using Microsoft.CodeAnalysis;
+using RoslynCodeControls;
 
 namespace AnalysisControls
 {

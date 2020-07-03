@@ -5,9 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControlsCore"
+        xmlns:roslynCodeControls="clr-namespace:RoslynCodeControls;assembly=RoslynCodeControls"
         mc:Ignorable="d"
         Title="CodeWindow2" Height="450" Width="800">
     <Grid>
-        <analysisControls:RoslynCodeControl FontSize="32"  SourceText=""  x:Name="CodeControl"/>
+        <roslynCodeControls:RoslynCodeControl FontSize="32"  SourceText=""  x:Name="CodeControl"/>
     </Grid>
 </Window>
