@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
 using Microsoft.CodeAnalysis.Text;
+using RoslynCodeControls;
 
 namespace AnalysisControls
 {

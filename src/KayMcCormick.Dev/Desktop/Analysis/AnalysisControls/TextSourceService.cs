@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using RoslynCodeControls;
 
 namespace AnalysisControls
 {
@@ -28,7 +29,7 @@ namespace AnalysisControls
             if (typefaceManager == null) throw new ArgumentNullException(nameof(typefaceManager));
             if (syntaxTree == null) throw new ArgumentNullException(nameof(syntaxTree));
             if (compilation == null) throw new ArgumentNullException(nameof(compilation));
-            var source = new SyntaxNodeCustomTextSource(pixelsPerDip, typefaceManager)
+            var source = new SyntaxNodeCustomTextSource(pixelsPerDip)
             {
                 EmSize = emSize,
                 Compilation = compilation,

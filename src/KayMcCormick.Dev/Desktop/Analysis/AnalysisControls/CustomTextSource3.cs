@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.VisualBasic;
+using RoslynCodeControls;
 using CSharpExtensions = Microsoft.CodeAnalysis.CSharp.CSharpExtensions;
 using SyntaxFactory = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using SyntaxFacts = Microsoft.CodeAnalysis.CSharp.SyntaxFacts;
@@ -30,10 +31,9 @@ namespace AnalysisControls
         /// </summary>
         /// <param name="pixelsPerDip"></param>
         /// <param name="typefaceManager"></param>
-        public CustomTextSource3(double pixelsPerDip, ITypefaceManager typefaceManager)
+        public CustomTextSource3(double pixelsPerDip)
         {
             PixelsPerDip = pixelsPerDip;
-            _typeface = typefaceManager.GetDefaultTypeface();
 
             TextDecorationCollection textDecorationCollection = new TextDecorationCollection();
             Rendering = FontRendering.CreateInstance(EmSize, TextAlignment.Left, textDecorationCollection, Brushes.Black, _typeface);

@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using RoslynCodeControls;
 
 namespace AnalysisControls
 {

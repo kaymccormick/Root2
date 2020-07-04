@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Media.TextFormatting;
 using Microsoft.CodeAnalysis;
+using RoslynCodeControls;
 
 namespace AnalysisControls
 {

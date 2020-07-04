@@ -8,6 +8,7 @@ using System.Windows.Media.TextFormatting;
 using KayMcCormick.Dev.Logging;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using RoslynCodeControls;
 
 namespace AnalysisControls
 {

@@ -11,6 +11,7 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using RoslynCodeControls;
 
 namespace AnalysisControls
 {
@@ -436,14 +437,14 @@ namespace AnalysisControls
         /// <exception cref="InvalidOperationException"></exception>
         public static SyntaxNodeCustomTextSource UpdateTextSource(SyntaxNode node, CSharpCompilation compilation,
             SyntaxTree syntaxTree,
-            double pixelsPerDip, double emSize, ITypefaceManager manager)
+            double pixelsPerDip, double emSize)
         {
             if (compilation != null && compilation.SyntaxTrees.Contains(syntaxTree) == false)
                 throw new AppInvalidOperationException("Compilation does not contain syntax tree.");
 
             if (ReferenceEquals(node.SyntaxTree, syntaxTree) == false)
                 throw new AppInvalidOperationException("SyntaxNode is not within syntax tree");
-            var store = new SyntaxNodeCustomTextSource(pixelsPerDip, manager)
+            var store = new SyntaxNodeCustomTextSource(pixelsPerDip)
             {
                 EmSize = emSize,
                 Compilation = compilation,

@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Logging;
 using Microsoft.CodeAnalysis;
+using RoslynCodeControls;
 
 namespace AnalysisControls
 {

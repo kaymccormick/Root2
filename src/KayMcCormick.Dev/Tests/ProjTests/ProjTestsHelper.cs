@@ -16,10 +16,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.VisualBasic;
 using RoslynCodeControls;
-using CharacterCell = AnalysisControls.CharacterCell;
+
 using CSharpExtensions = Microsoft.CodeAnalysis.CSharp.CSharpExtensions;
-using LineInfo = AnalysisControls.LineInfo;
-using RegionInfo = AnalysisControls.RegionInfo;
 using SyntaxFactory = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using XamlReader = System.Windows.Markup.XamlReader;
 

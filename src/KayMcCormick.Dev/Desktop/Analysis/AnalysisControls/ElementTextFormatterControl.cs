@@ -14,6 +14,7 @@ using System.Windows.Media.TextFormatting;
 using System.Windows.Shapes;
 using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
+using RoslynCodeControls;
 
 namespace AnalysisControls
 {

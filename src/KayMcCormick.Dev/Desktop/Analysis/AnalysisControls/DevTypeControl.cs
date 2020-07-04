@@ -16,6 +16,7 @@ using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CSharp;
+using RoslynCodeControls;
 
 namespace AnalysisControls
 {

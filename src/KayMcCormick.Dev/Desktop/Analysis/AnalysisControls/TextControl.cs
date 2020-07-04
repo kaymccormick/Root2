@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using RoslynCodeControls;
 using TextLine = System.Windows.Media.TextFormatting.TextLine;
 
 namespace AnalysisControls

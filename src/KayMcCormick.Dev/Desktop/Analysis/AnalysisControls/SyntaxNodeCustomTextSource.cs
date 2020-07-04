@@ -10,7 +10,7 @@
         /// </summary>
         /// <param name="pixelsPerDip"></param>
         /// <param name="typefaceManager"></param>
-        public SyntaxNodeCustomTextSource(double pixelsPerDip, ITypefaceManager typefaceManager) : base(pixelsPerDip, typefaceManager)
+        public SyntaxNodeCustomTextSource(double pixelsPerDip) : base(pixelsPerDip)
         {
         }
     }

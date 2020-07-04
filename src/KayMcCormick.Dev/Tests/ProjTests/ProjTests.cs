@@ -104,7 +104,6 @@ using Xunit;
 using Xunit.Abstractions;
 using static AnalysisControls.TypeDescriptors.UiElementTypeConverter;
 using AssembliesControl = AnalysisControls.AssembliesControl;
-using BasicTextRunProperties = AnalysisControls.BasicTextRunProperties;
 using Binding = System.Windows.Data.Binding;
 using Brushes = System.Windows.Media.Brushes;
 using Button = System.Windows.Controls.Button;
@@ -118,13 +117,8 @@ using CustomTextEndOfLine = AnalysisControls.CustomTextEndOfLine;
 using DiagnosticError = AnalysisControls.DiagnosticError;
 using File = System.IO.File;
 using FontFamily = System.Windows.Media.FontFamily;
-using FontRendering = AnalysisControls.FontRendering;
 using FormattingHelper = AnalysisControls.FormattingHelper;
-using GenericTextParagraphProperties = AnalysisControls.GenericTextParagraphProperties;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using ILineDrawer = AnalysisControls.ILineDrawer;
-using LineContext = AnalysisControls.LineContext;
-using LineInfo = AnalysisControls.LineInfo;
 using ListBox = System.Windows.Controls.ListBox;
 using Menu = System.Windows.Controls.Menu;
 using MenuItem = System.Windows.Controls.MenuItem;
@@ -134,7 +128,7 @@ using Pen = System.Windows.Media.Pen;
 using Point = System.Windows.Point;
 using Process = System.Diagnostics.Process;
 using Rectangle = System.Windows.Shapes.Rectangle;
-using RegionInfo = AnalysisControls.RegionInfo;
+using RegionInfo = RoslynCodeControls.RegionInfo;
 using String = System.String;
 
 using TextBlock = System.Windows.Controls.TextBlock;
@@ -1631,43 +1625,6 @@ namespace ProjTests
         }
 
         [WpfFact]
-        public void TestStore3()
-        {
-            var x = new CustomTextSource3(100, new DefaultTypefaceManager());
-            var comp = AnalysisService.Parse(Resource1.Program_Parse, "test", false);
-            x.Tree = comp.SyntaxTree;
-            x.Node = comp.CompilationUnit;
-            foreach (var diagnostic in comp.Compilation.GetDiagnostics())
-                DebugUtils.WriteLine(diagnostic.Properties.Count.ToString());
-            x.Errors = comp.Compilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error)
-                .Select(d => (CompilationError) new DiagnosticError(d)).ToList();
-            Assert.Equal(7, x.Errors.Count);
-            var charPos = 0;
-            TextWriter writer = new StringWriter();
-            TextRun tr = null;
-            while (!((tr = x.GetTextRun(charPos)) is TextEndOfParagraph))
-            {
-                if (tr is CustomTextCharacters trc)
-                {
-                    Logger.Info("writing text " + trc.Text);
-                    writer.Write(trc.Text);
-                }
-                else if (tr is TextEndOfLine teol)
-                {
-                    writer.WriteLine("");
-                }
-                else
-                {
-                    throw new AppInvalidOperationException(tr.GetType().FullName);
-                }
-
-                charPos += tr.Length;
-            }
-
-            DebugUtils.WriteLine(writer.ToString());
-        }
-
-        [WpfFact]
         public void TestControl21()
         {
             var type = typeof(Generic2<Type>);
@@ -1747,9 +1704,8 @@ namespace ProjTests
             Visual h = new Border();
             var PixelsPerDip = VisualTreeHelper.GetDpi(h).PixelsPerDip;
             var syntaxTree = ProjTestsHelper.SetupSyntaxParams(out var compilation);
-            ITypefaceManager manager = new DefaultTypefaceManager();
             var Store = FormattingHelper.UpdateTextSource(syntaxTree.GetRoot(), compilation, syntaxTree, PixelsPerDip,
-                EmSize, manager);
+                EmSize);
             var formatter = TextFormatter.Create();
             var textStorePosition = 0;
             var OutputWidth = 800;

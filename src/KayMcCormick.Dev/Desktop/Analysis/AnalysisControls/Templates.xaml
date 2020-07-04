@@ -15,7 +15,8 @@
   xmlns:system="clr-namespace:System;assembly=System.Runtime"
   xmlns:kmDevLib="clr-namespace:KmDevLib;assembly=KmDevLib"
   xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=KmDevLib"
-  xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KmDevLib">
+  xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KmDevLib"
+  xmlns:roslynCodeControls="clr-namespace:RoslynCodeControls;assembly=RoslynCodeControls">
   <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter"/>
   <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
   <analysisControls:UiConverter x:Key="UiConverter" />
@@ -158,11 +159,11 @@
       </TextBlock>
     </StackPanel>
   </DataTemplate>
-  <DataTemplate DataType="{x:Type analysisControls:CodeToolTipContent}">
+  <DataTemplate DataType="{x:Type roslynCodeControls:CodeToolTipContent}">
     <StackPanel Orientation="Vertical">
       <ItemsControl ItemsSource="{Binding Nodes}">
         <ItemsControl.ItemTemplate>
-          <DataTemplate DataType="{x:Type analysisControls:SyntaxNodeDepth}">
+          <DataTemplate DataType="{x:Type roslynCodeControls:SyntaxNodeDepth}">
             <TextBlock Margin="{Binding Margin}" Text="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"/>
           </DataTemplate>
         </ItemsControl.ItemTemplate>

@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.Formatting;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.VisualBasic;
 using NLog;
+using RoslynCodeControls;
 using CSharpExtensions = Microsoft.CodeAnalysis.CSharp.CSharpExtensions;
 using SyntaxKind = Microsoft.CodeAnalysis.CSharp.SyntaxKind;
 using VisualBasicExtensions = Microsoft.CodeAnalysis.VisualBasic.VisualBasicExtensions;

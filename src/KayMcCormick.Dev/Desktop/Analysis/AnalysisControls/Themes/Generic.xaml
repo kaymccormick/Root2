@@ -5254,11 +5254,11 @@
                         <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
 
                         <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
-                        <DataTemplate DataType="{x:Type local:CodeToolTipContent}">
+                        <DataTemplate DataType="{x:Type roslynCodeControls:CodeToolTipContent}">
                             <StackPanel Orientation="Vertical">
                                 <ItemsControl ItemsSource="{Binding Nodes}">
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type local:SyntaxNodeDepth}">
+                                        <DataTemplate DataType="{x:Type roslynCodeControls:SyntaxNodeDepth}">
                                             <TextBlock Margin="{Binding Margin}" Text="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -5522,7 +5522,7 @@
                             </StackPanel>
                             <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Grid.Row="4" Grid.Column="0" TextElement.FontSize="16">
                                 <StackPanel.Resources>
-                                    <DataTemplate DataType="{x:Type local:SyntaxTokenTextCharacters}">
+                                    <DataTemplate DataType="{x:Type roslynCodeControls:SyntaxTokenTextCharacters}">
                                         <StackPanel Orientation="Horizontal" Background="Khaki">
                                             <TextBlock Margin="10" Text="Text:" />
                                             <TextBlock Margin="10" Text="{Binding Text}" />
@@ -5534,7 +5534,7 @@
                                             <TextBlock Margin="10" Text="{Binding Span}" />
                                         </StackPanel>
                                     </DataTemplate>
-                                    <DataTemplate DataType="{x:Type local:SyntaxTriviaTextCharacters}">
+                                    <DataTemplate DataType="{x:Type roslynCodeControls:SyntaxTriviaTextCharacters}">
                                         <StackPanel Orientation="Horizontal" Background="Aquamarine">
                                             <TextBlock Margin="10" Text="{Binding Text}" />
                                             <TextBlock Margin="10" Text="{Binding Index}" />
