@@ -1,16 +1,15 @@
-﻿namespace AnalysisControls
+﻿using System.Threading;
+using JetBrains.Annotations;
+using RoslynCodeControls;
+
+namespace AnalysisControls
 {
     /// <summary>
     /// 
     /// </summary>
-    public class SyntaxNodeCustomTextSource : CustomTextSource3
+    public class SyntaxNodeCustomTextSource : CustomTextSource4
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pixelsPerDip"></param>
-        /// <param name="typefaceManager"></param>
-        public SyntaxNodeCustomTextSource(double pixelsPerDip) : base(pixelsPerDip)
+        public SyntaxNodeCustomTextSource(double pixelsPerDip, FontRendering fontRendering, GenericTextRunProperties genericTextRunProperties, [NotNull] SynchronizationContext synchContext) : base(pixelsPerDip, fontRendering, genericTextRunProperties, synchContext)
         {
         }
     }

@@ -109,8 +109,7 @@ namespace AnalysisControls
         public void UpdateCharMap()
         {
         }
-
-
+        
         public override int Length { get; protected set; }
 
         /// <inheritdoc />
@@ -134,6 +133,11 @@ namespace AnalysisControls
             return xx;
         }
 
+        public override void TextInput(int insertionPoint, InputRequest inputRequest)
+        {
+            
+        }
+
         /// <inheritdoc />
         public virtual void GenerateText()
         {
@@ -146,41 +150,6 @@ namespace AnalysisControls
             return r;
         }
 
-        public override void TextInput(int InsertionPoint, string text)
-        {
-            if (chars.Count > InsertionPoint)
-            {
-                var xx = chars[InsertionPoint];
-                var x = col[xx];
-                if (x is CustomTextCharacters ch)
-                {
-                    var prev = ch.Text.Substring(0, InsertionPoint - ch.Index.Value);
-                    var next = ch.Text.Substring(ch.Index.Value + ch.Length - InsertionPoint);
-                    var t = prev + text + next;
-                    Length += text.Length;
-                    var customTextCharacters = new CustomTextCharacters(t, BaseProps, new TextSpan());
-                    if (ch.PrevTextRun is CustomTextCharacters cc0) cc0.NextTextRun = customTextCharacters;
-
-                    ch.PrevTextRun = null;
-                    ch.NextTextRun = null;
-                    ch.Invalid = true;
-                    customTextCharacters.PrevTextRun = ch.PrevTextRun;
-                    customTextCharacters.Index = ch.Index;
-                    col[xx] = customTextCharacters;
-
-                    UpdateCharMap();
-                }
-            }
-            else
-            {
-                var customTextCharacters =
-                    new CustomTextCharacters(text, BaseProps, new TextSpan()) { Index = InsertionPoint };
-                // customTextCharacters.PrevTextRun = ch.PrevTextRun;
-                col.Add(customTextCharacters);
-
-                UpdateCharMap();
-            }
-        }
 
         /// <summary>
         /// 
@@ -199,6 +168,6 @@ namespace AnalysisControls
 
     public interface IReadWriteTextSource : ICustomTextSource
     {
-        void TextInput(int insertionPoint, string text);
+        void TextInput(int insertionPoint, InputRequest inputRequest);
     }
 }

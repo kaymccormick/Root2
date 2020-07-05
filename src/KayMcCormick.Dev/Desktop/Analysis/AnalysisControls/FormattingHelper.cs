@@ -424,35 +424,6 @@ namespace AnalysisControls
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="compilation"></param>
-        /// <param name="syntaxTree"></param>
-        /// <param name="pixelsPerDip"></param>
-        /// <param name="emSize"></param>
-        /// <param name="manager"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException"></exception>
-        public static SyntaxNodeCustomTextSource UpdateTextSource(SyntaxNode node, CSharpCompilation compilation,
-            SyntaxTree syntaxTree,
-            double pixelsPerDip, double emSize)
-        {
-            if (compilation != null && compilation.SyntaxTrees.Contains(syntaxTree) == false)
-                throw new AppInvalidOperationException("Compilation does not contain syntax tree.");
-
-            if (ReferenceEquals(node.SyntaxTree, syntaxTree) == false)
-                throw new AppInvalidOperationException("SyntaxNode is not within syntax tree");
-            var store = new SyntaxNodeCustomTextSource(pixelsPerDip)
-            {
-                EmSize = emSize,
-                Compilation = compilation,
-                Tree = syntaxTree,
-                Node = node
-            };
-            store.Init();
-            return store;
-        }
+        
     }
 }

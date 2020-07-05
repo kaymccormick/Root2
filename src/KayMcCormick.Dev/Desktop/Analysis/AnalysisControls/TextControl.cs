@@ -345,7 +345,7 @@ namespace AnalysisControls
             }
 
             ChangingText = true;
-            Store.TextInput(InsertionPoint, eText);
+//            Store.TextInput(InsertionPoint, eText);
             var d = new DrawingGroup();
 
             var dc = d.Open();

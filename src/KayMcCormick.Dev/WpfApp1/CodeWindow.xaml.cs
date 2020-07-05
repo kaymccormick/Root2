@@ -139,35 +139,6 @@ namespace WpfApp1
             var ks = w.Services.GetLanguageServices(LanguageNames.CSharp);
 
             Action<string> d = s => DebugUtils.WriteLine(s);
-            Code.PropertyChanged += (sender, args) =>
-            {
-                return;
-                if (args.PropertyName == "CodeControl" && Code.CodeControl != null)
-                {
-                    Code.CodeControl.CodeControl.PropertyChanged += async (sender, args) =>
-                    {
-                        if (args.PropertyName != "CustomTextSource")
-                            return;
-                        var c = Code.CodeControl.CodeControl;
-                        var lines = new string[] {"/* foo */", "public "};
-                        var first = true;
-                        foreach (var line in lines)
-                        {
-                            if (!first)
-                                await c.DoInput("\r\n").ConfigureAwait(true);
-                            first = false;
-                            foreach (var ch in line)
-                            {
-                                DebugUtils.WriteLine("Input is char '" + ch + "'");
-                                await c.DoInput(ch.ToString()).ConfigureAwait(true);
-                                if (c.InsertionLine != null) d(c.InsertionLine.Length.ToString());
-                            }
-                        }
-
-                        c.DoInput("c");
-                    };
-                }
-            };
         }
 
         private void Target1(object sender, RoutedEventArgs e)

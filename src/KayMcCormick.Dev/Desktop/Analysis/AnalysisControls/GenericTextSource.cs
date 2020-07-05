@@ -5,9 +5,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.TextFormatting;
-using KayMcCormick.Dev.Logging;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 using RoslynCodeControls;
 
 namespace AnalysisControls
@@ -146,6 +143,11 @@ namespace AnalysisControls
             return xx;
         }
 
+        public override void TextInput(int insertionPoint, InputRequest inputRequest)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <inheritdoc />
         public virtual void GenerateText()
         {
@@ -156,11 +158,6 @@ namespace AnalysisControls
         {
             var r = BasicProps();
             return r;
-        }
-
-        public override void TextInput(int InsertionPoint, string text)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

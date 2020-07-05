@@ -127,6 +127,11 @@ namespace AnalysisControls
             return xx;
         }
 
+        public override void TextInput(int insertionPoint, InputRequest inputRequest)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <inheritdoc />
         void ICustomTextSource.GenerateText()
         {
@@ -299,10 +304,6 @@ namespace AnalysisControls
             return null;
         }
 
-        public override void TextInput(int InsertionPoint, string text)
-        {
-            throw new NotImplementedException();
-        }
 
 
         /// <summary>

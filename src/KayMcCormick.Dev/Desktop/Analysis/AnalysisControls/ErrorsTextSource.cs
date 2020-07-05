@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows.Media.TextFormatting;
+using JetBrains.Annotations;
+using RoslynCodeControls;
 
 namespace AnalysisControls
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ErrorsTextSource : CustomTextSource3
+    public class ErrorsTextSource : CustomTextSource4
     {
         private IEnumerable<CompilationError> _errors;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pixelsPerDip"></param>
-        /// <param name="errors"></param>
-        public ErrorsTextSource(double pixelsPerDip, IEnumerable<CompilationError> errors, ITypefaceManager typefaceManager) : base(pixelsPerDip)
+        public ErrorsTextSource(double pixelsPerDip, FontRendering fontRendering, GenericTextRunProperties genericTextRunProperties, [NotNull] SynchronizationContext synchContext, IEnumerable<CompilationError> errors) : base(pixelsPerDip, fontRendering, genericTextRunProperties, synchContext)
         {
-            this._errors = errors;
+            _errors = errors;
         }
 
         /// <summary>

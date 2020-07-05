@@ -108,11 +108,11 @@ namespace AnalysisControls
             throw new System.NotImplementedException();
         }
 
-
-        public override void TextInput(int InsertionPoint, string text)
+        public override void TextInput(int insertionPoint, InputRequest inputRequest)
         {
             throw new NotImplementedException();
         }
+
 
         /// <summary>
         /// 
