@@ -26,7 +26,7 @@ namespace WpfApp1
             CodeControl.Focus();
             Keyboard.Focus(CodeControl);
             
-            //AddHandler(RoslynCodeControl.RenderCompleteEvent, new RoutedEventHandler(OnLoaded));
+//            AddHandler(RoslynCodeControl.RenderCompleteEvent, new RoutedEventHandler(OnLoaded));
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs args)
@@ -44,7 +44,6 @@ namespace WpfApp1
                 {
                     DebugUtils.WriteLine("Input is char '" + ch + "'");
                     await c.DoInput(new InputRequest(InputRequestKind.TextInput, ch.ToString())).ConfigureAwait(true);
-                    if (c.InsertionLine != null) d(c.InsertionLine.Length.ToString());
                 }
             }
 

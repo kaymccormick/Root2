@@ -5443,7 +5443,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+<local:VisibilityToBooleanConverter x:Key="B" />
     <Style TargetType="{x:Type local:EnhancedCodeControl}">
         <Setter Property="Template">
             <Setter.Value>
@@ -5461,7 +5461,9 @@
                             </Grid.Resources>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
@@ -5471,18 +5473,67 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <StackPanel Orientation="Horizontal">
-                                <ComboBox x:Name="FontSizeCombo"
-                                    ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CommonFontSizes}"
-                                    FontSize="20" />
-                                <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Fonts,Mode=TwoWay}" x:Name="FontCombo"
-                                          
-                                          ><ComboBox.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type FontFamily}">
-                                            <TextBlock FontFamily="{Binding}" Text="{Binding Path=FamilyNames[en-US]}"/>
-                                        </DataTemplate></ComboBox.ItemTemplate></ComboBox>  
-                            </StackPanel>
-                            <roslynCodeControls:RoslynCodeControl Grid.Row="1" Grid.Column="0"
+			            <Menu Grid.Row="0">
+            <MenuItem Header="_Toolbars">
+                <MenuItem IsCheckable="True" Header="Character _Movement" IsChecked="{Binding ElementName=CharacterMovementToolbar,Path=Visibility,Converter={StaticResource B},Mode=TwoWay}"/>
+                <MenuItem IsCheckable="True" Header="_Font Style" IsChecked="{Binding ElementName=FontsToolbar,Path=Visibility,Converter={StaticResource B},Mode=TwoWay}"/>
+            </MenuItem>
+        </Menu>
+        <ToolBarTray Grid.Row="1">
+            <ToolBar Band="1" BandIndex="1" x:Name="CharacterMovementToolbar">
+                <Button FontSize="24" Command="MoveLeftByCharacter"
+                        CommandTarget="{x:Reference CodeControl}" >
+                    <TextBlock Text="&#x1f81c;">
+                        <TextBlock.Effect>
+                            <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality"></BlurEffect>
+                        </TextBlock.Effect>
+                    </TextBlock>
+
+                </Button>
+                <Button FontSize="24" Command="MoveUpByLine"
+                        CommandTarget="{x:Reference CodeControl}">
+                    <TextBlock Text="&#x1f81d;">
+                        <TextBlock.Effect>
+                            <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality"></BlurEffect>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </Button>
+                <Button FontSize="24" Command="MoveDownByLine"
+                            CommandTarget="{x:Reference CodeControl}" >
+                    <TextBlock Text="&#x1f81f;">
+                        <TextBlock.Effect>
+                            <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality"></BlurEffect>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </Button>
+                <Button FontSize="24" Command="MoveRightByCharacter"
+                        CommandTarget="{x:Reference CodeControl}" >
+                    <TextBlock Text="&#x1f81e;">
+                        <TextBlock.Effect>
+                            <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality"></BlurEffect>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </Button>
+
+            </ToolBar>
+            <ToolBar Band="1" BandIndex="2" x:Name="FontsToolbar">
+                <TextBlock Text="Font:" Margin="0,0,5,0" VerticalAlignment="Center"></TextBlock>
+                <ComboBox x:Name="FontComboBox" VerticalAlignment="Center"
+                    ItemsSource="{TemplateBinding Fonts}"
+                    >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type FontFamily}">
+                            <TextBlock FontFamily="{Binding}" Text="{Binding Path=FamilyNames[en-US]}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock Text="Size:" Margin="5,0,0,0" VerticalAlignment="Center"/>
+                <ComboBox x:Name="FontSizeCombo" 
+                          ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CommonFontSizes}"
+                          />
+            </ToolBar>
+        </ToolBarTray>
+                            <roslynCodeControls:RoslynCodeControl Grid.Row="2" Grid.Column="0"
                                                          Filename="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Filename,Mode=TwoWay}"
                                                          Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document}"
                                                          SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText}"
@@ -5490,10 +5541,10 @@
                                                          Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation}"
                                                          SyntaxNode="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxNode}"
                                                          x:Name="CodeControl" />
-                            <StackPanel Grid.Row="1" Grid.Column="2">
+                            <StackPanel Grid.Row="3" Grid.Column="2">
                                 <TextBlock Text="{Binding ElementName=CodeControl,Path=EnclosingSymbol}"/>
                             </StackPanel>
-                            <StackPanel Background="DarkSeaGreen"  Grid.Row="2" Grid.Column="0" Orientation="Horizontal"
+                            <StackPanel Background="DarkSeaGreen"  Grid.Row="4" Grid.Column="0" Orientation="Horizontal"
                                         TextElement.FontSize="16">
                                 <TextBlock Margin="15,0,0,0" Text="{Binding HoverOffset}" />
                                 <TextBlock Text=" ( " />
@@ -5515,12 +5566,12 @@
                                     <local:SymbolTextControl DisplaySymbol="{Binding HoverSymbol}" />
                                 </StackPanel>
                             </StackPanel>
-                            <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Grid.Row="3" Grid.Column="0" TextElement.FontSize="16">
+                            <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Grid.Row="5" Grid.Column="0" TextElement.FontSize="16">
                                 <TextBlock 
                                            Text="{Binding HoverRegionInfo.Trivia,Converter={StaticResource SyntaxTriviaConverter}}" />
                                 <TextBlock Text="{Binding HoverRegionInfo.TriviaValue.HasStructure}" />
                             </StackPanel>
-                            <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Grid.Row="4" Grid.Column="0" TextElement.FontSize="16">
+                            <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Grid.Row="6" Grid.Column="0" TextElement.FontSize="16">
                                 <StackPanel.Resources>
                                     <DataTemplate DataType="{x:Type roslynCodeControls:SyntaxTokenTextCharacters}">
                                         <StackPanel Orientation="Horizontal" Background="Khaki">

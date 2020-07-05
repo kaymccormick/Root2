@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Globalization;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -128,7 +129,7 @@ namespace AnalysisControls
             base.OnApplyTemplate();
             CodeControl = (RoslynCodeControl) GetTemplateChild("CodeControl");
             FontSizeCombo = (ComboBox)GetTemplateChild("FontSizeCombo");
-            FontCombo = (ComboBox)GetTemplateChild("FontCombo");
+            FontCombo = (ComboBox)GetTemplateChild("FontComboBox");
 
         }
         public ComboBox FontCombo
@@ -204,6 +205,31 @@ namespace AnalysisControls
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+        public class VisibilityToBooleanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            var v = (Visibility)value;
+            return v == Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+
+            if (value == null)
+            {
+                return null;
+            }
+
+            var b = (bool)value;
+            return b ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }
