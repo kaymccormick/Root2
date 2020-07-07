@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -9,59 +11,44 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using JetBrains.Annotations;
 using KayMcCormick.Dev.Attributes;
-using Microsoft.CodeAnalysis;
 using RoslynCodeControls;
 
 namespace AnalysisControls
 {
-    /// <summary>
-    /// Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
-    ///
-    /// Step 1a) Using this custom control in a XAML file that exists in the current project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is 
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:AnalysisControls"
-    ///
-    ///
-    /// Step 1b) Using this custom control in a XAML file that exists in a different project.
-    /// Add this XmlNamespace attribute to the root element of the markup file where it is 
-    /// to be used:
-    ///
-    ///     xmlns:MyNamespace="clr-namespace:AnalysisControls;assembly=AnalysisControls"
-    ///
-    /// You will also need to add a project reference from the project where the XAML file lives
-    /// to this project and Rebuild to avoid compilation errors:
-    ///
-    ///     Right click on the target project in the Solution Explorer and
-    ///     "Add Reference"->"Projects"->[Browse to and select this project]
-    ///
-    ///
-    /// Step 2)
-    /// Go ahead and use your control in the XAML file.
-    ///
-    ///     <MyNamespace:CodeDiagnostics/>
-    ///
-    /// </summary>
     [TitleMetadata("Code Diagnostics Control")]
-    public class CodeDiagnostics : SyntaxNodeControl, INotifyPropertyChanged
+    public class CodeDiagnostics : SyntaxNodeControl, INotifyPropertyChanged, IControlWithViews
     {
-        /// <inheritdoc />
-
-        /// <inheritdoc />
-
-        /// <inheritdoc />
-        /// <inheritdoc />
-
         private ListView _regions;
         private ListView _lines;
         private DrawingGroup _dgroup;
         private Rectangle _rect;
         private EnhancedCodeControl _codeControl;
+        private ObservableCollection<ViewSpec> _views = new ObservableCollection<ViewSpec>();
+        private ViewSpec _currentView;
+        private ViewSpec _codeView;
+        private ViewSpec _documentView;
+        private ViewSpec _modelView;
+        private ViewSpec _diagView;
+        private ViewSpec _sourceView;
 
         static CodeDiagnostics()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(CodeDiagnostics), new FrameworkPropertyMetadata(typeof(CodeDiagnostics)));
+        }
+
+        public CodeDiagnostics()
+        {
+            _codeView = new ViewSpec() { ViewName = "Code", LargeImageSource = "pack://application:,,,/AnalysisControlsCore;component/Assets/CodeView.png" };
+            _documentView = new ViewSpec() { ViewName = "Document"};
+            _modelView = new ViewSpec() { ViewName = "Model", LargeImageSource = "pack://application:,,,/AnalysisControlsCore;component/Assets/ModelView.png" };
+            _sourceView = new ViewSpec() { ViewName = "Source" };
+            _diagView = new ViewSpec() { ViewName = "Diagnostics" };
+            _views.Add(_codeView);
+            _views.Add(_documentView);
+            _views.Add(_modelView);
+            _views.Add(_sourceView);
+            _views.Add(_diagView); 
+            _currentView = _codeView;
         }
 
         /// <inheritdoc />
@@ -169,6 +156,28 @@ namespace AnalysisControls
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public ObservableCollection<ViewSpec> Views
+        {
+            get { return _views; }
+            set
+            {
+                if (Equals(value, _views)) return;
+                _views = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ViewSpec CurrentView
+        {
+            get { return _currentView; }
+            set
+            {
+                if (Equals(value, _currentView)) return;
+                _currentView = value;
+                OnPropertyChanged();
+            }
         }
     }
 }

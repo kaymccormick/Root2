@@ -144,12 +144,7 @@ namespace AnalysisControls
             return null;
         }
 
-        /// <inheritdoc />
-        void ICustomTextSource.TakeTextRun(TextRun obj)
-        {
-            TakeTextRun(obj);
-        }
-
+        
         #region Properties
 
         /// <summary>

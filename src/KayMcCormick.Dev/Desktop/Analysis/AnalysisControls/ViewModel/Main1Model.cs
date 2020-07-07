@@ -47,131 +47,19 @@ using XamlReader = System.Windows.Markup.XamlReader;
 
 namespace AnalysisControls.ViewModel
 {
-    public interface IMain1Model
-    {
-        string Catchphrase { get; set; }
-        object ActiveContent { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        ///
-        /// 
-        /// <summary>
-        /// 
-        /// </summary>
-        ObservableCollection<object> ContextualTabGroups { get; set; }
-
-        AppSettingsViewModel AppSettingsViewModel { get; set; }
-        IUserSettingsDbContext UserSettingsDbContext { get; }
-        bool AllDocs { get; set; }
-
-        /// </summary>
-        CurrentOperation CurrentOperation { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        IClientModel ClientViewModel { get; set; }
-
-        JsonSerializerOptions JsonSerializerOptions { get; set; }
-        object InstanceObjectId { get; set; }
-    }
-
-    class Main1ModelProxy : IMain1Model
-    {
-        private Main1Model _model;
-
-        public Main1ModelProxy(Main1Model main1ModelImplementation)
-        {
-            _model = main1ModelImplementation;
-        }
-
-        /// <inheritdoc />
-        public string Catchphrase
-        {
-            get { return _model.Dispatcher.Invoke(() => _model.Catchphrase); }
-            set { _model.Catchphrase = value; }
-        }
-
-        /// <inheritdoc />
-        public virtual object ActiveContent
-        {
-            get { return _model.Dispatcher.Invoke(() => _model.ActiveContent); }
-            set { _model.ActiveContent = value; }
-        }
-
-        /// <inheritdoc />
-        public virtual ObservableCollection<object> ContextualTabGroups
-        {
-            get { return _model.Dispatcher.Invoke(() => _model.ContextualTabGroups); }
-            set { _model.ContextualTabGroups = value; }
-        }
-
-        /// <inheritdoc />
-        public virtual AppSettingsViewModel AppSettingsViewModel
-        {
-            get { return _model.Dispatcher.Invoke(() => _model.AppSettingsViewModel); }
-            set { _model.AppSettingsViewModel = value; }
-        }
-
-        /// <inheritdoc />
-        public virtual IUserSettingsDbContext UserSettingsDbContext
-        {
-            get { return _model.Dispatcher.Invoke(() => _model.UserSettingsDbContext); }
-        }
-
-        /// <inheritdoc />
-        public virtual bool AllDocs
-        {
-            get { return _model.Dispatcher.Invoke(() => _model.AllDocs); }
-            set { _model.AllDocs = value; }
-        }
-
-        /// <inheritdoc />
-        public virtual  CurrentOperation CurrentOperation
-        {
-            get { return _model.Dispatcher.Invoke(() => _model.CurrentOperation); }
-            set { _model.CurrentOperation = value; }
-        }
-
-        /// <inheritdoc />
-        public virtual IClientModel ClientViewModel
-        {
-            get { return _model.Dispatcher.Invoke(() => _model.ClientViewModel); }
-            set { _model.ClientViewModel = value; }
-        }
-
-        /// <inheritdoc />
-        public virtual JsonSerializerOptions JsonSerializerOptions
-        {
-            get { return _model.Dispatcher.Invoke(() => _model.JsonSerializerOptions); }
-            set { _model.JsonSerializerOptions = value; }
-        }
-
-        /// <inheritdoc />
-        public virtual object InstanceObjectId
-        {
-            get { return _model.Dispatcher.Invoke(() => _model.InstanceObjectId); }
-            set { _model.InstanceObjectId = value; }
-        }
-    }
-
     /// <summary>
     /// 
     /// </summary>
     public class Main1Model : DependencyObject, INotifyPropertyChanged,
-        // IDocumentHost,
-        // IAnchorableHost,
         ICommandProvider,
         ISubjectWatcher, IMain1Model
 
 
     {
         //private IPublicClientApplication a\pp;
-        
+
         public IDocumentHost DocHost
-    
+
         {
             get { return _docHost; }
             set
@@ -180,8 +68,8 @@ namespace AnalysisControls.ViewModel
                 _docHost = value;
                 // if (_docHost != null)
                 // {
-                    // var x = new CSharpEditorControl(_docHost);
-                    // x.ExecuteAsync(null);
+                // var x = new CSharpEditorControl(_docHost);
+                // x.ExecuteAsync(null);
                 // }
 
                 OnPropertyChanged();
@@ -429,7 +317,8 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         /// <param name="replay"></param>
         public Main1Model(ReplaySubject<Workspace> replay, IActivationStream ss, MySubjectReplaySubject impl2,
-            IDocumentHost dochost, IContentSelector contentSelector, AppSettingsViewModel appSettingsViewModel, IUserSettingsDbContext userSettingsDbContext) : this()
+            IDocumentHost dochost, IContentSelector contentSelector, AppSettingsViewModel appSettingsViewModel,
+            IUserSettingsDbContext userSettingsDbContext) : this()
         {
             DocHost = dochost;
 
@@ -449,10 +338,12 @@ namespace AnalysisControls.ViewModel
         /// <summary>
         /// 
         /// </summary>
-        public Main1Model( )       {
+        public Main1Model()
+        {
             // this.app = app;
 
-            BindingOperations.SetBinding(this, Main1Model.ActiveContentProperty, new Binding("ContentSelector.ActiveContent") { Source = this });
+            BindingOperations.SetBinding(this, ActiveContentProperty,
+                new Binding("ContentSelector.ActiveContent") {Source = this});
             DocumentsCollection = new ObservableCollection<object>();
             Anchorables = new ObservableCollection<object>();
             //_r = r;
@@ -505,7 +396,7 @@ namespace AnalysisControls.ViewModel
             // AddTypeProvider();
 
             // AddPowerShell();
-            
+
             // ObservableCollection<CodeElementDocumentation> coll = new ObservableCollection<CodeElementDocumentation>();
             // DocModel dm = DocModel.CreateInstance();
             // dm.Content = new ScrollViewer
@@ -994,15 +885,11 @@ namespace AnalysisControls.ViewModel
         public void Intercept(IInvocation invocation)
         {
             Dispatcher.Invoke(() => { invocation.Proceed(); });
-                if (invocation.ReturnValue != null)
-                {
-                    if (invocation.ReturnValue.GetType().IsClass)
-                    {
-                        invocation.ReturnValue =
-                            ProxyGeneratorHelper.ProxyGenerator.CreateClassProxyWithTarget(invocation.ReturnValue.GetType(),
-                                invocation.ReturnValue, this);
-                    }
-                }
+            if (invocation.ReturnValue != null)
+                if (invocation.ReturnValue.GetType().IsClass)
+                    invocation.ReturnValue =
+                        ProxyGeneratorHelper.ProxyGenerator.CreateClassProxyWithTarget(invocation.ReturnValue.GetType(),
+                            invocation.ReturnValue, this);
         }
     }
 }

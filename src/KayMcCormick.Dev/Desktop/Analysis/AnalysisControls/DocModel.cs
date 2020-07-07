@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -15,17 +16,17 @@ namespace AnalysisControls
     [ContentProperty("Content")]
     public class DocModel : DependencyObject, INotifyPropertyChanged
     {
-        private string _title;
         private bool _isVisible;
         private bool _isActive;
+        private object _content;
         public override string ToString() => $"<DocModel>: \"{Title}\"";
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public static DocModel CreateInstance(string Title = null)
+        public static DocModel CreateInstance(string title = null)
         {
-            return new DocModel(){Title = Title};
+            return new DocModel(){Title = title};
         }
 
         /// <summary>
@@ -39,6 +40,21 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public string ContentId { get; set; }
+
+        public ViewSpec CurrentView
+        {
+            get
+            {
+                return Content is IControlWithViews vs ? vs.CurrentView : null;
+            }
+            set
+            {
+                if (Content is IControlWithViews vs)
+                {
+                    vs.CurrentView = value;
+                }
+            }
+        }
 
         public string GroupHeader { get; set; }
 
@@ -77,7 +93,20 @@ namespace AnalysisControls
         /// <summary>
         /// 
         /// </summary>
-        public virtual object Content { get; set; }
+        public virtual object Content
+        {
+            get { return _content; }
+            set
+            {
+                if (Equals(value, _content)) return;
+                _content = value;
+                if (_content is IControlWithViews cviews)
+                {
+
+                }
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// 
@@ -98,6 +127,10 @@ namespace AnalysisControls
         }
 
         public object LargeImageSource { get; set; }
+        public ObservableCollection<ViewSpec> Views
+        {
+            get { return Content is IControlWithViews vs ? vs.Views : null; }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -3,7 +3,7 @@ using RibbonLib.Model;
 
 namespace AnalysisControls
 {
-    abstract class RibbonModelTabProvider1 : IRibbonModelProvider<RibbonModelTab>
+    public abstract class RibbonModelTabProvider1 : IRibbonModelProvider<RibbonModelTab>
     {
         private Func<RibbonModelTab> factory;
 
