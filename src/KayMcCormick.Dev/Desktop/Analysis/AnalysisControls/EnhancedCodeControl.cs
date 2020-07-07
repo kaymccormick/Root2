@@ -17,9 +17,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using AnalysisAppLib.Syntax;
 using JetBrains.Annotations;
 using KayMcCormick.Dev.Attributes;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RoslynCodeControls;
 
 namespace AnalysisControls
@@ -56,6 +59,7 @@ namespace AnalysisControls
     [TitleMetadata("Enhanced Code Control")]
     public class EnhancedCodeControl : SyntaxNodeControl, INotifyPropertyChanged
     {
+
 
         public static readonly DependencyProperty FontsProperty = DependencyProperty.Register(
             "Fonts", typeof(IEnumerable), typeof(EnhancedCodeControl), new PropertyMetadata(default(IEnumerable), OnFontsChanged));
@@ -105,6 +109,35 @@ namespace AnalysisControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(EnhancedCodeControl), new FrameworkPropertyMetadata(typeof(EnhancedCodeControl)));
             // CompilationProperty.AddOwner(typeof(EnhancedCodeControl));
 //            SyntaxNodeControl.CompilationProperty.OverrideMetadata(typeof(EnhancedCodeControl), new PropertyMetadata(null, PropertyChangedCallback));
+// ModelProperty.OverrideMetadata(typeof(EnhancedCodeControl), new PropertyMetadata(SemanticModelChanged));
+// SyntaxTreeProperty.OverrideMetadata(typeof(EnhancedCodeControl), new FrameworkPropertyMetadata(SyntaxTreeChanged));
+// SyntaxNodeProperty.OverrideMetadata(typeof(EnhancedCodeControl), new PropertyMetadata(SyntaxNodeChanged));
+        }
+
+        private static void SyntaxNodeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var node = (SyntaxNode) e.NewValue;
+            if (node is CSharpSyntaxNode csn)
+            {
+            Walker w = new Walker();    
+            w.Visit(node);
+            var rootNode = w.CompilationUnitNode;
+            }
+        }
+
+        private static void SyntaxTreeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var tree = (SyntaxTree) e.NewValue;
+            
+            
+        }
+
+        private static void SemanticModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            SemanticModel model = (SemanticModel) e.NewValue;
+            
+            
+            
         }
 
         /// <inheritdoc />
@@ -232,4 +265,178 @@ namespace AnalysisControls
             return b ? Visibility.Visible : Visibility.Collapsed;
         }
     }
+
+        public class Walker : CSharpSyntaxWalker
+        {
+            private Stack<StructureNode> _nodes = new Stack<StructureNode>();
+
+            public Walker(SyntaxWalkerDepth depth = SyntaxWalkerDepth.Node) : base(depth)
+            {
+                var compilationUnitNode = new CompilationUnitNode();
+                CompilationUnitNode = compilationUnitNode;
+                _nodes.Push(compilationUnitNode);
+            }
+
+            public CompilationUnitNode CompilationUnitNode { get; set; }
+
+            public override void VisitLocalFunctionStatement(LocalFunctionStatementSyntax node)
+            {
+                base.VisitLocalFunctionStatement(node);
+            }
+
+            public override void VisitUsingDirective(UsingDirectiveSyntax node)
+            {
+                base.VisitUsingDirective(node);
+            }
+
+            public override void VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
+            {
+                var namespaceNode = new NamespaceNode(node.Name.ToString());
+                _nodes.Peek().Children.Add(namespaceNode);
+                _nodes.Push(namespaceNode);
+                base.VisitNamespaceDeclaration(node);
+                _nodes.Pop();
+            }
+
+            public override void VisitClassDeclaration(ClassDeclarationSyntax node)
+            {
+                var classNode = new ClassNode(node.Identifier.ToString());
+                _nodes.Peek().Children.Add(classNode);
+                _nodes.Push(classNode);
+                base.VisitClassDeclaration(node);
+                _nodes.Pop();
+            }
+
+            public override void VisitStructDeclaration(StructDeclarationSyntax node)
+            {
+                base.VisitStructDeclaration(node);
+            }
+
+            public override void VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
+            {
+                base.VisitInterfaceDeclaration(node);
+            }
+
+            public override void VisitRecordDeclaration(RecordDeclarationSyntax node)
+            {
+                base.VisitRecordDeclaration(node);
+            }
+
+            public override void VisitEnumDeclaration(EnumDeclarationSyntax node)
+            {
+                base.VisitEnumDeclaration(node);
+            }
+
+            public override void VisitDelegateDeclaration(DelegateDeclarationSyntax node)
+            {
+                base.VisitDelegateDeclaration(node);
+            }
+
+            public override void VisitFieldDeclaration(FieldDeclarationSyntax node)
+            {
+                base.VisitFieldDeclaration(node);
+            }
+
+            public override void VisitEventFieldDeclaration(EventFieldDeclarationSyntax node)
+            {
+                base.VisitEventFieldDeclaration(node);
+            }
+
+            public override void VisitMethodDeclaration(MethodDeclarationSyntax node)
+            {
+                var classNode = new MethodNode($"{node.ReturnType} {node.Identifier}");
+                _nodes.Peek().Children.Add(classNode);
+                _nodes.Push(classNode);
+                base.VisitMethodDeclaration(node);
+                _nodes.Pop();
+	    
+            }
+
+            public override void VisitOperatorDeclaration(OperatorDeclarationSyntax node)
+            {
+                base.VisitOperatorDeclaration(node);
+            }
+
+            public override void VisitConversionOperatorDeclaration(ConversionOperatorDeclarationSyntax node)
+            {
+                base.VisitConversionOperatorDeclaration(node);
+            }
+
+            public override void VisitConstructorDeclaration(ConstructorDeclarationSyntax node)
+            {
+                base.VisitConstructorDeclaration(node);
+            }
+
+            public override void VisitDestructorDeclaration(DestructorDeclarationSyntax node)
+            {
+                base.VisitDestructorDeclaration(node);
+            }
+
+            public override void VisitPropertyDeclaration(PropertyDeclarationSyntax node)
+            {
+                base.VisitPropertyDeclaration(node);
+            }
+
+            public override void VisitEventDeclaration(EventDeclarationSyntax node)
+            {
+                base.VisitEventDeclaration(node);
+            }
+
+            public override void VisitIndexerDeclaration(IndexerDeclarationSyntax node)
+            {
+                base.VisitIndexerDeclaration(node);
+            }
+
+            public override void VisitAccessorDeclaration(AccessorDeclarationSyntax node)
+            {
+                base.VisitAccessorDeclaration(node);
+            }
+        }
+
+        public class ClassNode : StructureNode
+        {
+            public string ClassIdentifier { get; }
+            public override string DisplayText => "Class " + ClassIdentifier;
+
+            public ClassNode(string classIdentifier)
+            {
+                ClassIdentifier = classIdentifier;
+            }
+        }
+
+        public class MethodNode : StructureNode
+        {
+	private string _displayText;
+            public override string DisplayText => _displayText;
+
+            public MethodNode(string displayText)
+            {
+                _displayText = displayText;
+            }
+        }
+
+        public abstract class StructureNode
+        {
+            public List<StructureNode> Children { get; set; } = new List<StructureNode>();
+
+            public abstract string DisplayText {
+                get;
+            }
+        }
+
+        public class CompilationUnitNode : StructureNode
+        {
+            public override string DisplayText => "Compilation Unit";
+        }
+
+
+        public class NamespaceNode : StructureNode
+        {
+            private readonly string _ns;
+            public override string DisplayText => "Namespace " + _ns;
+        public NamespaceNode(string @namespace)
+            {
+                _ns = @namespace;
+            }
+        }
 }

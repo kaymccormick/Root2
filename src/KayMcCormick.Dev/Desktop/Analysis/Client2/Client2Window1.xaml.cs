@@ -15,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using AnalysisControls;
+using AnalysisControls.ViewModel;
 using Autofac;
 using Autofac.Core;
 using Autofac.Features.Metadata;
@@ -73,7 +74,7 @@ namespace Client2
             ViewModel = new ClientModel(new PrimaryRibbonModel());
         }
 
-        public Client2Window1(ILifetimeScope scope, ClientModel viewModel, MyCacheTarget2 myCacheTarget)
+        public Client2Window1(ILifetimeScope scope, ClientModel viewModel, Main1Model main1Model, Main1Mode2 main1Mode2, MyCacheTarget2 myCacheTarget)
         {
             AddHandler(Binding.SourceUpdatedEvent, new EventHandler<DataTransferEventArgs>(OnSourceUpdated));
             AddHandler(Binding.TargetUpdatedEvent, new EventHandler<DataTransferEventArgs>(OnTargetUpdated));
@@ -81,6 +82,8 @@ namespace Client2
             DataContext = ViewModel.PrimaryRibbon;
             SetValue(AttachedProperties.LifetimeScopeProperty, scope);
             InitializeComponent();
+            Main1.ViewModel = main1Model;
+            Main1.ViewModel2 = main1Mode2;
             _viewModel.Main1Model = Main1?.ViewModel;
             if (Main1 != null) Main1.ViewModel.ClientViewModel = _viewModel;
             // viewModel.Ribbon = myRibbon;

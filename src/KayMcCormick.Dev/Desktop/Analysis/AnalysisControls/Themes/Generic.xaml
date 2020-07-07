@@ -5304,6 +5304,13 @@
                                 <TextBlock Text="{Binding Path=Project.Name}" />
 
                             </StackPanel>
+                            <TreeView local:ViewProperties.ViewName="Structure" ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=StructureRootNodes}" Visibility="Hidden">
+                                <TreeView.ItemTemplate>
+                                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                        <TextBlock Text="{Binding DisplayText}"/>
+                                    </HierarchicalDataTemplate>
+                                </TreeView.ItemTemplate>
+                            </TreeView>
                             <StackPanel local:ViewProperties.ViewName="Model" Visibility="Hidden"
                                         DataContext="{Binding ElementName=code,Path=CodeControl.Model}">
                                 <TextBlock Text="{Binding Path=Language}" />
@@ -5521,16 +5528,16 @@
                                     </ComboBox>
                                     <TextBlock Text="Size:" Margin="5,0,0,0" VerticalAlignment="Center" />
                                     <ComboBox x:Name="FontSizeCombo"
-                                              ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CommonFontSizes}" />
+                                              ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CommonFontSizes}" SelectedItem="{Binding ElementName=CodeControl,Path=FontSize,Mode=OneWay}"/>
                                 </ToolBar>
                             </ToolBarTray>
                             <roslynCodeControls:RoslynCodeControl Grid.Row="2" Grid.Column="0"
                                                                   Filename="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Filename,Mode=TwoWay}"
-                                                                  Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document}"
-                                                                  SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText}"
-                                                                  SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree}"
-                                                                  Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation}"
-                                                                  SyntaxNode="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxNode}"
+                                                                  Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document,Mode=TwoWay}"
+                                                                  SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText,Mode=TwoWay}"
+                                                                  SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree,Mode=TwoWay}"
+                                                                  Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation,Mode=TwoWay}"
+                                                                  SyntaxNode="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxNode,Mode=TwoWay}"
                                                                   x:Name="CodeControl" />
                             <StackPanel Grid.Row="3" Grid.Column="2">
                                 <TextBlock Text="{Binding ElementName=CodeControl,Path=EnclosingSymbol}" />
@@ -9050,7 +9057,7 @@
                  TargetType="Border">
             <Style.Triggers>
               <DataTrigger
-                Binding="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=SyntaxTypesControl},Path=ViewModel.ShowBordersIsChecked}"
+                Binding="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=controls:SyntaxTypesControl},Path=ViewModel.ShowBordersIsChecked}"
                 Value="true">
                 <Setter Property="BorderBrush"
                         Value="#a00000ff" />
@@ -9059,7 +9066,7 @@
                 <Setter Property="Padding" Value="1" />
               </DataTrigger>
               <DataTrigger
-                Binding="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=SyntaxTypesControl},Path=ViewModel.ShowBordersIsChecked}"
+                Binding="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=controls:SyntaxTypesControl},Path=ViewModel.ShowBordersIsChecked}"
                 Value="false">
                 <Setter Property="BorderBrush"
                         Value="Transparent" />

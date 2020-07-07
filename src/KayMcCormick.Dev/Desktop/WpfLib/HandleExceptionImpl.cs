@@ -67,7 +67,7 @@ namespace KayMcCormick.Lib.Wpf
                     {
                         MinWidth  = 300
                       , MinHeight = 100
-                      , Content   = new ExceptionInfo { DataContext = exception }
+                      //, Content   = new ExceptionInfo { DataContext = exception }
                     } ;
             w.ShowDialog ( ) ;
         }

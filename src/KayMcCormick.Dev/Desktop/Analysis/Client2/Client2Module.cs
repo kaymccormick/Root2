@@ -21,6 +21,8 @@ namespace Client2
         protected override void Load(ContainerBuilder builder)
         {
             builder.Register(c => new UserSettingsDbContext()).AsSelf().As<IUserSettingsDbContext>().WithCallerMetadata().SingleInstance();
+	    builder.RegisterType<Client2Window1>().As<Window>().WithCallerMetadata();
+	    /*
             builder.Register((c) =>
                 {
                     var lifetimeScope = c.Resolve<ILifetimeScope>();
@@ -43,6 +45,7 @@ namespace Client2
                         ls.ResolveOptional<MyCacheTarget2>());
                 })
                 .As<Window>().WithCallerMetadata();
+		*/
 /*            builder.RegisterAdapter<Meta<Lazy<Window>>, Meta<IDisplayableAppCommand>>((context, parameters, arg3) =>
             {
                 var props = MetaHelper.GetMetadataProps(arg3.Metadata);

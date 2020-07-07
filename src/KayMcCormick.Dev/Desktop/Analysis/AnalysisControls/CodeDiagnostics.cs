@@ -11,6 +11,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using JetBrains.Annotations;
 using KayMcCormick.Dev.Attributes;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using RoslynCodeControls;
 
 namespace AnalysisControls
@@ -31,10 +33,16 @@ namespace AnalysisControls
         private ViewSpec _diagView;
         private ViewSpec _sourceView;
         private Grid _viewContainer;
+        private ViewSpec _structureView;
+        private List<StructureNode> _structureRootNodes;
 
         static CodeDiagnostics()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(CodeDiagnostics), new FrameworkPropertyMetadata(typeof(CodeDiagnostics)));
+            // ModelProperty.OverrideMetadata(typeof(EnhancedCodeControl), new PropertyMetadata(SemanticModelChanged));
+            // SyntaxTreeProperty.OverrideMetadata(typeof(EnhancedCodeControl), new FrameworkPropertyMetadata(SyntaxTreeChanged));
+            SyntaxNodeProperty.OverrideMetadata(typeof(CodeDiagnostics), new PropertyMetadata(SyntaxNodeChanged));
+
         }
 
         public CodeDiagnostics()
@@ -42,14 +50,38 @@ namespace AnalysisControls
             _codeView = new ViewSpec() { ViewName = "Code", LargeImageSource = "pack://application:,,,/AnalysisControlsCore;component/Assets/CodeView.png" };
             _documentView = new ViewSpec() { ViewName = "Document"};
             _modelView = new ViewSpec() { ViewName = "Model", LargeImageSource = "pack://application:,,,/AnalysisControlsCore;component/Assets/ModelView.png" };
-            
+            _structureView = new ViewSpec() {ViewName = "Structure"};
             _diagView = new ViewSpec() { ViewName = "Diagnostics" };
             _views.Add(_codeView);
             _views.Add(_documentView);
+            _views.Add(_structureView);
             _views.Add(_modelView);
             _views.Add(_diagView); 
             _currentView = _codeView;
         }
+
+        private static void SyntaxNodeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var node = (SyntaxNode)e.NewValue;
+            if (node is CSharpSyntaxNode csn)
+            {
+                Walker w = new Walker();
+                w.Visit(node);
+                ((CodeDiagnostics)d).StructureRootNodes = w.CompilationUnitNode.Children;
+            }
+        }
+
+        public List<StructureNode> StructureRootNodes
+        {
+            get { return _structureRootNodes; }
+            set
+            {
+                if (Equals(value, _structureRootNodes)) return;
+                _structureRootNodes = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         /// <inheritdoc />
         public override void OnApplyTemplate()

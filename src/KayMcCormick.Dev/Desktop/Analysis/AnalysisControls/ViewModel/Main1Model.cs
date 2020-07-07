@@ -433,7 +433,8 @@ namespace AnalysisControls.ViewModel
             return oo;
         }
 
-        private void AddPowerShell2()
+#if false
+private void AddPowerShell2()
         {
             var terminal0 = new TerminalUserControl0();
             var proxy = ProxyGeneratorHelper.ProxyGenerator.CreateClassProxyWithTarget<Main1Model>(this,
@@ -445,7 +446,7 @@ namespace AnalysisControls.ViewModel
             doc.Content = terminal0;
             AddDocument(doc);
         }
-
+#endif
         // private void AddVisualTreeViewDoc()
         // {
         // var c = new VisualTreeView();
@@ -676,7 +677,7 @@ namespace AnalysisControls.ViewModel
                 AddInitialDocuments();
 
 
-                AddPowerShell2();
+//                AddPowerShell2();
                 AddInitialAnchorables();
 
                 OnPropertyChanged();

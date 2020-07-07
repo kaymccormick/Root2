@@ -58,8 +58,7 @@
             <analysisControls:Main1 HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"
                                     AppSettingsViewModel="{wpf:Resolve analysisControls:AppSettingsViewModel}"
-                                    ViewModel="{wpf:Resolve viewModel1:Main1Model}"
-                                    ViewModel2="{wpf:Resolve viewModel1:Main1Mode2}">
+                                   >
                 <analysisControls:Main1.InputBindings><KeyBinding Gesture="Ctrl+Alt+S" Command="wpf:WpfAppCommands.AppSettings"/></analysisControls:Main1.InputBindings>
                 <Grid>
                 <Ribbon
