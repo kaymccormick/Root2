@@ -9050,7 +9050,7 @@
                  TargetType="Border">
             <Style.Triggers>
               <DataTrigger
-                Binding="{Binding ElementName=TypesViewControl,Path=ViewModel.ShowBordersIsChecked}"
+                Binding="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=SyntaxTypesControl},Path=ViewModel.ShowBordersIsChecked}"
                 Value="true">
                 <Setter Property="BorderBrush"
                         Value="#a00000ff" />
@@ -9059,7 +9059,7 @@
                 <Setter Property="Padding" Value="1" />
               </DataTrigger>
               <DataTrigger
-                Binding="{Binding ElementName=TypesViewControl,Path=ViewModel.ShowBordersIsChecked}"
+                Binding="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=SyntaxTypesControl},Path=ViewModel.ShowBordersIsChecked}"
                 Value="false">
                 <Setter Property="BorderBrush"
                         Value="Transparent" />
@@ -9261,6 +9261,7 @@
                          Grid.Row="0"
                          HorizontalAlignment="Right"
                          Margin="10,0,10,0">
+			 <TextBlock Text="?"/>
               </WrapPanel>
             </Grid>
           </HierarchicalDataTemplate>

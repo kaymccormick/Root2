@@ -1870,20 +1870,6 @@ namespace ProjTests
         }
 
      
-        [WpfFact]
-        public void TestRibbonModel()
-        {
-            var m = new PrimaryRibbonModel();
-            var p = new FunTabProvider(Enumerable.Empty<IRibbonModelProvider<RibbonModelGroup>>());
-            var t = p.ProvideModelItem();
-            m.RibbonItems.Add(t);
-            //var x = new RibbonViewGroupProviderBaseImpl();
-            //t.ItemsCollection.Add(x.ProvideModelItem());
-            var window = new TemplateWindow {Content = new Ribbon {ItemsSource = m.RibbonItems}};
-            window.Show();
-        }
-
-
         //  [WpfFact]
         public void TestCodeEntry()
         {

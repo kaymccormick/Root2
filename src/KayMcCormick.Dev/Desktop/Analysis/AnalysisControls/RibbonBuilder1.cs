@@ -134,7 +134,7 @@ namespace AnalysisControls
                 r.QuickAccessToolBar.Items.Add(new RibbonModelButton
                 {
                     Label = "test1",
-                    SmallImageSource = "pack://application:,,,/WpfLib;component/Assets/ASPWebSite_16x.png"
+                    SmallImageSource = "pack://application:,,,/WpfLibCore;component/Assets/ASPWebSite_16x.png"
                 });
             var dp = new ModelDatePicker();
             var dockPanel = new DockPanel {LastChildFill = false};
@@ -173,8 +173,8 @@ namespace AnalysisControls
                             StringBuilder b = new StringBuilder();
                             foreach (var keyValuePair in metaCmd.Metadata)
                             {
-                                if(/*keyValuePair.Key != "CallerFilePath" && */keyValuePair.Key != "CallerFilename" && keyValuePair.Key != "CallerLineNumber" &&
-                                   keyValuePair.Key != "CallerMemberName" && keyValuePair.Key != "RandomGuid" && keyValuePair.Key != "GuidFrom" && keyValuePair.Key.StartsWith("_") == false && keyValuePair.Key != "RegisteredDatetime" && keyValuePair.Key != "SeenTimes")
+                                if(/*keyValuePair.Key != "CallerFilePath" && keyValuePair.Key != "CallerFilename" && keyValuePair.Key != "CallerLineNumber"  &&
+                                   keyValuePair.Key != "CallerMemberName" &&*/ keyValuePair.Key != "RandomGuid" && keyValuePair.Key != "GuidFrom" && keyValuePair.Key.StartsWith("_") == false && keyValuePair.Key != "RegisteredDatetime" && keyValuePair.Key != "SeenTimes")
                                 b.Append($"{keyValuePair.Key} = {keyValuePair.Value};\r\n");
                             }
                             var th = props.TypeHint?.ToString() ?? "no typehint";

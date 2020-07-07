@@ -43,7 +43,7 @@ namespace Client2
                         ls.ResolveOptional<MyCacheTarget2>());
                 })
                 .As<Window>().WithCallerMetadata();
-            builder.RegisterAdapter<Meta<Lazy<Window>>, Meta<IDisplayableAppCommand>>((context, parameters, arg3) =>
+/*            builder.RegisterAdapter<Meta<Lazy<Window>>, Meta<IDisplayableAppCommand>>((context, parameters, arg3) =>
             {
                 var props = MetaHelper.GetMetadataProps(arg3.Metadata);
                 return new Meta<IDisplayableAppCommand>(new LambdaAppCommand(
@@ -57,6 +57,7 @@ namespace Client2
                     }, arg3.Value), new Dictionary<string, object>() { ["CallerFilePath"] = "Client2Module"});
 
             }).WithCallerMetadata();
+	    */
         }
     }
 }

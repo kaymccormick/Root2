@@ -136,7 +136,6 @@ namespace AnalysisControls
             // builder.RegisterType<CodeAnalysisContextualTabGroupProvider>().AsImplementedInterfaces()
                 // .WithCallerMetadata();
             builder.RegisterType<CodeGenCommand>().AsImplementedInterfaces().WithAttributeFiltering().WithCallerMetadata();
-            builder.RegisterType<DatabasePopulateCommand>().AsImplementedInterfaces().WithAttributeFiltering().WithCallerMetadata();
 #if true
             builder.RegisterType<ExtractDocCommentsCommand>().WithCallerMetadata();
             builder.Register((c) =>

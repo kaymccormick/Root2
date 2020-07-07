@@ -214,16 +214,6 @@ namespace AnalysisControls
                         )
                 )
                 .WithCallerMetadata();
-            builder.RegisterType<TypesView>()
-                .AsSelf()
-                .As<IControlView>()
-                .WithMetadata(
-                    "ImageSource"
-                    , "pack://application:,,,/WpfLib;component/Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
-                )
-                .WithMetadata("PrimaryRibbon", true)
-                .WithCallerMetadata();
-            // builder.RegisterType<UiElementTypeConverter>().AsSelf();
 
             builder.RegisterAssemblyTypes(typeof(AnalysisControlsModule).Assembly).AssignableTo<IModelProvider>().AsImplementedInterfaces().WithAttributeFiltering().WithCallerMetadata();
             builder.RegisterType<Main1Model>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope().WithCallerMetadata();
