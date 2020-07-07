@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvalonDock", "..\AvalonDock
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfLibCore", "Desktop\WpfLib\WpfLibCore.csproj", "{AC239737-2C57-48AF-A05A-2FF28637FF72}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfTerminalControlLib", "..\src\WpfPowershellHost\src\WpfTerminalControlLib\WpfTerminalControlLib.csproj", "{51DEE992-2221-4AD5-A962-F4135CA7FFCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfTerminalControlLib", "..\WpfPowershellHost\src\WpfTerminalControlLib\WpfTerminalControlLib.csproj", "{51DEE992-2221-4AD5-A962-F4135CA7FFCF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client2Core", "Desktop\Analysis\Client2\Client2Core.csproj", "{CB18A238-0712-46B4-9FB1-8CE25C83888C}"
 EndProject
