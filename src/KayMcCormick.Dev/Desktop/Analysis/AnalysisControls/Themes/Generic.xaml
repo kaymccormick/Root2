@@ -53,7 +53,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:Main1}">
                     <ControlTemplate.Resources>
-                                <local:TestConverter2 x:Key="TestConverter" />                        <DataTemplate DataType="{x:Type local:DocModel}">
+                        <local:TestConverter2 x:Key="TestConverter" />
+                        <DataTemplate DataType="{x:Type local:DocModel}">
                             <local:DocumentView Document="{Binding}" />
                         </DataTemplate>
                         <DataTemplate DataType="{x:Type local:AnchorableModel}">
@@ -77,7 +78,8 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <ContentPresenter Visibility="{Binding AppSettings.RibbonVisibility}"  Content="{TemplateBinding Content}"/>
+                            <ContentPresenter Visibility="{Binding AppSettings.RibbonVisibility}"
+                                              Content="{TemplateBinding Content}" />
                             <ToolBarTray Grid.Row="1" Grid.Column="0">
                                 <ToolBar Band="1" BandIndex="1">
                                     <TextBlock Text="{Binding CurrentOperation.Desc}" />
@@ -5252,198 +5254,188 @@
                         <converters:SyntaxTokenConverter x:Key="SyntaxTokenConverter" />
                         <converters:SyntaxTriviaConverter x:Key="SyntaxTriviaConverter" />
                         <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
-
-                        <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
+                        <local:RectConverter x:Key="RectConverter" />
+                        <converters:OperationTemplateSelector x:Key="OperationTemplateSelector" />
                         <DataTemplate DataType="{x:Type roslynCodeControls:CodeToolTipContent}">
                             <StackPanel Orientation="Vertical">
                                 <ItemsControl ItemsSource="{Binding Nodes}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="{x:Type roslynCodeControls:SyntaxNodeDepth}">
-                                            <TextBlock Margin="{Binding Margin}" Text="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"/>
+                                            <TextBlock Margin="{Binding Margin}"
+                                                       Text="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Vertical"/>
+                                            <StackPanel Orientation="Vertical" />
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
-                                <ContentControl Content="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"></ContentControl>
+                                <ContentControl
+                                    Content="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Symbol: "/>
-                                    <ContentControl Content="{Binding Symbol}"></ContentControl>
+                                    <TextBlock Text="Symbol: " />
+                                    <ContentControl Content="{Binding Symbol}" />
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Operation: "/>
-                                    <ContentControl Content="{Binding Operation}" ContentTemplateSelector="{StaticResource OperationTemplateSelector}">
-                                    </ContentControl>
+                                    <TextBlock Text="Operation: " />
+                                    <ContentControl Content="{Binding Operation}"
+                                                    ContentTemplateSelector="{StaticResource OperationTemplateSelector}" />
                                 </StackPanel>
 
                             </StackPanel>
-                        </DataTemplate> 
+                        </DataTemplate>
                     </ControlTemplate.Resources>
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                        <TabControl>
-                            <TabControl.Resources>
-                                <local:RectConverter x:Key="RectConverter" />
-                            </TabControl.Resources>
-                            <TabItem Header="Code">
-                                <local:EnhancedCodeControl
-                                    SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText,Mode=TwoWay}"
-                                    Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document,Mode=TwoWay}"
-                                    Filename="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Filename,Mode=TwoWay}"
-                                                           SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree,Mode=TwoWay}"
-                                                           Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation,Mode=TwoWay}"
-                                                           SyntaxNode="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxNode,Mode=TwoWay}"
-              
-                                    x:Name="code"
- />
-                            </TabItem>
-                            <TabItem Header="Document" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document}">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding Path=FilePath}"/>
-                                    <TextBlock Text="{Binding Path=Project.Name}"/>
-                                    
-                                </StackPanel>
-                            </TabItem>
-                            <TabItem Header="Model" DataContext="{Binding ElementName=code,Path=CodeControl.Model}">
-			    <StackPanel>
-                                <TextBlock Text="{Binding Path=Language}"/>
-				</StackPanel>
-				
-                            </TabItem>
+                        <Grid x:Name="ViewContainer">
+                            <local:EnhancedCodeControl local:ViewProperties.ViewName="Code"
+                                                       SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText,Mode=TwoWay}"
+                                                       Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document,Mode=TwoWay}"
+                                                       Filename="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Filename,Mode=TwoWay}"
+                                                       SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree,Mode=TwoWay}"
+                                                       Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation,Mode=TwoWay}"
+                                                       SyntaxNode="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxNode,Mode=TwoWay}"
 
-<TabItem Header="Compilation" DataContext="{Binding ElementName=code,Path=CodeControl.Compilation}">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Content="Compile" Command="wpf:WpfAppCommands.Compile" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CodeControl.CodeControl}"/></StackPanel>
-                                    <TextBlock Text="{Binding Path=Language}"/>
-                                    <TextBlock Text="{Binding Path=Assembly}"/>
-                                    <TextBlock Text="{Binding Path=AssemblyName}"/>
-                                    <TextBlock Text="{Binding Path=Options.OutputKind}"/>
-                                    <ListView ItemsSource="{Binding ElementName=code,Path=CodeControl.Diagnostics}">
+                                                       x:Name="code" >
+                            </local:EnhancedCodeControl>
+                            <StackPanel local:ViewProperties.ViewName="Document" Visibility="Hidden"
+                                        DataContext="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document}">
+                                <TextBlock Text="{Binding Path=FilePath}" />
+                                <TextBlock Text="{Binding Path=Project.Name}" />
+
+                            </StackPanel>
+                            <StackPanel local:ViewProperties.ViewName="Model" Visibility="Hidden"
+                                        DataContext="{Binding ElementName=code,Path=CodeControl.Model}">
+                                <TextBlock Text="{Binding Path=Language}" />
+                            </StackPanel>
+                            <StackPanel local:ViewProperties.ViewName="Compilation" Visibility="Hidden"
+                                        DataContext="{Binding ElementName=code,Path=CodeControl.Compilation}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="Compile" Command="wpf:WpfAppCommands.Compile"
+                                            CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CodeControl.CodeControl}" />
+                                </StackPanel>
+                                <TextBlock Text="{Binding Path=Language}" />
+                                <TextBlock Text="{Binding Path=Assembly}" />
+                                <TextBlock Text="{Binding Path=AssemblyName}" />
+                                <TextBlock Text="{Binding Path=Options.OutputKind}" />
+                                <ListView ItemsSource="{Binding ElementName=code,Path=CodeControl.Diagnostics}">
                                     <ListView.View>
                                         <GridView>
-                                            <GridViewColumn  Header="Severity" DisplayMemberBinding="{Binding Path=Severity}"/>
+                                            <GridViewColumn Header="Severity"
+                                                            DisplayMemberBinding="{Binding Path=Severity}" />
                                             <GridViewColumn Header="Message">
                                                 <GridViewColumn.CellTemplate>
                                                     <DataTemplate DataType="{x:Type codeAnalysis:Diagnostic}">
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding Converter={StaticResource DiagnosticConverter}}"/>
+                                                            <TextBlock
+                                                                Text="{Binding Converter={StaticResource DiagnosticConverter}}" />
                                                         </StackPanel>
                                                     </DataTemplate>
                                                 </GridViewColumn.CellTemplate>
                                             </GridViewColumn>
-                                            </GridView>
+                                        </GridView>
                                     </ListView.View>
                                 </ListView>
-                                </StackPanel>
-                            </TabItem>
+                            </StackPanel>
+                            <Grid local:ViewProperties.ViewName="Diagnostics" Visibility="Hidden">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="80" />
+                                </Grid.RowDefinitions>
+                                <ListView x:Name="lines" Grid.ColumnSpan="2" Grid.Row="0" Grid.Column="0"
+                                          ItemsSource="{Binding ElementName=code,Path=CodeControl.LineInfos}">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Line no."
+                                                            DisplayMemberBinding="{Binding LineNumber}" />
+                                            <GridViewColumn Header="Offset"
+                                                            DisplayMemberBinding="{Binding Path=Offset}" />
+                                            <GridViewColumn Header="Length"
+                                                            DisplayMemberBinding="{Binding Path=Length}" />
+                                            <GridViewColumn Header="Size"
+                                                            DisplayMemberBinding="{Binding Path=Size,Converter={StaticResource SizeConverter}}" />
+                                            <GridViewColumn Header="Origin"
+                                                            DisplayMemberBinding="{Binding Path=Origin}" />
+                                            <GridViewColumn Header="Text"
+                                                            DisplayMemberBinding="{Binding Path=Text}" />
 
-                            <TabItem Header="Source">
-                                <TextBlock Text="{Binding ElementName=code,Path=CodeControl.TextSourceText}"/>
-                            </TabItem>
-                            <TabItem Header="Diag">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="80" />
-                                    </Grid.RowDefinitions>
-                                    <ListView x:Name="lines" Grid.ColumnSpan="2" Grid.Row="0" Grid.Column="0"
-                                              ItemsSource="{Binding ElementName=code,Path=CodeControl.LineInfos}">
-                                        <ListView.View>
-                                            <GridView>
-                                                <GridViewColumn Header="Line no."
-                                                                DisplayMemberBinding="{Binding LineNumber}" />
-                                                <GridViewColumn Header="Offset"
-                                                                DisplayMemberBinding="{Binding Path=Offset}" />
-                                                <GridViewColumn Header="Length"
-                                                                DisplayMemberBinding="{Binding Path=Length}" />
-                                                <GridViewColumn Header="Size"
-                                                                DisplayMemberBinding="{Binding Path=Size,Converter={StaticResource SizeConverter}}" />
-                                                <GridViewColumn Header="Origin"
-                                                                DisplayMemberBinding="{Binding Path=Origin}" />
-                                                <GridViewColumn Header="Text"
-                                                                DisplayMemberBinding="{Binding Path=Text}" />
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                                <ListView x:Name="regions" Grid.Row="1" Grid.Column="0"
+                                          ItemsSource="{Binding ElementName=lines,Path=SelectedItem.Regions}">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Offset"
+                                                            DisplayMemberBinding="{Binding Path=Offset}" />
+                                            <GridViewColumn Header="Length"
+                                                            DisplayMemberBinding="{Binding Path=Length}" />
+                                            <GridViewColumn Header="Node"
+                                                            DisplayMemberBinding="{Binding Path=SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
+                                            <GridViewColumn Header="Node Span"
+                                                            DisplayMemberBinding="{Binding Path=SyntaxNode.Span}" />
+                                            <GridViewColumn Header="Trivia"
+                                                            DisplayMemberBinding="{Binding Path=TriviaValue,Converter={StaticResource SyntaxTriviaConverter}}" />
+                                            <GridViewColumn Header="Trivia Span"
+                                                            DisplayMemberBinding="{Binding Path=TriviaValue.Span}" />
+                                            <GridViewColumn Header="Trivia Span"
+                                                            DisplayMemberBinding="{Binding Path=TriviaPosition}" />
 
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
-                                    <ListView x:Name="regions" Grid.Row="1" Grid.Column="0"
-                                              ItemsSource="{Binding ElementName=lines,Path=SelectedItem.Regions}">
-                                        <ListView.View>
-                                            <GridView>
-                                                <GridViewColumn Header="Offset"
-                                                                DisplayMemberBinding="{Binding Path=Offset}" />
-                                                <GridViewColumn Header="Length"
-                                                                DisplayMemberBinding="{Binding Path=Length}" />
-                                                <GridViewColumn Header="Node"
-                                                                DisplayMemberBinding="{Binding Path=SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
-                                                <GridViewColumn Header="Node Span"
-                                                                DisplayMemberBinding="{Binding Path=SyntaxNode.Span}" />
-                                                <GridViewColumn Header="Trivia"
-                                                                DisplayMemberBinding="{Binding Path=TriviaValue,Converter={StaticResource SyntaxTriviaConverter}}" />
-                                                <GridViewColumn Header="Trivia Span"
-                                                                DisplayMemberBinding="{Binding Path=TriviaValue.Span}" />
-                                                <GridViewColumn Header="Trivia Span"
-                                                                DisplayMemberBinding="{Binding Path=TriviaPosition}" />
+                                            <GridViewColumn Header="Attached Node"
+                                                            DisplayMemberBinding="{Binding Path=AttachedNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
+                                            <GridViewColumn Header="Structured Trivia"
+                                                            DisplayMemberBinding="{Binding Path=StructuredTrivia,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
 
-                                                <GridViewColumn Header="Attached Node"
-                                                                DisplayMemberBinding="{Binding Path=AttachedNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
-                                                <GridViewColumn Header="Structured Trivia"
-                                                                DisplayMemberBinding="{Binding Path=StructuredTrivia,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
+                                            <GridViewColumn Header="Attached Token"
+                                                            DisplayMemberBinding="{Binding Path=AttachedToken,Converter={StaticResource SyntaxTokenConverter},ConverterParameter=kind}" />
+                                            <GridViewColumn Header="Token"
+                                                            DisplayMemberBinding="{Binding Path=TokenValue,Converter={StaticResource SyntaxTokenConverter},ConverterParameter=kind}" />
 
-                                                <GridViewColumn Header="Attached Token"
-                                                                DisplayMemberBinding="{Binding Path=AttachedToken,Converter={StaticResource SyntaxTokenConverter},ConverterParameter=kind}" />
-                                                <GridViewColumn Header="Token"
-                                                                DisplayMemberBinding="{Binding Path=TokenValue,Converter={StaticResource SyntaxTokenConverter},ConverterParameter=kind}" />
-
-                                                <GridViewColumn Header="Bounding"
-                                                                DisplayMemberBinding="{Binding Path=BoundingRect,Converter={StaticResource RectConverter}}" />
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
-                                    <ListView Grid.Row="1" Grid.Column="1"
-                                              ItemsSource="{Binding ElementName=regions,Path=SelectedItem.Characters}">
-                                        <ListView.View>
-                                            <GridView>
-                                                <GridViewColumn Header="Row" DisplayMemberBinding="{Binding Path=Row}" />
-                                                <GridViewColumn Header="Column"
-                                                                DisplayMemberBinding="{Binding Path=Column}" />
-                                                <GridViewColumn Header="Char"
-                                                                DisplayMemberBinding="{Binding Path=Char}" />
-                                                <GridViewColumn Header="Bounding"
-                                                                DisplayMemberBinding="{Binding Path=Bounds,Converter={StaticResource RectConverter}}" />
-                                            </GridView>
-                                        </ListView.View>
-                                    </ListView>
-                                    <Rectangle x:Name="rect" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0">
-                                        <Rectangle.Fill>
-                                            <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top"
-                                                          TileMode="None"
-                                                          Stretch="None">
-                                                <DrawingBrush.Drawing>
-                                                    <DrawingGroup x:Name="dgroup" />
-                                                </DrawingBrush.Drawing>
-                                            </DrawingBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                </Grid>
-                            </TabItem>
-                        </TabControl>
+                                            <GridViewColumn Header="Bounding"
+                                                            DisplayMemberBinding="{Binding Path=BoundingRect,Converter={StaticResource RectConverter}}" />
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                                <ListView Grid.Row="1" Grid.Column="1"
+                                          ItemsSource="{Binding ElementName=regions,Path=SelectedItem.Characters}">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Row" DisplayMemberBinding="{Binding Path=Row}" />
+                                            <GridViewColumn Header="Column"
+                                                            DisplayMemberBinding="{Binding Path=Column}" />
+                                            <GridViewColumn Header="Char"
+                                                            DisplayMemberBinding="{Binding Path=Char}" />
+                                            <GridViewColumn Header="Bounding"
+                                                            DisplayMemberBinding="{Binding Path=Bounds,Converter={StaticResource RectConverter}}" />
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                                <Rectangle x:Name="rect" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0">
+                                    <Rectangle.Fill>
+                                        <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top"
+                                                      TileMode="None"
+                                                      Stretch="None">
+                                            <DrawingBrush.Drawing>
+                                                <DrawingGroup x:Name="dgroup" />
+                                            </DrawingBrush.Drawing>
+                                        </DrawingBrush>
+                                    </Rectangle.Fill>
+                                </Rectangle>
+                            </Grid>
+                        </Grid>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-<local:VisibilityToBooleanConverter x:Key="B" />
+    <local:VisibilityToBooleanConverter x:Key="B" />
     <Style TargetType="{x:Type local:EnhancedCodeControl}">
         <Setter Property="Template">
             <Setter.Value>
@@ -5473,78 +5465,79 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-			            <Menu Grid.Row="0">
-            <MenuItem Header="_Toolbars">
-                <MenuItem IsCheckable="True" Header="Character _Movement" IsChecked="{Binding ElementName=CharacterMovementToolbar,Path=Visibility,Converter={StaticResource B},Mode=TwoWay}"/>
-                <MenuItem IsCheckable="True" Header="_Font Style" IsChecked="{Binding ElementName=FontsToolbar,Path=Visibility,Converter={StaticResource B},Mode=TwoWay}"/>
-            </MenuItem>
-        </Menu>
-        <ToolBarTray Grid.Row="1">
-            <ToolBar Band="1" BandIndex="1" x:Name="CharacterMovementToolbar">
-                <Button FontSize="24" Command="MoveLeftByCharacter"
-                        CommandTarget="{x:Reference CodeControl}" >
-                    <TextBlock Text="&#x1f81c;">
-                        <TextBlock.Effect>
-                            <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality"></BlurEffect>
-                        </TextBlock.Effect>
-                    </TextBlock>
+                            <Menu Grid.Row="0">
+                                <MenuItem Header="_Toolbars">
+                                    <MenuItem IsCheckable="True" Header="Character _Movement"
+                                              IsChecked="{Binding ElementName=CharacterMovementToolbar,Path=Visibility,Converter={StaticResource B},Mode=TwoWay}" />
+                                    <MenuItem IsCheckable="True" Header="_Font Style"
+                                              IsChecked="{Binding ElementName=FontsToolbar,Path=Visibility,Converter={StaticResource B},Mode=TwoWay}" />
+                                </MenuItem>
+                            </Menu>
+                            <ToolBarTray Grid.Row="1">
+                                <ToolBar Band="1" BandIndex="1" x:Name="CharacterMovementToolbar">
+                                    <Button FontSize="24" Command="MoveLeftByCharacter"
+                                            CommandTarget="{x:Reference CodeControl}">
+                                        <TextBlock Text="&#x1f81c;">
+                                            <TextBlock.Effect>
+                                                <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality" />
+                                            </TextBlock.Effect>
+                                        </TextBlock>
 
-                </Button>
-                <Button FontSize="24" Command="MoveUpByLine"
-                        CommandTarget="{x:Reference CodeControl}">
-                    <TextBlock Text="&#x1f81d;">
-                        <TextBlock.Effect>
-                            <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality"></BlurEffect>
-                        </TextBlock.Effect>
-                    </TextBlock>
-                </Button>
-                <Button FontSize="24" Command="MoveDownByLine"
-                            CommandTarget="{x:Reference CodeControl}" >
-                    <TextBlock Text="&#x1f81f;">
-                        <TextBlock.Effect>
-                            <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality"></BlurEffect>
-                        </TextBlock.Effect>
-                    </TextBlock>
-                </Button>
-                <Button FontSize="24" Command="MoveRightByCharacter"
-                        CommandTarget="{x:Reference CodeControl}" >
-                    <TextBlock Text="&#x1f81e;">
-                        <TextBlock.Effect>
-                            <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality"></BlurEffect>
-                        </TextBlock.Effect>
-                    </TextBlock>
-                </Button>
+                                    </Button>
+                                    <Button FontSize="24" Command="MoveUpByLine"
+                                            CommandTarget="{x:Reference CodeControl}">
+                                        <TextBlock Text="&#x1f81d;">
+                                            <TextBlock.Effect>
+                                                <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality" />
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                    </Button>
+                                    <Button FontSize="24" Command="MoveDownByLine"
+                                            CommandTarget="{x:Reference CodeControl}">
+                                        <TextBlock Text="&#x1f81f;">
+                                            <TextBlock.Effect>
+                                                <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality" />
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                    </Button>
+                                    <Button FontSize="24" Command="MoveRightByCharacter"
+                                            CommandTarget="{x:Reference CodeControl}">
+                                        <TextBlock Text="&#x1f81e;">
+                                            <TextBlock.Effect>
+                                                <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality" />
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                    </Button>
 
-            </ToolBar>
-            <ToolBar Band="1" BandIndex="2" x:Name="FontsToolbar">
-                <TextBlock Text="Font:" Margin="0,0,5,0" VerticalAlignment="Center"></TextBlock>
-                <ComboBox x:Name="FontComboBox" VerticalAlignment="Center"
-                    ItemsSource="{TemplateBinding Fonts}"
-                    >
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate DataType="{x:Type FontFamily}">
-                            <TextBlock FontFamily="{Binding}" Text="{Binding Path=FamilyNames[en-US]}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-                <TextBlock Text="Size:" Margin="5,0,0,0" VerticalAlignment="Center"/>
-                <ComboBox x:Name="FontSizeCombo" 
-                          ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CommonFontSizes}"
-                          />
-            </ToolBar>
-        </ToolBarTray>
+                                </ToolBar>
+                                <ToolBar Band="1" BandIndex="2" x:Name="FontsToolbar">
+                                    <TextBlock Text="Font:" Margin="0,0,5,0" VerticalAlignment="Center" />
+                                    <ComboBox x:Name="FontComboBox" VerticalAlignment="Center"
+                                              ItemsSource="{TemplateBinding Fonts}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type FontFamily}">
+                                                <TextBlock FontFamily="{Binding}"
+                                                           Text="{Binding Path=FamilyNames[en-US]}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    <TextBlock Text="Size:" Margin="5,0,0,0" VerticalAlignment="Center" />
+                                    <ComboBox x:Name="FontSizeCombo"
+                                              ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CommonFontSizes}" />
+                                </ToolBar>
+                            </ToolBarTray>
                             <roslynCodeControls:RoslynCodeControl Grid.Row="2" Grid.Column="0"
-                                                         Filename="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Filename,Mode=TwoWay}"
-                                                         Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document}"
-                                                         SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText}"
-                                                         SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree}"
-                                                         Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation}"
-                                                         SyntaxNode="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxNode}"
-                                                         x:Name="CodeControl" />
+                                                                  Filename="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Filename,Mode=TwoWay}"
+                                                                  Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document}"
+                                                                  SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText}"
+                                                                  SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree}"
+                                                                  Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation}"
+                                                                  SyntaxNode="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxNode}"
+                                                                  x:Name="CodeControl" />
                             <StackPanel Grid.Row="3" Grid.Column="2">
-                                <TextBlock Text="{Binding ElementName=CodeControl,Path=EnclosingSymbol}"/>
+                                <TextBlock Text="{Binding ElementName=CodeControl,Path=EnclosingSymbol}" />
                             </StackPanel>
-                            <StackPanel Background="DarkSeaGreen"  Grid.Row="4" Grid.Column="0" Orientation="Horizontal"
+                            <StackPanel Background="DarkSeaGreen" Grid.Row="4" Grid.Column="0" Orientation="Horizontal"
                                         TextElement.FontSize="16">
                                 <TextBlock Margin="15,0,0,0" Text="{Binding HoverOffset}" />
                                 <TextBlock Text=" ( " />
@@ -5566,12 +5559,14 @@
                                     <local:SymbolTextControl DisplaySymbol="{Binding HoverSymbol}" />
                                 </StackPanel>
                             </StackPanel>
-                            <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Grid.Row="5" Grid.Column="0" TextElement.FontSize="16">
-                                <TextBlock 
-                                           Text="{Binding HoverRegionInfo.Trivia,Converter={StaticResource SyntaxTriviaConverter}}" />
+                            <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Grid.Row="5" Grid.Column="0"
+                                        TextElement.FontSize="16">
+                                <TextBlock
+                                    Text="{Binding HoverRegionInfo.Trivia,Converter={StaticResource SyntaxTriviaConverter}}" />
                                 <TextBlock Text="{Binding HoverRegionInfo.TriviaValue.HasStructure}" />
                             </StackPanel>
-                            <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Grid.Row="6" Grid.Column="0" TextElement.FontSize="16">
+                            <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Grid.Row="6" Grid.Column="0"
+                                        TextElement.FontSize="16">
                                 <StackPanel.Resources>
                                     <DataTemplate DataType="{x:Type roslynCodeControls:SyntaxTokenTextCharacters}">
                                         <StackPanel Orientation="Horizontal" Background="Khaki">
@@ -5674,7 +5669,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-
 
 
     <Style TargetType="{x:Type local:AssembliesControl}">
@@ -8355,7 +8349,8 @@
                             </Grid.RowDefinitions>
                             <kmDevWpfControls:CustomTreeView x:Name="TreeView" Grid.RowSpan="2"
                                                              ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Root}" />
-                            <GroupBox Header="Selected" Grid.Column="1" TextElement.FontSize="14" DataContext="{Binding ElementName=TreeView,Path=SelectedItem}">
+                            <GroupBox Header="Selected" Grid.Column="1" TextElement.FontSize="14"
+                                      DataContext="{Binding ElementName=TreeView,Path=SelectedItem}">
                                 <ScrollViewer>
                                     <StackPanel>
                                         <ContentPresenter
@@ -8376,7 +8371,8 @@
 
                                                 <DataTemplate DataType="{x:Type dev:InstanceInfo}">
                                                     <StackPanel>
-                                                        <typeDescriptors:GenericInterface3 Instance="{Binding Instance}" />
+                                                        <typeDescriptors:GenericInterface3
+                                                            Instance="{Binding Instance}" />
                                                     </StackPanel>
                                                 </DataTemplate>
                                                 <DataTemplate DataType="{x:Type reg:ComponentRegistration}">
@@ -8399,30 +8395,37 @@
                                                                 <ColumnDefinition Width="*" />
                                                                 <ColumnDefinition Width="2*" />
                                                             </Grid.ColumnDefinitions>
-                                                            <ContentPresenter Grid.Row="0"  Visibility="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=Window},Path=ViewModel.AppSettings.RibbonVisibility}"  TextElement.FontFamily="B612"
+                                                            <ContentPresenter Grid.Row="0"
+                                                                              Visibility="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=Window},Path=ViewModel.AppSettings.RibbonVisibility}"
+                                                                              TextElement.FontFamily="B612"
                                                                               TextElement.FontSize="16"
                                                                               TextElement.FontWeight="Bold"
                                                                               Content="{Binding Path=Id}"
                                                                               Grid.Column="1" />
-                                                            <TextBlock Text="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=GroupBox},Path=DataContext.Items.Count}" Grid.Row="1"
-                                                                       FontFamily="Bahnschrift SemiLight" />
+                                                            <TextBlock
+                                                                Text="{Binding RelativeSource={RelativeSource FindAncestor,AncestorType=GroupBox},Path=DataContext.Items.Count}"
+                                                                Grid.Row="1"
+                                                                FontFamily="Bahnschrift SemiLight" />
                                                             <ContentPresenter Content="{Binding Path=Activator}"
-                                                                              Grid.Column="1" Grid.Row="1" >
+                                                                              Grid.Column="1" Grid.Row="1">
                                                                 <ContentPresenter.ContentTemplate>
-                                                                <DataTemplate DataType="{x:Type reflection1:ReflectionActivator}">
-                                                                    <kmDevWpfControls:TablePanel>
-                                                                        <TextBlock Text="Limit Type"/>
-                                                                        <TextBlock Text="{Binding Path=LimitType }"/>
-                                                                    </kmDevWpfControls:TablePanel>
-                                                                </DataTemplate>
+                                                                    <DataTemplate
+                                                                        DataType="{x:Type reflection1:ReflectionActivator}">
+                                                                        <kmDevWpfControls:TablePanel>
+                                                                            <TextBlock Text="Limit Type" />
+                                                                            <TextBlock Text="{Binding Path=LimitType }" />
+                                                                        </kmDevWpfControls:TablePanel>
+                                                                    </DataTemplate>
                                                                 </ContentPresenter.ContentTemplate>
                                                             </ContentPresenter>
                                                             <GroupBox Header="Services" Grid.Row="2"
-                                                                      Grid.ColumnSpan="2" Margin="10" Padding="10,10,0,0">
+                                                                      Grid.ColumnSpan="2" Margin="10"
+                                                                      Padding="10,10,0,0">
                                                                 <ItemsControl ItemsSource="{Binding Services}">
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
-                                                                            <TextBlock Margin="10,5,0,0"    FontFamily="Consolas"
+                                                                            <TextBlock Margin="10,5,0,0"
+                                                                                       FontFamily="Consolas"
                                                                                        Text="{Binding ServiceType}" />
                                                                         </DataTemplate>
                                                                     </ItemsControl.ItemTemplate>
@@ -8435,7 +8438,8 @@
                                                                         <Setter Property="HeaderTemplate">
                                                                             <Setter.Value>
                                                                                 <DataTemplate>
-                                                                                    <TextBlock Width="19,0,0,0"  FontSize="16"
+                                                                                    <TextBlock Width="19,0,0,0"
+                                                                                               FontSize="16"
                                                                                                FontWeight="Bold"
                                                                                                Text="{Binding}" />
                                                                                 </DataTemplate>
@@ -8448,7 +8452,8 @@
                                                                         <DataTemplate>
                                                                             <StackPanel Orientation="Horizontal">
 
-                                                                                <TextBlock Text="{Binding Key}" Width="140" />
+                                                                                <TextBlock Text="{Binding Key}"
+                                                                                           Width="140" />
                                                                                 <TextBlock Text="{Binding Value}"
                                                                                            Margin="10,0,0,0" />
                                                                             </StackPanel>
@@ -8457,10 +8462,13 @@
                                                                 </ItemsControl>
                                                             </GroupBox>
                                                             <GroupBox Grid.Row="4">
-                                                                <ItemsControl ItemsSource="{Binding Source={RelativeSource FindAncestor,AncestorType=StackPanel},Path=DataContext.Items}"
-                                                                           FontFamily="Bahnschrift SemiLight">
+                                                                <ItemsControl
+                                                                    ItemsSource="{Binding Source={RelativeSource FindAncestor,AncestorType=StackPanel},Path=DataContext.Items}"
+                                                                    FontFamily="Bahnschrift SemiLight">
                                                                     <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate><ContentPresenter Content="{Binding}"/></DataTemplate>
+                                                                        <DataTemplate>
+                                                                            <ContentPresenter Content="{Binding}" />
+                                                                        </DataTemplate>
                                                                     </ItemsControl.ItemTemplate>
                                                                 </ItemsControl>
                                                             </GroupBox>
@@ -8496,7 +8504,8 @@
                                                       CursorBrush="DarkOrange" x:Name="Terminal"
                                                       BorderBrush="Green" BorderThickness="1" Focusable="False" />
             <wpfTerminalControlLib:WrappedPowerShell x:Name="Shell" Terminal="{x:Reference Terminal}" />
-            <wpfTerminalControlLib:WpfInputLine LineMode="True" InputOnly="True" CursorBrush="DarkSeaGreen" x:Name="Input"
+            <wpfTerminalControlLib:WpfInputLine LineMode="True" InputOnly="True" CursorBrush="DarkSeaGreen"
+                                                x:Name="Input"
                                                 BorderBrush="Red"
                                                 BorderThickness="1" AutoResize="True" Grid.Row="2" Focusable="True" />
             <StatusBar Grid.Row="3">
@@ -8540,225 +8549,249 @@
             </Setter.Value>
         </Setter>
     </Style>
-  <Style TargetType="{x:Type RibbonTextBox}" x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:RibbonBuilder1}}">
-    <Setter Property="Control.Background" Value="{StaticResource ĉ}"/>
-    <Setter Property="Control.BorderBrush"
-                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.BorderBrush}"/>
-    <Setter Property="Control.BorderThickness" Value="1"/>
-    <Setter Property="UIElement.AllowDrop" Value="true"/>
-    <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}"/>
-    <Setter Property="RibbonTextBox.TextBoxWidth" Value="200"/>
-    <Setter Property="RibbonTextBox.MouseOverBorderBrush"
-                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.BorderBrush}"/>
-    <Setter Property="RibbonTextBox.MouseOverBackground" Value="White"/>
-    <Setter Property="RibbonTextBox.FocusedBorderBrush"
-                    Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.BorderBrush}"/>
-    <Setter Property="RibbonTextBox.FocusedBackground" Value="White"/>
-    <Setter Property="ToolTipService.InitialShowDelay" Value="{StaticResource Í}"/>
-    <Setter Property="ToolTipService.ShowDuration" Value="{StaticResource Î}"/>
-    <Setter Property="ToolTipService.BetweenShowDelay" Value="{StaticResource Ï}"/>
-    <Setter Property="RibbonTextBox.QuickAccessToolBarControlSizeDefinition">
-      <Setter.Value>
-        <RibbonControlSizeDefinition ImageSize="Collapsed" IsLabelVisible="true"/>
-      </Setter.Value>
-    </Setter>
-    <Setter Property="Control.Template">
-      <Setter.Value>
-        <ControlTemplate TargetType="{x:Type RibbonTextBox}">
-          <Border x:Name="MainBorder" Margin="1">
-            <Grid Margin="1,0,1,0" SnapsToDevicePixels="true">
-              <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition x:Name="OuterTextColumn" Width="Auto"/>
-              </Grid.ColumnDefinitions>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-              </Grid.RowDefinitions>
-              <Image x:Name="Image" Source="{TemplateBinding RibbonTextBox.LargeImageSource}"
-                     RenderOptions.BitmapScalingMode="NearestNeighbor" VerticalAlignment="Center"
-                     HorizontalAlignment="Center" Grid.Row="0" Grid.Column="1" Margin="1" Width="32" Height="32"/>
-              <Grid x:Name="Grid" Row="1" Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <Grid Name="InnerGrid" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="1">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition x:Name="TextColumn" Width="Auto"/>
-                  </Grid.ColumnDefinitions>
-                  <Grid x:Name="TwoLineTextPanel" Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <RibbonTwoLineText x:Name="TwoLineText" Text="{TemplateBinding RibbonTextBox.Label}"
-                                              TextAlignment="Center" LineHeight="13px" LineStackingStrategy="BlockLineHeight" Margin="2,0,2,0"/>
-                    <Rectangle x:Name="FocusVisual" Margin="1" StrokeThickness="1" Stroke="Black" StrokeDashArray="1 2"
-                               Visibility="Collapsed"/>
-                  </Grid>
-                  <Border x:Name="Border" Grid.Column="1" BorderThickness="{TemplateBinding Control.BorderThickness}"
-                          BorderBrush="{TemplateBinding Control.BorderBrush}"
-                          Background="{TemplateBinding Control.Background}" Height="{StaticResource ą}"
-                          HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,2,0">
-                    <ScrollViewer x:Name="PART_ContentHost" Margin="0,1,0,1"
-                                  Width="{TemplateBinding RibbonTextBox.TextBoxWidth}" VerticalAlignment="Center"/>
-                  </Border>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Border>
-          <ControlTemplate.Triggers>
-            <DataTrigger Value="True"
-                                 Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.Width.IsStar}">
-              <Setter TargetName="TextColumn" Property="ColumnDefinition.Width" Value="*"/>
-              <Setter TargetName="OuterTextColumn" Property="ColumnDefinition.Width" Value="*"/>
-              <Setter TargetName="PART_ContentHost" Property="FrameworkElement.Width" Value="Auto"/>
-              <Setter TargetName="Border" Property="FrameworkElement.HorizontalAlignment" Value="Stretch"/>
-              <Setter TargetName="Grid" Property="FrameworkElement.HorizontalAlignment" Value="Stretch"/>
-              <Setter TargetName="InnerGrid" Property="FrameworkElement.HorizontalAlignment" Value="Stretch"/>
-            </DataTrigger>
-            <DataTrigger Value="Large"
-                                 Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.ImageSize}">
-              <Setter Property="FrameworkElement.MinWidth" Value="44"/>
-              <Setter Property="FrameworkElement.Height" Value="66"/>
-              <Setter TargetName="Image" Property="FrameworkElement.Height" Value="32"/>
-              <Setter TargetName="Image" Property="FrameworkElement.Width" Value="32"/>
-              <Setter TargetName="Grid" Property="FrameworkElement.MinHeight" Value="26"/>
-              <Setter TargetName="TwoLineText" Property="RibbonTwoLineText.HasTwoLines" Value="true"/>
-            </DataTrigger>
-            <DataTrigger Value="Small"
-                                 Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.ImageSize}">
-              <Setter Value="{StaticResource Ć}" Property="FrameworkElement.Height"/>
-              <Setter TargetName="Image"
-                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SmallImageSource}"
-                              Property="Image.Source"/>
-              <Setter TargetName="Image" Property="FrameworkElement.Height" Value="16"/>
-              <Setter TargetName="Image" Property="FrameworkElement.Width" Value="16"/>
-              <Setter TargetName="Image" Property="FrameworkElement.HorizontalAlignment" Value="Left"/>
-              <Setter TargetName="Image" Property="FrameworkElement.Margin" Value="2,0,1,0"/>
-              <Setter TargetName="TwoLineText" Property="FrameworkElement.Margin" Value="2,0,1,0"/>
-              <Setter TargetName="TwoLineText" Property="RibbonTwoLineText.HasTwoLines" Value="false"/>
-              <Setter TargetName="Image" Property="Grid.Column" Value="0"/>
-              <Setter TargetName="Image" Property="Grid.Row" Value="1"/>
-              <Setter TargetName="InnerGrid" Property="FrameworkElement.Margin" Value="0"/>
-            </DataTrigger>
-            <DataTrigger Value="Collapsed"
-                                 Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.ImageSize}">
-              <Setter TargetName="Image" Property="UIElement.Visibility" Value="Collapsed"/>
-            </DataTrigger>
-            <DataTrigger Value="False"
-                                 Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.IsLabelVisible}">
-              <Setter TargetName="TwoLineTextPanel" Property="UIElement.Visibility" Value="Collapsed"/>
-            </DataTrigger>
-            <MultiDataTrigger>
-              <MultiDataTrigger.Conditions>
-                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
-                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True"/>
-              </MultiDataTrigger.Conditions>
-              <Setter TargetName="Border"
-                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBackground}"
-                              Property="Border.Background"/>
-              <Setter TargetName="Border"
-                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBorderBrush}"
-                              Property="Border.BorderBrush"/>
-            </MultiDataTrigger>
-            <MultiDataTrigger>
-              <MultiDataTrigger.Conditions>
-                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False"/>
-                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}" Value="True"/>
-              </MultiDataTrigger.Conditions>
-              <Setter TargetName="Border"
-                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBackground}"
-                              Property="Border.Background"/>
-              <Setter TargetName="Border"
-                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBorderBrush}"
-                              Property="Border.BorderBrush"/>
-            </MultiDataTrigger>
-            <Trigger Property="RibbonTextBox.ShowKeyboardCues" Value="true">
-              <Setter TargetName="FocusVisual" Property="UIElement.Visibility" Value="Visible"/>
-            </Trigger>
-            <Trigger Property="UIElement.IsEnabled" Value="false">
-              <Setter TargetName="Image" Property="UIElement.Opacity" Value="0.5"/>
-              <Setter TargetName="Border" Value="{StaticResource ć}" Property="Border.Background"/>
-              <Setter TargetName="Border" Value="{StaticResource Ĉ}" Property="Border.BorderBrush"/>
-              <Setter TargetName="MainBorder" Value="{StaticResource Ë}" Property="TextElement.Foreground"/>
-            </Trigger>
-            <Trigger Property="RibbonTextBox.IsInControlGroup" Value="true">
-              <Setter TargetName="MainBorder"
-                              Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Ribbon.BorderBrush}"
-                              Property="Border.BorderBrush"/>
-              <Setter TargetName="MainBorder" Property="Border.BorderThickness" Value="0,0,1,0"/>
-            </Trigger>
-            <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
-              <Setter Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                              Property="Control.Background"/>
-              <Setter TargetName="Border"
-                              Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
-                              Property="Border.BorderBrush"/>
-              <Setter TargetName="Border" Property="Border.Background" Value="Transparent"/>
-              <Setter TargetName="FocusVisual"
-                              Value="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}"
-                              Property="Shape.Stroke"/>
-              <Setter TargetName="MainBorder"
-                              Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
-                              Property="TextElement.Foreground"/>
-            </DataTrigger>
-            <MultiDataTrigger>
-              <MultiDataTrigger.Conditions>
-                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsInControlGroup}" Value="True"/>
-                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
-              </MultiDataTrigger.Conditions>
-              <Setter TargetName="MainBorder"
-                              Value="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}"
-                              Property="Border.BorderBrush"/>
-            </MultiDataTrigger>
-            <MultiDataTrigger>
-              <MultiDataTrigger.Conditions>
-                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}" Value="False"/>
-                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True"/>
-              </MultiDataTrigger.Conditions>
-              <Setter TargetName="MainBorder"
-                              Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
-                              Property="TextElement.Foreground"/>
-            </MultiDataTrigger>
-          </ControlTemplate.Triggers>
-        </ControlTemplate>
-      </Setter.Value>
-    </Setter>
-    <Style.Resources>
-      <Style TargetType="{x:Type ScrollViewer}">
-        <Setter Property="ContentControl.ContentTemplate">
-          <Setter.Value>
-            <DataTemplate>
-              <Grid RenderOptions.ClearTypeHint="Enabled">
-                <Canvas x:Name="BackgroundCanvas" Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                  <Rectangle x:Name="OpaqueRect" Height="{Binding ElementName=PART_ContentHost, Path=ActualHeight}"
-                             Width="{Binding ElementName=PART_ContentHost, Path=ActualWidth}"
-                             Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type Ribbon}}, Path=Background}"/>
-                  <Rectangle x:Name="OverlayRect" Height="{Binding ElementName=PART_ContentHost, Path=ActualHeight}"
-                             Width="{Binding ElementName=PART_ContentHost, Path=ActualWidth}"
-                             Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RibbonTextBox}}, Path=Background}"/>
-                </Canvas>
-                <ContentPresenter Content="{Binding}"/>
-              </Grid>
-              <DataTemplate.Triggers>
-                <DataTrigger Value="false"
-                                     Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}, Path=(ScrollViewer.CanContentScroll)}">
-                  <Setter TargetName="OpaqueRect" Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=VerticalOffset}"
-                                  Property="Canvas.Top"/>
-                  <Setter TargetName="OpaqueRect"
-                                  Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=HorizontalOffset}"
-                                  Property="Canvas.Left"/>
-                  <Setter TargetName="OverlayRect"
-                                  Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=VerticalOffset}" Property="Canvas.Top"/>
-                  <Setter TargetName="OverlayRect"
-                                  Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=HorizontalOffset}"
-                                  Property="Canvas.Left"/>
-                </DataTrigger>
-                <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
-                  <Setter TargetName="BackgroundCanvas" Property="UIElement.Visibility" Value="Collapsed"/>
-                </DataTrigger>
-              </DataTemplate.Triggers>
-            </DataTemplate>
-          </Setter.Value>
+    <Style TargetType="{x:Type RibbonTextBox}"
+           x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type local:RibbonBuilder1}}">
+        <Setter Property="Control.Background" Value="{StaticResource ĉ}" />
+        <Setter Property="Control.BorderBrush"
+                Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.BorderBrush}" />
+        <Setter Property="Control.BorderThickness" Value="1" />
+        <Setter Property="UIElement.AllowDrop" Value="true" />
+        <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="RibbonTextBox.TextBoxWidth" Value="200" />
+        <Setter Property="RibbonTextBox.MouseOverBorderBrush"
+                Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.BorderBrush}" />
+        <Setter Property="RibbonTextBox.MouseOverBackground" Value="White" />
+        <Setter Property="RibbonTextBox.FocusedBorderBrush"
+                Value="{Binding RelativeSource={RelativeSource Self}, Path=Ribbon.BorderBrush}" />
+        <Setter Property="RibbonTextBox.FocusedBackground" Value="White" />
+        <Setter Property="ToolTipService.InitialShowDelay" Value="{StaticResource Í}" />
+        <Setter Property="ToolTipService.ShowDuration" Value="{StaticResource Î}" />
+        <Setter Property="ToolTipService.BetweenShowDelay" Value="{StaticResource Ï}" />
+        <Setter Property="RibbonTextBox.QuickAccessToolBarControlSizeDefinition">
+            <Setter.Value>
+                <RibbonControlSizeDefinition ImageSize="Collapsed" IsLabelVisible="true" />
+            </Setter.Value>
         </Setter>
-      </Style>
-    </Style.Resources>
-  </Style>
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RibbonTextBox}">
+                    <Border x:Name="MainBorder" Margin="1">
+                        <Grid Margin="1,0,1,0" SnapsToDevicePixels="true">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition x:Name="OuterTextColumn" Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Image x:Name="Image" Source="{TemplateBinding RibbonTextBox.LargeImageSource}"
+                                   RenderOptions.BitmapScalingMode="NearestNeighbor" VerticalAlignment="Center"
+                                   HorizontalAlignment="Center" Grid.Row="0" Grid.Column="1" Margin="1" Width="32"
+                                   Height="32" />
+                            <Grid x:Name="Grid" Row="1" Column="1" VerticalAlignment="Center"
+                                  HorizontalAlignment="Center">
+                                <Grid Name="InnerGrid" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition x:Name="TextColumn" Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid x:Name="TwoLineTextPanel" Column="0" VerticalAlignment="Center"
+                                          HorizontalAlignment="Center">
+                                        <RibbonTwoLineText x:Name="TwoLineText"
+                                                           Text="{TemplateBinding RibbonTextBox.Label}"
+                                                           TextAlignment="Center" LineHeight="13px"
+                                                           LineStackingStrategy="BlockLineHeight" Margin="2,0,2,0" />
+                                        <Rectangle x:Name="FocusVisual" Margin="1" StrokeThickness="1" Stroke="Black"
+                                                   StrokeDashArray="1 2"
+                                                   Visibility="Collapsed" />
+                                    </Grid>
+                                    <Border x:Name="Border" Grid.Column="1"
+                                            BorderThickness="{TemplateBinding Control.BorderThickness}"
+                                            BorderBrush="{TemplateBinding Control.BorderBrush}"
+                                            Background="{TemplateBinding Control.Background}"
+                                            Height="{StaticResource ą}"
+                                            HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,2,0">
+                                        <ScrollViewer x:Name="PART_ContentHost" Margin="0,1,0,1"
+                                                      Width="{TemplateBinding RibbonTextBox.TextBoxWidth}"
+                                                      VerticalAlignment="Center" />
+                                    </Border>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Value="True"
+                                     Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.Width.IsStar}">
+                            <Setter TargetName="TextColumn" Property="ColumnDefinition.Width" Value="*" />
+                            <Setter TargetName="OuterTextColumn" Property="ColumnDefinition.Width" Value="*" />
+                            <Setter TargetName="PART_ContentHost" Property="FrameworkElement.Width" Value="Auto" />
+                            <Setter TargetName="Border" Property="FrameworkElement.HorizontalAlignment" Value="Stretch" />
+                            <Setter TargetName="Grid" Property="FrameworkElement.HorizontalAlignment" Value="Stretch" />
+                            <Setter TargetName="InnerGrid" Property="FrameworkElement.HorizontalAlignment"
+                                    Value="Stretch" />
+                        </DataTrigger>
+                        <DataTrigger Value="Large"
+                                     Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.ImageSize}">
+                            <Setter Property="FrameworkElement.MinWidth" Value="44" />
+                            <Setter Property="FrameworkElement.Height" Value="66" />
+                            <Setter TargetName="Image" Property="FrameworkElement.Height" Value="32" />
+                            <Setter TargetName="Image" Property="FrameworkElement.Width" Value="32" />
+                            <Setter TargetName="Grid" Property="FrameworkElement.MinHeight" Value="26" />
+                            <Setter TargetName="TwoLineText" Property="RibbonTwoLineText.HasTwoLines" Value="true" />
+                        </DataTrigger>
+                        <DataTrigger Value="Small"
+                                     Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.ImageSize}">
+                            <Setter Value="{StaticResource Ć}" Property="FrameworkElement.Height" />
+                            <Setter TargetName="Image"
+                                    Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SmallImageSource}"
+                                    Property="Image.Source" />
+                            <Setter TargetName="Image" Property="FrameworkElement.Height" Value="16" />
+                            <Setter TargetName="Image" Property="FrameworkElement.Width" Value="16" />
+                            <Setter TargetName="Image" Property="FrameworkElement.HorizontalAlignment" Value="Left" />
+                            <Setter TargetName="Image" Property="FrameworkElement.Margin" Value="2,0,1,0" />
+                            <Setter TargetName="TwoLineText" Property="FrameworkElement.Margin" Value="2,0,1,0" />
+                            <Setter TargetName="TwoLineText" Property="RibbonTwoLineText.HasTwoLines" Value="false" />
+                            <Setter TargetName="Image" Property="Grid.Column" Value="0" />
+                            <Setter TargetName="Image" Property="Grid.Row" Value="1" />
+                            <Setter TargetName="InnerGrid" Property="FrameworkElement.Margin" Value="0" />
+                        </DataTrigger>
+                        <DataTrigger Value="Collapsed"
+                                     Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.ImageSize}">
+                            <Setter TargetName="Image" Property="UIElement.Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Value="False"
+                                     Binding="{Binding RelativeSource={RelativeSource Self}, Path=ControlSizeDefinition.IsLabelVisible}">
+                            <Setter TargetName="TwoLineTextPanel" Property="UIElement.Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False" />
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
+                                           Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="Border"
+                                    Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBackground}"
+                                    Property="Border.Background" />
+                            <Setter TargetName="Border"
+                                    Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBorderBrush}"
+                                    Property="Border.BorderBrush" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="False" />
+                                <Condition
+                                    Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsKeyboardFocused}"
+                                    Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="Border"
+                                    Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBackground}"
+                                    Property="Border.Background" />
+                            <Setter TargetName="Border"
+                                    Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MouseOverBorderBrush}"
+                                    Property="Border.BorderBrush" />
+                        </MultiDataTrigger>
+                        <Trigger Property="RibbonTextBox.ShowKeyboardCues" Value="true">
+                            <Setter TargetName="FocusVisual" Property="UIElement.Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="UIElement.IsEnabled" Value="false">
+                            <Setter TargetName="Image" Property="UIElement.Opacity" Value="0.5" />
+                            <Setter TargetName="Border" Value="{StaticResource ć}" Property="Border.Background" />
+                            <Setter TargetName="Border" Value="{StaticResource Ĉ}" Property="Border.BorderBrush" />
+                            <Setter TargetName="MainBorder" Value="{StaticResource Ë}"
+                                    Property="TextElement.Foreground" />
+                        </Trigger>
+                        <Trigger Property="RibbonTextBox.IsInControlGroup" Value="true">
+                            <Setter TargetName="MainBorder"
+                                    Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Ribbon.BorderBrush}"
+                                    Property="Border.BorderBrush" />
+                            <Setter TargetName="MainBorder" Property="Border.BorderThickness" Value="0,0,1,0" />
+                        </Trigger>
+                        <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
+                            <Setter Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+                                    Property="Control.Background" />
+                            <Setter TargetName="Border"
+                                    Value="{DynamicResource {x:Static SystemColors.ControlLightBrushKey}}"
+                                    Property="Border.BorderBrush" />
+                            <Setter TargetName="Border" Property="Border.Background" Value="Transparent" />
+                            <Setter TargetName="FocusVisual"
+                                    Value="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}"
+                                    Property="Shape.Stroke" />
+                            <Setter TargetName="MainBorder"
+                                    Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
+                                    Property="TextElement.Foreground" />
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition
+                                    Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsInControlGroup}"
+                                    Value="True" />
+                                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="MainBorder"
+                                    Value="{DynamicResource {x:Static SystemColors.ControlLightLightBrushKey}}"
+                                    Property="Border.BorderBrush" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled}"
+                                           Value="False" />
+                                <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="MainBorder"
+                                    Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"
+                                    Property="TextElement.Foreground" />
+                        </MultiDataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Resources>
+            <Style TargetType="{x:Type ScrollViewer}">
+                <Setter Property="ContentControl.ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <Grid RenderOptions.ClearTypeHint="Enabled">
+                                <Canvas x:Name="BackgroundCanvas" Height="0" Width="0" HorizontalAlignment="Left"
+                                        VerticalAlignment="Top">
+                                    <Rectangle x:Name="OpaqueRect"
+                                               Height="{Binding ElementName=PART_ContentHost, Path=ActualHeight}"
+                                               Width="{Binding ElementName=PART_ContentHost, Path=ActualWidth}"
+                                               Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type Ribbon}}, Path=Background}" />
+                                    <Rectangle x:Name="OverlayRect"
+                                               Height="{Binding ElementName=PART_ContentHost, Path=ActualHeight}"
+                                               Width="{Binding ElementName=PART_ContentHost, Path=ActualWidth}"
+                                               Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type RibbonTextBox}}, Path=Background}" />
+                                </Canvas>
+                                <ContentPresenter Content="{Binding}" />
+                            </Grid>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Value="false"
+                                             Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}, Path=(ScrollViewer.CanContentScroll)}">
+                                    <Setter TargetName="OpaqueRect"
+                                            Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=VerticalOffset}"
+                                            Property="Canvas.Top" />
+                                    <Setter TargetName="OpaqueRect"
+                                            Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=HorizontalOffset}"
+                                            Property="Canvas.Left" />
+                                    <Setter TargetName="OverlayRect"
+                                            Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=VerticalOffset}"
+                                            Property="Canvas.Top" />
+                                    <Setter TargetName="OverlayRect"
+                                            Value="{Binding ElementName=PART_SubMenuScrollViewer, Path=HorizontalOffset}"
+                                            Property="Canvas.Left" />
+                                </DataTrigger>
+                                <DataTrigger Value="True" Binding="{Binding Path=(SystemParameters.HighContrast)}">
+                                    <Setter TargetName="BackgroundCanvas" Property="UIElement.Visibility"
+                                            Value="Collapsed" />
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Style.Resources>
+    </Style>
 
 
 </ResourceDictionary>

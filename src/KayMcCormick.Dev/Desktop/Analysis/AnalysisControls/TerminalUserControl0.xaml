@@ -469,7 +469,7 @@
         <TextBlock x:Name="FSLocation" Text="{Binding SessionStateProxy.Path.CurrentFileSystemLocation}" />
       </StackPanel>
     </StackPanel>
-    <StackPanel>
+    <StackPanel Visibility="Collapsed">
 
       <Glyphs
         FontUri             = "C:\windows\fonts\GILSANUB.TTF"
@@ -482,7 +482,7 @@
       />
 
     </StackPanel>
-    <TextBlock VerticalAlignment="Center"  Grid.Row="0" Text="Terminal" FontSize="24pt" FontFamily="Gill Sans Ultra Bold"
+    <TextBlock Visibility="Collapsed" VerticalAlignment="Center"  Grid.Row="0" Text="Terminal" FontSize="24pt" FontFamily="Gill Sans Ultra Bold"
                Foreground="White"
                Background="Transparent" Height="40" />
     <StackPanel Visibility="Collapsed" Grid.Row="1" Grid.ColumnSpan="2" DataContext="{Binding ElementName=Terminal}">

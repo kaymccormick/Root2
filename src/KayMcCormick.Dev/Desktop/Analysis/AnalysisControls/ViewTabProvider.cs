@@ -37,8 +37,12 @@ namespace AnalysisControls
             tab.Header = "View";
             _viewsGroup = new RibbonModelGroup();
             tab.ItemsCollection.Add(_viewsGroup);
-            var view1 = new RibbonModelRadioButton() {Label = "View1", GroupName = "CurrentView"};
-            view1.Command = new LambdaAppCommand("Change view", CommandFuncAsync, "View1").Command;
+            var view1 = new RibbonModelRadioButton
+            {
+                Label = "View1",
+                GroupName = "CurrentView",
+                Command = new LambdaAppCommand("Change view", CommandFuncAsync, "View1").Command
+            };
             _contentSel.PropertyChanged += ContentSelOnPropertyChanged;
             _viewsGroup.Items.Add(view1);
             return tab;
@@ -73,12 +77,13 @@ namespace AnalysisControls
             {
                 if (!(ribbonModelItem is RibbonModelRadioButton rb)) continue;
                 var found = false;
-                foreach (var view in docModel.Views)
-                {
-                    if (rb.Label.ToLowerInvariant() != view.ViewName.ToLowerInvariant()) continue;
-                    found = true;
-                    rb.IsEnabled = true;
-                }
+                if (docModel.Views != null)
+                    foreach (var view in docModel.Views)
+                    {
+                        if (rb.Label.ToLowerInvariant() != view.ViewName.ToLowerInvariant()) continue;
+                        found = true;
+                        rb.IsEnabled = true;
+                    }
 
                 if (!found)
                 {
@@ -86,19 +91,31 @@ namespace AnalysisControls
                 }
             }
 
-            foreach (var view in docModel.Views)
+            if (docModel.Views != null)
             {
-                var found = false;
-                foreach (var defaultView in _defaultViews)
+                foreach (var view in docModel.Views)
                 {
-                    if (defaultView.ViewName.ToLowerInvariant() == view.ViewName.ToLowerInvariant())
+                    var found = false;
+                    foreach (var item in _viewsGroup.Items)
                     {
-                        found = true;
-                        break;
+                        if (item is RibbonModelRadioButton rb)
+                        {
+                            if (item.Label.ToLowerInvariant() == view.ViewName.ToLowerInvariant())
+                            {
+                                found = true;
+                            }
+                        }
                     }
-                }
-                if(!found)
-                {
+                    // foreach (var defaultView in _defaultViews)
+                    // {
+                    //     if (defaultView.ViewName.ToLowerInvariant() == view.ViewName.ToLowerInvariant())
+                    //     {
+                    //         found = true;
+                    //         break;
+                    //     }
+                    // }
+
+                    if (found) continue;
                     var ribbonModelRadioButton = new RibbonModelRadioButton
                     {
                         GroupName = "Views",
@@ -109,6 +126,33 @@ namespace AnalysisControls
                     _viewsGroup.Items.Add(ribbonModelRadioButton);
                 }
             }
+            List<RibbonModelItem> removeViews = new List<RibbonModelItem>();
+            foreach (var ribbonModelItem in _viewsGroup.Items)
+            {
+                if (ribbonModelItem is RibbonModelRadioButton rb)
+                {
+                    var found = false;
+                    if (docModel.Views != null)
+                        foreach (ViewSpec docModelView in docModel.Views)
+                        {
+                            if (docModelView.ViewName.ToLowerInvariant() == rb.Label.ToLowerInvariant())
+                            {
+                                found = true;
+                            }
+                        }
+
+                    if (!found)
+                    {
+                        
+                        removeViews.Add(ribbonModelItem);
+                    }
+                }
+            }
+            foreach (var ribbonModelItem in removeViews)
+            {
+                _viewsGroup.Items.Remove(ribbonModelItem);
+            }
+
 
             if (docModel.CurrentView != null)
             {

@@ -30,6 +30,7 @@ namespace AnalysisControls
         private ViewSpec _modelView;
         private ViewSpec _diagView;
         private ViewSpec _sourceView;
+        private Grid _viewContainer;
 
         static CodeDiagnostics()
         {
@@ -54,6 +55,7 @@ namespace AnalysisControls
         /// <inheritdoc />
         public override void OnApplyTemplate()
         {
+            _viewContainer = (Grid) GetTemplateChild("ViewContainer");
             _regions = (ListView)GetTemplateChild("regions");
             if (_regions != null) _regions.SelectionChanged += RegionsOnSelectionChanged;
             _lines = (ListView)GetTemplateChild("lines");
@@ -176,6 +178,11 @@ namespace AnalysisControls
             {
                 if (Equals(value, _currentView)) return;
                 _currentView = value;
+                foreach (UIElement viewContainerChild in _viewContainer.Children)
+                {
+                    viewContainerChild.Visibility = ViewProperties.GetViewName(viewContainerChild)?.ToLowerInvariant() ==
+                                                    _currentView.ViewName.ToLowerInvariant() ? Visibility.Visible : Visibility.Hidden;
+                }
                 OnPropertyChanged();
             }
         }
