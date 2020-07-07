@@ -14,15 +14,14 @@ namespace AnalysisControls.Views
     /// <summary>
     ///     Interaction logic for Types.xaml
     /// </summary>
-    [ TitleMetadata ( "Syntax node types" ) ]
-    [ ImageMetadata ( "helpStatusColor" ) ]
-    [CategoryMetadata(Category.Management)]
-    [CommandIdMetadata("{2B0E68A0-5D5D-4296-8808-90E8AAAC783D}")]
-    [GroupMetadata("Syntax")]
+    // [ TitleMetadata ( "Syntax node types" ) ]
+    // [ ImageMetadata ( "helpStatusColor" ) ]
+    // [CategoryMetadata(Category.Management)]
+    // [CommandIdMetadata("{2B0E68A0-5D5D-4296-8808-90E8AAAC783D}")]
+    // [GroupMetadata("Syntax")]
     public sealed partial class TypesView : UserControl
       , IView < ITypesViewModel >
       , IViewWithTitle
-      , IControlView
       , INotifyPropertyChanged
     {
         private ITypesViewModel _viewModel ;

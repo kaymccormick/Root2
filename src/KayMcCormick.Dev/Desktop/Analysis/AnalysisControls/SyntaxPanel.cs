@@ -49,7 +49,7 @@ namespace AnalysisControls
     ///     <MyNamespace:SyntaxPanel/>
     ///
     /// </summary>
-    public class SyntaxPanel : Control, IControlView
+    public class SyntaxPanel : Control
     {
         public static readonly DependencyProperty ControlDepthProperty = DependencyProperty.Register(
             "ControlDepth", typeof(int), typeof(SyntaxPanel), new PropertyMetadata(default(int)));

@@ -16,6 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Assets\StatusAnnotations_Help_and_inconclusive_32xMD.png" />
+    <None Remove="Assets\StatusAnnotations_Help_and_inconclusive_32xMD_color.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Remove="AllResourcesTree.xaml" />
     <Page Remove="AllResourcesView.xaml" />
     <Page Remove="ResourcesTreeView.xaml" />
@@ -29,6 +34,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\KayMcCormick.Dev\KmDevLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\StatusAnnotations_Help_and_inconclusive_32xMD.png" />
+    <Resource Include="Assets\StatusAnnotations_Help_and_inconclusive_32xMD_color.png" />
   </ItemGroup>
 
 </Project>

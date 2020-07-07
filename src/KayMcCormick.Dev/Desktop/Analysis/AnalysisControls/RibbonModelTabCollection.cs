@@ -34,7 +34,7 @@ namespace AnalysisControls
             get { return _listImplementation.SyncRoot; }
         }
 
-        public int Add(object? value)
+        public int Add(object value)
         {
             return _listImplementation.Add(value);
         }
@@ -44,22 +44,22 @@ namespace AnalysisControls
             _listImplementation.Clear();
         }
 
-        public bool Contains(object? value)
+        public bool Contains(object value)
         {
             return _listImplementation.Contains(value);
         }
 
-        public int IndexOf(object? value)
+        public int IndexOf(object value)
         {
             return _listImplementation.IndexOf(value);
         }
 
-        public void Insert(int index, object? value)
+        public void Insert(int index, object value)
         {
             _listImplementation.Insert(index, value);
         }
 
-        public void Remove(object? value)
+        public void Remove(object value)
         {
             _listImplementation.Remove(value);
         }
@@ -79,7 +79,7 @@ namespace AnalysisControls
             get { return _listImplementation.IsReadOnly; }
         }
 
-        public object? this[int index]
+        public object this[int index]
         {
             get { return _listImplementation[index]; }
             set { _listImplementation[index] = value; }

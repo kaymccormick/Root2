@@ -21,7 +21,7 @@
   <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
   <analysisControls:UiConverter x:Key="UiConverter" />
     <DataTemplate DataType="{x:Type dev:RegInfo}" x:Key="RegInfo.RegistrationMetadata">
-        <ContentControl Content="{Binding RegistratMetadataionMetadata,Converter={StaticResource UiConverter}}"/>
+        <ContentControl Content="{Binding Registration.Metadata,Converter={StaticResource UiConverter}}"/>
     </DataTemplate>
     <ControlTemplate x:Key="ListView1" TargetType="ListView">
         <Grid/>

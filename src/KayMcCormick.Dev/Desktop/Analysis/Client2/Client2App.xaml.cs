@@ -134,6 +134,7 @@ namespace Client2
                 // DebugUtils.WriteLine(selCmd.ToString());
                 // win.Loaded += (sender, args) => selCmd.Execute(Options.Argument, win);
             // }
+            win.Loaded += (sender, args) => SplashScreen?.Close(new TimeSpan(0,0,1));
             win.Show();
 
             // if (lifetimeScope?.IsRegistered<Window1>() == false)
@@ -183,6 +184,8 @@ namespace Client2
         }
 
         public ProjInterfaceOptions Options { get; set; }
+        public SplashScreen SplashScreen { get; set; }
+
         public static string DefaultWindow = "window2";
 
 

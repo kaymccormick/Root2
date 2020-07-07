@@ -167,14 +167,14 @@
     BaseUri="pack://application:,,,/WpfLib;component/"
     UriSource="Assets/LaunchSamplingTargets/3x/Artboard1xxhdpi.png"
     x:Key="FilesIcon" />
-  <BitmapImage
-    BaseUri="pack://application:,,,/WpfLib;component/"
-    UriSource="Assets/StatusAnnotations_Help_and_inconclusive_32xMD.png"
-    x:Key="HelpStatus" />
-  <BitmapImage
-    BaseUri="pack://application:,,,/WpfLib;component/"
-    UriSource="Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
-    x:Key="HelpStatusColor" />
+            <BitmapImage
+                BaseUri="pack://application:,,,/WpfLibCore;component/"
+                UriSource="Assets/StatusAnnotations_Help_and_inconclusive_32xMD.png"
+                x:Key="HelpStatus" />
+            <BitmapImage
+                BaseUri="pack://application:,,,/WpfLibCore;component/"
+                UriSource="Assets/StatusAnnotations_Help_and_inconclusive_32xMD_color.png"
+                x:Key="HelpStatusColor" />
   <BitmapImage
     BaseUri="pack://application:,,,/WpfLib;component/"
     UriSource="Assets/Document.ico"

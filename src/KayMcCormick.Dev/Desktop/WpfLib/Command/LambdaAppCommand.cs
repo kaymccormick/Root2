@@ -93,13 +93,21 @@ namespace KayMcCormick.Lib.Wpf.Command
             DebugUtils.WriteLine ( nameof(ExecuteAsync)) ;
             Task<IAppCommandResult> task;
             IAppCommandResult result1;
-            if (_commandFuncWithArg != null)
+            try
             {
-                result1 = await _commandFuncWithArg(this, parameter);
+                if (_commandFuncWithArg != null)
+                {
+                    result1 = await _commandFuncWithArg(this, parameter);
+                }
+                else
+                {
+                    result1 = await (CommandFunc(this));
+                }
             }
-            else
+            catch (Exception ex)
             {
-                result1 = await (CommandFunc(this));
+                DebugUtils.WriteLine(ex.ToString());
+                return AppCommandResult.Faulted(ex as AggregateException);
             }
             // return  task.ContinueWith(
                                                      // task2 => {
@@ -112,6 +120,7 @@ namespace KayMcCormick.Lib.Wpf.Command
 
                                                          // return task2.Result ;
                                                      // }) ;
+                                                     DebugUtils.WriteLine("Command completed");
                                                      return result1;
 
         }

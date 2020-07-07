@@ -22,13 +22,20 @@ namespace AnalysisAppLib
         public AppClrType FindOrAddClrType(IAppDbContext1 db, Type type)
         {
             DebugUtils.WriteLine($"Finding or adding clr type {type.AssemblyQualifiedName}");
-            var clr = db.AppClrType.SingleOrDefault(
-                          c => c.AssemblyQualifiedName
-                               == type.AssemblyQualifiedName
-                      )
-                      ?? AddClrType(db, type);
+            try
+            {
+                var clr = db.AppClrType.SingleOrDefault(
+                              c => c.AssemblyQualifiedName
+                                   == type.AssemblyQualifiedName
+                          )
+                          ?? AddClrType(db, type);
+                return clr;
+            }
+            catch
+            {
+                return null;
+            }
 
-            return clr;
         }
 
         /// <summary>

@@ -35,6 +35,7 @@ using AnalysisAppLib;
 using AnalysisAppLib.Syntax;
 using AnalysisAppLib.ViewModel;
 using AnalysisControls.Commands;
+using AnalysisControls.Controls;
 using AnalysisControls.TypeDescriptors;
 using AnalysisControls.ViewModel;
 using AnalysisControls.Views;
@@ -194,8 +195,6 @@ namespace AnalysisControls
 
             // builder.RegisterType<AnalysisCustomTypeDescriptor>().AsSelf().AsImplementedInterfaces();
 
-
-
             builder.RegisterAdapter<IBaseLibCommand, IAppCommand>(
                     (
                         context
@@ -232,6 +231,22 @@ namespace AnalysisControls
             builder.RegisterType<ContentSelector>().AsImplementedInterfaces().InstancePerLifetimeScope().WithCallerMetadata();
             builder.RegisterType<Main1Mode2>().WithCallerMetadata();
             builder.RegisterType<MiscCommands>().WithCallerMetadata();
+            builder.Register((c) =>
+            {
+                var ctx = c.Resolve<IComponentContext>();
+                var docHost = c.Resolve<IDocumentHost>();
+                var sel = c.Resolve<IContentSelector>();
+                return new LambdaAppCommand("Syntax types view (1)", (command, o) =>
+                {
+                    var doc = DocModel.CreateInstance(command.DisplayName);
+                    var syntaxTypesControl = new SyntaxTypesControl();
+                    syntaxTypesControl.ViewModel = ctx.Resolve<TypesViewModel>();
+                    doc.Content = syntaxTypesControl;
+                    docHost.AddDocument(doc);
+                    sel.ActiveContent = doc;
+                    return Task.FromResult(AppCommandResult.Success);
+                }, null);
+            }).As<IDisplayableAppCommand>().WithCallerMetadata();
             builder.Register((c1) =>
             {
                 var c = c1.Resolve<ILifetimeScope>();

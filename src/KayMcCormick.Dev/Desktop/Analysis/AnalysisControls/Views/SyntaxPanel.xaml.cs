@@ -23,7 +23,7 @@ namespace AnalysisControls.Views
       , INotifyPropertyChanged
       , IView < ISyntaxPanelViewModel >
       , IViewWithTitle
-      , IControlView
+      
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 

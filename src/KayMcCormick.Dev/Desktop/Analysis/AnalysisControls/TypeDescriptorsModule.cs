@@ -89,7 +89,7 @@ namespace AnalysisControls
                 kayTypes.Add(type);
             }
 
-            // kayTypes.Clear();
+            kayTypes.Clear();
             var xx = new CustomTypes(kayTypes);
             builder.RegisterInstance(xx).WithCallerMetadata().SingleInstance();
             builder.RegisterType<UiElementTypeConverter>().SingleInstance().WithCallerMetadata();

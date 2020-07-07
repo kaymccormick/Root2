@@ -326,7 +326,14 @@ namespace AnalysisControls
                     }
                 }
 
-                db.SaveChanges();
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch
+                {
+
+                }
             }
         }
 

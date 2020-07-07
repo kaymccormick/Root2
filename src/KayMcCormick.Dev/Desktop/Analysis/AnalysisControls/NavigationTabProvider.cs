@@ -39,7 +39,7 @@ namespace AnalysisControls
             _group = new RibbonModelGroup() {Label = "Windows"};
             _focusGroup = new RibbonModelGroup() {Label = "Focus"};
             _tab.ItemsCollection.Add(_group);
-            _tab.ItemsCollection.Add(_focusGroup);
+//            _tab.ItemsCollection.Add(_focusGroup);
 
             EventManager.RegisterClassHandler(typeof(UIElement), FocusManager.GotFocusEvent,
                 new RoutedEventHandler(Target));

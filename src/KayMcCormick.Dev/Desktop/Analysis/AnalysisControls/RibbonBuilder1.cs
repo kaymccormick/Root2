@@ -196,7 +196,6 @@ namespace AnalysisControls
                 HomeTab.ItemsCollection.Add(Group2);
                 var Group3 = new RibbonModelGroup() {Header = "Random"};
                 HomeTab.ItemsCollection.Add(Group3);
-                Group3.Items.Add(new RibbonModelControl() {Content = dp});
                 Group1.Items.Add(PasteButton);
                 HomeTab.ItemsCollection.Add(Group1);
                 r.RibbonItems.Add(HomeTab);

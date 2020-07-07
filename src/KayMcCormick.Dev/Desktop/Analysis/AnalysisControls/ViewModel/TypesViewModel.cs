@@ -43,6 +43,9 @@ namespace AnalysisControls.ViewModel
         {
             this.InfosReplay = infos;
         }
+
+[ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
+        [ JsonIgnore ]
         public object InstanceObjectId { get; set; }
 
         private readonly List < AppTypeInfo > _typeInfos ;
@@ -68,6 +71,9 @@ namespace AnalysisControls.ViewModel
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger ( ) ;
 #else
 #endif
+
+[ DesignerSerializationVisibility ( DesignerSerializationVisibility.Hidden ) ]
+        [ JsonIgnore ]
         public MyReplaySubject<AppTypeInfo> InfosReplay
         {
             get { return _infosReplay; }

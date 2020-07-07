@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -29,11 +30,15 @@ namespace Client2
         [ STAThread ]
         public static void Main ( )
         {
-            void RunApp()
+            SplashScreen splashScreen = new SplashScreen(Assembly.GetEntryAssembly(), "Assets/SplashScreen.jpg");
+            splashScreen.Show(false,true);
+                
+        void RunApp(SplashScreen splashScreen)
             {
                 try
                 {
                     var app = new Client2App();
+                    app.SplashScreen = splashScreen;
                     app.Run();
                 }
                 catch (Exception ex)
@@ -68,7 +73,7 @@ namespace Client2
                 => LogManager.GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
 
             RoslynCodeControl.StartSecondaryThread();
-            RunApp();
+            RunApp(splashScreen);
 #if false
             var action = CheckModifiers();
             var model = new SelectAppModel();
