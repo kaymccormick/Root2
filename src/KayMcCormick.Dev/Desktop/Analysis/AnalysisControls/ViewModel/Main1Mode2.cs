@@ -554,9 +554,8 @@ namespace AnalysisControls.ViewModel
         /// </summary>
         /// <param name="eParameter"></param>
         /// <returns></returns>
-        public async Task OpenSolutionItem(object eParameter)
+        public async Task OpenSolutionItemAsync(object eParameter)
         {
-            var taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             DocumentModel doc = null;
             if (eParameter is PathModel p)
                 doc = p.Item as DocumentModel;

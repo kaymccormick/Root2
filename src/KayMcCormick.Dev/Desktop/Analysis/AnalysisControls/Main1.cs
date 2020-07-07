@@ -397,7 +397,7 @@ namespace AnalysisControls
 
         private async void OnSolutionItemExecutedAsync(object sender, ExecutedRoutedEventArgs e)
         {
-            await ViewModel2.OpenSolutionItem(e.Parameter);
+            await ViewModel2.OpenSolutionItemAsync(e.Parameter);
         }
 
         private void OnCreateProjectExecuted(object sender, ExecutedRoutedEventArgs e)

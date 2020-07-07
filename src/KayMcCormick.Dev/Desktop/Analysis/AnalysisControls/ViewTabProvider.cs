@@ -17,7 +17,8 @@ namespace AnalysisControls
         private readonly IContentSelector _contentSel;
         private RibbonModelGroup _viewsGroup;
         private DocModel _docModel;
-        readonly List<ViewSpec> _defaultViews = new List<ViewSpec>();
+        // ReSharper disable once CollectionNeverQueried.Local
+        private readonly List<ViewSpec> _defaultViews = new List<ViewSpec>();
 
         public ViewTabProvider(Func<RibbonModelTab> factory, IDocumentHost docHost, IContentSelector contentSel) :
             base(factory)
@@ -25,7 +26,6 @@ namespace AnalysisControls
             _docHost = docHost;
             _contentSel = contentSel;
 
-            _defaultViews.Add(new ViewSpec { ViewName = "View1" });
             _defaultViews.Add(new ViewSpec { ViewName = "List" });
             _defaultViews.Add(new ViewSpec { ViewName = "Details" });
 
@@ -37,29 +37,19 @@ namespace AnalysisControls
             tab.Header = "View";
             _viewsGroup = new RibbonModelGroup();
             tab.ItemsCollection.Add(_viewsGroup);
-            var view1 = new RibbonModelRadioButton
-            {
-                Label = "View1",
-                GroupName = "CurrentView",
-                Command = new LambdaAppCommand("Change view", CommandFuncAsync, "View1").Command
-            };
             _contentSel.PropertyChanged += ContentSelOnPropertyChanged;
-            _viewsGroup.Items.Add(view1);
             return tab;
         }
 
         private Task<IAppCommandResult> CommandFuncAsync(LambdaAppCommand arg)
         {
-            if (_docModel != null)
+            if (_docModel == null) return Task.FromResult(AppCommandResult.Success);
+            foreach (var docModelView in _docModel.Views)
             {
-                foreach (var docModelView in _docModel.Views)
+                if (docModelView.ViewName.ToLowerInvariant() == ((string) arg.Argument).ToLowerInvariant())
                 {
-                    if (docModelView.ViewName.ToLowerInvariant() == ((string) arg.Argument).ToLowerInvariant())
-                    {
-                        _docModel.CurrentView = docModelView;
-                    }
+                    _docModel.CurrentView = docModelView;
                 }
-
             }
             return Task.FromResult(AppCommandResult.Success);
 
@@ -98,12 +88,10 @@ namespace AnalysisControls
                     var found = false;
                     foreach (var item in _viewsGroup.Items)
                     {
-                        if (item is RibbonModelRadioButton rb)
+                        if (!(item is RibbonModelRadioButton rb)) continue;
+                        if (item.Label.ToLowerInvariant() == view.ViewName.ToLowerInvariant())
                         {
-                            if (item.Label.ToLowerInvariant() == view.ViewName.ToLowerInvariant())
-                            {
-                                found = true;
-                            }
+                            found = true;
                         }
                     }
                     // foreach (var defaultView in _defaultViews)
@@ -129,23 +117,21 @@ namespace AnalysisControls
             List<RibbonModelItem> removeViews = new List<RibbonModelItem>();
             foreach (var ribbonModelItem in _viewsGroup.Items)
             {
-                if (ribbonModelItem is RibbonModelRadioButton rb)
-                {
-                    var found = false;
-                    if (docModel.Views != null)
-                        foreach (ViewSpec docModelView in docModel.Views)
-                        {
-                            if (docModelView.ViewName.ToLowerInvariant() == rb.Label.ToLowerInvariant())
-                            {
-                                found = true;
-                            }
-                        }
-
-                    if (!found)
+                if (!(ribbonModelItem is RibbonModelRadioButton rb)) continue;
+                var found = false;
+                if (docModel.Views != null)
+                    foreach (var docModelView in docModel.Views)
                     {
-                        
-                        removeViews.Add(ribbonModelItem);
+                        if (docModelView.ViewName.ToLowerInvariant() == rb.Label.ToLowerInvariant())
+                        {
+                            found = true;
+                        }
                     }
+
+                if (!found)
+                {
+                        
+                    removeViews.Add(ribbonModelItem);
                 }
             }
             foreach (var ribbonModelItem in removeViews)
@@ -154,18 +140,13 @@ namespace AnalysisControls
             }
 
 
-            if (docModel.CurrentView != null)
+            if (docModel.CurrentView == null) return;
+            foreach (var ribbonModelItem in _viewsGroup.Items)
             {
-                foreach (var ribbonModelItem in _viewsGroup.Items)
+                if (!(ribbonModelItem is RibbonModelRadioButton rmrb)) continue;
+                if (rmrb.Label.ToLowerInvariant() == docModel.CurrentView.ViewName.ToLowerInvariant())
                 {
-                    if (ribbonModelItem is RibbonModelRadioButton rmrb)
-                    {
-                        if (rmrb.Label.ToLowerInvariant() == docModel.CurrentView.ViewName.ToLowerInvariant())
-                        {
-                            rmrb.IsChecked = true;
-                        }
-
-                    }
+                    rmrb.IsChecked = true;
                 }
             }
         }

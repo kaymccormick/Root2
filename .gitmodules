@@ -13,3 +13,6 @@
 [submodule "src/RoslynCodeControls"]
 	path = src/RoslynCodeControls
 	url = https://github.com/kaymccormick/RoslynCodeControls.git
+[submodule "src/WpfPowerShellHost"]
+	path = src/WpfPowerShellHost
+	url = https://github.com/kaymccormick/WpfPowerShellHost.git

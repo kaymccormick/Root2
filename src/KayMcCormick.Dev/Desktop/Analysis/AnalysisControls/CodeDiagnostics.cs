@@ -42,12 +42,11 @@ namespace AnalysisControls
             _codeView = new ViewSpec() { ViewName = "Code", LargeImageSource = "pack://application:,,,/AnalysisControlsCore;component/Assets/CodeView.png" };
             _documentView = new ViewSpec() { ViewName = "Document"};
             _modelView = new ViewSpec() { ViewName = "Model", LargeImageSource = "pack://application:,,,/AnalysisControlsCore;component/Assets/ModelView.png" };
-            _sourceView = new ViewSpec() { ViewName = "Source" };
+            
             _diagView = new ViewSpec() { ViewName = "Diagnostics" };
             _views.Add(_codeView);
             _views.Add(_documentView);
             _views.Add(_modelView);
-            _views.Add(_sourceView);
             _views.Add(_diagView); 
             _currentView = _codeView;
         }
