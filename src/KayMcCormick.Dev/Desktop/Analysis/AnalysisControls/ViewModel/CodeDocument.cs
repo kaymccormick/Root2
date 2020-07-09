@@ -5,13 +5,15 @@ using RoslynCodeControls;
 
 namespace AnalysisControls.ViewModel
 {
-    internal class CodeDocument : DocModel
+    public class CodeDocument : DocModel
     {
+        private readonly IFontSettingsSource _fs;
         private bool _isActive;
 
         /// <inheritdoc />
-        public CodeDocument()
+        public CodeDocument(IFontSettingsSource fs)
         {
+            _fs = fs;
             CreateCodeControl();
         }
 
@@ -57,7 +59,7 @@ namespace AnalysisControls.ViewModel
             if (sourceCode != null) c.SourceText = sourceCode;
             if (syntaxTree != null) c.SyntaxTree = syntaxTree;
             if (compilation != null) c.Compilation = compilation;
-            if (model != null) c.Model = model;
+            if (model != null) c.SemanticModel = model;
             CodeControl = c;
         }
 
@@ -65,7 +67,7 @@ namespace AnalysisControls.ViewModel
 
         private SyntaxNodeControl CreateCodeDiagnostics()
         {
-            return new CodeDiagnostics();
+            return new CodeDiagnostics(){FontSource=_fs};
         }
 
         private static RoslynCodeControl CreateFormattedTextControl()

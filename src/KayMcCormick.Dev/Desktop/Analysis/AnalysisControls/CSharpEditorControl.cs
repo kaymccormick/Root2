@@ -11,12 +11,14 @@ namespace AnalysisControlsCore
     {
         private IDocumentHost _host;
         private readonly IContentSelector _contentSelector;
+        private readonly Func<CodeDocument> _fcd;
 
         /// <inheritdoc />
-        public CSharpEditorControl(IDocumentHost host, IContentSelector contentSelector) : base("Code")
+        public CSharpEditorControl(IDocumentHost host, IContentSelector contentSelector, Func<CodeDocument> fcd) : base("Code")
         {
             _host = host;
             _contentSelector = contentSelector;
+            _fcd = fcd;
         }
 
         /// <inheritdoc />
@@ -25,7 +27,7 @@ namespace AnalysisControlsCore
         /// <inheritdoc />
         public override Task<IAppCommandResult> ExecuteAsync(object parameter)
         {
-            var doc = new CodeDocument();
+            var doc = _fcd();
             doc.Title = "Code";
             // doc.CodeControl = new RoslynCodeControl()
             _host.AddDocument(doc);

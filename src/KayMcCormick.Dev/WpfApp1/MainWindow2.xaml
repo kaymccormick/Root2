@@ -1,0 +1,29 @@
+﻿<Window x:Class="WpfApp1.MainWindow2"
+        xmlns:model="clr-namespace:RibbonLib.Model;assembly=RibbonLibCore" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControlsCore"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+<analysisControls:RibbonBuilder1>
+                <analysisControls:RibbonBuilder1.Tabs>
+                    <analysisControls:RibbonModelTabCollection>
+                        <model:RibbonModelTab Header="Hello">
+                            <model:RibbonModelTab.ItemsCollection>
+                                <model:RibbonModelGroup Label="Fatality">
+                                    
+                                </model:RibbonModelGroup>
+                            </model:RibbonModelTab.ItemsCollection>
+                            </model:RibbonModelTab>
+                    </analysisControls:RibbonModelTabCollection>
+                </analysisControls:RibbonBuilder1.Tabs>
+                <analysisControls:RibbonBuilder1.RibbonModelTabProviders>
+                    <analysisControls:RibbonModelTanProviderCollection>
+                        <analysisControls:CodeTab1/>
+                    </analysisControls:RibbonModelTanProviderCollection>
+                </analysisControls:RibbonBuilder1.RibbonModelTabProviders>
+</analysisControls:RibbonBuilder1>
+</Window>

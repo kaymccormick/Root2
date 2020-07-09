@@ -1656,7 +1656,7 @@ namespace ProjTests
             d.SyntaxTree = stree;
             var compilation = AnalysisService.CreateCompilation("x", stree);
             d.Compilation = compilation;
-            d.Model = compilation.GetSemanticModel(stree);
+            d.SemanticModel = compilation.GetSemanticModel(stree);
             d.SyntaxNode = stree.GetRoot();
 
 
@@ -1774,44 +1774,6 @@ namespace ProjTests
         }
 
 
-        public void TestAllCommand()
-        {
-            using (var instance = new ApplicationInstance(
-                new ApplicationInstance.
-                    ApplicationInstanceConfiguration(
-                        _output
-                            .WriteLine
-                        , ApplicationGuid
-                    )
-            ))
-            {
-                instance.AddModule(new AnalysisControlsModule());
-                instance.AddModule(new AnalysisAppLibModule());
-
-                instance.Initialize();
-
-                //       var workspaceReplaySubject = new ReplaySubject<AdhocWorkspace>();
-                //     var progress = new ReplaySubject<CommandProgress>();
-                var lifetimeScope = instance.GetLifetimeScope(containerBuilder =>
-                {
-                    //containerBuilder.RegisterInstance(workspaceReplaySubject).AsSelf().AsImplementedInterfaces();
-                    //containerBuilder.RegisterInstance(progress).AsSelf().AsImplementedInterfaces();
-                });
-                var allCommands = lifetimeScope.Resolve<AllCommands>();
-                foreach (var meta in allCommands.Commands1)
-                {
-                    DebugUtils.WriteLine("Command");
-                    var props = MetaHelper.GetMetadataProps(meta.Metadata);
-                    DebugUtils.WriteLine($"{props.Title} - {props.Category}");
-                    // foreach (var keyValuePair in meta.Metadata)
-                    // {
-                    // DebugUtils.WriteLine($"{keyValuePair.Key} = {keyValuePair.Value}");
-                    // }
-                }
-
-                var e = allCommands.GetComponent();
-            }
-        }
 
       //  [WpfFact]
         public void TestWorkspaceView()

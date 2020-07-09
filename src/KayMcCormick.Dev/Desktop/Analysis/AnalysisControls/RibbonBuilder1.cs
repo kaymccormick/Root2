@@ -22,7 +22,7 @@ namespace AnalysisControls
     /// <summary>
     /// 
     /// </summary>
-    public class RibbonBuilder1 : FrameworkElement, IHaveObjectId
+    public class RibbonBuilder1 : Control, IHaveObjectId
     {
         public static readonly DependencyProperty RibbonModelTabProvidersProperty = DependencyProperty.Register(
             "RibbonModelTabProviders", typeof(IEnumerable<IRibbonModelProvider<RibbonModelTab>>), typeof(RibbonBuilder1), new PropertyMetadata(default(IEnumerable<IRibbonModelProvider<RibbonModelTab>>)));

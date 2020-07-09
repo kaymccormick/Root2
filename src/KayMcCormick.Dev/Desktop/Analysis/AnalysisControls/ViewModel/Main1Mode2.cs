@@ -34,6 +34,8 @@ namespace AnalysisControls.ViewModel
         private readonly IDocumentHost _docHost;
         private readonly IContentSelector _contentSelector;
         private readonly IAnchorableHost _anchHost;
+        private readonly IFontSettingsSource _fs;
+        private readonly Func<CodeDocument> _cdf;
         private Workspace _workspace;
         private Main1 _view;
         private WorkspaceView _workspaceView;
@@ -45,13 +47,15 @@ namespace AnalysisControls.ViewModel
         /// 
         /// </summary>
         /// <param name="replay"></param>
-        public Main1Mode2(ReplaySubject<Workspace> replay, IDocumentHost docHost, IContentSelector contentSelector, JsonSerializerOptions jsonSerializerOptions = null,  IAnchorableHost anchHost = null) : this()
+        public Main1Mode2(ReplaySubject<Workspace> replay, IDocumentHost docHost, IContentSelector contentSelector, JsonSerializerOptions jsonSerializerOptions = null,  IAnchorableHost anchHost = null, IFontSettingsSource fs=null, Func<CodeDocument> cdf=null) : this()
         {
             JsonSerializerOptions = jsonSerializerOptions ?? new JsonSerializerOptions();
             _replay = replay;
             _docHost = docHost;
             _contentSelector = contentSelector;
             _anchHost = anchHost;
+            _fs = fs;
+            _cdf = cdf;
         }
 
         /// <summary>
@@ -462,7 +466,7 @@ namespace AnalysisControls.ViewModel
         {
             //TrySelectVsInstance();
             IDictionary<string, string> props = new Dictionary<string, string>();
-            props["Platform"] = "x86";
+//            props["Platform"] = "x86";
             var msBuildWorkspace = MSBuildWorkspace.Create(props);
             Workspace = msBuildWorkspace;
             CurrentOperation = new CurrentOperation() {Description = "load solution"};
@@ -570,8 +574,9 @@ namespace AnalysisControls.ViewModel
                 SemanticModel model = null;
 
                 var docDocument = doc.Document;
-                var doc1 = new CodeDocument(docDocument) { Title = doc.Name };
-                _docHost.AddDocument(doc1);
+                var doc1 = _cdf();
+                doc1.Title = doc.Name;
+_docHost.AddDocument(doc1);
                 return;
 
                 if (doc.Project.Project.SupportsCompilation)

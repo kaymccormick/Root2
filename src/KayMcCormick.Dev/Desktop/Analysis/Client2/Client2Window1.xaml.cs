@@ -263,7 +263,7 @@ namespace Client2
                             {
                                 if (modelItem is RibbonModelItemComboBox box)
                                 {
-                                    foreach (var boxItem in box.Items)
+                                    foreach (var boxItem in box.ItemsCollection)
                                     {
                                         if (boxItem is RibbonModelGallery gal)
                                         {

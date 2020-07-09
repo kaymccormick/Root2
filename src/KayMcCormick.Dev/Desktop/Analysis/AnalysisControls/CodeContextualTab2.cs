@@ -75,7 +75,7 @@ namespace AnalysisControls
             if (d.Compilation != null)
             {
                 var model = d.Compilation.GetSemanticModel(d.SyntaxTree);
-                d.CodeControl.Model = model;
+                d.CodeControl.SemanticModel = model;
                 var nodePresenter = new RibbonModelTwoLineText();
                 ribbonModelGroup.Items.Add(nodePresenter);
 
@@ -126,7 +126,7 @@ namespace AnalysisControls
                 var combobox = new RibbonModelItemComboBox();
                 foreach (var value in Enum.GetValues(typeof(OutputKind)))
                 {
-                    combobox.Items.Add(new RibbonModelMenuItem(){Header=value});
+                    combobox.ItemsCollection.Add(new RibbonModelMenuItem(){Header=value});
                 }
                 
             

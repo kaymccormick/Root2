@@ -5295,6 +5295,7 @@
                                                        SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree,Mode=TwoWay}"
                                                        Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation,Mode=TwoWay}"
                                                        SyntaxNode="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxNode,Mode=TwoWay}"
+                                                       SemanticModel="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SemanticModel,Mode=TwoWay}"
 
                                                        x:Name="code" >
                             </local:EnhancedCodeControl>
@@ -5312,7 +5313,7 @@
                                 </TreeView.ItemTemplate>
                             </TreeView>
                             <StackPanel local:ViewProperties.ViewName="Model" Visibility="Hidden"
-                                        DataContext="{Binding ElementName=code,Path=CodeControl.Model}">
+                                        DataContext="{Binding ElementName=code,Path=CodeControl.SemanticModel}">
                                 <TextBlock Text="{Binding Path=Language}" />
                             </StackPanel>
                             <StackPanel local:ViewProperties.ViewName="Compilation" Visibility="Hidden"
@@ -5538,6 +5539,7 @@
                                                                   SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree,Mode=TwoWay}"
                                                                   Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation,Mode=TwoWay}"
                                                                   SyntaxNode="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxNode,Mode=TwoWay}"
+                                                                  SemanticModel="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SemanticModel,Mode=TwoWay}"
                                                                   x:Name="CodeControl" />
                             <StackPanel Grid.Row="3" Grid.Column="2">
                                 <TextBlock Text="{Binding ElementName=CodeControl,Path=EnclosingSymbol}" />
@@ -5621,7 +5623,7 @@
                             <local:TestConverter2 x:Key="TestConverter" />
                             <HierarchicalDataTemplate DataType="{x:Type local:SolutionModel}"
                                                       ItemsSource="{Binding Projects}">
-                                <TextBlock Text="{Binding Id.Id}" />
+                                <WrapPanel><TextBlock Text="{Binding FilePath}"/><TextBlock Text=" ("/><TextBlock Text="{Binding Id.Id}" /><TextBlock Text=")"/></WrapPanel>
                             </HierarchicalDataTemplate>
                             <HierarchicalDataTemplate DataType="{x:Type local:ProjectModel}"
                                                       ItemsSource="{Binding RootPathInfo.Entries.Values,Converter={StaticResource TestConverter}}">
@@ -9421,6 +9423,22 @@
                                      ItemsSource="{Binding ElementName=Tv,Path=SelectedItem.Fields}" />
                         </Grid>
                     </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="{x:Type local:RibbonBuilder1}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:RibbonBuilder1}">
+                <Ribbon
+                    DataContext="{Binding RelativeSource={RelativeSource TemplatedParent},Path=RibbonModel}">
+
+                    <Ribbon.ApplicationMenu>
+                        <RibbonApplicationMenu x:Name="_AppMenu" ItemsSource="{Binding AppMenu.Items}" />
+                    </Ribbon.ApplicationMenu>
+                </Ribbon>
+
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

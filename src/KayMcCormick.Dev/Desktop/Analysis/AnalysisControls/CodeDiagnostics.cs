@@ -35,14 +35,29 @@ namespace AnalysisControls
         private Grid _viewContainer;
         private ViewSpec _structureView;
         private List<StructureNode> _structureRootNodes;
+        private IFontSettingsSource _fontSource;
 
         static CodeDiagnostics()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(CodeDiagnostics), new FrameworkPropertyMetadata(typeof(CodeDiagnostics)));
-            // ModelProperty.OverrideMetadata(typeof(EnhancedCodeControl), new PropertyMetadata(SemanticModelChanged));
+            SemanticModelProperty.OverrideMetadata(typeof(CodeDiagnostics), new PropertyMetadata(SemanticModelChanged));
             // SyntaxTreeProperty.OverrideMetadata(typeof(EnhancedCodeControl), new FrameworkPropertyMetadata(SyntaxTreeChanged));
             SyntaxNodeProperty.OverrideMetadata(typeof(CodeDiagnostics), new PropertyMetadata(SyntaxNodeChanged));
 
+        }
+
+        private static void SemanticModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var model = (SemanticModel) e.NewValue;
+            if (model == null)
+                return;
+            var node = (SyntaxNode) d.GetValue(SyntaxNodeProperty);
+            if (node is CSharpSyntaxNode csn)
+            {
+                Walker w = new Walker(model);
+                w.Visit(node);
+                ((CodeDiagnostics) d).StructureRootNodes = w.CompilationUnitNode.Children;
+            }
         }
 
         public CodeDiagnostics()
@@ -65,7 +80,7 @@ namespace AnalysisControls
             var node = (SyntaxNode)e.NewValue;
             if (node is CSharpSyntaxNode csn)
             {
-                Walker w = new Walker();
+                Walker w = new Walker((SemanticModel)d.GetValue(SyntaxNodeControl.SemanticModelProperty));
                 w.Visit(node);
                 ((CodeDiagnostics)d).StructureRootNodes = w.CompilationUnitNode.Children;
             }
@@ -216,6 +231,23 @@ namespace AnalysisControls
                 }
                 OnPropertyChanged();
             }
+        }
+
+        public IFontSettingsSource FontSource
+        {
+            get { return _fontSource; }
+            set
+            {
+                if (Equals(value, _fontSource)) return;
+                _fontSource = value;
+                _fontSource.PropertyChanged += FontSourceOnPropertyChanged;
+                OnPropertyChanged();
+            }
+        }
+
+        private void FontSourceOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
