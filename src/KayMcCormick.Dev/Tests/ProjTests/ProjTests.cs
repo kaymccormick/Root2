@@ -126,6 +126,7 @@ using MethodInfo = System.Reflection.MethodInfo;
 using Orientation = System.Windows.Controls.Orientation;
 using Pen = System.Windows.Media.Pen;
 using Point = System.Windows.Point;
+using PrintDialog = System.Windows.Controls.PrintDialog;
 using Process = System.Diagnostics.Process;
 using Rectangle = System.Windows.Shapes.Rectangle;
 using RegionInfo = RoslynCodeControls.RegionInfo;
@@ -2584,48 +2585,10 @@ namespace ProjTests
                     var c = g.ContainerFromItem(item);
                 }
 
-                DumpVisualTree(w);
+                ProjTestsHelper.DumpVisualTree(w);
             };
             w.Show();
         }
-
-        private void DumpVisualTree(DependencyObject dependencyObject)
-        {
-            DebugUtils.WriteLine($"{dependencyObject.GetType().Name}");
-            var _visual = (Visual) dependencyObject;
-            var drawingGroup = VisualTreeHelper.GetDrawing(_visual);
-            var ContentBounds = VisualTreeHelper.GetContentBounds(_visual);
-
-            if (drawingGroup != null) Debug.WriteLine(drawingGroup.Bounds);
-            var n = VisualTreeHelper.GetChildrenCount(dependencyObject);
-            for (var i = 0; i < n; i++) DumpVisualTree(VisualTreeHelper.GetChild(dependencyObject, i));
-        }
-        [WpfFact]
-        public void TestCodeParsing2()
-        {
-            DebugUtils.DisplayCatgories = (DebugCategory)(0);
-            var file = @"c:\temp\shell.cs";
-            NewMethod(file);
-            return;
-            Dictionary<string, long> files = new Dictionary<string, long>();
-            foreach (var enumerateFile in Directory.EnumerateFiles(@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos", "*.cs",
-
-                SearchOption.AllDirectories))
-            {
-                if (!NewMethod(enumerateFile))
-                {
-                    var l = new FileInfo(enumerateFile).Length;
-
-                    files[enumerateFile] = l;
-                    Debug.WriteLine(enumerateFile + " " + l);
-                }
-            }
-
-            var k = files.Keys.OrderByDescending(s => files[s]).LastOrDefault();
-            DebugUtils.WriteLine(k);
-        }
-
-        
 
         [WpfFact]
         public void TestCodeParsing()
@@ -2782,6 +2745,17 @@ namespace ProjTests
             w.ShowDialog();
         }
 
+        [WpfFact]
+        public void TestDocumentPage()
+        {
+            PaginatingRoslynCodeControl x = new PaginatingRoslynCodeControl();
+            x.Filename = @"C:\temp\dockingmanager.cs";
+            x.AddHandler(RoslynCodeControl.RenderCompleteEvent, new RoutedEventHandler((sender, args) =>
+            {
+                PrintDialog xx = new PrintDialog();
+                xx.PrintDocument(x.DocumentPaginator, "");
+            }));
+        }
         [WpfFact]
         public void T1()
         {

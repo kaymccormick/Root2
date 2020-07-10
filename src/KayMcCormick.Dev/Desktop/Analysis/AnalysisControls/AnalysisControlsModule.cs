@@ -215,6 +215,7 @@ namespace AnalysisControls
                 )
                 .WithCallerMetadata();
             builder.RegisterType<CodeDocument>().AsSelf().WithCallerMetadata();
+
             builder.RegisterAssemblyTypes(
                 typeof(AnalysisControlsModule).Assembly).AssignableTo<IModelProvider>().AsImplementedInterfaces().WithAttributeFiltering().WithCallerMetadata();
             builder.RegisterType<Main1Model>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope().WithCallerMetadata();

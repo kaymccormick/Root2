@@ -19,7 +19,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
 
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.EntityFrameworkCore;
 using NLog;
 using Path = System.IO.Path;
 
@@ -703,10 +702,5 @@ _docHost.AddDocument(doc1);
         public int Id { get; set; }
         public string SettingKey { get; set; }
         public string SettingValue { get; set; }
-    }
-
-    public interface IUserSettingsDbContext
-    {
-        DbSet<UserSetting> UserSettings { get; set; }
     }
 }

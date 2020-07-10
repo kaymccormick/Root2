@@ -1,4 +1,4 @@
-﻿#if false
+﻿
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,7 +19,7 @@ namespace AnalysisControls
         public CodePaginator(RoslynCodeControl codeControlCodeControl)
         {
             _codeControlCodeControl = codeControlCodeControl;
-            _source = codeControlCodeControl;
+            //_source = codeControlCodeControl;
             _pageCount = 1;
             _isPageCountValid = true;
         }
@@ -31,7 +31,7 @@ namespace AnalysisControls
             {
                 throw new AppInvalidOperationException();
             }
-            var p = new DocumentPage(_codeControlCodeControl.Rectangle1);
+            var p = new DocumentPage(_codeControlCodeControl.Rectangle);
             return p;
         }
 
@@ -107,5 +107,3 @@ namespace AnalysisControls
         }
     }
 }
-
-#endif

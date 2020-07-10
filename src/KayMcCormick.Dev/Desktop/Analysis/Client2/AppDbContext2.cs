@@ -14,7 +14,7 @@ namespace Client2
         /// <inheritdoc />
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data source=usersettings.db");
+            optionsBuilder.UseSqlite("Data source=c:\\data\\usersettings.db");
         }
     }
     public class AppDbContext2 : DbContext

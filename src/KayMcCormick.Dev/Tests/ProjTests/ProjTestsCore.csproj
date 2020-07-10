@@ -4,7 +4,8 @@
     <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <IsPackable>false</IsPackable>
-  </PropertyGroup>
+	  <RootNamespace>ProjTests</RootNamespace>
+	  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="6.0.1" />

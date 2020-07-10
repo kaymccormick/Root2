@@ -359,8 +359,10 @@ namespace AnalysisControls.ViewModel
         public void ExecutePythonScript ( string textEditorText )
         {
             // ReSharper disable once UnusedVariable
-            var objectHandle = _py.ExecuteAndWrap ( textEditorText ) ;
+            //var objectHandle = _py.ExecuteAndWrap ( textEditorText ) ;
         }
+
+        public object InstanceObjectId { get; set; }
     }
 
     /// <summary>

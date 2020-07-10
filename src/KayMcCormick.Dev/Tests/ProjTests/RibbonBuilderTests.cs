@@ -145,9 +145,16 @@ namespace ProjTests
 public class RibbonBuilderTests {
 [WpfFact]
 public void TestRibbonBuilderContent() {
-    
 var w = new Window();
-w.Content = new RibbonBuilder1();
+var rb = new RibbonBuilder1();
+rb.BeginInit();
+rb.EndInit();
+w.Content = rb;
+w.Loaded += (sender, args) =>
+{
+    ProjTestsHelper.DumpVisualTree(w);
+    w.Close();
+};
 w.ShowDialog();
 }
 

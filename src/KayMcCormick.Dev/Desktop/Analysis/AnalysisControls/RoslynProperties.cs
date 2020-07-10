@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows;
+using AnalysisControls.ViewModel;
 using KayMcCormick.Dev;
 using Microsoft.CodeAnalysis;
 

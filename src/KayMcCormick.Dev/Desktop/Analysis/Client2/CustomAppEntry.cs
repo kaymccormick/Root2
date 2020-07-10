@@ -30,8 +30,8 @@ namespace Client2
         [ STAThread ]
         public static void Main ( )
         {
-            SplashScreen splashScreen = new SplashScreen(Assembly.GetEntryAssembly(), "Assets/SplashScreen.jpg");
-            splashScreen.Show(false,true);
+            // SplashScreen splashScreen = new SplashScreen(Assembly.GetEntryAssembly(), "Assets/SplashScreen.jpg");
+            // splashScreen.Show(false,true);
                 
         void RunApp(SplashScreen splashScreen)
             {
@@ -73,7 +73,7 @@ namespace Client2
                 => LogManager.GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
 
             RoslynCodeControl.StartSecondaryThread();
-            RunApp(splashScreen);
+            RunApp(null);
 #if false
             var action = CheckModifiers();
             var model = new SelectAppModel();
