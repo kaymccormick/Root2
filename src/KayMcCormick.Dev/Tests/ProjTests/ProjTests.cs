@@ -27,6 +27,7 @@ using System.Drawing.Design;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Printing;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -56,6 +57,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.TextFormatting;
 using System.Windows.Threading;
+using System.Windows.Xps;
+using System.Windows.Xps.Packaging;
 using System.Xaml;
 using System.Xml;
 using System.Xml.Linq;
@@ -78,7 +81,6 @@ using AvalonDock.Themes;
 using Castle.DynamicProxy;
 // using CsvHelper;
 // using CsvHelper.Excel;
-
 using JetBrains.Annotations;
 using KayMcCormick.Dev;
 using KayMcCormick.Dev.Application;
@@ -96,7 +98,6 @@ using KmDevWpfControls;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 using NLog;
 using RibbonLib.Model;
 using RoslynCodeControls;
@@ -131,7 +132,6 @@ using Process = System.Diagnostics.Process;
 using Rectangle = System.Windows.Shapes.Rectangle;
 using RegionInfo = RoslynCodeControls.RegionInfo;
 using String = System.String;
-
 using TextBlock = System.Windows.Controls.TextBlock;
 using Window = System.Windows.Window;
 using XamlReader = System.Windows.Markup.XamlReader;
@@ -194,6 +194,7 @@ namespace ProjTests
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\ManagedProd.sln";
 
         private ElementTextFormatterControl _elementTextFormatterControl;
+        private PaginatingRoslynCodeControl _x;
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests(
@@ -248,8 +249,6 @@ namespace ProjTests
                 instance.Initialize();
                 var lifetimeScope = instance.GetLifetimeScope();
                 var model = lifetimeScope.Resolve<MyReplaySubject<FileInfo>>();
-
-
             }
         }
 
@@ -359,7 +358,7 @@ namespace ProjTests
 
         // }
 
-    //    [WpfFact]
+        //    [WpfFact]
         public void TestTypesView()
         {
             var viewModel = new TypesViewModel(new JsonSerializerOptions());
@@ -398,7 +397,7 @@ namespace ProjTests
             _output.WriteLine(x);
         }
 
-   //     [WpfFact]
+        //     [WpfFact]
         public void TestTypesView2()
         {
             var viewModel = new TypesViewModel(new JsonSerializerOptions());
@@ -1300,7 +1299,7 @@ namespace ProjTests
             }
         }
 
- //       [WpfFact]
+        //       [WpfFact]
         public void Test111()
         {
             var x = new ResourceManager(
@@ -1338,18 +1337,18 @@ namespace ProjTests
                     => DebugUtils.WriteLine($"badness: {exception}")
             );
             // c.ExecuteAsync(null)
-                // .ContinueWith(
-                    // task =>
-                    // {
-                        // if (task.IsFaulted) DebugUtils.WriteLine("Faulted");
+            // .ContinueWith(
+            // task =>
+            // {
+            // if (task.IsFaulted) DebugUtils.WriteLine("Faulted");
 
-                        // if (!task.IsCompleted) return;
+            // if (!task.IsCompleted) return;
 
-                        // DebugUtils.WriteLine("completed");
-                        // DebugUtils.WriteLine(task.Result.ToString());
-                    // }
-                // )
-                // .Wait(10000);
+            // DebugUtils.WriteLine("completed");
+            // DebugUtils.WriteLine(task.Result.ToString());
+            // }
+            // )
+            // .Wait(10000);
         }
 
         private void SlogMethod(string message)
@@ -1442,8 +1441,8 @@ namespace ProjTests
                 var lv = AnalysisControlsModule.ReplayListView(progresses, progress, oo);
                 workspaceReplaySubject.SubscribeOn(Scheduler.Default).ObserveOnDispatcher(DispatcherPriority.Send)
                     .Subscribe(
-                            workspace =>
-                                {
+                        workspace =>
+                        {
                             workspace.WorkspaceFailed += (sender, args) =>
                             {
                                 DebugUtils.WriteLine(args.Diagnostic.Message);
@@ -1587,7 +1586,7 @@ namespace ProjTests
             }
         }
 
-     //   [WpfFact]
+        //   [WpfFact]
         public void TestControl2()
         {
             var type = typeof(Generic2<Type>);
@@ -1599,7 +1598,7 @@ namespace ProjTests
             var w = new Window();
             //w.Padding = new Thickness(10);
             //c.Margin = new Thickness(15);
-            
+
             w.Content = d;
             w.Show();
             return;
@@ -1691,20 +1690,20 @@ namespace ProjTests
             // w.Show();
         }
 
-  //      [WpfFact]
+        //      [WpfFact]
         public void TestDiag()
         {
             ProjTestsHelper.TestSyntaxControl(new CodeDiagnostics());
         }
 
 
-   [WpfFact]
+        [WpfFact]
         public void TestEnhanced()
         {
             ProjTestsHelper.TestSyntaxControl(new EnhancedCodeControl());
         }
 
-       [WpfFact]
+        [WpfFact]
         public void TestFormattedControl()
         {
             ProjTestsHelper.TestSyntaxControl(new RoslynCodeControl());
@@ -1769,14 +1768,13 @@ namespace ProjTests
 //            ProjTestsHelper.TestSyntaxControl(new SemanticControl1());
         }
 
-      
+
         private void Target(object sender, RoutedPropertyChangedEventArgs<ProjectModel> e)
         {
         }
 
 
-
-      //  [WpfFact]
+        //  [WpfFact]
         public void TestWorkspaceView()
         {
             var c = new WorkspaceView();
@@ -1832,7 +1830,7 @@ namespace ProjTests
             foreach (var kv in m.RootPathInfo.Entries) DebugUtils.WriteLine(kv.Value.ToString());
         }
 
-     
+
         //  [WpfFact]
         public void TestCodeEntry()
         {
@@ -2042,11 +2040,11 @@ namespace ProjTests
             c.Children.Add(panel);
             // using (var hexa = new WpfHexaEditor.HexEditor())
             // {
-                // c.Children.Add(hexa);
+            // c.Children.Add(hexa);
 
-                // panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
-                // var w = new Window {Content = c};
-                // w.Show();
+            // panel.SelectedItemChanged += OnPanelOnSelectedItemChanged;
+            // var w = new Window {Content = c};
+            // w.Show();
             // }
         }
 
@@ -2189,7 +2187,7 @@ namespace ProjTests
             }
         }
 
-     //   [WpfFact]
+        //   [WpfFact]
         public void TestTypeDescriptor2()
         {
             Debug.WriteLine(string.Join(", ",
@@ -2372,7 +2370,7 @@ namespace ProjTests
             tab1.Header = "tab1";
             var group1 = new RibbonModelGroup() {Header = "GRoup 1"};
             tab1.ItemsCollection.Add(group1);
-            var tab2 = new RibbonModelTab(); 
+            var tab2 = new RibbonModelTab();
             tab2.Header = "tab2";
             tab2.ContextualTabGroupHeader = ctxTabGroup.Header;
             tabs.Add(tab1);
@@ -2424,7 +2422,7 @@ namespace ProjTests
         }
 
 
-    //    [WpfFact]
+        //    [WpfFact]
         public void TestText1()
         {
             var s = new ObservableCollection<TestElement>();
@@ -2593,21 +2591,21 @@ namespace ProjTests
         [WpfFact]
         public void TestCodeParsing()
         {
-            DebugUtils.DisplayCatgories = (DebugCategory) (0);
+            DebugUtils.DisplayCatgories = (DebugCategory) 0;
             // var file =
             // @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\AvalonDock\source\Components\AvalonDock\DockingManager.cs";
             // NewMethod(file);
             // return;
-            Dictionary<string, long> files = new Dictionary<string, long>();
+            var files = new Dictionary<string, long>();
             var i = 0;
-            foreach (var enumerateFile in Directory.EnumerateFiles(@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos", "*.cs",
-
+            foreach (var enumerateFile in Directory.EnumerateFiles(@"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos",
+                "*.cs",
                 SearchOption.AllDirectories))
             {
                 if (!NewMethod(enumerateFile))
                 {
                     var l = new FileInfo(enumerateFile).Length;
-                    
+
                     files[enumerateFile] = l;
                     Debug.WriteLine(enumerateFile + " " + l);
                 }
@@ -2627,7 +2625,7 @@ namespace ProjTests
             var code = File.ReadAllText(enumerateFile);
             var t = ProjTestsHelper.SetupSyntaxParams(out var x, code);
             var z = new RoslynCodeControl() {Compilation = x, SyntaxTree = t};
-            Window w = new Window {Content = z};
+            var w = new Window {Content = z};
             w.Loaded += (sender, args) => w.Close();
             try
             {
@@ -2638,7 +2636,7 @@ namespace ProjTests
                 return false;
             }
 
-            while(w.IsVisible)
+            while (w.IsVisible)
             {
                 // var p = VisualTreeHelper.GetParent(w);
 
@@ -2648,10 +2646,11 @@ namespace ProjTests
 
             return true;
         }
+
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public void DoEvents()
         {
-            DispatcherFrame frame = new DispatcherFrame();
+            var frame = new DispatcherFrame();
             Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background,
                 new DispatcherOperationCallback(ExitFrame), frame);
             Dispatcher.PushFrame(frame);
@@ -2659,7 +2658,7 @@ namespace ProjTests
 
         public object ExitFrame(object f)
         {
-            ((DispatcherFrame)f).Continue = false;
+            ((DispatcherFrame) f).Continue = false;
 
             return null;
         }
@@ -2680,7 +2679,7 @@ namespace ProjTests
                 instance.AddModule(new AnalysisAppLibModule());
                 instance.Initialize();
                 var lifetimeScope = instance.GetLifetimeScope();
-                Window w = new Window() {Content = new ContainerView()};
+                var w = new Window() {Content = new ContainerView()};
                 w.SetValue(AttachedProperties.LifetimeScopeProperty, lifetimeScope);
                 w.Show();
             }
@@ -2689,7 +2688,7 @@ namespace ProjTests
         [WpfFact]
         public void TestMain11()
         {
-            Window w = new Window();
+            var w = new Window();
             w.Content = new Main1();
             w.ShowDialog();
         }
@@ -2705,19 +2704,17 @@ namespace ProjTests
             DebugUtils.WriteLine("Begin test");
             var start = DateTime.Now;
             var file =
-                 @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\AvalonDock\source\Components\AvalonDock\DockingManager.cs";
-                
+                @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\AvalonDock\source\Components\AvalonDock\DockingManager.cs";
+
             var code = File.ReadAllText(file);
-            var x =ProjTestsHelper.SetupSyntaxParams(out var comp, code);
-            RoslynCodeControl x1 = new RoslynCodeControl();
-            Window w = new Window();
+            var x = ProjTestsHelper.SetupSyntaxParams(out var comp, code);
+            var x1 = new RoslynCodeControl();
+            var w = new Window();
             DateTime? renderStart = null;
             w.AddHandler(RoslynCodeControl.RenderStartEvent, new RoutedEventHandler((sender, args) =>
             {
                 renderStart = DateTime.Now;
                 DebugUtils.WriteLine("Render start");
-                
-
             }));
             w.AddHandler(RoslynCodeControl.RenderCompleteEvent, new RoutedEventHandler((sender, args) =>
             {
@@ -2725,7 +2722,6 @@ namespace ProjTests
                 DebugUtils.WriteLine(span.ToString());
                 DebugUtils.WriteLine("Render complete");
                 w.Close();
-
             }));
             x1.PropertyChanged += (sender, args) =>
             {
@@ -2745,17 +2741,132 @@ namespace ProjTests
             w.ShowDialog();
         }
 
+        private XpsDocumentWriter GetPrintXpsDocumentWriter()
+        {
+            // Create a local print server
+            var ps = new LocalPrintServer();
+
+            // Get the default print queue
+            var pq = ps.DefaultPrintQueue;
+
+            // Get an XpsDocumentWriter for the default print queue
+            var xpsdw = PrintQueue.CreateXpsDocumentWriter(pq);
+            return xpsdw;
+        }
+
+        // ---------------------- GetPrintTicketFromPrinter -----------------------
+        /// <summary>
+        ///   Returns a PrintTicket based on the current default printer.</summary>
+        /// <returns>
+        ///   A PrintTicket for the current local default printer.</returns>
+        private PrintTicket GetPrintTicketFromPrinter()
+        {
+            PrintQueue printQueue = null;
+
+            var localPrintServer = new LocalPrintServer();
+
+            // Retrieving collection of local printer on user machine
+            var localPrinterCollection =
+                localPrintServer.GetPrintQueues();
+
+            IEnumerator localPrinterEnumerator =
+                localPrinterCollection.GetEnumerator();
+
+            if (localPrinterEnumerator.MoveNext())
+                // Get PrintQueue from first available printer
+                printQueue = (PrintQueue) localPrinterEnumerator.Current;
+            else
+                // No printer exist, return null PrintTicket
+                return null;
+
+            // Get default PrintTicket from printer
+            var printTicket = printQueue.DefaultPrintTicket;
+
+            var printCapabilites = printQueue.GetPrintCapabilities();
+
+            // Modify PrintTicket
+            if (printCapabilites.CollationCapability.Contains(Collation.Collated))
+                printTicket.Collation = Collation.Collated;
+
+            if (printCapabilites.DuplexingCapability.Contains(
+                Duplexing.TwoSidedLongEdge))
+                printTicket.Duplexing = Duplexing.TwoSidedLongEdge;
+
+            if (printCapabilites.StaplingCapability.Contains(Stapling.StapleDualLeft))
+                printTicket.Stapling = Stapling.StapleDualLeft;
+
+            return printTicket;
+        } // end:GetPrintTicketFromPrinter()
+
         [WpfFact]
         public void TestDocumentPage()
         {
-            PaginatingRoslynCodeControl x = new PaginatingRoslynCodeControl();
-            x.Filename = @"C:\temp\dockingmanager.cs";
-            x.AddHandler(RoslynCodeControl.RenderCompleteEvent, new RoutedEventHandler((sender, args) =>
+            var d1 =
+                @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\Desktop";
+
+
+            var DESKTOPdIR =
+                @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\Desktop";
+            RoslynCodeControl.StartSecondaryThread();
+            _x = new PaginatingRoslynCodeControl();
+            _x.FontSize = 20;
+            _x.Filename = Path.Combine(d1, @"Analysis\AnalysisControls\CodeGenCommand.cs");
+
+
+            var fExit = false;
+            _x.AddHandler(RoslynCodeControl.RenderCompleteEvent, new RoutedEventHandler((sender, args) =>
             {
-                PrintDialog xx = new PrintDialog();
-                xx.PrintDocument(x.DocumentPaginator, "");
+                var ps = new LocalPrintServer();
+                foreach (var printQueue in ps.GetPrintQueues())
+                {
+                    //     DebugUtils.WriteLine(printQueue.Name);
+                    //     if (printQueue.Name == "Microsoft XPS Document Writer")
+                    //     {
+                    //         
+                }
+
+                var pageSizeHeight = _x.DocumentPaginator.PageSize.Height;
+                var pageSizeWidth = _x.DocumentPaginator.PageSize.Width;
+                // var _xpsDocument = new XpsDocument(@"c:\temp\doc01.xps",
+                // FileAccess.ReadWrite);
+
+                // var xpsdw = XpsDocument.CreateXpsDocumentWriter(_xpsDocument);
+                // xpsdw.Write(_x.DocumentPaginator);
+                // _xpsDocument.Close();
+                var dg = new PrintDialog();
+                dg.ShowDialog();
+                dg.PrintDocument(_x.DocumentPaginator, "");
+
+                // var xpsDocumentWriter = PrintQueue.CreateXpsDocumentWriter(ref pageSizeWidth,
+                // ref pageSizeHeight);
+
+                // xpsDocumentWriter.Write(x.DocumentPaginator);
+                // xpsDocumentWriter.WritingCompleted += (o, eventArgs) =>
+                // {
+                // };
+                // var xx = new PrintDialog();
+                // xx.PrintTicket = new PrintTicket(){;
+                // xx.PrintDocument(x.DocumentPaginator,"");
+
+                // xx.PrintDocument(x.DocumentPaginator,"");
+                // var arq = GetPrintXpsDocumentWriter();
+                // arq.Write(x.DocumentPaginator, GetPrintTicketFromPrinter(
+                // d));
+                fExit = true;
+                // xx.PrintDocument(x.DocumentPaginator, "");
             }));
+
+            _x.UpdateTextSource().ContinueWith((t) =>
+            {
+                while (!fExit)
+                {
+                    DoEvents();
+                    Thread.Sleep(300);
+                }
+            },  CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.Current);
         }
+
+
         [WpfFact]
         public void T1()
         {

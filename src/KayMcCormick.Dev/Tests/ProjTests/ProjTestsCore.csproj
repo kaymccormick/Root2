@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
@@ -31,6 +31,7 @@
     <ProjectReference Include="..\..\..\AvalonDock\source\Components\AvalonDock\AvalonDock.csproj" />
     <ProjectReference Include="..\..\..\KmDevWpfControls\KmDevWpfControls\KmDevWpfControlsCore.csproj" />
     <ProjectReference Include="..\..\..\RibbonLib\src\RibbonLibCore\RibbonLibCore.csproj" />
+    <ProjectReference Include="..\..\..\RoslynCodeControls\src\RoslynCodeControls\RoslynCodeControls.csproj" />
     <ProjectReference Include="..\..\Desktop\Analysis\AnalysisAppLib\AnalysisAppLibCore.csproj" />
     <ProjectReference Include="..\..\Desktop\Analysis\AnalysisControls\AnalysisControlsCore.csproj" />
     <ProjectReference Include="..\..\Desktop\WpfLib\WpfLibCore.csproj" />

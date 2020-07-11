@@ -59,7 +59,6 @@
     <ProjectReference Include="..\..\..\..\KmDevWpfControls\KmDevWpfControls\KmDevWpfControlsCore.csproj" />
     <ProjectReference Include="..\..\..\..\RibbonLib\src\RibbonLibCore\RibbonLibCore.csproj" />
     <ProjectReference Include="..\..\..\..\RoslynCodeControls\src\RoslynCodeControls\RoslynCodeControls.csproj" />
-    <ProjectReference Include="..\..\..\..\WpfPowerShellHost\src\WpfTerminalControlLib\WpfTerminalControlLib.csproj" />
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KmDevLib.csproj" />
     <ProjectReference Include="..\..\WpfLib\WpfLibCore.csproj" />
     <ProjectReference Include="..\AnalysisAppLib\AnalysisAppLibCore.csproj" />

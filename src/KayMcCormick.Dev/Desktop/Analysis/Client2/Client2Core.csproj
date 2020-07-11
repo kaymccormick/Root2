@@ -19,7 +19,7 @@
   <ItemGroup>
     <PackageReference Include="IronPython" Version="2.7.10" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0-preview.6.20305.6" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.3" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.0-preview6" />
  <PackageReference Include="Autofac" Version="5.2.0" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.2.6" />
     <PackageReference Include="Microsoft.CodeAnalysis" Version="3.7.0-3.final" />
@@ -46,7 +46,6 @@
     <ProjectReference Include="..\..\..\..\KmDevWpfControls\KmDevWpfControls\KmDevWpfControlsCore.csproj" />
     <ProjectReference Include="..\..\..\..\RibbonLib\src\RibbonLibCore\RibbonLibCore.csproj" />
     <ProjectReference Include="..\..\..\..\RoslynCodeControls\src\RoslynCodeControls\RoslynCodeControls.csproj" />
-    <ProjectReference Include="..\..\..\..\WpfPowerShellHost\src\WpfTerminalControlLib\WpfTerminalControlLib.csproj" />
     <ProjectReference Include="..\..\..\KayMcCormick.Dev\KmDevLib.csproj" />
     <ProjectReference Include="..\..\WpfLib\WpfLibCore.csproj" />
     <ProjectReference Include="..\AnalysisAppLib\AnalysisAppLibCore.csproj" />

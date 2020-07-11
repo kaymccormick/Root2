@@ -40,7 +40,7 @@ using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.Identity.Client;
 using NLog;
 using RibbonLib.Model;
-using WpfApp4;
+
 using Logger = NLog.Logger;
 using TypeControl = KayMcCormick.Lib.Wpf.TypeControl;
 using XamlReader = System.Windows.Markup.XamlReader;
