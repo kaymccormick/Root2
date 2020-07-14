@@ -9,7 +9,7 @@ namespace AnalysisControls
     /// </summary>
     public class SyntaxNodeCustomTextSource : CustomTextSource4
     {
-        public SyntaxNodeCustomTextSource(double pixelsPerDip, FontRendering fontRendering, GenericTextRunProperties genericTextRunProperties, [NotNull] SynchronizationContext synchContext) : base(pixelsPerDip, fontRendering, genericTextRunProperties, synchContext)
+        public SyntaxNodeCustomTextSource(double pixelsPerDip, FontRendering fontRendering, GenericTextRunProperties genericTextRunProperties) : base(pixelsPerDip, fontRendering, genericTextRunProperties)
         {
         }
     }

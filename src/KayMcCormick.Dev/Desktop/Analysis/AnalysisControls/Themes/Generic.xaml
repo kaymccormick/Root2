@@ -5248,9 +5248,9 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:CodeDiagnostics}">
                     <ControlTemplate.Resources>
-                        <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter" />
-                        <converters:SyntaxTokenConverter x:Key="SyntaxTokenConverter" />
-                        <converters:SyntaxTriviaConverter x:Key="SyntaxTriviaConverter" />
+                        <roslynCodeControls:SyntaxNodeConverter x:Key="SyntaxNodeConverter" />
+                        <roslynCodeControls:SyntaxTokenConverter x:Key="SyntaxTokenConverter" />
+                        <roslynCodeControls:SyntaxTriviaConverter x:Key="SyntaxTriviaConverter" />
                         <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
                         <local:RectConverter x:Key="RectConverter" />
                         <converters:OperationTemplateSelector x:Key="OperationTemplateSelector" />
@@ -5260,7 +5260,7 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate DataType="{x:Type roslynCodeControls:SyntaxNodeDepth}">
                                             <TextBlock Margin="{Binding Margin}"
-                                                       Text="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
+                                                       Text="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static roslynCodeControls:SyntaxNodeInfo.Kind}}" />
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                     <ItemsControl.ItemsPanel>
@@ -5270,7 +5270,7 @@
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
                                 <ContentControl
-                                    Content="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
+                                    Content="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static roslynCodeControls:SyntaxNodeInfo.Kind}}" />
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="Symbol: " />
                                     <ContentControl Content="{Binding Symbol}" />
@@ -5288,7 +5288,7 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
                         <Grid x:Name="ViewContainer">
-                            <local:EnhancedCodeControl local:ViewProperties.ViewName="Code"
+                            <roslynCodeControls:EnhancedCodeControl local:ViewProperties.ViewName="Code"
                                                        SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText,Mode=TwoWay}"
                                                        Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document,Mode=TwoWay}"
                                                        Filename="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Filename,Mode=TwoWay}"
@@ -5298,7 +5298,7 @@
                                                        SemanticModel="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SemanticModel,Mode=TwoWay}"
 
                                                        x:Name="code" >
-                            </local:EnhancedCodeControl>
+                            </roslynCodeControls:EnhancedCodeControl>
                             <StackPanel local:ViewProperties.ViewName="Document" Visibility="Hidden"
                                         DataContext="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document}">
                                 <TextBlock Text="{Binding Path=FilePath}" />
@@ -5384,7 +5384,7 @@
                                             <GridViewColumn Header="Length"
                                                             DisplayMemberBinding="{Binding Path=Length}" />
                                             <GridViewColumn Header="Node"
-                                                            DisplayMemberBinding="{Binding Path=SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
+                                                            DisplayMemberBinding="{Binding Path=SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static roslynCodeControls:SyntaxNodeInfo.Kind}}" />
                                             <GridViewColumn Header="Node Span"
                                                             DisplayMemberBinding="{Binding Path=SyntaxNode.Span}" />
                                             <GridViewColumn Header="Trivia"
@@ -5395,9 +5395,9 @@
                                                             DisplayMemberBinding="{Binding Path=TriviaPosition}" />
 
                                             <GridViewColumn Header="Attached Node"
-                                                            DisplayMemberBinding="{Binding Path=AttachedNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
+                                                            DisplayMemberBinding="{Binding Path=AttachedNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static roslynCodeControls:SyntaxNodeInfo.Kind}}" />
                                             <GridViewColumn Header="Structured Trivia"
-                                                            DisplayMemberBinding="{Binding Path=StructuredTrivia,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
+                                                            DisplayMemberBinding="{Binding Path=StructuredTrivia,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static roslynCodeControls:SyntaxNodeInfo.Kind}}" />
 
                                             <GridViewColumn Header="Attached Token"
                                                             DisplayMemberBinding="{Binding Path=AttachedToken,Converter={StaticResource SyntaxTokenConverter},ConverterParameter=kind}" />
@@ -5441,176 +5441,8 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <local:VisibilityToBooleanConverter x:Key="B" />
-    <Style TargetType="{x:Type local:EnhancedCodeControl}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:EnhancedCodeControl}">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="Grid"
-                              DataContext="{Binding ElementName=CodeControl}">
-                            <Grid.Resources>
-                                <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter" />
-                                <converters:SyntaxTokenConverter x:Key="SyntaxTokenConverter" />
-                                <converters:SyntaxTriviaConverter x:Key="SyntaxTriviaConverter" />
-                                <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
-                            </Grid.Resources>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="5*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Menu Grid.Row="0">
-                                <MenuItem Header="_Toolbars">
-                                    <MenuItem IsCheckable="True" Header="Character _Movement"
-                                              IsChecked="{Binding ElementName=CharacterMovementToolbar,Path=Visibility,Converter={StaticResource B},Mode=TwoWay}" />
-                                    <MenuItem IsCheckable="True" Header="_Font Style"
-                                              IsChecked="{Binding ElementName=FontsToolbar,Path=Visibility,Converter={StaticResource B},Mode=TwoWay}" />
-                                </MenuItem>
-                            </Menu>
-                            <ToolBarTray Grid.Row="1">
-                                <ToolBar Band="1" BandIndex="1" x:Name="CharacterMovementToolbar">
-                                    <Button FontSize="24" Command="MoveLeftByCharacter"
-                                            CommandTarget="{x:Reference CodeControl}">
-                                        <TextBlock Text="&#x1f81c;">
-                                            <TextBlock.Effect>
-                                                <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality" />
-                                            </TextBlock.Effect>
-                                        </TextBlock>
-
-                                    </Button>
-                                    <Button FontSize="24" Command="MoveUpByLine"
-                                            CommandTarget="{x:Reference CodeControl}">
-                                        <TextBlock Text="&#x1f81d;">
-                                            <TextBlock.Effect>
-                                                <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality" />
-                                            </TextBlock.Effect>
-                                        </TextBlock>
-                                    </Button>
-                                    <Button FontSize="24" Command="MoveDownByLine"
-                                            CommandTarget="{x:Reference CodeControl}">
-                                        <TextBlock Text="&#x1f81f;">
-                                            <TextBlock.Effect>
-                                                <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality" />
-                                            </TextBlock.Effect>
-                                        </TextBlock>
-                                    </Button>
-                                    <Button FontSize="24" Command="MoveRightByCharacter"
-                                            CommandTarget="{x:Reference CodeControl}">
-                                        <TextBlock Text="&#x1f81e;">
-                                            <TextBlock.Effect>
-                                                <BlurEffect Radius="3" KernelType="Gaussian" RenderingBias="Quality" />
-                                            </TextBlock.Effect>
-                                        </TextBlock>
-                                    </Button>
-
-                                </ToolBar>
-                                <ToolBar Band="1" BandIndex="2" x:Name="FontsToolbar">
-                                    <TextBlock Text="Font:" Margin="0,0,5,0" VerticalAlignment="Center" />
-                                    <ComboBox x:Name="FontComboBox" VerticalAlignment="Center"
-                                              ItemsSource="{TemplateBinding Fonts}" SelectedItem="{Binding ElementName=CodeControl,Path=FontFamily,Mode=OneWay}">
-                                        <ComboBox.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type FontFamily}">
-                                                <TextBlock FontFamily="{Binding}"
-                                                           Text="{Binding Path=FamilyNames[en-US]}" />
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                    <TextBlock Text="Size:" Margin="5,0,0,0" VerticalAlignment="Center" />
-                                    <ComboBox x:Name="FontSizeCombo"
-                                              ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent},Path=CommonFontSizes}" SelectedItem="{Binding ElementName=CodeControl,Path=FontSize,Mode=OneWay}"/>
-                                </ToolBar>
-                            </ToolBarTray>
-                            <roslynCodeControls:RoslynCodeControl Grid.Row="2" Grid.Column="0"
-                                                                  Filename="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Filename,Mode=TwoWay}"
-                                                                  Document="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Document,Mode=TwoWay}"
-                                                                  SourceText="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SourceText,Mode=TwoWay}"
-                                                                  SyntaxTree="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxTree,Mode=TwoWay}"
-                                                                  Compilation="{Binding RelativeSource={RelativeSource TemplatedParent},Path=Compilation,Mode=TwoWay}"
-                                                                  SyntaxNode="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SyntaxNode,Mode=TwoWay}"
-                                                                  SemanticModel="{Binding RelativeSource={RelativeSource TemplatedParent},Path=SemanticModel,Mode=TwoWay}"
-                                                                  x:Name="CodeControl" />
-                            <StackPanel Grid.Row="3" Grid.Column="2">
-                                <TextBlock Text="{Binding ElementName=CodeControl,Path=EnclosingSymbol}" />
-                            </StackPanel>
-                            <StackPanel Background="DarkSeaGreen" Grid.Row="4" Grid.Column="0" Orientation="Horizontal"
-                                        TextElement.FontSize="16">
-                                <TextBlock Margin="15,0,0,0" Text="{Binding HoverOffset}" />
-                                <TextBlock Text=" ( " />
-                                <TextBlock Text="{Binding HoverColumn}" />
-                                <TextBlock Text=", " />
-                                <TextBlock Text="{Binding HoverRow}" />
-                                <TextBlock Text=" ) " />
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Margin="15,0,0,0"
-                                               Text="{Binding HoverSyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}" />
-                                    <TextBlock Margin="15,0,0,0"
-                                               Text="{Binding HoverToken,Converter={StaticResource SyntaxTokenConverter},ConverterParameter=kind}" />
-                                    <TextBlock Margin="15,0,0,0"
-                                               Text="{Binding HoverToken,Converter={StaticResource SyntaxTokenConverter},ConverterParameter=text}" />
-                                </StackPanel>
-                                <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Margin="10,0,10,0">
-                                    <TextBlock
-                                        Text="{Binding HoverSymbol,Converter={StaticResource SymbolInfoConverter},ConverterParameter=kind}" />
-                                    <local:SymbolTextControl DisplaySymbol="{Binding HoverSymbol}" />
-                                </StackPanel>
-                            </StackPanel>
-                            <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Grid.Row="5" Grid.Column="0"
-                                        TextElement.FontSize="16">
-                                <TextBlock
-                                    Text="{Binding HoverRegionInfo.Trivia,Converter={StaticResource SyntaxTriviaConverter}}" />
-                                <TextBlock Text="{Binding HoverRegionInfo.TriviaValue.HasStructure}" />
-                            </StackPanel>
-                            <StackPanel Background="DarkSeaGreen" Orientation="Horizontal" Grid.Row="6" Grid.Column="0"
-                                        TextElement.FontSize="16">
-                                <StackPanel.Resources>
-                                    <DataTemplate DataType="{x:Type roslynCodeControls:SyntaxTokenTextCharacters}">
-                                        <StackPanel Orientation="Horizontal" Background="Khaki">
-                                            <TextBlock Margin="10" Text="Text:" />
-                                            <TextBlock Margin="10" Text="{Binding Text}" />
-                                            <TextBlock Margin="10" Text="Index:" />
-                                            <TextBlock Margin="10" Text="{Binding Index}" />
-                                            <TextBlock Margin="10" Text="Length:" />
-                                            <TextBlock Margin="10" Text="{Binding Length}" />
-                                            <TextBlock Margin="10" Text="Span:" />
-                                            <TextBlock Margin="10" Text="{Binding Span}" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                    <DataTemplate DataType="{x:Type roslynCodeControls:SyntaxTriviaTextCharacters}">
-                                        <StackPanel Orientation="Horizontal" Background="Aquamarine">
-                                            <TextBlock Margin="10" Text="{Binding Text}" />
-                                            <TextBlock Margin="10" Text="{Binding Index}" />
-                                            <TextBlock Margin="10" Text="{Binding Length}" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                    <DataTemplate DataType="{x:Type TextRun}">
-                                        <TextBlock Text="{Binding Length}" Background="Gold" />
-                                    </DataTemplate>
-                                </StackPanel.Resources>
-                                <TextBlock Margin="10" Text="Bounding Rect:" />
-                                <TextBlock Text="{Binding HoverRegionInfo.BoundingRect}" />
-                                <TextBlock Margin="10" Text="Offset:" />
-                                <TextBlock Text="{Binding HoverRegionInfo.Offset}" />
-                                <ContentControl Content="{Binding HoverRegionInfo.TextRun}" />
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
+    <roslynCodeControls:VisibilityToBooleanConverter x:Key="B" />
+ 
 
     <Style TargetType="{x:Type local:WorkspaceView}">
         <Setter Property="Template">

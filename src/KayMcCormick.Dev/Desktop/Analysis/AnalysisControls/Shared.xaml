@@ -2,10 +2,11 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:converters="clr-namespace:AnalysisControls.Converters"
-  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf">
+  xmlns:kmWpf="http://kaymccormick.com/xaml/kmwpf"
+  xmlns:roslynCodeControls="clr-namespace:RoslynCodeControls;assembly=RoslynCodeControls">
   <converters:HierarchyConverter
     x:Key="HierarchyConverter" />
-  <converters:SyntaxNodeConverter
+  <roslynCodeControls:SyntaxNodeConverter
     x:Key="SyntaxNodeConverter" />
   <converters:TokenConverter x:Key="TokenConverter" />
   <converters:LocationConverter x:Key="LocationConverter" />

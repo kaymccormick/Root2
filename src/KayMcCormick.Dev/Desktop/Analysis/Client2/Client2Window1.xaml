@@ -9,7 +9,6 @@
               xmlns:analysisControls="clr-namespace:AnalysisControls;assembly=AnalysisControlsCore"
               xmlns:avalondock="https://github.com/Dirkster99/AvalonDock"
               xmlns:model="clr-namespace:RibbonLib.Model;assembly=RibbonLibCore"
-              Width="{analysisControls:UserSetting Width}"
               mc:Ignorable="d"
               Loaded="Client2Window1_OnLoaded"
               DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -56,8 +55,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <analysisControls:Main1 analysisControls:UserConfigurationProperties.Setting="Test"  HorizontalAlignment="Stretch"
-                                    analysisControls:UserConfigurationProperties.SettingValue="Test2"
+            <analysisControls:Main1 HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="0" x:Name="Main1"
                                     AppSettingsViewModel="{wpf:Resolve analysisControls:AppSettingsViewModel}"
                                    >

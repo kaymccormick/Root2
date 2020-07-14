@@ -17,7 +17,7 @@
   xmlns:analysisAppLib1="clr-namespace:AnalysisAppLib;assembly=KmDevLib"
   xmlns:dev="clr-namespace:KayMcCormick.Dev;assembly=KmDevLib"
   xmlns:roslynCodeControls="clr-namespace:RoslynCodeControls;assembly=RoslynCodeControls">
-  <converters:SyntaxNodeConverter x:Key="SyntaxNodeConverter"/>
+  <roslynCodeControls:SyntaxNodeConverter x:Key="SyntaxNodeConverter"/>
   <converters:OperationTemplateSelector x:Key="OperationTemplateSelector"/>
   <analysisControls:UiConverter x:Key="UiConverter" />
     <DataTemplate DataType="{x:Type dev:RegInfo}" x:Key="RegInfo.RegistrationMetadata">
@@ -164,14 +164,14 @@
       <ItemsControl ItemsSource="{Binding Nodes}">
         <ItemsControl.ItemTemplate>
           <DataTemplate DataType="{x:Type roslynCodeControls:SyntaxNodeDepth}">
-            <TextBlock Margin="{Binding Margin}" Text="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"/>
+            <TextBlock Margin="{Binding Margin}" Text="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static roslynCodeControls:SyntaxNodeInfo.Kind}}"/>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate><StackPanel Orientation="Vertical"/></ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>
       </ItemsControl>
-      <ContentControl Content="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static converters:SyntaxNodeInfo.Kind}}"></ContentControl>
+      <ContentControl Content="{Binding SyntaxNode,Converter={StaticResource SyntaxNodeConverter},ConverterParameter={x:Static roslynCodeControls:SyntaxNodeInfo.Kind}}"></ContentControl>
       <StackPanel Orientation="Horizontal">
         <TextBlock Text="Symbol: "/>
         <ContentControl Content="{Binding Symbol}"></ContentControl>
