@@ -238,4 +238,9 @@ namespace AnalysisControls
     // {
 
     // }
+
+    public class RibbonTest2 : Control
+    {
+
+    }
 }

@@ -5133,7 +5133,7 @@
                             VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="Grid">
                             <Grid.Resources>
-                                <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
+                                <roslynCodeControls:SymbolInfoConverter x:Key="SymbolInfoConverter" />
                             </Grid.Resources>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
@@ -5239,6 +5239,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+
     </Style>
 
     <local:DiagnosticConverter x:Key="DiagnosticConverter" />
@@ -5251,7 +5252,7 @@
                         <roslynCodeControls:SyntaxNodeConverter x:Key="SyntaxNodeConverter" />
                         <roslynCodeControls:SyntaxTokenConverter x:Key="SyntaxTokenConverter" />
                         <roslynCodeControls:SyntaxTriviaConverter x:Key="SyntaxTriviaConverter" />
-                        <converters:SymbolInfoConverter x:Key="SymbolInfoConverter" />
+                        <roslynCodeControls:SymbolInfoConverter x:Key="SymbolInfoConverter" />
                         <local:RectConverter x:Key="RectConverter" />
                         <converters:OperationTemplateSelector x:Key="OperationTemplateSelector" />
                         <DataTemplate DataType="{x:Type roslynCodeControls:CodeToolTipContent}">
@@ -9275,5 +9276,14 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="{x:Type local:RibbonTest2}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:RibbonTest2}">
+                    <Border/>
 
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
