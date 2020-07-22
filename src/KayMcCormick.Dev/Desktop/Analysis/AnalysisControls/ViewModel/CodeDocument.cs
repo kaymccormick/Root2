@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.CodeAnalysis;
 using RoslynCodeControls;
@@ -41,7 +42,7 @@ namespace AnalysisControls.ViewModel
         private void CreateCodeControlFromFile(string filename)
         {
             var c = DoCodeDiagnostics ? CreateCodeDiagnostics() : CreateFormattedTextControl();
-            c.Filename = filename;
+            // c.Filename = filename;
             CodeControl = c;
 
         }
@@ -49,28 +50,31 @@ namespace AnalysisControls.ViewModel
         private void CreateCodeControl(Document docDocument)
         {
             var c = DoCodeDiagnostics ? CreateCodeDiagnostics() : CreateFormattedTextControl();
-            c.Document = docDocument;
+
+            c.SetValue(RoslynCodeControls.RoslynProperties.DocumentProperty, docDocument);
             CodeControl = c;
         }
 
         private void CreateCodeControl(string sourceCode = "", SyntaxTree syntaxTree=null , Compilation compilation=null, SemanticModel model=null)
         {
             var c = DoCodeDiagnostics ? CreateCodeDiagnostics() : CreateFormattedTextControl();
-            if (sourceCode != null) c.SourceText = sourceCode;
-            if (syntaxTree != null) c.SyntaxTree = syntaxTree;
-            if (compilation != null) c.Compilation = compilation;
-            if (model != null) c.SemanticModel = model;
+
+            if (sourceCode != null) c.SetValue(RoslynCodeControls.RoslynProperties.SourceTextProperty, sourceCode);
+                
+            if (syntaxTree != null) c.SetValue(RoslynCodeControls.RoslynProperties.SyntaxTreeProperty, syntaxTree);
+            if (compilation != null) c.SetValue(RoslynCodeControls.RoslynProperties.CompilationProperty, compilation);
+            if (model != null) c.SetValue(RoslynCodeControls.RoslynProperties.SemanticModelProperty, model);
             CodeControl = c;
         }
 
         public bool DoCodeDiagnostics { get; set; } = true;
 
-        private SyntaxNodeControl CreateCodeDiagnostics()
+        private Control CreateCodeDiagnostics()
         {
             return new CodeDiagnostics(){FontSource=_fs};
         }
 
-        private static RoslynCodeControl CreateFormattedTextControl()
+        private static Control CreateFormattedTextControl()
         {
             var c = new RoslynCodeControl();
             return c;
@@ -99,7 +103,7 @@ namespace AnalysisControls.ViewModel
         /// <inheritdoc />
         public override object Content => CodeControl;
 
-        public SyntaxNodeControl CodeControl { get; set; }
+        public Control CodeControl { get; set; }
 
         public SyntaxTree SyntaxTree { get; set; }
         public Compilation Compilation { get; set; }

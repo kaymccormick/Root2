@@ -5122,48 +5122,6 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type local:SymbolTextControl}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:SymbolTextControl}">
-                    <Border Background="{TemplateBinding Background}"
-                            DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="Grid">
-                            <Grid.Resources>
-                                <roslynCodeControls:SymbolInfoConverter x:Key="SymbolInfoConverter" />
-                            </Grid.Resources>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <ScrollViewer VerticalAlignment="Stretch" x:Name="ScrollViewer"
-                                          HorizontalContentAlignment="Left"
-                                          VerticalContentAlignment="Top" VerticalScrollBarVisibility="Hidden">
-                                <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left"
-                                           TextElement.FontSize="12">
-                                    <Rectangle.Fill>
-                                        <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top"
-                                                      TileMode="None"
-                                                      Stretch="Uniform">
-                                            <DrawingBrush.Drawing>
-                                                <DrawingGroup x:Name="TextDest" />
-                                            </DrawingBrush.Drawing>
-                                        </DrawingBrush>
-                                    </Rectangle.Fill>
-                                </Rectangle>
-                            </ScrollViewer>
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <Style TargetType="{x:Type local:LogEventInstancesControl}">
         <Setter Property="Template">
             <Setter.Value>
@@ -7768,69 +7726,7 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type local:TextControl}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:TextControl}">
-                    <Border Background="{TemplateBinding Background}"
-                            DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                        <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" x:Name="Grid">
-                            <Grid.Resources>
 
-                                <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Margin" Value="10" />
-                                </Style>
-                            </Grid.Resources>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <ScrollViewer x:Name="ScrollViewer" HorizontalContentAlignment="Left"
-                                          VerticalContentAlignment="Top">
-
-                                <Grid x:Name="InnerGrid">
-                                    <Rectangle x:Name="Rectangle" VerticalAlignment="Top" HorizontalAlignment="Left"
-                                               Stroke="Aqua"
-                                               TextElement.FontSize="12">
-                                        <Rectangle.Fill>
-                                            <DrawingBrush x:Name="DrawingBrush" AlignmentX="Left" AlignmentY="Top"
-                                                          TileMode="None"
-                                                          Stretch="Uniform">
-                                                <DrawingBrush.Drawing>
-                                                    <DrawingGroup x:Name="TextDest" />
-                                                </DrawingBrush.Drawing>
-                                            </DrawingBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                    <Rectangle x:Name="Rect2" Panel.ZIndex="100" VerticalAlignment="Top"
-                                               HorizontalAlignment="Left">
-                                        <Rectangle.Fill>
-                                            <DrawingBrush x:Name="DrawingBrush2" AlignmentX="Left" AlignmentY="Top"
-                                                          TileMode="None"
-                                                          Stretch="Uniform">
-                                                <DrawingBrush.Drawing>
-                                                    <DrawingGroup x:Name="DG2" />
-                                                </DrawingBrush.Drawing>
-                                            </DrawingBrush>
-                                        </Rectangle.Fill>
-                                    </Rectangle>
-                                    <Canvas x:Name="Canvas" Panel.ZIndex="101" VerticalAlignment="Stretch"
-                                            HorizontalAlignment="Stretch" />
-
-                                </Grid>
-
-                            </ScrollViewer>
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
     <Style TargetType="{x:Type typeDescriptors:GenericInterface}">
         <Setter Property="Template">
             <Setter.Value>
@@ -8328,36 +8224,7 @@
         </Setter>
     </Style>
 
-    <ControlTemplate x:Key="PowerShellTemplate" TargetType="{x:Type local:PowerShellConsole}">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <wpfTerminalControlLib:WpfTerminalControl DiagnosticsEnabled="True" ForegroundColor="Black"
-                                                      BackgroundColor="White" AutoResize="True" Grid.Row="1"
-                                                      CursorBrush="DarkOrange" x:Name="Terminal"
-                                                      BorderBrush="Green" BorderThickness="1" Focusable="False" />
-            <wpfTerminalControlLib:WrappedPowerShell x:Name="Shell" Terminal="{x:Reference Terminal}" />
-            <wpfTerminalControlLib:WpfInputLine LineMode="True" InputOnly="True" CursorBrush="DarkSeaGreen"
-                                                x:Name="Input"
-                                                BorderBrush="Red"
-                                                BorderThickness="1" AutoResize="True" Grid.Row="2" Focusable="True" />
-            <StatusBar Grid.Row="3">
-                <TextBlock x:Name="MainStatus" Width="200" />
-                <ProgressBar Width="200" Maximum="100" x:Name="ProgressBar" />
-            </StatusBar>
-        </Grid>
-
-    </ControlTemplate>
-    <Style TargetType="{x:Type local:PowerShellConsole}">
-        <Setter Property="Template" Value="{StaticResource PowerShellTemplate}" />
-    </Style>
+   
     <Style TargetType="{x:Type analysisControl:SubjectView}">
         <Setter Property="Template">
             <Setter.Value>

@@ -130,12 +130,12 @@ namespace Client2
 
 
             Window win = null;
-	    try {
+	    // try {
             win = new Client2Window1(Scope, Scope.Resolve<ClientModel>(),Scope.Resolve<Main1Model>(), Scope.Resolve<Main1Mode2>(), null);
-            } catch(Exception ex)
-	    {
-	    DebugUtils.WriteLine(ex.ToString());
-	    }
+            // } catch(Exception ex)
+	    // {
+	    // DebugUtils.WriteLine(ex.ToString());
+	    // }
 	    
             // var win = new RibbonWin1();
 

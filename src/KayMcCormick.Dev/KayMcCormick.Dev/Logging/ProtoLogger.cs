@@ -45,6 +45,7 @@ namespace KayMcCormick.Dev.Logging
             }
         }
 
+
         public ProtoLogger ( )
         {
             Log4JXmlEventLayoutRenderer xmlEventLayoutRenderer = new MyLog4JXmlEventLayoutRenderer() ;

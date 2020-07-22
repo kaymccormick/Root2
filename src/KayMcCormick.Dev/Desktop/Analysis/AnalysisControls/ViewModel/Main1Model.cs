@@ -566,7 +566,7 @@ private void AddPowerShell2()
             item.Content = x;
             AddDocument(item);
         }
-
+#if false
         private void AddPowerShell()
         {
             var assembliesDoc = DocModel.CreateInstance();
@@ -581,7 +581,7 @@ private void AddPowerShell2()
 
             AddDocument(assembliesDoc);
         }
-
+#endif
         private void AddAssembliesDoc()
         {
             var assembliesDoc = DocModel.CreateInstance();

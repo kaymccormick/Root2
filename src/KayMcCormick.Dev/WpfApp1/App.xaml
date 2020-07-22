@@ -3,8 +3,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WpfApp1"
              DispatcherUnhandledException="App_OnDispatcherUnhandledException"
-             StartupUri="CodeWindow2.xaml">
+             StartupUri="CodeWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <!-- Dummy Style, anything you won't use goes -->
+            <!--<Style TargetType="{x:Type Rectangle}" />-->
+
+            <ResourceDictionary.MergedDictionaries>
+                <!--could use one or other-->
+                <!--<ResourceDictionary Source="/ModernWPF;component/Themes/ModernBase.xaml" />-->
+                <ResourceDictionary Source="/ModernWPF;component/Themes/ModernBaseDesktop.xaml" />
+                <ResourceDictionary Source="/ModernWPF;component/Themes/ModernLight.xaml" />
+                <ResourceDictionary Source="/ModernWPF;component/Themes/ModernStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

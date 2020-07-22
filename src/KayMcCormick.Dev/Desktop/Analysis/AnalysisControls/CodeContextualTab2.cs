@@ -75,7 +75,7 @@ namespace AnalysisControls
             if (d.Compilation != null)
             {
                 var model = d.Compilation.GetSemanticModel(d.SyntaxTree);
-                d.CodeControl.SemanticModel = model;
+                d.CodeControl.SetValue(RoslynCodeControls.RoslynProperties.SemanticModelProperty,model);
                 var nodePresenter = new RibbonModelTwoLineText();
                 ribbonModelGroup.Items.Add(nodePresenter);
 

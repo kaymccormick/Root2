@@ -130,6 +130,18 @@ namespace AnalysisControls
         public override GenericTextRunProperties BaseProps { get; set; }
 
         /// <inheritdoc />
+        public override TextRunProperties BasicProps()
+        {
+            return new BasicTextRunProperties(BaseProps);
+        }
+
+        /// <inheritdoc />
+        public override object TextInput(int insertionPoint, InputRequest inputRequest, int lineInfoOffset)
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
         public int EolLength { get; } = 2;
 
         /// <summary>
@@ -137,16 +149,6 @@ namespace AnalysisControls
         /// </summary>
         public IEnumerable<T> Source { get; set; }
 
-        public override BasicTextRunProperties BasicProps()
-        {
-            var xx = new BasicTextRunProperties(BaseProps);
-            return xx;
-        }
-
-        public override void TextInput(int insertionPoint, InputRequest inputRequest)
-        {
-            throw new NotImplementedException();
-        }
 
         /// <inheritdoc />
         public virtual void GenerateText()

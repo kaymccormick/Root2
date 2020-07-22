@@ -226,6 +226,6 @@
     </ListView>
   </DataTemplate>
   <DataTemplate DataType="{x:Type codeAnalysis:ISymbol}">
-    <analysisControls:SymbolTextControl DisplaySymbol="{Binding}"/>
+    
   </DataTemplate>
 </ResourceDictionary>

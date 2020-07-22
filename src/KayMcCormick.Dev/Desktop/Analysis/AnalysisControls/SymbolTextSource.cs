@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if false
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,18 @@ namespace AnalysisControls
         /// </summary>
         public Compilation Compilation { get; set; }
         public override GenericTextRunProperties BaseProps { get; set; }
+
+        /// <inheritdoc />
+        public override TextRunProperties BasicProps()
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
+        public override object TextInput(int insertionPoint, InputRequest inputRequest, int lineInfoOffset)
+        {
+            return null;
+        }
 
         /// <inheritdoc />
         public int EolLength { get; }
@@ -121,22 +134,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         /// <returns></returns>
-        public override BasicTextRunProperties BasicProps()
-        {
-            var xx = new BasicTextRunProperties(BaseProps);
-            return xx;
-        }
 
-        public override void TextInput(int insertionPoint, InputRequest inputRequest)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        void ICustomTextSource.GenerateText()
-        {
-            GenerateText();
-        }
 
         /// <inheritdoc />
         public TextRunProperties MakeProperties(object arg, string text)
@@ -419,3 +417,5 @@ namespace AnalysisControls
         }
     }
 }
+
+#endif

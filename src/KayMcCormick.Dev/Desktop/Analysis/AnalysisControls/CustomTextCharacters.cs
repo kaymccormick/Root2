@@ -56,13 +56,7 @@ namespace AnalysisControls
         /// 
         /// </summary>
         public TextSpan Span { get; }
-#if false
-        public SymbolDisplayPart DisplayPart { get; set; }
-        public ITypeSymbol TypeSymbol { get; set; }
-        public Type Type { get; set; }
-        
-        public SyntaxTrivia SyntaxTrivia { get; set; }
-#endif
+
         /// <summary>
         /// 
         /// </summary>

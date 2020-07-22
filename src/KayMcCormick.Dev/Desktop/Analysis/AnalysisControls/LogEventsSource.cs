@@ -101,17 +101,21 @@ namespace AnalysisControls
 
         public override int Length { get; protected set; }
         public override GenericTextRunProperties BaseProps { get; set; }
+
+        /// <inheritdoc />
+        public override TextRunProperties BasicProps()
+        {
+            return null;
+        }
+
+        /// <inheritdoc />
+        public override object TextInput(int insertionPoint, InputRequest inputRequest, int lineInfoOffset)
+        {
+            return null;
+        }
+
         public IEnumerable<LogEventInstance> EventsSource { get; set; }
 
-        public override BasicTextRunProperties BasicProps()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override void TextInput(int insertionPoint, InputRequest inputRequest)
-        {
-            throw new NotImplementedException();
-        }
 
 
         /// <summary>

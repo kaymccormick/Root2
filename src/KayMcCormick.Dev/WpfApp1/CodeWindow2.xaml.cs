@@ -29,25 +29,6 @@ namespace WpfApp1
 //            AddHandler(RoslynCodeControl.RenderCompleteEvent, new RoutedEventHandler(OnLoaded));
         }
 
-        private async void OnLoaded(object sender, RoutedEventArgs args)
-        {
-            
-            Action<string> d = s => DebugUtils.WriteLine(s);
-            var c = CodeControl;
-            var lines = new string[] {"","/* foo */", "public "};
-            var first = true;
-            foreach (var line in lines)
-            {
-                if (!first) await c.DoInput(new InputRequest(InputRequestKind.NewLine)).ConfigureAwait(true);
-                first = false;
-                foreach (var ch in line)
-                {
-                    DebugUtils.WriteLine("Input is char '" + ch + "'");
-                    await c.DoInput(new InputRequest(InputRequestKind.TextInput, ch.ToString())).ConfigureAwait(true);
-                }
-            }
 
-            await c.DoInput(new InputRequest(InputRequestKind.TextInput,"c"));
-        }
     }
 }

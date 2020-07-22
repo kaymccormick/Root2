@@ -194,7 +194,7 @@ namespace ProjTests
             @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\ManagedProd.sln";
 
         private ElementTextFormatterControl _elementTextFormatterControl;
-        private PaginatingRoslynCodeControl _x;
+        
 
         /// <summary>Initializes a new instance of the <see cref="System.Object" /> class.</summary>
         public ProjTests(
@@ -1703,11 +1703,7 @@ namespace ProjTests
             ProjTestsHelper.TestSyntaxControl(new EnhancedCodeControl());
         }
 
-        [WpfFact]
-        public void TestFormattedControl()
-        {
-            ProjTestsHelper.TestSyntaxControl(new RoslynCodeControl());
-        }
+       
 
         [WpfFact]
         public void TestFormattedControlVb()
@@ -2422,7 +2418,7 @@ namespace ProjTests
         }
 
 
-        //    [WpfFact]
+        [WpfFact]
         public void TestText1()
         {
             var s = new ObservableCollection<TestElement>();
@@ -2492,7 +2488,7 @@ namespace ProjTests
             p.Children.Add(_elementTextFormatterControl);
 
             var w = new Window {Content = p, FontSize = 20};
-            w.Show();
+            w.ShowDialog();
         }
 
         //[WpfFact]
@@ -2546,25 +2542,6 @@ namespace ProjTests
 
         private void X_Loaded(object sender, LoadedEventArgs e)
         {
-        }
-
-        //[WpfFact]
-        public void TestTextControl1()
-        {
-            var tt = new TextControl()
-            {
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Top
-            };
-
-            //p.Children.Add(_elementTextFormatterControl);
-            var w = new Window {Content = tt, FontSize = 20};
-            w.Loaded += (sender, args) =>
-            {
-                tt.HandleInput("test");
-                tt.HandleInput("hi");
-            };
-            w.Show();
         }
 
         //[WpfFact]
@@ -2700,7 +2677,9 @@ namespace ProjTests
             {
                 Debug.WriteLine("<KM> " + args.Exception.ToString());
             };
-            RoslynCodeControl.StartSecondaryThread();
+            ManualResetEvent mevent = new ManualResetEvent(false);
+            RoslynCodeControl.StartSecondaryThread(mevent, null);
+            ;
             DebugUtils.WriteLine("Begin test");
             var start = DateTime.Now;
             var file =
@@ -2798,73 +2777,7 @@ namespace ProjTests
             return printTicket;
         } // end:GetPrintTicketFromPrinter()
 
-        [WpfFact]
-        public void TestDocumentPage()
-        {
-            var d1 =
-                @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\Desktop";
 
-
-            var DESKTOPdIR =
-                @"C:\Users\mccor.LAPTOP-T6T0BN1K\source\repos\KayMcCormick.Dev\src\KayMcCormick.Dev\Desktop";
-            RoslynCodeControl.StartSecondaryThread();
-            _x = new PaginatingRoslynCodeControl();
-            _x.FontSize = 20;
-            _x.Filename = Path.Combine(d1, @"Analysis\AnalysisControls\CodeGenCommand.cs");
-
-
-            var fExit = false;
-            _x.AddHandler(RoslynCodeControl.RenderCompleteEvent, new RoutedEventHandler((sender, args) =>
-            {
-                var ps = new LocalPrintServer();
-                foreach (var printQueue in ps.GetPrintQueues())
-                {
-                    //     DebugUtils.WriteLine(printQueue.Name);
-                    //     if (printQueue.Name == "Microsoft XPS Document Writer")
-                    //     {
-                    //         
-                }
-
-                var pageSizeHeight = _x.DocumentPaginator.PageSize.Height;
-                var pageSizeWidth = _x.DocumentPaginator.PageSize.Width;
-                // var _xpsDocument = new XpsDocument(@"c:\temp\doc01.xps",
-                // FileAccess.ReadWrite);
-
-                // var xpsdw = XpsDocument.CreateXpsDocumentWriter(_xpsDocument);
-                // xpsdw.Write(_x.DocumentPaginator);
-                // _xpsDocument.Close();
-                var dg = new PrintDialog();
-                dg.ShowDialog();
-                dg.PrintDocument(_x.DocumentPaginator, "");
-
-                // var xpsDocumentWriter = PrintQueue.CreateXpsDocumentWriter(ref pageSizeWidth,
-                // ref pageSizeHeight);
-
-                // xpsDocumentWriter.Write(x.DocumentPaginator);
-                // xpsDocumentWriter.WritingCompleted += (o, eventArgs) =>
-                // {
-                // };
-                // var xx = new PrintDialog();
-                // xx.PrintTicket = new PrintTicket(){;
-                // xx.PrintDocument(x.DocumentPaginator,"");
-
-                // xx.PrintDocument(x.DocumentPaginator,"");
-                // var arq = GetPrintXpsDocumentWriter();
-                // arq.Write(x.DocumentPaginator, GetPrintTicketFromPrinter(
-                // d));
-                fExit = true;
-                // xx.PrintDocument(x.DocumentPaginator, "");
-            }));
-
-            _x.UpdateTextSource().ContinueWith((t) =>
-            {
-                while (!fExit)
-                {
-                    DoEvents();
-                    Thread.Sleep(300);
-                }
-            },  CancellationToken.None, TaskContinuationOptions.None, TaskScheduler.Current);
-        }
 
 
         [WpfFact]

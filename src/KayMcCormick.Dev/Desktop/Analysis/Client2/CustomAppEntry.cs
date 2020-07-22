@@ -72,7 +72,8 @@ namespace Client2
             AppDomain.CurrentDomain.ProcessExit += ( sender , args )
                 => LogManager.GetCurrentClassLogger ( ).Debug ( "Process exiting." ) ;
 
-            RoslynCodeControl.StartSecondaryThread();
+            ManualResetEvent mevent= new ManualResetEvent(false);
+            RoslynCodeControl.StartSecondaryThread(mevent);
             RunApp(null);
 #if false
             var action = CheckModifiers();
